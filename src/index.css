@@ -4,15 +4,15 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -38,11 +38,42 @@ code {
   background: #333;
 }
 
-.MuiOutlinedInput-root{
-  border-radius: 10px!important;
+.MuiOutlinedInput-root {
+  border-radius: 10px !important;
 }
 
-::-webkit-input-placeholder { 
-  font-size: 14px!important;
-  font-weight: 400!important;
+::-webkit-input-placeholder {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.previewContainer {
+  position: relative;
+  transition: all 0.2s;
+  margin-top: 20px;
+}
+
+.previewContainer img {
+  opacity: 1;
+  width: auto;
+  height: auto;
+  max-width: 350px;
+  max-height: 200px;
+  border: 4px solid black;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.previewContainer svg {
+  color: #ffffffba;
+  cursor: pointer;
+  font-size: 30px;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 1;
+}
+
+.previewContainer svg:hover {
+  color: #c6011fca;
 }
