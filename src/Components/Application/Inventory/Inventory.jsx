@@ -49,7 +49,7 @@ export default function Inventory() {
   return (
     <>
       <Navbar />
-      <div className="px-10 mx-auto my-4">
+      <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Inventory</label>
           <Button
