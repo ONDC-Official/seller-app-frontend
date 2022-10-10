@@ -3,15 +3,26 @@ import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import { InventoryData } from "../../../Constants/InventoryData";
 import AddIcon from "@mui/icons-material/Add";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const columns = [
-  { id: "Product_id", label: "Product Id", minWidth: 170 },
   { id: "Name", label: "Name", minWidth: 100 },
   {
-    id: "Description",
-    label: "Description",
-    minWidth: 250,
+    id: "Category",
+    label: "Category",
+    minWidth: 120,
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "SKUCode",
+    label: "SKU Code",
+    minWidth: 100,
+    //  format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "Quantity",
+    label: "Quantity",
+    minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
@@ -21,8 +32,13 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "Available_Quantity",
-    label: "Available Quantity",
+    id: "cancellable",
+    label: "Cancellable",
+    minWidth: 100,
+  },
+  {
+    id: "returnable",
+    label: "Returnable",
     minWidth: 100,
   },
 ];
@@ -33,7 +49,7 @@ export default function Inventory() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 lg:px-[5rem] my-4">
+      <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Inventory</label>
           <Button
@@ -41,7 +57,7 @@ export default function Inventory() {
             icon={<AddIcon />}
             className=""
             title="ADD PRODUCT"
-            onClick={() => navigate('/add-product')}
+            onClick={() => navigate("/add-product")}
           />
         </div>
         <InventoryTable columns={columns} data={InventoryData} />
