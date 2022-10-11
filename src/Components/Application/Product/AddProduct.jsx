@@ -11,33 +11,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { postCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 
 export default function AddProduct() {
   const navigate = useNavigate();
   const { cancellablePromise } = useCancellablePromise();
 
-  //     "name":"Coffee",
-  //     "description":"description",
-  //     "price":1000,
-  //     "availableQty":12,
-  //     "location":["Pune"],
-  //     "category":"Wellness",
-  //     "isReturnable":false,
-  //     "isCancellable":false,
-  //     "isAvailableOnCOD":true,
-  //     "longDescription":"longDescription"
-
   const [product, setProduct] = useState({
-    name: "Product A",
-    description: "Description for product A",
-    price: null,
-    availableQty: null,
+    name: "Product B",
+    description: "Description for product B",
+    price: 1000,
+    availableQty: 12,
     location: ["pune"],
     category: "Wellness",
     isReturnable: false,
     isCancelable: false,
     isAvailableOnCOD: false,
-    longDescription: "Long Description",
+    longDescription: "Long Description for Product B",
   });
   //   const [product, setProduct] = useState({
   //     name: "",
@@ -82,8 +72,13 @@ export default function AddProduct() {
 
   const addProduct = async () => {
     try {
-      const data = await cancellablePromise(postCall());
-    } catch (error) {}
+      const data = await cancellablePromise(postCall(`/api/product`, product));
+      console.log(data);
+      cogoToast.success("Product added successfully!");
+    } catch (error) {
+      cogoToast.success("Something went wrong!");
+      console.log(error);
+    }
   };
 
   return (
@@ -239,6 +234,7 @@ export default function AddProduct() {
           <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
             <MyButton title="CANCEL" className="text-black" />
             <MyButton
+              onClick={() => addProduct()}
               title="ADD PRODUCT"
               variant="contained"
               className="!ml-5"
