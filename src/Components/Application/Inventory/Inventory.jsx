@@ -1,14 +1,17 @@
+import { useEffect, useState } from "react";
 import Navbar from "../../Shared/Navbar";
 import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import { InventoryData } from "../../../Constants/InventoryData";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import { getCall } from "../../../Api/axios";
+import useCancellablePromise from "../../../Api/cancelRequest";
 
 const columns = [
-  { id: "Name", label: "Name", minWidth: 100 },
+  { id: "name", label: "Name", minWidth: 100 },
   {
-    id: "Category",
+    id: "category",
     label: "Category",
     minWidth: 120,
     format: (value) => value.toLocaleString("en-US"),
@@ -17,7 +20,6 @@ const columns = [
     id: "SKUCode",
     label: "SKU Code",
     minWidth: 100,
-    //  format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "Quantity",
@@ -26,25 +28,49 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "Price_per_quantity",
+    id: "price",
     label: "Price per quantity",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "cancellable",
+    id: "isCancellable",
     label: "Cancellable",
+    boolean: true,
     minWidth: 100,
   },
   {
-    id: "returnable",
+    id: "isReturnable",
     label: "Returnable",
+    boolean: true,
     minWidth: 100,
   },
 ];
 
 export default function Inventory() {
   const navigate = useNavigate();
+  const { cancellablePromise } = useCancellablePromise();
+
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    try {
+      const res = await cancellablePromise(getCall(`/api/product`));
+      let products = [];
+      res.data.map((item) => {
+        products.push(item.attributes);
+      });
+      setProducts(products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  console.log(products);
 
   return (
     <>
@@ -60,7 +86,7 @@ export default function Inventory() {
             onClick={() => navigate("/application/add-products")}
           />
         </div>
-        <InventoryTable columns={columns} data={InventoryData} />
+        <InventoryTable columns={columns} data={products} />
       </div>
     </>
   );
