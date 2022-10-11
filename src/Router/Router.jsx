@@ -1,17 +1,11 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Order from "../Components/Application/Order/Order";
 import Inventory from "../Components/Application/Inventory/Inventory";
 import AddProduct from "../Components/Application/Product/AddProduct";
 import PageNotFound from "../Components/PageNotFound/PageNotFound";
 import Login from "../Components/Auth/Login/Login";
 import SignUp from "../Components/Auth/SignUp/SignUp";
-import Application from "../Components/Application/Application";
 import PrivateRoute from "./PrivateRoutes";
 
 export default function OndcRoutes() {

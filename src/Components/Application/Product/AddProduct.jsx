@@ -9,23 +9,49 @@ import Button from "@mui/material/Button";
 import MyButton from "../../Shared/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import useCancellablePromise from "../../../Api/cancelRequest";
+import { postCall } from "../../../Api/axios";
 
 export default function AddProduct() {
   const navigate = useNavigate();
+  const { cancellablePromise } = useCancellablePromise();
+
+  //     "name":"Coffee",
+  //     "description":"description",
+  //     "price":1000,
+  //     "availableQty":12,
+  //     "location":["Pune"],
+  //     "category":"Wellness",
+  //     "isReturnable":false,
+  //     "isCancellable":false,
+  //     "isAvailableOnCOD":true,
+  //     "longDescription":"longDescription"
 
   const [product, setProduct] = useState({
-    name: "",
-    shortDescription: "",
-    longDescription: "",
-    price: "",
-    thumbnail: "",
-    images: [],
-    category: [],
-    quantity: "",
-    SKUCode: "",
+    name: "Product A",
+    description: "Description for product A",
+    price: null,
+    availableQty: null,
+    location: ["pune"],
+    category: "Wellness",
     isReturnable: false,
     isCancelable: false,
+    isAvailableOnCOD: false,
+    longDescription: "Long Description",
   });
+  //   const [product, setProduct] = useState({
+  //     name: "",
+  //     shortDescription: "",
+  //     longDescription: "",
+  //     price: "",
+  //     thumbnail: "",
+  //     images: [],
+  //     category: [],
+  //     quantity: "",
+  //     SKUCode: "",
+  //     isReturnable: false,
+  //     isCancelable: false,
+  //   });
 
   const [thumbnail, setThumbnail] = useState();
   const [productImages, setProductImages] = useState([]);
@@ -52,6 +78,12 @@ export default function AddProduct() {
     setPreviewProductImages(
       previewProductImages.filter((item) => item.name != img.name)
     );
+  };
+
+  const addProduct = async () => {
+    try {
+      const data = await cancellablePromise(postCall());
+    } catch (error) {}
   };
 
   return (
