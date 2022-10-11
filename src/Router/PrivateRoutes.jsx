@@ -1,14 +1,8 @@
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
-// import { isLoggedIn } from "./utils/validateToken";
+import { Navigate } from "react-router-dom";
+import { isLoggedIn } from "../utils/validateToken";
 
-export default function PrivateRoute({ children, ...props }) {
-  return (
-    <Route
-      {...props}
-      render={() => {
-        return true ? children : <Redirect to={{ pathname: "/" }} />;
-      }}
-    />
-  );
+export default function PrivateRoute({ children }) {
+  const authenticated = isLoggedIn();
+  return authenticated ? children : <Navigate to="/login" />;
 }

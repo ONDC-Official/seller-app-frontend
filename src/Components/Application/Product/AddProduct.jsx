@@ -62,7 +62,7 @@ export default function AddProduct() {
           className="mr-2 !text-black"
           icon={<ArrowBackIcon />}
           title="BACK"
-          onClick={() => navigate("/inventory")}
+          onClick={() => navigate("/application/inventory")}
         />
       </div>
       <div className="container px-4 mx-auto mb-4 md:w-4/5 lg:w-full place-content-center max-w-[1240px]">

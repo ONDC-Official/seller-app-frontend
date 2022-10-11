@@ -57,7 +57,7 @@ export default function Inventory() {
             icon={<AddIcon />}
             className=""
             title="ADD PRODUCT"
-            onClick={() => navigate("/add-product")}
+            onClick={() => navigate("/application/add-products")}
           />
         </div>
         <InventoryTable columns={columns} data={InventoryData} />
