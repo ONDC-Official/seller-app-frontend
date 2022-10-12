@@ -11,9 +11,11 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { deleteAllCookies } from "../../utils/cookies";
 
 export default function Sidebar(props) {
+  const navigate = useNavigate();
   const [state, setState] = React.useState({
     left: false,
   });
@@ -45,6 +47,11 @@ export default function Sidebar(props) {
     props.setOpen(false);
     console.log(state);
   };
+
+  async function logout() {
+    deleteAllCookies();
+    navigate("/");
+  }
 
   const list = (anchor) => (
     <Box
@@ -101,10 +108,10 @@ export default function Sidebar(props) {
       </List>
       <List
         style={{ position: "absolute", bottom: "0" }}
-        className="w-100 flex-row"
+        className="w-full flex-row"
       >
         <ListItem key="Log Out" disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => logout()}>
             <LogoutIcon />
             <ListItemText primary="Log Out" className="mx-4" />
           </ListItemButton>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Navbar from "../../Shared/Navbar";
 import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
-import { InventoryData } from "../../../Constants/InventoryData";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
