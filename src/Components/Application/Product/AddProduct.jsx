@@ -19,31 +19,31 @@ export default function AddProduct() {
 
   const { cancellablePromise } = useCancellablePromise();
 
-  //   const [product, setProduct] = useState({
-  //     name: "Product B",
-  //     description: "Description for product B",
-  //     price: 1000,
-  //     availableQty: 12,
-  //     location: ["pune"],
-  //     category: "Wellness",
-  //     isReturnable: false,
-  //     isCancelable: false,
-  //     isAvailableOnCOD: false,
-  //     longDescription: "Long Description for Product B",
-  //   });
   const [product, setProduct] = useState({
-    name: "",
-    shortDescription: "",
-    longDescription: "",
-    price: "",
-    thumbnail: "",
-    images: [],
-    category: [],
-    quantity: "",
-    SKUCode: "",
+    name: "Product B",
+    description: "Description for product B",
+    price: 1000,
+    availableQty: 12,
+    location: ["pune"],
+    category: "Wellness",
     isReturnable: false,
     isCancelable: false,
+    isAvailableOnCOD: false,
+    longDescription: "Long Description for Product B",
   });
+  //   const [product, setProduct] = useState({
+  //     name: "",
+  //     shortDescription: "",
+  //     longDescription: "",
+  //     price: "",
+  //     thumbnail: "",
+  //     images: [],
+  //     category: [],
+  //     quantity: "",
+  //     SKUCode: "",
+  //     isReturnable: false,
+  //     isCancelable: false,
+  //   });
 
   const [thumbnail, setThumbnail] = useState();
   const [productImages, setProductImages] = useState([]);
@@ -96,7 +96,28 @@ export default function AddProduct() {
   };
 
   const updateProduct = async () => {
-    alert("update");
+    // id will be dynamic after schema changes
+    try {
+      const res = await cancellablePromise(
+        postCall(`/api/product/1`, {
+          name: "shampo1o",
+          description: "description",
+          price: 1000,
+          availableQty: 12,
+          location: ["Pune"],
+          category: "Wellness",
+          isReturnable: false,
+          isCancellable: false,
+          isAvailableOnCOD: true,
+          longDescription: "longDescription",
+        })
+      );
+      console.log(res);
+      cogoToast.success("Product updated successfully!");
+    } catch (error) {
+      cogoToast.error("Something went wrong!");
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -258,9 +279,9 @@ export default function AddProduct() {
           <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
             <MyButton title="CANCEL" className="text-black" />
             <MyButton
-              onClick={() =>
-                state?.productId ? updateProduct() : addProduct()
-              }
+              onClick={() => {
+                state?.productId ? updateProduct() : addProduct();
+              }}
               title={state?.productId ? "Update Product" : "ADD PRODUCT"}
               variant="contained"
               className="!ml-5"
