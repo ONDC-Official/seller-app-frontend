@@ -8,40 +8,42 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Button from "@mui/material/Button";
 import MyButton from "../../Shared/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../Api/cancelRequest";
-import { postCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 
 export default function AddProduct() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+
   const { cancellablePromise } = useCancellablePromise();
 
-  const [product, setProduct] = useState({
-    name: "Product B",
-    description: "Description for product B",
-    price: 1000,
-    availableQty: 12,
-    location: ["pune"],
-    category: "Wellness",
-    isReturnable: false,
-    isCancelable: false,
-    isAvailableOnCOD: false,
-    longDescription: "Long Description for Product B",
-  });
   //   const [product, setProduct] = useState({
-  //     name: "",
-  //     shortDescription: "",
-  //     longDescription: "",
-  //     price: "",
-  //     thumbnail: "",
-  //     images: [],
-  //     category: [],
-  //     quantity: "",
-  //     SKUCode: "",
+  //     name: "Product B",
+  //     description: "Description for product B",
+  //     price: 1000,
+  //     availableQty: 12,
+  //     location: ["pune"],
+  //     category: "Wellness",
   //     isReturnable: false,
   //     isCancelable: false,
+  //     isAvailableOnCOD: false,
+  //     longDescription: "Long Description for Product B",
   //   });
+  const [product, setProduct] = useState({
+    name: "",
+    shortDescription: "",
+    longDescription: "",
+    price: "",
+    thumbnail: "",
+    images: [],
+    category: [],
+    quantity: "",
+    SKUCode: "",
+    isReturnable: false,
+    isCancelable: false,
+  });
 
   const [thumbnail, setThumbnail] = useState();
   const [productImages, setProductImages] = useState([]);
@@ -76,10 +78,32 @@ export default function AddProduct() {
       console.log(data);
       cogoToast.success("Product added successfully!");
     } catch (error) {
-      cogoToast.success("Something went wrong!");
+      cogoToast.error("Something went wrong!");
       console.log(error);
     }
   };
+
+  const getProduct = async () => {
+    try {
+      const res = await cancellablePromise(getCall(`/api/product/1`));
+      const { attributes } = res.data;
+      console.log(attributes);
+      setProduct(attributes);
+    } catch (error) {
+      cogoToast.error("Something went wrong!");
+      console.log(error.response);
+    }
+  };
+
+  const updateProduct = async () => {
+    alert("update");
+  };
+
+  useEffect(() => {
+    if (state?.productId) {
+      getProduct();
+    }
+  }, []);
 
   return (
     <>
@@ -95,7 +119,7 @@ export default function AddProduct() {
       <div className="container px-4 mx-auto mb-4 md:w-4/5 lg:w-full place-content-center max-w-[1240px]">
         <div className="w-full !h-full">
           <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
-            Add Product
+            {state?.productId == undefined ? "Add Product" : "Update Product"}
           </label>
           <div className="mt-2">
             <div className="w-full flex my-5">
@@ -234,8 +258,10 @@ export default function AddProduct() {
           <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
             <MyButton title="CANCEL" className="text-black" />
             <MyButton
-              onClick={() => addProduct()}
-              title="ADD PRODUCT"
+              onClick={() =>
+                state?.productId ? updateProduct() : addProduct()
+              }
+              title={state?.productId ? "Update Product" : "ADD PRODUCT"}
               variant="contained"
               className="!ml-5"
             />

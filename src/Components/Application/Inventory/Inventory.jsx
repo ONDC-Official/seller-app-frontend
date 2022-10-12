@@ -69,8 +69,6 @@ export default function Inventory() {
     getProducts();
   }, []);
 
-  console.log(products);
-
   return (
     <>
       <Navbar />

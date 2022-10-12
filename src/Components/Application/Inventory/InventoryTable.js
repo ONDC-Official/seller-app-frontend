@@ -12,6 +12,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { Link } from "react-router-dom";
 
 export default function InventoryTable(props) {
   const [page, setPage] = useState(0);
@@ -28,10 +29,6 @@ export default function InventoryTable(props) {
 
   const ThreeDotsMenu = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
-
-    function handleMenuClick(Val1) {
-      console.log(Val1);
-    }
 
     const handleClick = (e) => {
       setAnchorEl(e.currentTarget);
@@ -54,9 +51,9 @@ export default function InventoryTable(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => handleMenuClick(data.Val1)}>
-            Edit Product
-          </MenuItem>
+          <Link to="/application/add-products" state={{ productId: 1 }}>
+            <MenuItem>Edit Product</MenuItem>
+          </Link>
         </Menu>
       </Fragment>
     );
