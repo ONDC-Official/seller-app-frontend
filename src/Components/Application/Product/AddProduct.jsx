@@ -20,30 +20,19 @@ export default function AddProduct() {
   const { cancellablePromise } = useCancellablePromise();
 
   const [product, setProduct] = useState({
-    name: "Product B",
-    description: "Description for product B",
-    price: 1000,
-    availableQty: 12,
-    location: ["pune"],
-    category: "Wellness",
-    isReturnable: false,
-    isCancelable: false,
+    name: "",
+    shortDescription: "",
+    longDescription: "",
+    price: "",
+    thumbnail: "",
+    media: [],
+    category: [],
+    availableQty: "",
+    SKUCode: "",
     isAvailableOnCOD: false,
-    longDescription: "Long Description for Product B",
+    isCancellable: false,
+    isReturnable: true,
   });
-  //   const [product, setProduct] = useState({
-  //     name: "",
-  //     shortDescription: "",
-  //     longDescription: "",
-  //     price: "",
-  //     thumbnail: "",
-  //     images: [],
-  //     category: [],
-  //     quantity: "",
-  //     SKUCode: "",
-  //     isReturnable: false,
-  //     isCancelable: false,
-  //   });
 
   const [thumbnail, setThumbnail] = useState();
   const [productImages, setProductImages] = useState([]);
@@ -53,6 +42,10 @@ export default function AddProduct() {
     const name = event.target.name;
     const value = event.target.value;
     setProduct({ ...product, [name]: value });
+  };
+
+  const handleAddons = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.checked });
   };
 
   const handleThumbnail = (e) => {
@@ -76,6 +69,8 @@ export default function AddProduct() {
     try {
       const data = await cancellablePromise(postCall(`/api/product`, product));
       console.log(data);
+      setProduct({});
+      navigate("/application/inventory");
       cogoToast.success("Product added successfully!");
     } catch (error) {
       cogoToast.error("Something went wrong!");
@@ -98,20 +93,7 @@ export default function AddProduct() {
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      const res = await cancellablePromise(
-        postCall(`/api/product/1`, {
-          name: "shampo1o",
-          description: "description",
-          price: 1000,
-          availableQty: 12,
-          location: ["Pune"],
-          category: "Wellness",
-          isReturnable: false,
-          isCancellable: false,
-          isAvailableOnCOD: true,
-          longDescription: "longDescription",
-        })
-      );
+      const res = await cancellablePromise(postCall(`/api/product/1`, product));
       console.log(res);
       cogoToast.success("Product updated successfully!");
     } catch (error) {
@@ -169,8 +151,8 @@ export default function AddProduct() {
                 label="Product Quantity"
                 variant="outlined"
                 className="!w-full !mr-10 max-w-xl"
-                name="quantity"
-                value={product.quantity || ""}
+                name="availableQty"
+                value={product.availableQty || ""}
                 onChange={handleAddProduct}
               />
               <TextField
@@ -198,12 +180,34 @@ export default function AddProduct() {
                 <FormGroup>
                   <div className="flex">
                     <FormControlLabel
-                      control={<Checkbox defaultChecked />}
+                      control={
+                        <Checkbox
+                          name="isReturnable"
+                          onChange={handleAddons}
+                          checked={product.isReturnable}
+                        />
+                      }
                       label="Returnable"
                     />
                     <FormControlLabel
-                      control={<Checkbox />}
+                      control={
+                        <Checkbox
+                          name="isCancellable"
+                          onChange={handleAddons}
+                          checked={product.isCancellable}
+                        />
+                      }
                       label="Cancelable"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="isAvailableOnCOD"
+                          onChange={handleAddons}
+                          checked={product.isAvailableOnCOD}
+                        />
+                      }
+                      label="Cash on delivery"
                     />
                   </div>
                 </FormGroup>

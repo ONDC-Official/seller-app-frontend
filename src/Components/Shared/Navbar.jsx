@@ -15,6 +15,8 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Sidebar from "../Shared/Sidebar";
+import { debounce } from "../../utils/search";
+import { getCall } from "../../Api/axios";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -164,6 +166,31 @@ export default function Navbar() {
     }
   };
 
+  const handleSearch = (e) => {
+    debounce(() => {
+      fetchQuery(e.target.value);
+    }, 800)();
+  };
+
+  const fetchQuery = (q) => {
+    const url = ``;
+    if (q && q?.length > 0) {
+      url += `&name=${q}`;
+    }
+    getCall(url)
+      .then((res) => {
+        let data = res?.data;
+        data.forEach((d) => {
+          d["key"] = d?.id;
+        });
+        // set products
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {});
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -186,6 +213,7 @@ export default function Navbar() {
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
+                onChange={handleSearch}
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
