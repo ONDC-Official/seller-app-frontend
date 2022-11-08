@@ -13,9 +13,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 export default function InventoryTable(props) {
-  console.log("Order Props", props);
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -31,8 +32,8 @@ export default function InventoryTable(props) {
   const ThreeDotsMenu = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
-    function handleMenuClick(Val1) {
-      console.log(Val1);
+    function handleMenuClick(data) {
+      console.log(data);
     }
 
     const handleClick = (e) => {
@@ -44,6 +45,7 @@ export default function InventoryTable(props) {
     };
 
     const { data } = props;
+
     return (
       <Fragment>
         <Button onClick={handleClick}>
@@ -56,7 +58,13 @@ export default function InventoryTable(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => handleMenuClick(data.Val1)}>
+          <MenuItem
+            onClick={() =>
+              navigate(
+                `/application/orders/${props["row"]["attributes"]["order_id"]}`
+              )
+            }
+          >
             Order Details
           </MenuItem>
           <MenuItem onClick={() => handleMenuClick(data.Val1)}>
@@ -69,7 +77,6 @@ export default function InventoryTable(props) {
 
   const renderColumn = (row, column) => {
     const value = row["attributes"][column.id];
-    console.log(value);
     const payment = row["attributes"]["payment"];
     const ordered_items = ["Maggie", "Dove", "Atta", "Perfume"];
     switch (column.id) {
@@ -87,19 +94,8 @@ export default function InventoryTable(props) {
         );
       case "state":
         return (
-          <div
-            className={
-              value === "created"
-                ? "bg-[#1976D214] text-[#1976D2] py-1 pl-3 pr-2 rounded-full w-fit"
-                : value === "Active"
-                ? "bg-[#2E7D3214] text-[#2E7D32] py-1 pl-3 pr-2 rounded-full w-fit"
-                : value === "Cancled"
-                ? "bg-[#D32F2F14] text-[#D32F2F] py-1 pl-3 pr-2 rounded-full w-fit"
-                : null
-            }
-          >
+          <div>
             <span className="mr-2">{value}</span>
-            <CachedIcon className="hover:animate-spin" />
           </div>
         );
 
@@ -117,7 +113,7 @@ export default function InventoryTable(props) {
             <br />
           </div>
         );
-      case "ordered_items":
+      case "order_items":
         return (
           <div>
             {ordered_items.map((item, idx) => (
@@ -168,72 +164,15 @@ export default function InventoryTable(props) {
               .map((row, index) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                    {props.columns.map((column) => {
-                      const value = row["attributes"][column.id];
-                      const payment = row["attributes"]["payment"];
-                      const ordered_items = [
-                        "Maggie",
-                        "Dove",
-                        "Atta",
-                        "Perfume",
-                      ];
+                    {props.columns.map((column, idx) => {
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {renderColumn(row, column)}
-                          {/* {column.id === "state" ? (
-                            <div
-                              className={
-                                value === "created"
-                                  ? "bg-[#1976D214] text-[#1976D2] py-1 pl-3 pr-2 rounded-full w-fit"
-                                  : value === "Active"
-                                  ? "bg-[#2E7D3214] text-[#2E7D32] py-1 pl-3 pr-2 rounded-full w-fit"
-                                  : value === "Cancled"
-                                  ? "bg-[#D32F2F14] text-[#D32F2F] py-1 pl-3 pr-2 rounded-full w-fit"
-                                  : null
-                              }
-                            >
-                              <span className="mr-2">{value}</span>
-                              <CachedIcon className="hover:animate-spin" />
-                            </div>
-                          ) : column.id === "payment_type" ? (
-                            <div>
-                              <span>{payment.type}</span>
-                              <br />
-                            </div>
-                          ) : column.id === "total_amt" ? (
-                            <div>
-                              <span>₹ {payment.paid_amount}</span>
-                              <br />
-                            </div>
-                          ) : column.id === "order_items" ? (
-                            <div>
-                              {ordered_items.map((item, idx) => (
-                                <span>{`${item} ${
-                                  idx !== ordered_items.length - 1 ? "," : ""
-                                } `}</span>
-                              ))}
-                              <br />
-                            </div>
-                          ) : column.id === "delivery_info" ? (
-                            <div style={{ textTransform: "capitalize" }}>
-                              <span>
-                                {value.location.address.city}{" "}
-                                {value.location.address.state}
-                              </span>
-                              <br />
-                            </div>
-                          ) : (
-                            <>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
-                            </>
-                          )} */}
                         </TableCell>
                       );
                     })}
                     <TableCell component="th" scope="row">
-                      <ThreeDotsMenu />
+                      <ThreeDotsMenu row={row} />
                     </TableCell>
                   </TableRow>
                 );

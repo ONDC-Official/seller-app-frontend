@@ -7,7 +7,7 @@ import { getCall } from "../../../Api/axios";
 import moment from "moment";
 
 const columns = [
-  { id: "order_id", label: "Oredr Id", minWidth: 170 },
+  { id: "order_id", label: "Order Id", minWidth: 90 },
   {
     id: "publishedAt",
     label: "Date",
@@ -24,7 +24,7 @@ const columns = [
     id: "Provider_Name",
     label: "Provider Name",
     format: (value) => value.toLocaleString("en-US"),
-    minWidth: 150,
+    minWidth: 130,
   },
   {
     id: "order_items",
@@ -41,13 +41,17 @@ const columns = [
   {
     id: "total_amt",
     label: "Total Amount",
-    minWidth: 130,
+    minWidth: 120,
   },
   {
     id: "delivery_info",
     label: "Delivering To",
     format: (value) => value.toLocaleString("en-US"),
-    minWidth: 200,
+    minWidth: 90,
+  },
+  {
+    id: "menu",
+    label: "",
   },
 ];
 

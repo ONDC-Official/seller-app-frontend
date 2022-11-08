@@ -7,6 +7,7 @@ import PageNotFound from "../Components/PageNotFound/PageNotFound";
 import Login from "../Components/Auth/Login/Login";
 import SignUp from "../Components/Auth/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoutes";
+import OrderDetails from "../Components/Application/Order/OrderDetails";
 
 export default function OndcRoutes() {
   return (
@@ -28,6 +29,15 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <Order />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/application/orders/:id"
+          element={
+            <PrivateRoute>
+              <OrderDetails />
             </PrivateRoute>
           }
         />
