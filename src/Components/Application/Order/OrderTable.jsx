@@ -48,7 +48,7 @@ export default function InventoryTable(props) {
 
     return (
       <Fragment>
-        <Button onClick={handleClick}>
+        <Button onClick={(e) => handleClick(e)}>
           <MoreVertIcon />
         </Button>
         <Menu
@@ -59,11 +59,13 @@ export default function InventoryTable(props) {
           onClose={handleClose}
         >
           <MenuItem
-            onClick={() =>
+            onClick={() => {
+              console.log(props.row.attributes);
               navigate(
-                `/application/orders/${props["row"]["attributes"]["order_id"]}`
-              )
-            }
+                `/application/orders/${props["row"]["attributes"]["order_id"]}`,
+                { state: { order: props.row.attributes } }
+              );
+            }}
           >
             Order Details
           </MenuItem>
@@ -78,7 +80,8 @@ export default function InventoryTable(props) {
   const renderColumn = (row, column) => {
     const value = row["attributes"][column.id];
     const payment = row["attributes"]["payment"];
-    const ordered_items = ["Maggie", "Dove", "Atta", "Perfume"];
+    const ordered_items = row.attributes.order_items.data;
+
     switch (column.id) {
       case "order_id":
         return (
@@ -117,7 +120,7 @@ export default function InventoryTable(props) {
         return (
           <div>
             {ordered_items.map((item, idx) => (
-              <span>{`${item} ${
+              <span>{`${item.attributes.product.data.attributes.name} ${
                 idx !== ordered_items.length - 1 ? "," : ""
               } `}</span>
             ))}
