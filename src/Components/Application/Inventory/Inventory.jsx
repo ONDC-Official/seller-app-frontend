@@ -21,7 +21,7 @@ const columns = [
     minWidth: 100,
   },
   {
-    id: "Quantity",
+    id: "availableQty",
     label: "Quantity",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
@@ -57,6 +57,7 @@ export default function Inventory() {
       const res = await cancellablePromise(getCall(`/api/product`));
       let products = [];
       res.data.map((item) => {
+        item.attributes.id = item.id;
         products.push(item.attributes);
       });
       setProducts(products);

@@ -8,7 +8,6 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CachedIcon from "@mui/icons-material/Cached";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -60,11 +59,7 @@ export default function InventoryTable(props) {
         >
           <MenuItem
             onClick={() => {
-              console.log(props.row.attributes);
-              navigate(
-                `/application/orders/${props["row"]["attributes"]["order_id"]}`,
-                { state: { order: props.row.attributes } }
-              );
+              navigate(`/application/orders/${props.row.attributes.order_id}`);
             }}
           >
             Order Details
@@ -119,11 +114,12 @@ export default function InventoryTable(props) {
       case "order_items":
         return (
           <div>
-            {ordered_items.map((item, idx) => (
+            x{ordered_items.length}
+            {/* {ordered_items.map((item, idx) => (
               <span>{`${item.attributes.product.data.attributes.name} ${
                 idx !== ordered_items.length - 1 ? "," : ""
               } `}</span>
-            ))}
+            ))} */}
             <br />
           </div>
         );
@@ -131,7 +127,9 @@ export default function InventoryTable(props) {
         return (
           <div style={{ textTransform: "capitalize" }}>
             <span>
-              {value?.location?.address?.city} {value?.location?.address?.state}
+              <p>{value?.location?.address?.city}</p>
+              <p>{value?.location?.address?.state} </p>
+              {value.location.address.area_code}
             </span>
             <br />
           </div>
@@ -158,7 +156,6 @@ export default function InventoryTable(props) {
                   {column.label}
                 </TableCell>
               ))}
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -166,7 +163,18 @@ export default function InventoryTable(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  <TableRow
+                    style={{ cursor: "pointer" }}
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={index}
+                    onClick={() => {
+                      navigate(
+                        `/application/orders/${row.attributes.order_id}`
+                      );
+                    }}
+                  >
                     {props.columns.map((column, idx) => {
                       return (
                         <TableCell key={column.id} align={column.align}>
@@ -174,9 +182,6 @@ export default function InventoryTable(props) {
                         </TableCell>
                       );
                     })}
-                    <TableCell component="th" scope="row">
-                      <ThreeDotsMenu row={row} />
-                    </TableCell>
                   </TableRow>
                 );
               })}

@@ -38,7 +38,8 @@ export default function InventoryTable(props) {
       setAnchorEl(null);
     };
 
-    const { data } = props;
+    const { row } = props;
+
     return (
       <Fragment>
         <Button onClick={handleClick}>
@@ -51,7 +52,7 @@ export default function InventoryTable(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <Link to="/application/add-products" state={{ productId: 1 }}>
+          <Link to="/application/add-products" state={{ productId: row.id }}>
             <MenuItem>Edit Product</MenuItem>
           </Link>
         </Menu>
@@ -63,7 +64,9 @@ export default function InventoryTable(props) {
     if (typeof value == "boolean") {
       return (
         <div>
-          <span className="ml-2">{value === true ? "true" : "false"}</span>
+          <span className="ml-2">
+            {value === false || value === null ? "false" : "true"}
+          </span>
         </div>
       );
     } else {
@@ -107,7 +110,7 @@ export default function InventoryTable(props) {
                       );
                     })}
                     <TableCell component="th" scope="row">
-                      <ThreeDotsMenu />
+                      <ThreeDotsMenu row={row} />
                     </TableCell>
                   </TableRow>
                 );

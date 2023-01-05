@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Collapse,
@@ -16,11 +16,27 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import moment from "moment";
+import useCancellablePromise from "../../../Api/cancelRequest";
+import { getCall } from "../../../Api/axios";
+import MoreVert from "@mui/icons-material/MoreVert";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
 
 const OrderDetails = () => {
+  const [order, setOrder] = useState();
+  const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
-  const { state } = useLocation();
-  const { order } = state;
+
+  const getOrder = async () => {
+    const url = `/api/order/${params?.id}`;
+    const res = await cancellablePromise(getCall(url));
+    setOrder(res.data.attributes);
+  };
+
+  useEffect(() => {
+    if (params.id) getOrder();
+  }, [params]);
 
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
@@ -29,150 +45,114 @@ const OrderDetails = () => {
       <div className={`${cardClass} my-4 p-4`}>
         <div className="flex justify-between">
           <p className="text-lg font-semibold mb-2">Order Summary</p>
-          <span className="bg-slate-100	p-2 rounded-lg	">
-            <p className="text-sm font-medium text-amber-400">On the way</p>
-          </span>
+          {/* <span className="bg-slate-100 p-2 rounded-lg">
+            <p className="text-sm font-normal text-amber-400">On the way</p>
+          </span> */}
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Order ID</p>
-          <p className="text-md font-normal">{order.order_id}</p>
+          <p className="text-base font-normal">Order ID</p>
+          <p className="text-base font-normal">{order?.order_id}</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Order Status</p>
-          <p className="text-md font-normal">{order.state}</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Order Created</p>
-          <p className="text-md font-normal">
-            {moment(order.createdAt).format("MM-DD-YYYY")}
+          <p className="text-base font-normal">Created On</p>
+          <p className="text-base font-normal">
+            {moment(order?.createdAt).format("MM-DD-YYYY")}{" "}
+            {moment(order?.createdAt).format("hh:mm a")}
           </p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Payment Method</p>
-          <p className="text-md font-normal">{order.payment.type}</p>
+          <p className="text-base font-normal">Order Status</p>
+          <p className="text-base font-normal">{order?.state}</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Buyer name</p>
-          <p className="text-md font-normal">John</p>
+          <p className="text-base font-normal">Payment Method</p>
+          <p className="text-base font-normal">{order?.payment.type}</p>
+        </div>
+        <div className="flex justify-between mt-3 mb-3">
+          <p className="text-base font-normal">Buyer name</p>
+          <p className="text-md font-normal">-</p>
+        </div>
+        <Divider orientation="horizontal" />
+        <div className="flex justify-between mt-3">
+          <p className="text-base font-normal">Total</p>
+          <p className="text-base font-normal"> ₹ {(1000).toLocaleString()}</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Order time</p>
-          <p className="text-md font-normal">
-            {moment(order.createdAt).format("hh:mm a")}
-          </p>
+          <p className="text-base font-normal">Total Base Price</p>
+          <p className="text-base font-normal">-</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Subtotal</p>
-          <p className="text-md font-normal">₹ {order.payment.paid_amount}</p>
+          <p className="text-base font-normal">Total Taxes</p>
+          <p className="text-base font-normal">-</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-lg font-medium">Delivery Fee</p>
-          <p className="text-md font-normal">₹ 750</p>
+          <p className="text-base font-normal">Total Delivery Fee</p>
+          <p className="text-base font-normal">-</p>
+        </div>
+        <div className="flex justify-between mt-3">
+          <p className="text-base font-normal">Total Order Fee</p>
+          <p className="text-base font-normal">-</p>
         </div>
       </div>
       <div className={`${cardClass}`}>
-        <OrderItemsSummaryCard orderItems={order.order_items.data} />
+        <OrderItemsSummaryCard orderItems={order?.order_items?.data} />
       </div>
       <div className={`${cardClass} my-4 p-4`}>
         <div className="flex h-full">
           <div className="flex-1 mr-8">
-            <p className="text-xl font-semibold mb-2">Delivery Details</p>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Address line</p>
-              <p className="text-sm font-normal">
-                {order.delivery_info.location.address.building}
+            <p className="text-lg font-semibold mb-2">Delivery Address</p>
+            <div className="flex flex-col justify-between my-3">
+              <p className="text-lg font-medium">
+                {/* {" "}
+                {order?.delivery_info?.location?.address?.building}{" "}
+                {order?.delivery_info?.location?.address?.building}
+                {order?.delivery_info?.location?.address?.street}
+                {order?.delivery_info?.location?.address?.area_code} */}
+                Wahid Nagar Najibabad, Bijnor District
               </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Flat Building Name</p>
-              <p className="text-sm font-normal">
-                {order.delivery_info.location.address.building}
-              </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Street Name</p>
-              <p className="text-sm font-normal">
-                {order.delivery_info.location.address.street}
-              </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">PostalCode</p>
-              <p className="text-sm font-normal">
-                {order.delivery_info.location.address.area_code}
-              </p>
+              <p>Uttar Pardesh</p>
+              <p>246763</p>
             </div>
           </div>
           <Divider orientation="vertical" />
           <div className="flex-1 ml-8">
-            <p className="text-xl font-semibold mb-2">Billing Details</p>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Address line</p>
-              <p className="text-sm font-normal">
-                {order.billing.address.building}
+            <p className="text-lg font-semibold mb-2">Billing Address</p>
+            <div className="flex flex-col justify-between my-3">
+              <p className="text-lg font-medium">
+                {/* {" "}
+                {order?.delivery_info?.location?.address?.building}{" "}
+                {order?.delivery_info?.location?.address?.building}
+                {order?.delivery_info?.location?.address?.street}
+                {order?.delivery_info?.location?.address?.area_code} */}
+                Wahid Nagar Najibabad, Bijnor District
               </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Flat Building Name</p>
-              <p className="text-sm font-normal">
-                {order.billing.address.building}
-              </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">Street Name</p>
-              <p className="text-sm font-normal">
-                {order.billing.address.street}
-              </p>
-            </div>
-            <div className="flex justify-between my-3">
-              <p className="text-lg font-medium">PostalCode</p>
-              <p className="text-sm font-normal">
-                {order.billing.address.area_code}
-              </p>
+              <p>Uttar Pardesh</p>
+              <p>246763</p>
             </div>
           </div>
         </div>
       </div>
       <div className="flex justify-between">
-        <div className="w-3/5 mr-6">
+        <div className="w-full">
           <div className={`${cardClass} my-4 p-4`}>
             <p className="text-lg font-semibold mb-2">Customer Details</p>
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">Name : &nbsp;</p>
-              <p className="text-sm font-medium">{order.delivery_info.name}</p>
-            </div>
-            <div className="flex items-center">
-              <p className="text-lg font-semibold">Mobile : &nbsp;</p>
               <p className="text-sm font-medium">
-                +91 {order.delivery_info.phone}
+                {order?.delivery_info?.name}
               </p>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
+              <p className="text-lg font-semibold">Mobile : &nbsp;</p>
+              <p className="text-sm font-medium">
+                +91 {order?.delivery_info?.phone}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">Email : &nbsp;</p>
-              <p className="text-sm font-medium">{order.delivery_info.email}</p>
-            </div>
-          </div>
-        </div>
-        <div className="w-2/5">
-          <div className={`${cardClass} my-4 p-4`}>
-            <div className="flex justify-between items-center	">
-              <p className="text-md font-semibold">Total</p>
-              <p className="text-sm font-medium">₹1950</p>
-            </div>
-            <div className="flex justify-between items-center	">
-              <p className="text-md font-semibold">Total Base Price</p>
-              <p className="text-sm font-medium">₹150</p>
-            </div>
-            <div className="flex justify-between items-center	">
-              <p className="text-md font-semibold">Total Taxes</p>
-              <p className="text-sm font-medium">₹190</p>
-            </div>
-            <div className="flex justify-between items-center	">
-              <p className="text-md font-semibold">Total Delivery fee</p>
-              <p className="text-sm font-medium">₹50</p>
-            </div>
-            <div className="flex justify-between items-center	">
-              <p className="text-md font-semibold">Total Order fee</p>
-              <p className="text-sm font-medium">₹10</p>
+              <p className="text-sm font-medium">
+                {order?.delivery_info?.email}
+              </p>
             </div>
           </div>
         </div>
@@ -182,11 +162,10 @@ const OrderDetails = () => {
 };
 
 const OrderItemsSummaryCard = (props) => {
-  const { orderItems } = props;
   const [open, setOpen] = React.useState(false);
 
   let order_items = [];
-  props.orderItems.map((item) => {
+  props?.orderItems?.map((item) => {
     order_items.push(item.attributes);
   });
 
@@ -201,6 +180,7 @@ const OrderItemsSummaryCard = (props) => {
       label: "Fulfilment status",
     },
     { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
+    { id: "action", align: "right", minWidth: "50", label: "Actions" },
   ];
 
   const rows = [
@@ -229,6 +209,43 @@ const OrderItemsSummaryCard = (props) => {
       totalPrice: 5000,
     },
   ];
+
+  const ThreeDotsMenu = (props) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    function handleMenuClick(data) {
+      console.log(data);
+    }
+
+    const handleClick = (e) => {
+      setAnchorEl(e.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const { data } = props;
+
+    return (
+      <>
+        <Button onClick={(e) => handleClick(e)}>
+          <MoreVert />
+        </Button>
+        <Menu
+          id="card-actions-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem style={{ padding: 6 }} onClick={() => {}}>
+            Cancel Order
+          </MenuItem>
+        </Menu>
+      </>
+    );
+  };
 
   const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
@@ -277,14 +294,14 @@ const OrderItemsSummaryCard = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {order_items.map((order_item) => {
+              {order_items?.map((order_item) => {
                 let product = order_item.product.data.attributes;
                 return (
                   <ExpandableTableRow
                     sx={{ "& > *": { borderBottom: "unset" } }}
                     key={order_item.order_id}
                     expandComponent={
-                      <TableCell colSpan="5">
+                      <TableCell colSpan="7">
                         Product's additional information
                       </TableCell>
                     }
@@ -294,20 +311,37 @@ const OrderItemsSummaryCard = (props) => {
                         <TableCell align={col.align}>
                           {col.id == "url name" ? (
                             <div className="flex items-center">
-                              <img
+                              {/* <img
                                 //   src={row[col.id.split(" ")[0]]}
                                 style={{
                                   height: 45,
                                   width: 45,
                                   marginRight: 20,
                                 }}
-                              />
+                              /> */}
                               {/* <span>{row[col.id.split(" ")[1]]}</span> */}
+                              <div className="flex flex-col">
+                                <span style={{ fontWeight: 600 }}>
+                                  {product.name}
+                                </span>
+                                <span style={{ fontSize: 14 }}>
+                                  {product.SKUCode}
+                                </span>
+                              </div>
                             </div>
                           ) : col.id === "price" ? (
-                            <div>{product.price}</div>
+                            <div>₹ {product.price.toLocaleString()}</div>
+                          ) : col.id === "action" ? (
+                            <div style={{ cursor: "pointer" }}>
+                              <ThreeDotsMenu row={order_item} />
+                            </div>
                           ) : col.id === "totalPrice" ? (
-                            <div>{product.price * order_item["qty"]}</div>
+                            <div>
+                              ₹{" "}
+                              {(
+                                product.price * order_item["qty"]
+                              ).toLocaleString()}
+                            </div>
                           ) : (
                             <span>{order_item[col.id]}</span>
                           )}

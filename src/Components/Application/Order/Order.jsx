@@ -4,54 +4,56 @@ import OrderTable from "../Order/OrderTable";
 import { OrderData } from "../../../Constants/OrdersData";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall } from "../../../Api/axios";
-import moment from "moment";
 
 const columns = [
-  { id: "order_id", label: "Order Id", minWidth: 90 },
+  { id: "order_id", label: "Order Id", minWidth: 90, align: "center" },
   {
     id: "publishedAt",
     label: "Date",
     minWidth: 110,
     format: (value) => value.toLocaleString("en-US"),
+    align: "center",
   },
   {
     id: "state",
     label: "Status",
     format: (value) => value.toLocaleString("en-US"),
     minWidth: 140,
+    align: "center",
   },
-  {
-    id: "Provider_Name",
-    label: "Provider Name",
-    format: (value) => value.toLocaleString("en-US"),
-    minWidth: 130,
-  },
+  //   {
+  //     id: "Provider_Name",
+  //     label: "Provider Name",
+  //     format: (value) => value.toLocaleString("en-US"),
+  //     minWidth: 130,
+  //     align: "center",
+  //   },
   {
     id: "order_items",
     label: "Items Ordered",
     format: (value) => value.toLocaleString("en-US"),
-    minWidth: 150,
+    minWidth: 100,
+    align: "center",
   },
   {
     id: "payment_type",
     label: "Payment Type",
     format: (value) => value.toLocaleString("en-US"),
     minWidth: 170,
+    align: "center",
   },
   {
     id: "total_amt",
     label: "Total Amount",
     minWidth: 120,
+    align: "center",
   },
   {
     id: "delivery_info",
     label: "Delivering To",
     format: (value) => value.toLocaleString("en-US"),
     minWidth: 90,
-  },
-  {
-    id: "menu",
-    label: "",
+    align: "left",
   },
 ];
 

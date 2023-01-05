@@ -10,7 +10,7 @@ import MyButton from "../../Shared/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLocation, useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../Api/cancelRequest";
-import { getCall, postCall } from "../../../Api/axios";
+import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 
 export default function AddProduct() {
@@ -68,7 +68,6 @@ export default function AddProduct() {
   const addProduct = async () => {
     try {
       const data = await cancellablePromise(postCall(`/api/product`, product));
-      console.log(data);
       setProduct({});
       navigate("/application/inventory");
       cogoToast.success("Product added successfully!");
@@ -80,9 +79,10 @@ export default function AddProduct() {
 
   const getProduct = async () => {
     try {
-      const res = await cancellablePromise(getCall(`/api/product/1`));
+      const res = await cancellablePromise(
+        getCall(`/api/product/${state.productId}`)
+      );
       const { attributes } = res.data;
-      console.log(attributes);
       setProduct(attributes);
     } catch (error) {
       cogoToast.error("Something went wrong!");
@@ -93,8 +93,9 @@ export default function AddProduct() {
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      const res = await cancellablePromise(postCall(`/api/product/1`, product));
-      console.log(res);
+      const res = await cancellablePromise(
+        putCall(`/api/product/${state.productId}`, product)
+      );
       cogoToast.success("Product updated successfully!");
     } catch (error) {
       cogoToast.error("Something went wrong!");

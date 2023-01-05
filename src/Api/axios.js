@@ -40,6 +40,21 @@ export function postCall(url, params) {
     }
   });
 }
+export function putCall(url, params) {
+  const token = Cookies.get("token");
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.put(url, params, {
+        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+      });
+      return resolve(response.data);
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) return unAuthorizedResponse();
+      return reject(err);
+    }
+  });
+}
 
 export function makeCancelable(promise) {
   let isCanceled = false;

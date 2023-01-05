@@ -42,10 +42,8 @@ export default function Sidebar(props) {
     ) {
       return;
     }
-    console.log(props.open);
     setState({ ...state, [anchor]: open });
     props.setOpen(false);
-    console.log(state);
   };
 
   async function logout() {
