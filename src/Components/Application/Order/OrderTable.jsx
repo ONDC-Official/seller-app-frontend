@@ -129,7 +129,7 @@ export default function InventoryTable(props) {
             <span>
               <p>{value?.location?.address?.city}</p>
               <p>{value?.location?.address?.state} </p>
-              {value.location.address.area_code}
+              {value?.location?.address.area_code}
             </span>
             <br />
           </div>
