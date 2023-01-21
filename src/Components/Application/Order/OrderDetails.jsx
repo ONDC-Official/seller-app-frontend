@@ -44,16 +44,20 @@ const OrderDetails = () => {
   const total_order_price = order?.quote?.price?.value;
   const price_breakup = order?.quote?.breakup;
   const delivery_charges = 0;
-  const delivery_charges_object = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "delivery");
-  if (delivery_charges_object && delivery_charges_object?.length > 0) {
-    delivery_charges = delivery_charges_object[0]?.price?.value;
-  }
-  const order_items = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "item");
   const total_base_cost = 0;
-  if (order_items && order_items?.length > 0) {
-    order_items?.forEach(o => {
-      total_base_cost += o?.price?.value;
-    })
+  if (price_breakup) {
+    const delivery_charges_object = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "delivery");
+
+    if (delivery_charges_object && delivery_charges_object?.length > 0) {
+      delivery_charges = delivery_charges_object[0]?.price?.value;
+    }
+
+    const order_items = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "item");
+    if (order_items && order_items?.length > 0) {
+      order_items?.forEach(o => {
+        total_base_cost += o?.price?.value;
+      })
+    }
   }
 
   const delivery_info = getFulfillmentData(order?.fulfillments, "Delivery");
