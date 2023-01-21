@@ -70,12 +70,12 @@ const OrderDetails = () => {
         </div>
         <div className="flex justify-between mt-3 mb-3">
           <p className="text-base font-normal">Buyer name</p>
-          <p className="text-md font-normal">-</p>
+          <p className="text-md font-normal">{order?.billing?.name}</p>
         </div>
         <Divider orientation="horizontal" />
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total</p>
-          <p className="text-base font-normal"> ₹ {(1000).toLocaleString()}</p>
+          <p className="text-base font-normal"> ₹ {(order?.payment?.params?.amount).toLocaleString()}</p>
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Base Price</p>
