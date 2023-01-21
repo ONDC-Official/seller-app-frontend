@@ -75,7 +75,7 @@ const OrderDetails = () => {
         <Divider orientation="horizontal" />
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total</p>
-          <p className="text-base font-normal"> ₹ {(order?.payment?.params?.amount).toLocaleString()}</p>
+          <p className="text-base font-normal"> ₹ {(order?.payment?.params?.amount || 0).toLocaleString()}</p>
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Base Price</p>
