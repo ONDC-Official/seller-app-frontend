@@ -29,7 +29,7 @@ const OrderDetails = () => {
   const params = useParams();
 
   const getOrder = async () => {
-    const url = `/api/order/${params?.id}`;
+    const url = `/api/orders/${params?.id}`;
     const res = await cancellablePromise(getCall(url));
     setOrder(res.data.attributes);
   };
