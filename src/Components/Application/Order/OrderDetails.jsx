@@ -22,6 +22,7 @@ import MoreVert from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { getFulfillmentData, getFullAddress } from "./../../../utils/orders.js";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -39,6 +40,23 @@ const OrderDetails = () => {
   }, [params]);
 
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
+
+  const total_order_price = order?.quote?.price?.value;
+  const price_breakup = order?.quote?.breakup;
+  const delivery_charges = 0;
+  const delivery_charges_object = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "delivery");
+  if (delivery_charges_object && delivery_charges_object?.length > 0) {
+    delivery_charges = delivery_charges_object[0]?.price?.value;
+  }
+  const order_items = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "item");
+  const total_base_cost = 0;
+  if (order_items && order_items?.length > 0) {
+    order_items?.forEach(o => {
+      total_base_cost += o?.price?.value;
+    })
+  }
+
+  const delivery_info = getFulfillmentData(order?.fulfillments, "Delivery");
 
   return (
     <div className="flex flex-col h-screen w-screen py-2 px-8">
@@ -74,12 +92,8 @@ const OrderDetails = () => {
         </div>
         <Divider orientation="horizontal" />
         <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total</p>
-          <p className="text-base font-normal"> ₹ {(order?.payment?.params?.amount || 0).toLocaleString()}</p>
-        </div>
-        <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Base Price</p>
-          <p className="text-base font-normal">-</p>
+          <p className="text-base font-normal">{total_base_cost}</p>
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Taxes</p>
@@ -87,11 +101,11 @@ const OrderDetails = () => {
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Delivery Fee</p>
-          <p className="text-base font-normal">-</p>
+          <p className="text-base font-normal">{delivery_charges}</p>
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Total Order Fee</p>
-          <p className="text-base font-normal">-</p>
+          <p className="text-base font-normal">{total_order_price}</p>
         </div>
       </div>
       <div className={`${cardClass}`}>
@@ -103,15 +117,15 @@ const OrderDetails = () => {
             <p className="text-lg font-semibold mb-2">Delivery Address</p>
             <div className="flex flex-col justify-between my-3">
               <p className="text-lg font-medium">
-                {/* {" "}
-                {order?.delivery_info?.location?.address?.building}{" "}
-                {order?.delivery_info?.location?.address?.building}
-                {order?.delivery_info?.location?.address?.street}
-                {order?.delivery_info?.location?.address?.area_code} */}
-                Wahid Nagar Najibabad, Bijnor District
+                {" "}
+                {delivery_info?.end?.location?.name}{", "}
+                {delivery_info?.end?.location?.door}{", "}
+                {delivery_info?.end?.location?.building}{", "}
+                {delivery_info?.end?.location?.street}{", "}
+                {delivery_info?.end?.location?.city}{", "}
               </p>
-              <p>Uttar Pardesh</p>
-              <p>246763</p>
+              <p>{delivery_info?.end?.location?.state}</p>
+              <p>{delivery_info?.end?.location?.area_code}</p>
             </div>
           </div>
           <Divider orientation="vertical" />
@@ -119,15 +133,15 @@ const OrderDetails = () => {
             <p className="text-lg font-semibold mb-2">Billing Address</p>
             <div className="flex flex-col justify-between my-3">
               <p className="text-lg font-medium">
-                {/* {" "}
-                {order?.delivery_info?.location?.address?.building}{" "}
-                {order?.delivery_info?.location?.address?.building}
-                {order?.delivery_info?.location?.address?.street}
-                {order?.delivery_info?.location?.address?.area_code} */}
-                Wahid Nagar Najibabad, Bijnor District
+                {" "}
+                {order?.billing?.address?.name}{", "}
+                {order?.billing?.address?.door}{", "}
+                {order?.billing?.address?.building}{", "}
+                {order?.billing?.address?.street}{", "}
+                {order?.billing?.address?.city}
               </p>
-              <p>Uttar Pardesh</p>
-              <p>246763</p>
+              <p>{order?.billing?.address?.state}</p>
+              <p>{order?.billing?.address?.area_code}</p>
             </div>
           </div>
         </div>
@@ -139,19 +153,19 @@ const OrderDetails = () => {
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">Name : &nbsp;</p>
               <p className="text-sm font-medium">
-                {order?.delivery_info?.name}
+                {delivery_info?.end?.person?.name}
               </p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">Mobile : &nbsp;</p>
               <p className="text-sm font-medium">
-                +91 {order?.delivery_info?.phone}
+                +91 {delivery_info?.end?.contact?.phone}
               </p>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">Email : &nbsp;</p>
               <p className="text-sm font-medium">
-                {order?.delivery_info?.email}
+                {delivery_info?.end?.contact?.email}
               </p>
             </div>
           </div>

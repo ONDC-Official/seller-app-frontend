@@ -72,9 +72,30 @@ export default function InventoryTable(props) {
     );
   };
 
+  const getFulfillmentData = (fulfillments, type) => {
+    const filtered_data = fulfillments.filter(f => f?.type === type);
+    if (filtered_data?.length > 0) {
+      return filtered_data[0];
+    }
+    return {};
+  };
+
+  const getFullAddress = (location_details) => {
+    const location_values = [location_details?.name || '',
+                             location_details?.door || '',
+                             location_details?.building || '',
+                             location_details?.street || '',
+                             location_details?.city || '',
+                             location_details?.state || '',
+                             location_details?.area_code || ''
+                            ];
+    return location_values?.join(",");
+  };
+
   const renderColumn = (row, column) => {
     const value = row["attributes"][column.id];
     const payment = row["attributes"]["payment"];
+    const delivery_info = getFulfillmentData(row["attributes"]["fulfillments"], "Delivery");
     const ordered_items = row.attributes.order_items.data;
 
     switch (column.id) {
@@ -127,9 +148,7 @@ export default function InventoryTable(props) {
         return (
           <div style={{ textTransform: "capitalize" }}>
             <span>
-              <p>{value?.location?.address?.city}</p>
-              <p>{value?.location?.address?.state} </p>
-              {value?.location?.address.area_code}
+              <p>{getFullAddress(delivery_info?.end?.location)}</p>
             </span>
             <br />
           </div>
