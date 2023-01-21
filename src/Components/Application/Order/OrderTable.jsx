@@ -171,7 +171,7 @@ export default function InventoryTable(props) {
                     key={index}
                     onClick={() => {
                       navigate(
-                        `/application/orders/${row.attributes.order_id}`
+                        `/application/orders/${row?.id}`
                       );
                     }}
                   >
