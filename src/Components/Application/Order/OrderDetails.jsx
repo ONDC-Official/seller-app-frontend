@@ -60,7 +60,11 @@ const OrderDetails = () => {
     }
   }
 
-  const delivery_info = getFulfillmentData(order?.fulfillments, "Delivery");
+  const fulfillments = order?.fulfillments;
+  let delivery_info = {};
+  if (fulfillments) {
+    delivery_info = getFulfillmentData(fulfillments, "Delivery");
+  }
 
   return (
     <div className="flex flex-col h-screen w-screen py-2 px-8">
