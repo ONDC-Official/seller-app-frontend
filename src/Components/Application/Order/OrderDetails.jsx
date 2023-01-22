@@ -41,7 +41,7 @@ const OrderDetails = () => {
 
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
-  const total_order_price = order?.quote?.price?.value;
+  const total_order_price = order?.quote?.price?.value || 0;
   const price_breakup = order?.quote?.breakup;
   const delivery_charges = 0;
   const total_base_cost = 0;
@@ -112,8 +112,8 @@ const OrderDetails = () => {
           <p className="text-base font-normal">{delivery_charges}</p>
         </div>
         <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total Order Fee</p>
-          <p className="text-base font-normal">{total_order_price}</p>
+          <p className="text-base font-normal">Total Price</p>
+          <p className="text-base font-normal">{total_order_price || '-'}</p>
         </div>
       </div>
       <div className={`${cardClass}`}>
