@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
 
 export default function InventoryTable(props) {
   const navigate = useNavigate();
@@ -70,26 +71,6 @@ export default function InventoryTable(props) {
         </Menu>
       </Fragment>
     );
-  };
-
-  const getFulfillmentData = (fulfillments, type) => {
-    const filtered_data = fulfillments.filter(f => f?.type === type);
-    if (filtered_data?.length > 0) {
-      return filtered_data[0];
-    }
-    return {};
-  };
-
-  const getFullAddress = (location_details) => {
-    const location_values = [location_details?.name,
-                             location_details?.door,
-                             location_details?.building,
-                             location_details?.street,
-                             location_details?.city,
-                             location_details?.state,
-                             location_details?.area_code,
-                            ].filter(t => t);
-    return location_values?.join(",");
   };
 
   const renderColumn = (row, column) => {

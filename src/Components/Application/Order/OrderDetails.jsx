@@ -22,7 +22,7 @@ import MoreVert from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import { getFulfillmentData, getFullAddress } from "./../../../utils/orders.js";
+import { getFulfillmentData, getShortAddress } from "./../../../utils/orders.js";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -125,15 +125,10 @@ const OrderDetails = () => {
             <p className="text-lg font-semibold mb-2">Delivery Address</p>
             <div className="flex flex-col justify-between my-3">
               <p className="text-lg font-medium">
-                {" "}
-                {delivery_info?.end?.location?.name}{", "}
-                {delivery_info?.end?.location?.door}{", "}
-                {delivery_info?.end?.location?.building}{", "}
-                {delivery_info?.end?.location?.street}{", "}
-                {delivery_info?.end?.location?.city}{", "}
+                {getShortAddress(delivery_info?.end?.location?.address)}
               </p>
-              <p>{delivery_info?.end?.location?.state}</p>
-              <p>{delivery_info?.end?.location?.area_code}</p>
+              <p>{delivery_info?.end?.location?.address?.state}</p>
+              <p>{delivery_info?.end?.location?.address?.area_code}</p>
             </div>
           </div>
           <Divider orientation="vertical" />
@@ -141,12 +136,7 @@ const OrderDetails = () => {
             <p className="text-lg font-semibold mb-2">Billing Address</p>
             <div className="flex flex-col justify-between my-3">
               <p className="text-lg font-medium">
-                {" "}
-                {order?.billing?.address?.name}{", "}
-                {order?.billing?.address?.door}{", "}
-                {order?.billing?.address?.building}{", "}
-                {order?.billing?.address?.street}{", "}
-                {order?.billing?.address?.city}
+                {getShortAddress(order?.billing?.address)}
               </p>
               <p>{order?.billing?.address?.state}</p>
               <p>{order?.billing?.address?.area_code}</p>
