@@ -8,6 +8,7 @@ import Login from "../Components/Auth/Login/Login";
 import SignUp from "../Components/Auth/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoutes";
 import OrderDetails from "../Components/Application/Order/OrderDetails";
+import UserListings from "../Components/Application/UserListings/UserListings";
 
 export default function OndcRoutes() {
   return (
@@ -46,6 +47,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <AddProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/user-listings"
+          element={
+            <PrivateRoute>
+              <UserListings />
             </PrivateRoute>
           }
         />
