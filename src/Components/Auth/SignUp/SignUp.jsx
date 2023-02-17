@@ -1,247 +1,303 @@
 import React, { useState } from "react";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import Button from "../../Shared/Button";
-import AuthActionCard from "../AuthActionCard/AuthActionCard";
-import { NavLink, useNavigate } from "react-router-dom";
-import { getErrorMessage } from "../../../Api/Utils/MapFirebaseError";
-// import TextField from "@mui/material/TextField";
-// import { styled } from '@mui/material/styles';
-// import ErrorMessage from "../../Shared/ErrorMessage";
+import { Button } from "@mui/material";
+import RenderInput from "../../../utils/RenderInput";
+import { isEmailValid, isPhoneNoValid } from "../../../utils/validations";
 
+const credentialFields = [
+  {
+    id: "email",
+    title: "Email",
+    placeholder: "Enter your email address",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "mobile_number",
+    title: "Mobile Number",
+    placeholder: "Enter your mobile number",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "provider_admin_name",
+    title: "Provider admin name",
+    placeholder: "Enter provider admin name",
+    type: "input",
+    required: true,
+  },
+];
 
-// const CssTextField = styled(TextField)({
-//   '& .MuiOutlinedInput-root': {
-//     '& fieldset': {
-//       borderColor: 'black',
-//     },
-//     '&:hover fieldset': {
-//       borderColor: '#1c75bc',
-//     },
-//     '&.Mui-focused fieldset': {
-//       borderColor: '#1c75bc',
-//     },
-//   },
-// });
+const kycDetailFields = [
+  {
+    id: "provider_name",
+    title: "Provider details",
+    placeholder: "Enter provider details",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "registered_address",
+    title: "Registered address",
+    placeholder: "Enter your registered address",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "email",
+    title: "Email",
+    placeholder: "Enter your email address",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "mobile",
+    title: "Mobile",
+    placeholder: "Enter your mobile number",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "pan_no",
+    title: "PAN",
+    placeholder: "Enter your PAN",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "gstn_no",
+    title: "GSTN",
+    placeholder: "Enter your GSTN",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "fssai_no",
+    title: "FSSAI Number",
+    placeholder: "Enter your FSSAI number",
+    type: "input",
+    required: true,
+  },
+];
 
-export default function SignUp() {
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
-  const navigate = useNavigate();
-  const [signUp, setSignUp] = useState({
-    'full_name': '',
-    'email': '',
-    'password': ''
+const kycDocumentFields = [
+  {
+    id: "address_proof",
+    title: "Address proof",
+    type: "upload",
+    required: true,
+  },
+  {
+    id: "id_proof",
+    title: "Id proof",
+    type: "upload",
+    required: true,
+  },
+  {
+    id: "pan_document",
+    title: "PAN Card Image",
+    type: "upload",
+    required: true,
+  },
+  {
+    id: "gst_certificate",
+    title: "GST certificate",
+    type: "upload",
+    required: true,
+  },
+];
+
+const bankDetailFields = [
+  {
+    id: "acc_holder_name",
+    title: "Account holder name",
+    placeholder: "Enter account holder name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "acc_number",
+    title: "Account Number",
+    placeholder: "Enter account number",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "bank_name",
+    title: "Bank name",
+    placeholder: "Enter bank name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "branch_name",
+    title: "branch name",
+    placeholder: "Enter branch name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "ifsc_code",
+    title: "IFSC code",
+    placeholder: "Enter IFSC code",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "city",
+    title: "City",
+    placeholder: "Enter city",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "cancelled_check",
+    title: "Cancelled check",
+    type: "upload",
+    required: true,
+  },
+];
+
+const SignUp = () => {
+  const [step, setStep] = useState(1);
+  const [credentials, setCredentials] = useState({
+    email: "",
+    mobile_number: "",
+    provider_admin_name: "",
   });
-  const [signInUsingGoogleloading, setSignInUsingGoogleLoading] = useState(false);
-  const [
-    signInUsingEmailAndPasswordloading,
-    setSignInUsingEmailAndPasswordLoading,
-  ] = useState(false);
-  const [inlineError, setInlineError] = useState({
-    full_name_error: "",
-    email_error: "",
-    password_error: "",
+
+  const [kycDetails, setKycDetails] = useState({
+    provider_name: "",
+    registered_address: "",
+    email: "",
+    mobile_number: "",
+    pan_no: "",
+    GSTN: "",
+    FSSAI_no: "",
   });
-  // use this function to check the email
-  function checkFullName() {
-    if (!signUp.full_name) {
-      setInlineError((inlineError) => ({
-        ...inlineError,
-        full_name_error: "full name cannot be empty",
-      }));
-      return false;
-    }
-    return true;
-  }
 
-  function checkEmail() {
-    if (!signUp.email) {
-      setInlineError((inlineError) => ({
-        ...inlineError,
-        email_error: "email cannot be empty",
-      }));
-      return false;
-    }
-    return true;
-  }
+  const [kycMedia, setKycMedia] = useState({
+    address_proof: "",
+    id_proof: "",
+    pan: "",
+    GST: "",
+  });
 
-  function checkPassword() {
-    if (!signUp.password) {
-      setInlineError((inlineError) => ({
-        ...inlineError,
-        password_error: "password cannot be empty",
-      }));
-      return false;
-    }
+  const [bankDetails, setBankDetails] = useState({
+    acc_holder_name: "",
+    acc_number: "",
+    bank_name: "",
+    banch: "",
+    ifsc_code: "",
+    city: "",
+    cancelled_check: "",
+  });
 
-    return true;
-  }
+  const handleContinue = () => {
+    setStep(step + 1);
+  };
 
-  function handleLoginWithEmailAndPassword(e) {
-    e.preventDefault();
-    const allCheckPassed = [checkFullName(), checkEmail(), checkPassword()].every(Boolean);
-    if (!allCheckPassed) {
-      return;
-    }
-    setSignInUsingEmailAndPasswordLoading(true);
-    signInWithEmailAndPassword(auth, signUp.full_name, signUp.email, signUp.password)
-      .then((result) => {
-        handleRedirect(result.user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = getErrorMessage(errorCode);
-        console.log(errorMessage)
-      })
-      .finally(() => setSignInUsingEmailAndPasswordLoading(false));
-  }
-  function handleLoginWithGoogle() {
-    setSignInUsingGoogleLoading(true);
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        handleRedirect(result.user);
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage)
-    })
-      .finally(() => setSignInUsingGoogleLoading(false));
-  }
-  function handleRedirect(user) {
-    navigate("/");
-  }
-  const signUpForm = (
-    <div className='m-auto w-10/12 md:w-3/4'>
-      <form onSubmit={handleLoginWithEmailAndPassword}>
-      {/* <div className="py-1">
-          <label className='text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block'>
-            Full Name 
-            <span className='text-[#FF0000]'> *</span>
-          </label>
-          <CssTextField
-            id={inlineError.full_name_error ? "outlined-error" : "demo-helper-text-aligned" }
-            name="full_name"
-            type="text"
-            placeholder="Enter Name"
-            autoComplete="off"
-            className='w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black'
-            onChange={(event) => {
-              setSignUp({...signUp, full_name: event.target.value});
-              setInlineError((inlineError) => ({
-                ...inlineError,
-                full_name_error: "",
-              }));
-            }}
-            size="small"
-            onBlur={checkFullName}
-            error={inlineError.full_name_error ? true : false}
-            // helperText={inlineError.email_error && inlineError.email_error}
-            required
-          />
-        </div>
-        {inlineError.full_name_error && (
-          <ErrorMessage>{inlineError.full_name_error}</ErrorMessage>
-        )}
-        <div className="py-1">
-          <label htmlFor="email" className='text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block'>
-            Email 
-            <span className='text-[#FF0000]'> *</span>
-          </label>
-          <CssTextField
-            id={inlineError.email_error ? "outlined-error" : "demo-helper-text-aligned" }
-            name="email"
-            type="email"
-            placeholder="Enter Email"
-            autoComplete="off"
-            className='w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black'
-            onChange={(event) => {
-              setSignUp({...signUp, email: event.target.value});
-              setInlineError((inlineError) => ({
-                ...inlineError,
-                email_error: "",
-              }));
-            }}
-            size="small"
-            onBlur={checkEmail}
-            error={inlineError.email_error ? true : false}
-            // helperText={inlineError.email_error && inlineError.email_error}
-            required
-          />
-        </div>
-        {inlineError.email_error && (
-          <ErrorMessage>{inlineError.email_error}</ErrorMessage>
-        )}
-        <div className="py-1">
-          <label htmlFor="password" className='text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block'>
-            Password
-            <span className='text-[#FF0000]'> *</span>  
-          </label>
-          <CssTextField
-            id={inlineError.password_error ? "outlined-error" : "demo-helper-text-aligned" }
-            name="password"
-            type="password"
-            placeholder="Enter Password"
-            autoComplete="off"
-            className='w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent'
-            onChange={(event) => {
-              setSignUp({...signUp, password: event.target.value});
-              setInlineError((inlineError) => ({
-                ...inlineError,
-                password_error: "",
-              }));
-            }}
-            size="small"
-            onBlur={checkPassword}
-            error={inlineError.password_error ? true : false}
-            style={{borderRadius: '10px'}}
-            required
-          />
-        </div>
-        {inlineError.password_error && (
-          <ErrorMessage>{inlineError.password_error}</ErrorMessage>
-        )}
-        <div className="py-3 pt-6 text-center flex flex-row justify-center">
-          <Button
-            isloading={signInUsingEmailAndPasswordloading ? 1 : 0}
-            disabled={
-              signInUsingGoogleloading || signInUsingEmailAndPasswordloading
-            }
-            variant='contained'
-            title="Sign Up"
-            type="submit"
-            className='!w-40 !capitalize !py-2'
-          />
-        </div>
-        <hr className="mx-4 border-[#DDDDDD] m-1.5" /> */}
-        <div className="py-3 text-center flex flex-row justify-center">
-          <Button
-            isloading={signInUsingGoogleloading ? 1 : 0}
-            disabled={
-              signInUsingGoogleloading || signInUsingEmailAndPasswordloading
-            }
-            variant='contained'
-            title="Login with google"
-            onClick={handleLoginWithGoogle}
-            className='!w-40 !capitalize !py-2 '
-          />
-        </div>
-      </form>
-    </div>
-  );
-  const navigation_link = (
-    <div className="py-2 text-center">
-      <p className='text-xs text-[#606161]'>Do not have an account</p>
-      <NavLink to="/login" className=''>
-        Sign In
-      </NavLink>
-    </div>
-  );
+  const checkDisabled = () => {
+    if (credentials.email == "" || !isEmailValid(credentials.email))
+      return true;
+    if (
+      credentials.password == "" ||
+      !isPhoneNoValid(credentials.mobile_number)
+    )
+      return true;
+    if (credentials.provider_admin_name.trim() == "") return true;
+
+    return false;
+  };
+
+  const renderHeading = () => {
+    if (step == 1) return "Credentials purpose details of provider";
+    if (step == 2) return "KYC Details";
+    if (step == 3) return "KYC Documents";
+    if (step == 4) return "Bank Details";
+  };
+
+  const renderCredentialFields = () => {
+    return credentialFields.map((item) => (
+      <RenderInput
+        item={item}
+        state={credentials}
+        stateHandler={setCredentials}
+      />
+    ));
+  };
+
+  const renderKycDetailFields = () => {
+    return kycDetailFields.map((item) => (
+      <RenderInput
+        item={item}
+        state={kycDetails}
+        stateHandler={setKycDetails}
+      />
+    ));
+  };
+
+  const renderKycDocumentFields = () => {
+    return kycDocumentFields.map((item) => (
+      <RenderInput item={item} state={kycMedia} stateHandler={setKycMedia} />
+    ));
+  };
+
+  const renderBankDetails = () => {
+    return bankDetailFields.map((item) => (
+      <RenderInput
+        item={item}
+        state={bankDetails}
+        stateHandler={setBankDetails}
+      />
+    ));
+  };
+
+  const renderSteps = () => {
+    if (step == 1) return renderCredentialFields();
+    if (step == 2) return renderKycDetailFields();
+    if (step == 3) return renderKycDocumentFields();
+    if (step == 4) return renderBankDetails();
+  };
+
   return (
-    <AuthActionCard action_form={signUpForm} navigation_link={navigation_link} />
+    <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
+      <div className="h-full flex fex-row items-center justify-center">
+        <div
+          className="flex w-full md:w-2/4 bg-white px-4 py-4 rounded-md shadow-xl h-max"
+          style={{ minHeight: "75%" }}
+        >
+          <div className="m-auto w-10/12 md:w-3/4 h-max">
+            <p className="text-2xl font-semibold mb-4 text-center">
+              {renderHeading()}
+            </p>
+            <div>{renderSteps()}</div>
+            <div className="flex mt-6">
+              <Button
+                size="small"
+                style={{ marginRight: 10 }}
+                variant="text"
+                onClick={() => setStep(step - 1)}
+                disabled={step == 1}
+              >
+                Back
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  step == 4 ? alert("finished") : handleContinue();
+                }}
+                //  disabled={checkDisabled()}
+              >
+                {step == 4 ? "Finish" : "Continue"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default SignUp;
