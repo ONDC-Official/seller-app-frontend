@@ -50,7 +50,7 @@ const kycDetailFields = [
     required: true,
   },
   {
-    id: "mobile",
+    id: "mobile_number",
     title: "Mobile",
     placeholder: "Enter your mobile number",
     type: "input",

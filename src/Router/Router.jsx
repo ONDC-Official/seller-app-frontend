@@ -9,6 +9,7 @@ import SignUp from "../Components/Auth/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoutes";
 import OrderDetails from "../Components/Application/Order/OrderDetails";
 import UserListings from "../Components/Application/UserListings/UserListings";
+import ProviderInitialSteps from "../Components/Auth/ProviderInitialSteps/ProviderInitialSteps";
 
 export default function OndcRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function OndcRoutes() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/initial-steps" element={<ProviderInitialSteps />} />
         <Route
           path={"/application/inventory"}
           element={
