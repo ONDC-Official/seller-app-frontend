@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoutes";
 import OrderDetails from "../Components/Application/Order/OrderDetails";
 import UserListings from "../Components/Application/UserListings/UserListings";
 import ProviderInitialSteps from "../Components/Auth/ProviderInitialSteps/ProviderInitialSteps";
+import ProviderDetails from "../Components/Application/UserListings/ProviderDetails";
 
 export default function OndcRoutes() {
   return (
@@ -57,6 +58,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <UserListings />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/user-listings/provider-details/:id"
+          element={
+            <PrivateRoute>
+              <ProviderDetails />
             </PrivateRoute>
           }
         />

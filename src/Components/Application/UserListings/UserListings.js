@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../../Shared/Navbar";
 import UserTable from "./UserTable";
-import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
@@ -116,6 +115,7 @@ const UserListings = () => {
         <UserTable
           columns={value == 0 ? superAdminCols : providerCols}
           data={value == 0 ? superAdminData : providerData}
+          isProvider={value == 0 ? false : true}
         />
       </div>
     </div>

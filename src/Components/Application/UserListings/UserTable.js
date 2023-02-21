@@ -9,8 +9,10 @@ import {
   TableRow,
 } from "@mui/material";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const UserTable = ({ columns, data }) => {
+const UserTable = ({ columns, data, isProvider }) => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -44,7 +46,16 @@ const UserTable = ({ columns, data }) => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
-                  <TableRow hover tabIndex={-1} key={index}>
+                  <TableRow
+                    style={{ cursor: isProvider ? "pointer" : "default" }}
+                    hover
+                    tabIndex={-1}
+                    key={index}
+                    onClick={() => {
+                      isProvider &&
+                        navigate(`/user-listings/provider-details/${index}`);
+                    }}
+                  >
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
