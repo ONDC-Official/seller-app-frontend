@@ -3,25 +3,41 @@ import { Button } from "@mui/material";
 import RenderInput from "../../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../../utils/validations";
 
-const credentialFields = [
+const userFields = [
   {
     id: "email",
     title: "Email",
     placeholder: "Enter your email address",
     type: "input",
+    email: true,
     required: true,
   },
   {
-    id: "mobile_number",
+    id: "mobile",
     title: "Mobile Number",
     placeholder: "Enter your mobile number",
+    type: "input",
+    mobile: true,
+    required: true,
+  },
+  {
+    id: "firstname",
+    title: "First name",
+    placeholder: "Enter provider first name",
     type: "input",
     required: true,
   },
   {
-    id: "provider_admin_name",
-    title: "Provider admin name",
-    placeholder: "Enter provider admin name",
+    id: "middlename",
+    title: "Middle name",
+    placeholder: "Enter provider middle name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "lastname",
+    title: "Last name",
+    placeholder: "Enter provider last name",
     type: "input",
     required: true,
   },
@@ -29,49 +45,51 @@ const credentialFields = [
 
 const kycDetailFields = [
   {
-    id: "provider_name",
-    title: "Provider details",
-    placeholder: "Enter provider details",
+    id: "name",
+    title: "Provider Name",
+    placeholder: "Enter provider name",
     type: "input",
     required: true,
   },
   {
-    id: "registered_address",
+    id: "address",
     title: "Registered address",
     placeholder: "Enter your registered address",
     type: "input",
     required: true,
   },
   {
-    id: "email",
+    id: "contactEmail",
     title: "Email",
     placeholder: "Enter your email address",
     type: "input",
+    email: true,
     required: true,
   },
   {
-    id: "mobile_number",
+    id: "contactMobile",
     title: "Mobile",
     placeholder: "Enter your mobile number",
     type: "input",
+    mobile: true,
     required: true,
   },
   {
-    id: "pan_no",
+    id: "PAN",
     title: "PAN",
     placeholder: "Enter your PAN",
     type: "input",
     required: true,
   },
   {
-    id: "gstn_no",
+    id: "GSTN",
     title: "GSTN",
     placeholder: "Enter your GSTN",
     type: "input",
     required: true,
   },
   {
-    id: "fssai_no",
+    id: "FSSAI",
     title: "FSSAI Number",
     placeholder: "Enter your FSSAI number",
     type: "input",
@@ -81,25 +99,25 @@ const kycDetailFields = [
 
 const kycDocumentFields = [
   {
-    id: "address_proof",
+    id: "addressProof",
     title: "Address proof",
     type: "upload",
     required: true,
   },
   {
-    id: "id_proof",
+    id: "idProof",
     title: "Id proof",
     type: "upload",
     required: true,
   },
   {
-    id: "pan_document",
+    id: "PAN_proof",
     title: "PAN Card Image",
     type: "upload",
     required: true,
   },
   {
-    id: "gst_certificate",
+    id: "GST_Proof",
     title: "GST certificate",
     type: "upload",
     required: true,
@@ -108,49 +126,42 @@ const kycDocumentFields = [
 
 const bankDetailFields = [
   {
-    id: "acc_holder_name",
+    id: "accHolderName",
     title: "Account holder name",
     placeholder: "Enter account holder name",
     type: "input",
     required: true,
   },
   {
-    id: "acc_number",
+    id: "accNumber",
     title: "Account Number",
     placeholder: "Enter account number",
     type: "input",
     required: true,
   },
   {
-    id: "bank_name",
+    id: "bankName",
     title: "Bank name",
     placeholder: "Enter bank name",
     type: "input",
     required: true,
   },
   {
-    id: "branch_name",
+    id: "branchName",
     title: "branch name",
     placeholder: "Enter branch name",
     type: "input",
     required: true,
   },
   {
-    id: "ifsc_code",
+    id: "IFSC",
     title: "IFSC code",
     placeholder: "Enter IFSC code",
     type: "input",
     required: true,
   },
   {
-    id: "city",
-    title: "City",
-    placeholder: "Enter city",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "cancelled_check",
+    id: "cancelledCheck",
     title: "Cancelled check",
     type: "upload",
     required: true,
@@ -159,70 +170,85 @@ const bankDetailFields = [
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
-  const [credentials, setCredentials] = useState({
+  const [user, setUser] = useState({
     email: "",
-    mobile_number: "",
-    provider_admin_name: "",
+    mobile: "",
+    firstname: "",
+    middlename: "",
+    lastname: "",
   });
 
   const [kycDetails, setKycDetails] = useState({
-    provider_name: "",
-    registered_address: "",
-    email: "",
-    mobile_number: "",
-    pan_no: "",
+    name: "",
+    address: "",
+    contactEmail: "",
+    contactMobile: "",
+    PAN: "",
     GSTN: "",
-    FSSAI_no: "",
+    FSSAI: "",
   });
 
   const [kycMedia, setKycMedia] = useState({
     address_proof: "",
     id_proof: "",
-    pan: "",
-    GST: "",
+    PAN_proof: "",
+    GST_proof: "",
   });
 
   const [bankDetails, setBankDetails] = useState({
-    acc_holder_name: "",
-    acc_number: "",
-    bank_name: "",
-    banch: "",
-    ifsc_code: "",
-    city: "",
-    cancelled_check: "",
+    accHolderName: "",
+    accNumber: "",
+    bankName: "",
+    banchName: "",
+    IFSC: "",
+    cancelledCheck: "",
   });
 
   const handleContinue = () => {
+    const data = {
+      user,
+      providerDetails: {
+        name: kycDetails.name,
+        address: kycDetails.address,
+        contactEmail: kycDetails.contactEmail,
+        contactMobile: kycDetails.contactMobile,
+        addressProof: kycMedia.address_proof,
+        idProof: kycMedia.id_proof,
+        bankDetails: {
+          accHolderName: bankDetails.accHolderName,
+          accNumber: bankDetails.accNumber,
+          IFSC: bankDetails.IFSC,
+          cancelledCheque: bankDetails.cancelledCheck,
+          bankName: bankDetails.bankName,
+          branchName: bankDetails.banchName,
+        },
+        PAN: { PAN: kycDetails.PAN, proof: kycMedia.PAN_proof },
+        GSTN: { GSTN: kycDetails.GSTN, proof: kycMedia.GST_proof },
+        FSSAI: kycDetails.FSSAI,
+      },
+    };
+
     setStep(step + 1);
   };
 
   const checkDisabled = () => {
-    if (credentials.email == "" || !isEmailValid(credentials.email))
-      return true;
-    if (
-      credentials.password == "" ||
-      !isPhoneNoValid(credentials.mobile_number)
-    )
-      return true;
-    if (credentials.provider_admin_name.trim() == "") return true;
+    if (user.email == "" || !isEmailValid(user.email)) return true;
+    if (user.password == "" || !isPhoneNoValid(user.mobile_number)) return true;
+    if (user.provider_admin_name.trim() == "") return true;
 
     return false;
   };
 
   const renderHeading = () => {
-    if (step == 1) return "Credentials purpose details of provider";
+    if (step == 1) return "user purpose details of provider";
     if (step == 2) return "KYC Details";
     if (step == 3) return "KYC Documents";
     if (step == 4) return "Bank Details";
   };
 
-  const renderCredentialFields = () => {
-    return credentialFields.map((item) => (
-      <RenderInput
-        item={item}
-        state={credentials}
-        stateHandler={setCredentials}
-      />
+  const renderUserFields = () => {
+    return userFields.map((item) => (
+      <RenderInput item={item} state={user} stateHandler={setUser} />
     ));
   };
 
@@ -253,7 +279,7 @@ const SignUp = () => {
   };
 
   const renderSteps = () => {
-    if (step == 1) return renderCredentialFields();
+    if (step == 1) return renderUserFields();
     if (step == 2) return renderKycDetailFields();
     if (step == 3) return renderKycDocumentFields();
     if (step == 4) return renderBankDetails();

@@ -33,13 +33,13 @@ const RenderInput = ({ item, state, stateHandler }) => {
   let error = false;
   let error_text = "";
 
-  if (item.id == "email") {
-    if (state["email"] != "" && !isEmailValid(state["email"])) {
+  if (item.email) {
+    if (state[item.id] != "" && !isEmailValid(state[item.id])) {
       error = true;
       error_text = "Please enter a valid email address";
     }
-  } else if (item.id == "mobile_number") {
-    if (!isPhoneNoValid(state["mobile_number"])) {
+  } else if (item.mobile) {
+    if (!isPhoneNoValid(state[item.id])) {
       error = true;
       error_text = "Please enter a valid mobile number";
     }
