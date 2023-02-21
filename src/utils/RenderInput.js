@@ -1,12 +1,12 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import {
+  Autocomplete,
   Button,
   Checkbox,
   FormControl,
   FormControlLabel,
   FormGroup,
-  FormLabel,
   MenuItem,
   Radio,
   RadioGroup,
@@ -208,27 +208,35 @@ const RenderInput = ({ item, state, stateHandler }) => {
 
     return (
       <div className="py-1 flex flex-col">
-        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+        <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <FormControl>
-          <Select
+          <Autocomplete
             multiple
             size="small"
+            options={item.options}
+            getOptionLabel={(option) => option.key}
             placeholder={item.placeholder}
             value={state[item.id]}
-            onChange={handleChangeMultiple}
-          >
-            <MenuItem value="none" disabled>
-              <p className="text-[#606161]">None</p>
-            </MenuItem>
-            {item.options.map((selectItem, i) => (
-              <MenuItem key={i} value={selectItem.value}>
-                {selectItem.key}
-              </MenuItem>
-            ))}
-          </Select>
+            onChange={(event, newValue) => {
+              stateHandler((prevState) => {
+                const newState = {
+                  ...prevState,
+                  [item.id]: newValue,
+                };
+                return newState;
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={item.placeholder}
+                variant="outlined"
+              />
+            )}
+          />
         </FormControl>
       </div>
     );
