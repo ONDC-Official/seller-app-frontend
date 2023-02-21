@@ -102,7 +102,6 @@ const ProviderInitialSteps = () => {
   const [storeDetails, setStoreDetails] = useState({
     logo: "",
     supported_product_categories: "none",
-    multi_supported_product_categories: [],
     store_location: "",
     location_availability: "pan_india",
     cities: [],

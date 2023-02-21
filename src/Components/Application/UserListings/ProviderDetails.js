@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
+import { useEffect } from "react";
 
-const storeDetailFields = [
+let storeFields = [
   {
     id: "email",
     title: "Support Email",
@@ -46,7 +47,7 @@ const storeDetailFields = [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
     ],
-    type: "checkbox",
+    type: "radio",
     required: false,
   },
   {
@@ -79,10 +80,10 @@ const storeDetailFields = [
 
 const ProviderDetails = () => {
   const navigate = useNavigate();
+  const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
   const [storeDetails, setStoreDetails] = useState({
     logo: "",
     supported_product_categories: "none",
-    multi_supported_product_categories: [],
     store_location: "",
     location_availability: [],
     default_cancellable: "",
@@ -90,6 +91,32 @@ const ProviderDetails = () => {
     email: "",
     mobile_number: "",
   });
+
+  function addAfter(array, index, newItem) {
+    return [...array.slice(0, index), newItem, ...array.slice(index)];
+  }
+
+  useEffect(() => {
+    if (storeDetails.location_availability == "city") {
+      let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
+        id: "cities",
+        title: "Select Cities",
+        placeholder: "Select Cities",
+        options: [
+          { key: "Delhi", value: "delhi" },
+          { key: "Pune", value: "pune" },
+          { key: "Bengaluru", value: "bengaluru" },
+          { key: "Kolkata", value: "kolkata" },
+          { key: "Noida", value: "noida" },
+        ],
+        type: "multi-select",
+        required: false,
+      });
+      setStoreDetailFields(fieldsWithCityInput);
+    } else {
+      setStoreDetailFields(storeFields);
+    }
+  }, [storeDetails.location_availability]);
 
   const renderSteps = () => {
     return storeDetailFields.map((item) => (
