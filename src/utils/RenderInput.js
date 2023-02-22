@@ -182,30 +182,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
       </div>
     );
   } else if (item.type == "multi-select") {
-    const handleChangeMultiple = (event, idx, value) => {
-      let val = idx.props.value;
-
-      const itemIndex = state[item.id].indexOf(val);
-
-      if (itemIndex == -1) {
-        stateHandler((prevState) => {
-          const newState = {
-            ...prevState,
-            [item.id]: [...prevState[item.id], val],
-          };
-          return newState;
-        });
-      } else {
-        stateHandler((prevState) => {
-          const newState = {
-            ...prevState,
-            [item.id]: prevState[item.id].filter((ele) => ele != val),
-          };
-          return newState;
-        });
-      }
-    };
-
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -214,11 +190,11 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Autocomplete
+            hiddenLabel="true"
             multiple
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
-            placeholder={item.placeholder}
             value={state[item.id]}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
@@ -232,7 +208,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={item.placeholder}
+                placeholder={item.placeholder}
                 variant="outlined"
               />
             )}

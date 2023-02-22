@@ -26,17 +26,19 @@ let storeFields = [
     title: "Support Email",
     placeholder: "Enter your email address",
     type: "input",
+    email: true,
     required: true,
   },
   {
-    id: "mobile_number",
+    id: "mobile",
     title: "Support Mobile",
     placeholder: "Enter your mobile number",
     type: "input",
+    mobile: true,
     required: true,
   },
   {
-    id: "supported_product_categories",
+    id: "categories",
     title: "Supported product categories",
     placeholder: "Supported product categories",
     options: [
@@ -46,42 +48,42 @@ let storeFields = [
       { key: "Home and Decor", value: "home_and_decor" },
       { key: "F&B", value: "f_and_b" },
     ],
-    type: "select",
+    type: "multi-select",
     required: true,
   },
   {
-    id: "store_location",
+    id: "location",
     title: "Store Location",
     placeholder: "Store Location",
     type: "input",
     required: false,
   },
   {
-    id: "location_availability",
+    id: "locationAvailability",
     title: "Location availability",
     options: [
-      { key: "PAN India", value: "pan_india" },
+      { key: "PAN India", value: "PAN INDIA" },
       { key: "City", value: "city" },
     ],
     type: "radio",
     required: false,
   },
   {
-    id: "default_cancellable",
+    id: "defaultCancellable",
     title: "Default cancellable setting",
     options: [
-      { key: "Cancellable", value: "cancellable" },
-      { key: "Non Cancellable", value: "non_cancellable" },
+      { key: "Cancellable", value: true },
+      { key: "Non Cancellable", value: false },
     ],
     type: "radio",
     required: false,
   },
   {
-    id: "default_returnable",
+    id: "defaultReturnable",
     title: "Default returnable setting",
     options: [
-      { key: "Returnable", value: "returnable" },
-      { key: "Non Returnable", value: "non_returnable" },
+      { key: "Returnable", value: true },
+      { key: "Non Returnable", value: false },
     ],
     type: "radio",
     required: false,
@@ -101,14 +103,14 @@ const ProviderInitialSteps = () => {
   const [password, setPassword] = useState({ password_1: "", password_2: "" });
   const [storeDetails, setStoreDetails] = useState({
     logo: "",
-    supported_product_categories: "none",
-    store_location: "",
-    location_availability: "pan_india",
+    categories: [],
+    location: "",
+    locationAvailability: "pan_india",
     cities: [],
-    default_cancellable: "",
-    default_returnable: "",
+    defaultCancellable: "",
+    defaultReturnable: "",
     email: "",
-    mobile_number: "",
+    mobile: "",
   });
 
   function addAfter(array, index, newItem) {
@@ -116,7 +118,7 @@ const ProviderInitialSteps = () => {
   }
 
   useEffect(() => {
-    if (storeDetails.location_availability == "city") {
+    if (storeDetails.locationAvailability == "city") {
       let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
         id: "cities",
         title: "Select Cities",
@@ -135,7 +137,7 @@ const ProviderInitialSteps = () => {
     } else {
       setStoreDetailFields(storeFields);
     }
-  }, [storeDetails.location_availability]);
+  }, [storeDetails.locationAvailability]);
 
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
