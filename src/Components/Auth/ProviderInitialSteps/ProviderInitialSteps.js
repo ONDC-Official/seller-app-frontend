@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { postCall } from "../../../Api/axios";
 import RenderInput from "../../../utils/RenderInput";
 
 const passwordFields = [
@@ -139,6 +140,39 @@ const ProviderInitialSteps = () => {
     }
   }, [storeDetails.locationAvailability]);
 
+  const handleSetPasswordReq = async () => {
+    const url = `/api//v1/auth/resetPassword`;
+    try {
+      const res = await postCall(url, password.password_1);
+      setStep(2);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleStoreDetailsReq = async () => {
+    const url = `/api/v1/organizations/{orgId}/storeDetails`;
+    try {
+      const res = await postCall(url, password.password_1);
+    } catch (error) {}
+  };
+
+  const handleContinue = () => {
+    if (step == 1) handleSetPasswordReq();
+    if (step == 2) handleStoreDetailsReq();
+  };
+
+  const checkDisabled = () => {
+    if (step == 1) {
+      if (password.password_1.trim() == "") return true;
+      if (password.password_1 != password.password_2) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
       <RenderInput item={item} state={password} stateHandler={setPassword} />
@@ -192,10 +226,8 @@ const ProviderInitialSteps = () => {
                   size="small"
                   variant="contained"
                   color="primary"
-                  onClick={() => {
-                    step == 2 ? alert("finished") : setStep(step + 1);
-                  }}
-                  //  disabled={checkDisabled()}
+                  onClick={handleContinue}
+                  disabled={checkDisabled()}
                 >
                   {step == 2 ? "Finish" : "Continue"}
                 </Button>
