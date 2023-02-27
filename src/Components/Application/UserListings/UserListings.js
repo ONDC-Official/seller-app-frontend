@@ -3,6 +3,8 @@ import Navbar from "../../Shared/Navbar";
 import UserTable from "./UserTable";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const UserListings = () => {
   const [value, setValue] = useState(0);
@@ -96,21 +98,35 @@ const UserListings = () => {
   return (
     <div>
       <Navbar />
+
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">User Listings</label>
         </div>
 
-        <Tabs
-          style={{ marginBottom: 30 }}
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label="Super Admins" />
-          <Tab label="Providers" />
-        </Tabs>
+        <div className="flex flex-row justify-between items-center">
+          <Tabs
+            style={{ marginBottom: 30 }}
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="Super Admins" />
+            <Tab label="Providers" />
+          </Tabs>
+          <Button
+            sx={{ height: 30, textTransform: "none" }}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={""}
+          >
+            <Link to={value == 0 ? "/invite-admin" : "/invite-provider"}>
+              Invite {value == 0 ? "Admin" : "Provider"}
+            </Link>
+          </Button>
+        </div>
 
         <UserTable
           columns={value == 0 ? superAdminCols : providerCols}

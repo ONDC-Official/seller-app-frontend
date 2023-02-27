@@ -11,6 +11,8 @@ import OrderDetails from "../Components/Application/Order/OrderDetails";
 import UserListings from "../Components/Application/UserListings/UserListings";
 import ProviderInitialSteps from "../Components/Auth/ProviderInitialSteps/ProviderInitialSteps";
 import ProviderDetails from "../Components/Application/UserListings/ProviderDetails";
+import InviteAdmin from "../Components/OnBoarding/InviteAdmin";
+import InviteProvider from "../Components/OnBoarding/inviteProvider";
 
 export default function OndcRoutes() {
   return (
@@ -66,6 +68,22 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <ProviderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/invite-admin"
+          element={
+            <PrivateRoute>
+              <InviteAdmin />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/invite-provider"
+          element={
+            <PrivateRoute>
+              <InviteProvider />
             </PrivateRoute>
           }
         />
