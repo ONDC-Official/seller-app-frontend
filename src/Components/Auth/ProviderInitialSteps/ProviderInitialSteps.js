@@ -94,6 +94,7 @@ let storeFields = [
     title: "Logo",
     type: "upload",
     required: false,
+    file_type: "logo",
   },
 ];
 

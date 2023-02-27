@@ -14,6 +14,8 @@ import {
   TextField,
 } from "@mui/material";
 import { isEmailValid, isPhoneNoValid } from "./validations";
+import { getCall, postCall } from "../Api/axios";
+import Cookies from "js-cookie";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -217,28 +219,86 @@ const RenderInput = ({ item, state, stateHandler }) => {
       </div>
     );
   } else if (item.type == "upload") {
+    const getSignUrl = async (file) => {
+      const url = `/api/v1/upload/aadhar`;
+      const data = {
+        fileName: file.fileName,
+        fileType: file.type.split("/")[1],
+      };
+      const res = await postCall(url, data);
+      return res;
+    };
+    const uploadFile = async (e) => {
+      const token = Cookies.get("token");
+      const file = e.target.files[0];
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      getSignUrl(file).then((d) => {
+        const url = d.urls;
+        stateHandler({ ...state, [item.id]: d.path });
+
+        fetch(url, {
+          method: "PUT",
+          body: formData,
+          headers: { ...(token && { "access-token": `Bearer ${token}` }) },
+        })
+          .then((response) => {
+            console.log(item.id, state);
+            response.json();
+          })
+          .then((json) => {});
+      });
+    };
+
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-          {item.title}
+          {item.title} {item.id} {item.file_type}
           <span className="text-[#FF0000]"> *</span>
         </label>
-        <input
-          accept="image/*"
-          style={{ display: "none" }}
-          id="contained-button-file"
-          multiple
-          type="file"
-        />
         <label htmlFor="contained-button-file">
-          <Button
+          {/* <Button
             size="small"
             variant="contained"
             component="span"
             sx={{ background: "E0E0E0" }}
-          >
-            Upload
-          </Button>
+            onClick={(e) => console.log(e.target.files)}
+          > */}
+          <input
+            id="contained-button-file"
+            style={{ opacity: "none" }}
+            accept="image/*"
+            type="file"
+            onChange={(e) => {
+              const token = Cookies.get("token");
+              const file = e.target.files[0];
+
+              const formData = new FormData();
+              formData.append("file", file);
+
+              getSignUrl(file).then((d) => {
+                const url = d.urls;
+
+                fetch(url, {
+                  method: "PUT",
+                  body: formData,
+                  headers: {
+                    ...(token && { "access-token": `Bearer ${token}` }),
+                  },
+                })
+                  .then((response) => {
+                    stateHandler({ ...state, [item.id]: d.path });
+                    console.log(item, state);
+                    response.json();
+                  })
+                  .then((json) => {});
+              });
+            }}
+          />
+          {/* Upload */}
+          {/* </Button> */}
         </label>
       </div>
     );

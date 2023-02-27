@@ -25,8 +25,8 @@ const CssTextField = styled(TextField)({
 export default function Login() {
   const navigate = useNavigate();
   const [login, setLogin] = useState({
-    email: "",
-    password: "",
+    email: "org@mailinator.com",
+    password: "304377",
   });
   const [signInUsingEmailAndPasswordloading] = useState(false);
   const [inlineError, setInlineError] = useState({
@@ -73,7 +73,7 @@ export default function Login() {
     AddCookie("token", token);
     AddCookie("user", JSON.stringify({ name, email, mobile, role }));
     if (isSystemGeneratedPassword) {
-      navigate("/initial-steps");
+      navigate("/sign-up");
     } else {
       navigate("/application/inventory");
     }

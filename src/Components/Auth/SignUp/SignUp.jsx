@@ -21,23 +21,9 @@ const userFields = [
     required: true,
   },
   {
-    id: "firstname",
-    title: "First name",
+    id: "name",
+    title: "Name",
     placeholder: "Enter provider first name",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "middlename",
-    title: "Middle name",
-    placeholder: "Enter provider middle name",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "lastname",
-    title: "Last name",
-    placeholder: "Enter provider last name",
     type: "input",
     required: true,
   },
@@ -97,29 +83,38 @@ const kycDetailFields = [
   },
 ];
 
+// address_proof
+// id_proof
+// PAN_proof
+// GST_proof
+
 const kycDocumentFields = [
   {
-    id: "addressProof",
+    id: "address_proof",
     title: "Address proof",
     type: "upload",
+    file_type: "address_proof",
     required: true,
   },
   {
-    id: "idProof",
+    id: "id_proof",
     title: "Id proof",
     type: "upload",
+    file_type: "id_proof",
     required: true,
   },
   {
     id: "PAN_proof",
     title: "PAN Card Image",
     type: "upload",
+    file_type: "pan",
     required: true,
   },
   {
-    id: "GST_Proof",
+    id: "GST_proof",
     title: "GST certificate",
     type: "upload",
+    file_type: "gst",
     required: true,
   },
 ];
@@ -161,9 +156,10 @@ const bankDetailFields = [
     required: true,
   },
   {
-    id: "cancelledCheck",
-    title: "Cancelled check",
+    id: "cancelledCheque",
+    title: "Cancelled cheque",
     type: "upload",
+    file_type: "cancelled_cheque",
     required: true,
   },
 ];
@@ -173,9 +169,7 @@ const SignUp = () => {
   const [user, setUser] = useState({
     email: "",
     mobile: "",
-    firstname: "",
-    middlename: "",
-    lastname: "",
+    name: "",
   });
 
   const [kycDetails, setKycDetails] = useState({
@@ -201,7 +195,7 @@ const SignUp = () => {
     bankName: "",
     banchName: "",
     IFSC: "",
-    cancelledCheck: "",
+    cancelledCheque: "",
   });
 
   const handleContinue = () => {
@@ -218,7 +212,7 @@ const SignUp = () => {
           accHolderName: bankDetails.accHolderName,
           accNumber: bankDetails.accNumber,
           IFSC: bankDetails.IFSC,
-          cancelledCheque: bankDetails.cancelledCheck,
+          cancelledCheque: bankDetails.cancelledCheque,
           bankName: bankDetails.bankName,
           branchName: bankDetails.banchName,
         },
@@ -229,6 +223,8 @@ const SignUp = () => {
     };
 
     setStep(step + 1);
+
+    console.log(data);
   };
 
   const checkDisabled = () => {
