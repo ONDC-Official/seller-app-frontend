@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
+import { postCall } from "../../Api/axios";
 
 const userFields = [
   {
@@ -37,10 +38,10 @@ const InviteAdmin = () => {
     name: "",
   });
 
-  const handleContinue = () => {
-    const data = {
-      user,
-    };
+  const sendInvite = () => {
+    const url = `/api/v1/users/invite/admin`;
+    const res = postCall(url, user);
+    console.log(res);
   };
 
   const checkDisabled = () => {
@@ -82,9 +83,7 @@ const InviteAdmin = () => {
                 size="small"
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  step == 4 ? alert("finished") : handleContinue();
-                }}
+                onClick={sendInvite}
                 disabled={checkDisabled()}
               >
                 Invite

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
+import { postCall } from "../../Api/axios";
 
 const userFields = [
   {
@@ -194,6 +195,10 @@ const InviteProvider = () => {
   });
 
   const handleContinue = () => {
+    setStep(step + 1);
+  };
+
+  const sendInvite = () => {
     const data = {
       user,
       providerDetails: {
@@ -217,9 +222,9 @@ const InviteProvider = () => {
       },
     };
 
-    setStep(step + 1);
-
-    console.log(data);
+    const url = `/api/v1/organizations`;
+    const res = postCall(url, data);
+    console.log(res);
   };
 
   const checkDisabled = () => {
@@ -303,11 +308,11 @@ const InviteProvider = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  step == 4 ? alert("finished") : handleContinue();
+                  step == 4 ? sendInvite() : handleContinue();
                 }}
                 //  disabled={checkDisabled()}
               >
-                {step == 4 ? "Finish" : "Continue"}
+                {step == 4 ? "Invite" : "Continue"}
               </Button>
             </div>
           </div>
