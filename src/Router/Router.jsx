@@ -13,6 +13,7 @@ import ProviderInitialSteps from "../Components/Auth/ProviderInitialSteps/Provid
 import ProviderDetails from "../Components/Application/UserListings/ProviderDetails";
 import InviteAdmin from "../Components/OnBoarding/InviteAdmin";
 import InviteProvider from "../Components/OnBoarding/inviteProvider";
+import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
 
 export default function OndcRoutes() {
   return (
@@ -20,7 +21,8 @@ export default function OndcRoutes() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        {/* <Route path="/sign-up" element={<SignUp />} /> */}
         <Route path="/initial-steps" element={<ProviderInitialSteps />} />
         <Route
           path={"/application/inventory"}

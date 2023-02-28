@@ -26,7 +26,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [login, setLogin] = useState({
     email: "org@mailinator.com",
-    password: "304377",
+    password: "551593",
   });
   const [signInUsingEmailAndPasswordloading] = useState(false);
   const [inlineError, setInlineError] = useState({
@@ -69,14 +69,11 @@ export default function Login() {
   }
 
   function handleRedirect(token, user) {
-    const { name, email, mobile, isSystemGeneratedPassword, role } = user;
     AddCookie("token", token);
-    AddCookie("user", JSON.stringify({ name, email, mobile, role }));
-    if (isSystemGeneratedPassword) {
-      navigate("/sign-up");
-    } else {
-      navigate("/application/inventory");
-    }
+    AddCookie("user", JSON.stringify(user));
+    AddCookie("org", JSON.stringify(user.organization));
+    AddCookie("role", JSON.stringify(user.role));
+    navigate("/application/inventory");
   }
 
   useEffect(() => {
@@ -176,11 +173,12 @@ export default function Login() {
   );
   const navigation_link = (
     <div className="py-2 text-center">
-      <p className="text-xs text-[#606161]">Do not have an account</p>
-      <NavLink to="/sign-up" className="">
-        Sign Up
+      <NavLink to="/forgot-password" className="">
+        <p className="text-xs text-[#346cc1]">Forgot password</p>
       </NavLink>
     </div>
   );
-  return <AuthActionCard action_form={loginForm} navigation_link={null} />;
+  return (
+    <AuthActionCard action_form={loginForm} navigation_link={navigation_link} />
+  );
 }
