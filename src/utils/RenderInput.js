@@ -220,7 +220,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
     );
   } else if (item.type == "upload") {
     const getSignUrl = async (file) => {
-      const url = `/api/v1/upload/aadhar`;
+      const url = `/api/v1/upload/${item?.file_type}`;
       const data = {
         fileName: file.fileName,
         fileType: file.type.split("/")[1],
@@ -237,8 +237,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
 
       getSignUrl(file).then((d) => {
         const url = d.urls;
-        stateHandler({ ...state, [item.id]: d.path });
-
         fetch(url, {
           method: "PUT",
           body: formData,
@@ -247,6 +245,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           .then((response) => {
             console.log(item.id, state);
             response.json();
+            stateHandler({ ...state, [item.id]: d.path });
           })
           .then((json) => {});
       });
@@ -271,6 +270,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             style={{ opacity: "none" }}
             accept="image/*"
             type="file"
+            key={item?.id}
             onChange={(e) => {
               const token = Cookies.get("token");
               const file = e.target.files[0];
