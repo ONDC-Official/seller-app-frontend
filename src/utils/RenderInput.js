@@ -222,7 +222,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
     const getSignUrl = async (file) => {
       const url = `/api/v1/upload/${item?.file_type}`;
       const data = {
-        fileName: file.fileName,
+        fileName: file.name,
         fileType: file.type.split("/")[1],
       };
       const res = await postCall(url, data);

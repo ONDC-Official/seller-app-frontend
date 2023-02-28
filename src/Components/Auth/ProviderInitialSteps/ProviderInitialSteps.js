@@ -3,9 +3,10 @@ import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCall, postCall } from "../../../Api/axios";
+import { getCall, patchCall, postCall } from "../../../Api/axios";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
+import { isObjEmpty } from "../../../utils/validations";
 
 const passwordFields = [
   {
@@ -104,6 +105,9 @@ let storeFields = [
 const ProviderInitialSteps = () => {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState();
+  const [org, setOrg] = useState();
+
   const [step, setStep] = useState(1);
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
 
@@ -127,22 +131,27 @@ const ProviderInitialSteps = () => {
   const getOrgDetails = async (org_id) => {
     const url = `/api/v1/organizations/${org_id}/storeDetails`;
     const res = await getCall(url);
+    setOrg(res);
     return res;
   };
 
   const getUser = async (id) => {
     const url = `/api/v1/users/${id}`;
     const res = await getCall(url);
+    setUser(res[0]);
     return res[0];
   };
 
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
     getUser(user_id).then((u) => {
-      if (u.isSystemGeneratedPassword) setStep(1);
-      else {
+      if (u.isSystemGeneratedPassword) {
+        console.log(u.isSystemGeneratedPassword);
+        setStep(1);
+      } else {
         getOrgDetails(u.organization).then((org) => {
-          if (org.storeDetails.categories.length == 0) setStep(2);
+          if (isObjEmpty(org.storeDetails)) setStep(2);
+          else navigate("/application/inventory");
         });
       }
     });
@@ -171,23 +180,29 @@ const ProviderInitialSteps = () => {
   }, [storeDetails.locationAvailability]);
 
   const handleSetPasswordReq = async () => {
-    let org = JSON.parse(Cookies.get("org"));
+    const user_id = localStorage.getItem("user_id");
     const url = `/api/v1/auth/resetPassword`;
     try {
       const res = await postCall(url, { password: password.password_1 });
-
-      if (org.storeDetailsAvailable) {
-        navigate("/application/inventory");
-      } else setStep(2);
+      navigate("/application/inventory");
+      getUser(user_id).then((u) => {
+        if (u.isSystemGeneratedPassword) setStep(1);
+        else {
+          getOrgDetails(u.organization).then((org) => {
+            if (org.storeDetails.categories.length == 0) setStep(2);
+          });
+        }
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleStoreDetailsReq = async () => {
-    const url = `/api/v1/organizations/{orgId}/storeDetails`;
+    console.log(storeDetails);
+    const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
-      const res = await postCall(url, password.password_1);
+      const res = await patchCall(url, storeDetails);
       navigate("/application/inventory");
     } catch (error) {
       console.log(error.response);

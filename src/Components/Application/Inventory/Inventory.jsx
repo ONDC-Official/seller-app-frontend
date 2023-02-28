@@ -8,6 +8,7 @@ import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import Cookies from "js-cookie";
 import { AddCookie } from "../../../utils/cookies";
+import { isObjEmpty } from "../../../utils/validations";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 100 },
@@ -86,9 +87,8 @@ export default function Inventory() {
       if (u.isSystemGeneratedPassword) navigate("/initial-steps");
       else {
         getOrgDetails(u.organization).then((org) => {
-          console.log("organization", org);
-          if (org.storeDetails.categories.length == 0)
-            navigate("/initial-steps");
+          console.log("organization", org.storeDetails == {});
+          if (isObjEmpty(org.storeDetails)) navigate("/initial-steps");
         });
       }
     });
@@ -104,13 +104,23 @@ export default function Inventory() {
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Inventory</label>
-          <Button
-            variant="contained"
-            icon={<AddIcon />}
-            className=""
-            title="ADD PRODUCT"
-            onClick={() => navigate("/application/add-products")}
-          />
+          <div className="flex">
+            <div style={{ marginRight: 15 }}>
+              <Button
+                variant="contained"
+                icon={<AddIcon />}
+                title="Bulk upload"
+                // onClick={() => navigate("/application/add-products")}
+              />
+            </div>
+            <Button
+              variant="contained"
+              icon={<AddIcon />}
+              className=""
+              title="ADD PRODUCT"
+              onClick={() => navigate("/application/add-products")}
+            />
+          </div>
         </div>
         <InventoryTable columns={columns} data={products} />
       </div>

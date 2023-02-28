@@ -13,9 +13,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { deleteAllCookies } from "../../utils/cookies";
+import { getCall } from "../../Api/axios";
 
 export default function Sidebar(props) {
   const navigate = useNavigate();
+  const [user, setUser] = React.useState();
   const [state, setState] = React.useState({
     left: false,
   });
@@ -25,6 +27,18 @@ export default function Sidebar(props) {
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  React.useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id);
+  }, []);
 
   React.useEffect(() => {
     if (props.open) {
@@ -87,7 +101,7 @@ export default function Sidebar(props) {
           <List component="div" disablePadding>
             <NavLink
               to="/application/inventory"
-              className="no-underline text-black	"
+              className="no-underline text-black"
             >
               <ListItemButton sx={{ pl: 4 }}>
                 <ListItemText primary="Inventory" />
@@ -101,14 +115,16 @@ export default function Sidebar(props) {
                 <ListItemText primary="Orders" />
               </ListItemButton>
             </NavLink>
-            <NavLink
-              to="/application/user-listings"
-              className="no-underline	text-black"
-            >
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemText primary="User Listings" />
-              </ListItemButton>
-            </NavLink>
+            {user?.role?.name == "Super Admin" && (
+              <NavLink
+                to="/application/user-listings"
+                className="no-underline	text-black"
+              >
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="User Listings" />
+                </ListItemButton>
+              </NavLink>
+            )}
           </List>
         </Collapse>
       </List>
