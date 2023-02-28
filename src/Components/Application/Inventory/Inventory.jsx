@@ -64,27 +64,34 @@ export default function Inventory() {
       });
       setProducts(products);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
+  };
+
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    return res;
   };
 
   const getUser = async (id) => {
     const url = `/api/v1/users/${id}`;
     const res = await getCall(url);
-    //  console.log("getUser", res[0]);
-    return res[0].data.user;
+    return res[0];
   };
 
   useEffect(() => {
-    const user = JSON.parse(Cookies.get("user"));
-    const org = JSON.parse(Cookies.get("org"));
-
-    if (!user.isSystemGeneratedPassword && org.storeDetailsAvailable) return;
-    if (user.isSystemGeneratedPassword) {
-      navigate("/initial-steps");
-    } else if (org.storeDetailsAvailable) {
-      navigate("/initial-steps");
-    }
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id).then((u) => {
+      if (u.isSystemGeneratedPassword) navigate("/initial-steps");
+      else {
+        getOrgDetails(u.organization).then((org) => {
+          console.log("organization", org);
+          if (org.storeDetails.categories.length == 0)
+            navigate("/initial-steps");
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {

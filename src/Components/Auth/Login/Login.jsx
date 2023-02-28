@@ -69,15 +69,9 @@ export default function Login() {
   }
 
   function handleRedirect(token, user) {
-    const { _id, email, isSystemGeneratedPassword, mobile, name } = user;
-
+    const { _id } = user;
     AddCookie("token", token);
-    AddCookie(
-      "user",
-      JSON.stringify({ _id, email, isSystemGeneratedPassword, mobile, name })
-    );
-    AddCookie("org", JSON.stringify(user.organization));
-    AddCookie("role", JSON.stringify(user.role));
+    localStorage.setItem("user_id", _id);
     navigate("/application/inventory");
   }
 

@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { postCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
 
@@ -124,14 +124,28 @@ const ProviderInitialSteps = () => {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
 
-  useEffect(() => {
-    let user = JSON.parse(Cookies.get("user"));
-    let org = JSON.parse(Cookies.get("org"));
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    return res;
+  };
 
-    if (!user.isSystemGeneratedPassword && org.storeDetailsAvailable)
-      navigate("/application/inventory");
-    if (user.isSystemGeneratedPassword) setStep(1);
-    else if (!user.isSystemGenerated && !org.storeDetailsAvailable) setStep(2);
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    return res[0];
+  };
+
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id).then((u) => {
+      if (u.isSystemGeneratedPassword) setStep(1);
+      else {
+        getOrgDetails(u.organization).then((org) => {
+          if (org.storeDetails.categories.length == 0) setStep(2);
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -163,10 +177,6 @@ const ProviderInitialSteps = () => {
       const res = await postCall(url, { password: password.password_1 });
 
       if (org.storeDetailsAvailable) {
-        let user = JSON.parse(Cookies.get("user"));
-        user.isSystemGeneratedPassword = false;
-
-        AddCookie("user", JSON.stringify(user));
         navigate("/application/inventory");
       } else setStep(2);
     } catch (error) {
@@ -179,7 +189,9 @@ const ProviderInitialSteps = () => {
     try {
       const res = await postCall(url, password.password_1);
       navigate("/application/inventory");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
   const handleContinue = () => {
