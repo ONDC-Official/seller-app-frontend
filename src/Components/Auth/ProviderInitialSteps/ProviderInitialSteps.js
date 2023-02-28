@@ -1,7 +1,10 @@
 import { Button } from "@mui/material";
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { postCall } from "../../../Api/axios";
+import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
 
 const passwordFields = [
@@ -99,6 +102,8 @@ let storeFields = [
 ];
 
 const ProviderInitialSteps = () => {
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
 
@@ -118,6 +123,16 @@ const ProviderInitialSteps = () => {
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
+
+  useEffect(() => {
+    let user = JSON.parse(Cookies.get("user"));
+    let org = JSON.parse(Cookies.get("org"));
+
+    if (!user.isSystemGeneratedPassword && org.storeDetailsAvailable)
+      navigate("/application/inventory");
+    if (user.isSystemGeneratedPassword) setStep(1);
+    else if (!user.isSystemGenerated && !org.storeDetailsAvailable) setStep(2);
+  }, []);
 
   useEffect(() => {
     if (storeDetails.locationAvailability == "city") {
@@ -142,10 +157,18 @@ const ProviderInitialSteps = () => {
   }, [storeDetails.locationAvailability]);
 
   const handleSetPasswordReq = async () => {
-    const url = `/api//v1/auth/resetPassword`;
+    let org = JSON.parse(Cookies.get("org"));
+    const url = `/api/v1/auth/resetPassword`;
     try {
-      const res = await postCall(url, password.password_1);
-      setStep(2);
+      const res = await postCall(url, { password: password.password_1 });
+
+      if (org.storeDetailsAvailable) {
+        let user = JSON.parse(Cookies.get("user"));
+        user.isSystemGeneratedPassword = false;
+
+        AddCookie("user", JSON.stringify(user));
+        navigate("/application/inventory");
+      } else setStep(2);
     } catch (error) {
       console.log(error);
     }
@@ -155,6 +178,7 @@ const ProviderInitialSteps = () => {
     const url = `/api/v1/organizations/{orgId}/storeDetails`;
     try {
       const res = await postCall(url, password.password_1);
+      navigate("/application/inventory");
     } catch (error) {}
   };
 
@@ -214,15 +238,6 @@ const ProviderInitialSteps = () => {
               </p>
               <div>{renderSteps()}</div>
               <div className="flex mt-6">
-                <Button
-                  size="small"
-                  style={{ marginRight: 10 }}
-                  variant="text"
-                  onClick={() => setStep(step - 1)}
-                  disabled={step == 1}
-                >
-                  Back
-                </Button>
                 <Button
                   size="small"
                   variant="contained"

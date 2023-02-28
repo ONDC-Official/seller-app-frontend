@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import AuthActionCard from "../AuthActionCard/AuthActionCard";
@@ -26,6 +26,11 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [sent, setSent] = useState(true);
 
+  useEffect(() => {
+    setError("");
+    setSent(false);
+  }, []);
+
   const checkDisabled = () => {
     if (email.trim() == "" || !isEmailValid(email)) return true;
     return false;
@@ -45,7 +50,6 @@ const ForgotPassword = () => {
     }
   };
 
-  console.log(sent);
   const forgot_password_form = (
     <div className="m-auto w-10/12 md:w-3/4">
       <form>

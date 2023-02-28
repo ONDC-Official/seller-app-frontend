@@ -23,7 +23,14 @@ export default function OndcRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         {/* <Route path="/sign-up" element={<SignUp />} /> */}
-        <Route path="/initial-steps" element={<ProviderInitialSteps />} />
+        <Route
+          path="/initial-steps"
+          element={
+            <PrivateRoute>
+              <ProviderInitialSteps />
+            </PrivateRoute>
+          }
+        />
         <Route
           path={"/application/inventory"}
           element={
