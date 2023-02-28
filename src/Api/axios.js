@@ -14,7 +14,7 @@ export function getCall(url) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(url, {
-        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+        headers: { ...(token && { "access-token": `Bearer ${token}` }) },
       });
       return resolve(response.data);
     } catch (err) {
@@ -30,7 +30,7 @@ export function postCall(url, params) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios.post(url, params, {
-        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+        headers: { ...(token && { "access-token": `Bearer ${token}` }) },
       });
       return resolve(response.data);
     } catch (err) {

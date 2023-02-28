@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import RenderInput from "../../../utils/RenderInput";
-import { isEmailValid, isPhoneNoValid } from "../../../utils/validations";
+import RenderInput from "../../utils/RenderInput";
+import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
+import { postCall } from "../../Api/axios";
 
 const userFields = [
   {
@@ -83,11 +84,6 @@ const kycDetailFields = [
   },
 ];
 
-// address_proof
-// id_proof
-// PAN_proof
-// GST_proof
-
 const kycDocumentFields = [
   {
     id: "address_proof",
@@ -164,7 +160,7 @@ const bankDetailFields = [
   },
 ];
 
-const SignUp = () => {
+const InviteProvider = () => {
   const [step, setStep] = useState(1);
   const [user, setUser] = useState({
     email: "",
@@ -199,6 +195,10 @@ const SignUp = () => {
   });
 
   const handleContinue = () => {
+    setStep(step + 1);
+  };
+
+  const sendInvite = () => {
     const data = {
       user,
       providerDetails: {
@@ -222,9 +222,9 @@ const SignUp = () => {
       },
     };
 
-    setStep(step + 1);
-
-    console.log(data);
+    const url = `/api/v1/organizations`;
+    const res = postCall(url, data);
+    console.log(res);
   };
 
   const checkDisabled = () => {
@@ -236,7 +236,7 @@ const SignUp = () => {
   };
 
   const renderHeading = () => {
-    if (step == 1) return "user purpose details of provider";
+    if (step == 1) return "Details of Provider";
     if (step == 2) return "KYC Details";
     if (step == 3) return "KYC Documents";
     if (step == 4) return "Bank Details";
@@ -308,11 +308,11 @@ const SignUp = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  step == 4 ? alert("finished") : handleContinue();
+                  step == 4 ? sendInvite() : handleContinue();
                 }}
                 //  disabled={checkDisabled()}
               >
-                {step == 4 ? "Finish" : "Continue"}
+                {step == 4 ? "Invite" : "Continue"}
               </Button>
             </div>
           </div>
@@ -322,4 +322,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default InviteProvider;

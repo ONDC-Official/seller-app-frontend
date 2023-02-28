@@ -77,3 +77,12 @@ code {
 .previewContainer svg:hover {
   color: #c6011fca;
 }
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

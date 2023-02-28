@@ -101,6 +101,14 @@ export default function Sidebar(props) {
                 <ListItemText primary="Orders" />
               </ListItemButton>
             </NavLink>
+            <NavLink
+              to="/application/user-listings"
+              className="no-underline	text-black"
+            >
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemText primary="User Listings" />
+              </ListItemButton>
+            </NavLink>
           </List>
         </Collapse>
       </List>

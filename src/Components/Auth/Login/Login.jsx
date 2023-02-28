@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 import Button from "../../Shared/Button";
 import AuthActionCard from "../AuthActionCard/AuthActionCard";
 import { NavLink, useNavigate } from "react-router-dom";
-import { getErrorMessage } from "../../../Api/Utils/MapFirebaseError";
 import ErrorMessage from "../../Shared/ErrorMessage";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { AddCookie, getValueFromCookie } from "../../../utils/cookies";
+import { postCall } from "../../../Api/axios";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -29,23 +23,17 @@ const CssTextField = styled(TextField)({
 });
 
 export default function Login() {
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
   const [login, setLogin] = useState({
-    email: "",
-    password: "",
+    email: "org@mailinator.com",
+    password: "551593",
   });
-  const [signInUsingGoogleloading, setSignInUsingGoogleLoading] =
-    useState(false);
-  const [
-    signInUsingEmailAndPasswordloading,
-    setSignInUsingEmailAndPasswordLoading,
-  ] = useState(false);
+  const [signInUsingEmailAndPasswordloading] = useState(false);
   const [inlineError, setInlineError] = useState({
     email_error: "",
     password_error: "",
   });
+
   // use this function to check the email
   function checkEmail() {
     if (!login.email) {
@@ -70,43 +58,26 @@ export default function Login() {
     return true;
   }
 
-  function handleLoginWithEmailAndPassword(e) {
-    e.preventDefault();
-    const allCheckPassed = [checkEmail(), checkPassword()].every(Boolean);
-    if (!allCheckPassed) {
-      return;
+  async function handleLogin() {
+    const url = "/api/v1/auth/login";
+    try {
+      const res = await postCall(url, login);
+      handleRedirect(res.data.access_token, res.data.user);
+    } catch (error) {
+      console.log(error);
     }
-    setSignInUsingEmailAndPasswordLoading(true);
-    signInWithEmailAndPassword(auth, login.email, login.password)
-      .then((result) => {
-        handleRedirect(result.user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = getErrorMessage(errorCode);
-        console.log(errorMessage);
-      })
-      .finally(() => setSignInUsingEmailAndPasswordLoading(false));
   }
-  function handleLoginWithGoogle() {
-    setSignInUsingGoogleLoading(true);
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        handleRedirect(result.user);
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage);
-      })
-      .finally(() => setSignInUsingGoogleLoading(false));
-  }
-  function handleRedirect(user) {
-    const { displayName, email, photoURL, accessToken, uid } = user;
-    AddCookie("token", accessToken);
+
+  function handleRedirect(token, user) {
+    const { _id, email, isSystemGeneratedPassword, mobile, name } = user;
+
+    AddCookie("token", token);
     AddCookie(
       "user",
-      JSON.stringify({ name: displayName, id: uid, email, photoURL })
+      JSON.stringify({ _id, email, isSystemGeneratedPassword, mobile, name })
     );
+    AddCookie("org", JSON.stringify(user.organization));
+    AddCookie("role", JSON.stringify(user.role));
     navigate("/application/inventory");
   }
 
@@ -118,7 +89,7 @@ export default function Login() {
 
   const loginForm = (
     <div className="m-auto w-10/12 md:w-3/4">
-      <form onSubmit={handleLoginWithEmailAndPassword}>
+      <form>
         <div className="py-1">
           <label
             htmlFor="email"
@@ -194,26 +165,12 @@ export default function Login() {
         <div className="py-3 pt-6  text-center flex flex-row justify-center">
           <Button
             isloading={signInUsingEmailAndPasswordloading ? 1 : 0}
-            disabled={
-              signInUsingGoogleloading || signInUsingEmailAndPasswordloading
-            }
+            disabled={signInUsingEmailAndPasswordloading}
             variant="contained"
             title="Login"
             type="submit"
             className="!w-40 !capitalize !py-2"
-          />
-        </div>
-        <hr className="mx-4 border-[#DDDDDD] m-1.5" />
-        <div className="py-3 text-center flex flex-row justify-center">
-          <Button
-            isloading={signInUsingGoogleloading ? 1 : 0}
-            disabled={
-              signInUsingGoogleloading || signInUsingEmailAndPasswordloading
-            }
-            variant="contained"
-            title="Login with google"
-            onClick={handleLoginWithGoogle}
-            className="!w-40 !capitalize !py-2 "
+            onClick={handleLogin}
           />
         </div>
       </form>
@@ -221,9 +178,8 @@ export default function Login() {
   );
   const navigation_link = (
     <div className="py-2 text-center">
-      <p className="text-xs text-[#606161]">Do not have an account</p>
-      <NavLink to="/sign-up" className="">
-        Sign Up
+      <NavLink to="/forgot-password" className="">
+        <p className="text-xs text-[#346cc1]">Forgot password</p>
       </NavLink>
     </div>
   );
