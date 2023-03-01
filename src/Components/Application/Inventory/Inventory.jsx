@@ -6,32 +6,26 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
-import Cookies from "js-cookie";
-import { AddCookie } from "../../../utils/cookies";
 import { isObjEmpty } from "../../../utils/validations";
+import cogoToast from "cogo-toast";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 100 },
+  { id: "productName", label: "Name", minWidth: 100 },
   {
-    id: "category",
+    id: "productCategory",
     label: "Category",
     minWidth: 120,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "SKUCode",
-    label: "SKU Code",
-    minWidth: 100,
-  },
-  {
-    id: "availableQty",
+    id: "quantity",
     label: "Quantity",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "price",
-    label: "Price per quantity",
+    id: "purchasePrice",
+    label: "Purchase price",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
@@ -57,15 +51,10 @@ export default function Inventory() {
 
   const getProducts = async () => {
     try {
-      const res = await cancellablePromise(getCall(`/api/product`));
-      let products = [];
-      res.data.map((item) => {
-        item.attributes.id = item.id;
-        products.push(item.attributes);
-      });
-      setProducts(products);
+      const res = await cancellablePromise(getCall(`/api/v1/products`));
+      setProducts(res.data);
     } catch (error) {
-      // console.log(error);
+      cogoToast.error("Something went wrong!");
     }
   };
 
@@ -110,7 +99,7 @@ export default function Inventory() {
                 variant="contained"
                 icon={<AddIcon />}
                 title="Bulk upload"
-                // onClick={() => navigate("/application/add-products")}
+                onClick={() => navigate("/application/bulk-upload")}
               />
             </div>
             <Button
