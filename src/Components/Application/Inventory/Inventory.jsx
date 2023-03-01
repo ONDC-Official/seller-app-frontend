@@ -73,12 +73,16 @@ export default function Inventory() {
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
     getUser(user_id).then((u) => {
+      console.log(u.role.name);
+      // Organization Admin, Super Admin
       if (u.isSystemGeneratedPassword) navigate("/initial-steps");
       else {
-        getOrgDetails(u.organization).then((org) => {
-          console.log("organization", org.storeDetails == {});
-          if (isObjEmpty(org.storeDetails)) navigate("/initial-steps");
-        });
+        if (u.role.name == "Organization Admin") {
+          getOrgDetails(u.organization).then((org) => {
+            console.log("organization", org.storeDetails == {});
+            if (isObjEmpty(org.storeDetails)) navigate("/initial-steps");
+          });
+        }
       }
     });
   }, []);

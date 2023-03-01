@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import cogoToast from "cogo-toast";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -146,13 +147,14 @@ const ProviderInitialSteps = () => {
     const user_id = localStorage.getItem("user_id");
     getUser(user_id).then((u) => {
       if (u.isSystemGeneratedPassword) {
-        console.log(u.isSystemGeneratedPassword);
         setStep(1);
       } else {
-        getOrgDetails(u.organization).then((org) => {
-          if (isObjEmpty(org.storeDetails)) setStep(2);
-          else navigate("/application/inventory");
-        });
+        if (u.role.name == "Organization Admin") {
+          getOrgDetails(u.organization).then((org) => {
+            if (isObjEmpty(org.storeDetails)) setStep(2);
+            else navigate("/application/inventory");
+          });
+        } else navigate("/application/inventory");
       }
     });
   }, []);
@@ -184,13 +186,16 @@ const ProviderInitialSteps = () => {
     const url = `/api/v1/auth/resetPassword`;
     try {
       const res = await postCall(url, { password: password.password_1 });
-      navigate("/application/inventory");
+      // navigate("/application/inventory");
       getUser(user_id).then((u) => {
         if (u.isSystemGeneratedPassword) setStep(1);
         else {
-          getOrgDetails(u.organization).then((org) => {
-            if (org.storeDetails.categories.length == 0) setStep(2);
-          });
+          if (u.role.name == "Organization Admin") {
+            getOrgDetails(u.organization).then((org) => {
+              if (isObjEmpty(org.storeDetails)) setStep(2);
+              else navigate("/application/inventory");
+            });
+          } else navigate("/application/inventory");
         }
       });
     } catch (error) {
@@ -205,6 +210,7 @@ const ProviderInitialSteps = () => {
       const res = await patchCall(url, storeDetails);
       navigate("/application/inventory");
     } catch (error) {
+      cogoToast.error(error.response.data.error);
       console.log(error.response);
     }
   };
