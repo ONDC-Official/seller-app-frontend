@@ -3,6 +3,8 @@ import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
+import cogoToast from "cogo-toast";
+import { useNavigate } from "react-router-dom";
 
 const userFields = [
   {
@@ -161,6 +163,7 @@ const bankDetailFields = [
 ];
 
 const InviteProvider = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [user, setUser] = useState({
     email: "",
@@ -189,7 +192,7 @@ const InviteProvider = () => {
     accHolderName: "",
     accNumber: "",
     bankName: "",
-    banchName: "",
+    branchName: "",
     IFSC: "",
     cancelledCheque: "",
   });
@@ -198,33 +201,38 @@ const InviteProvider = () => {
     setStep(step + 1);
   };
 
-  const sendInvite = () => {
-    const data = {
-      user,
-      providerDetails: {
-        name: kycDetails.name,
-        address: kycDetails.address,
-        contactEmail: kycDetails.contactEmail,
-        contactMobile: kycDetails.contactMobile,
-        addressProof: kycMedia.address_proof,
-        idProof: kycMedia.id_proof,
-        bankDetails: {
-          accHolderName: bankDetails.accHolderName,
-          accNumber: bankDetails.accNumber,
-          IFSC: bankDetails.IFSC,
-          cancelledCheque: bankDetails.cancelledCheque,
-          bankName: bankDetails.bankName,
-          branchName: bankDetails.banchName,
+  const sendInvite = async () => {
+    try {
+      const data = {
+        user,
+        providerDetails: {
+          name: kycDetails.name,
+          address: kycDetails.address,
+          contactEmail: kycDetails.contactEmail,
+          contactMobile: kycDetails.contactMobile,
+          addressProof: kycMedia.address_proof,
+          idProof: kycMedia.id_proof,
+          bankDetails: {
+            accHolderName: bankDetails.accHolderName,
+            accNumber: bankDetails.accNumber,
+            IFSC: bankDetails.IFSC,
+            cancelledCheque: bankDetails.cancelledCheque,
+            bankName: bankDetails.bankName,
+            branchName: bankDetails.banchName,
+          },
+          PAN: { PAN: kycDetails.PAN, proof: kycMedia.PAN_proof },
+          GSTN: { GSTN: kycDetails.GSTN, proof: kycMedia.GST_proof },
+          FSSAI: kycDetails.FSSAI,
         },
-        PAN: { PAN: kycDetails.PAN, proof: kycMedia.PAN_proof },
-        GSTN: { GSTN: kycDetails.GSTN, proof: kycMedia.GST_proof },
-        FSSAI: kycDetails.FSSAI,
-      },
-    };
-
-    const url = `/api/v1/organizations`;
-    const res = postCall(url, data);
-    console.log(res);
+      };
+      const url = `/api/v1/organizations`;
+      const res = await postCall(url, data);
+      navigate("/application/user-listings");
+      cogoToast.success("Invitation sent");
+    } catch (error) {
+      console.log("error.response", error.response);
+      cogoToast.error(error.response.data.error);
+    }
   };
 
   const checkDisabled = () => {

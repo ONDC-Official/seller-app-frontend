@@ -54,7 +54,7 @@ export default function Inventory() {
       const res = await cancellablePromise(getCall(`/api/v1/products`));
       setProducts(res.data);
     } catch (error) {
-      cogoToast.error("Something went wrong!");
+      // cogoToast.error("Something went wrong!");
     }
   };
 
@@ -73,16 +73,14 @@ export default function Inventory() {
   useEffect(() => {
     const user_id = localStorage.getItem("user_id");
     getUser(user_id).then((u) => {
-      console.log(u.role.name);
-      // Organization Admin, Super Admin
+      // roles - Organization Admin, Super Admin
       if (u.isSystemGeneratedPassword) navigate("/initial-steps");
       else {
         if (u.role.name == "Organization Admin") {
           getOrgDetails(u.organization).then((org) => {
-            console.log("organization", org.storeDetails == {});
             if (isObjEmpty(org.storeDetails)) navigate("/initial-steps");
           });
-        }
+        } else navigate("/application/user-listings");
       }
     });
   }, []);

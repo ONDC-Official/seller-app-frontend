@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import { AddCookie, getValueFromCookie } from "../../../utils/cookies";
 import { postCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -25,8 +26,8 @@ const CssTextField = styled(TextField)({
 export default function Login() {
   const navigate = useNavigate();
   const [login, setLogin] = useState({
-    email: "org@mailinator.com",
-    password: "551593",
+    email: "",
+    password: "",
   });
   const [signInUsingEmailAndPasswordloading] = useState(false);
   const [inlineError, setInlineError] = useState({
@@ -65,6 +66,7 @@ export default function Login() {
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
       console.log(error);
+      cogoToast.error(error.response.data.error);
     }
   }
 

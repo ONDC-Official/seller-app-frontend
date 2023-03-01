@@ -65,6 +65,48 @@ let storeFields = [
     required: false,
   },
   {
+    id: "building",
+    title: "Building",
+    placeholder: "Building",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "address_city",
+    title: "City",
+    placeholder: "City",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "state",
+    title: "State",
+    placeholder: "State",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "country",
+    title: "Country",
+    placeholder: "Country",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "area_code",
+    title: "Area code",
+    placeholder: "Area code",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "locality",
+    title: "Locality",
+    placeholder: "Locality",
+    type: "input",
+    required: false,
+  },
+  {
     id: "locationAvailability",
     title: "Location availability",
     options: [
@@ -117,10 +159,16 @@ const ProviderInitialSteps = () => {
     logo: "",
     categories: [],
     location: "",
-    locationAvailability: "pan_india",
-    cities: [],
-    defaultCancellable: "",
-    defaultReturnable: "",
+    building: "",
+    address_city: "",
+    state: "",
+    country: "",
+    area_code: "",
+    locality: "",
+    locationAvailability: "PAN INDIA",
+    city: [],
+    defaultCancellable: false,
+    defaultReturnable: false,
     email: "",
     mobile: "",
   });
@@ -161,8 +209,8 @@ const ProviderInitialSteps = () => {
 
   useEffect(() => {
     if (storeDetails.locationAvailability == "city") {
-      let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
-        id: "cities",
+      let fieldsWithCityInput = addAfter(storeDetailFields, 11, {
+        id: "city",
         title: "Select Cities",
         placeholder: "Select Cities",
         options: [
@@ -195,7 +243,7 @@ const ProviderInitialSteps = () => {
               if (isObjEmpty(org.storeDetails)) setStep(2);
               else navigate("/application/inventory");
             });
-          } else navigate("/application/inventory");
+          } else navigate("/application/user-listings");
         }
       });
     } catch (error) {
@@ -205,9 +253,41 @@ const ProviderInitialSteps = () => {
 
   const handleStoreDetailsReq = async () => {
     console.log(storeDetails);
+    const data = storeDetails;
+
+    data.address = {
+      building: storeDetails.building,
+      city: storeDetails.address_city,
+      state: storeDetails.state,
+      country: storeDetails.country,
+      area_code: storeDetails.area_code,
+      locality: storeDetails.locality,
+    };
+
+    data["supportDetails"] = {
+      email: storeDetails.email,
+      mobile: storeDetails.mobile,
+    };
+
+    data["locationAvailabilityPANIndia"] =
+      storeDetails.locationAvailability == "PAN INDIA" ? true : false;
+
+    delete data["building"];
+    delete data["address_city"];
+    delete data["state"];
+    delete data["country"];
+    delete data["area_code"];
+    delete data["locality"];
+    delete data["location"];
+    delete data["locationAvailability"];
+    delete data["email"];
+    delete data["mobile"];
+
+    console.log("FInAL data", data);
+
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
-      const res = await patchCall(url, storeDetails);
+      const res = await postCall(url, data);
       navigate("/application/inventory");
     } catch (error) {
       cogoToast.error(error.response.data.error);
