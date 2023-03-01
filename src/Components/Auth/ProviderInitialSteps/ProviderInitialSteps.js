@@ -1,11 +1,13 @@
 import { Button } from "@mui/material";
+import cogoToast from "cogo-toast";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { postCall } from "../../../Api/axios";
+import { getCall, patchCall, postCall } from "../../../Api/axios";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
+import { isObjEmpty } from "../../../utils/validations";
 
 const passwordFields = [
   {
@@ -63,6 +65,48 @@ let storeFields = [
     required: false,
   },
   {
+    id: "building",
+    title: "Building",
+    placeholder: "Building",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "address_city",
+    title: "City",
+    placeholder: "City",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "state",
+    title: "State",
+    placeholder: "State",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "country",
+    title: "Country",
+    placeholder: "Country",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "area_code",
+    title: "Area code",
+    placeholder: "Area code",
+    type: "input",
+    required: false,
+  },
+  {
+    id: "locality",
+    title: "Locality",
+    placeholder: "Locality",
+    type: "input",
+    required: false,
+  },
+  {
     id: "locationAvailability",
     title: "Location availability",
     options: [
@@ -104,6 +148,9 @@ let storeFields = [
 const ProviderInitialSteps = () => {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState();
+  const [org, setOrg] = useState();
+
   const [step, setStep] = useState(1);
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
 
@@ -112,10 +159,16 @@ const ProviderInitialSteps = () => {
     logo: "",
     categories: [],
     location: "",
-    locationAvailability: "pan_india",
-    cities: [],
-    defaultCancellable: "",
-    defaultReturnable: "",
+    building: "",
+    address_city: "",
+    state: "",
+    country: "",
+    area_code: "",
+    locality: "",
+    locationAvailability: "PAN INDIA",
+    city: [],
+    defaultCancellable: false,
+    defaultReturnable: false,
     email: "",
     mobile: "",
   });
@@ -124,20 +177,40 @@ const ProviderInitialSteps = () => {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
 
-  useEffect(() => {
-    let user = JSON.parse(Cookies.get("user"));
-    let org = JSON.parse(Cookies.get("org"));
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    setOrg(res);
+    return res;
+  };
 
-    if (!user.isSystemGeneratedPassword && org.storeDetailsAvailable)
-      navigate("/application/inventory");
-    if (user.isSystemGeneratedPassword) setStep(1);
-    else if (!user.isSystemGenerated && !org.storeDetailsAvailable) setStep(2);
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id).then((u) => {
+      if (u.isSystemGeneratedPassword) {
+        setStep(1);
+      } else {
+        if (u.role.name == "Organization Admin") {
+          getOrgDetails(u.organization).then((org) => {
+            if (isObjEmpty(org.storeDetails)) setStep(2);
+            else navigate("/application/inventory");
+          });
+        } else navigate("/application/inventory");
+      }
+    });
   }, []);
 
   useEffect(() => {
     if (storeDetails.locationAvailability == "city") {
-      let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
-        id: "cities",
+      let fieldsWithCityInput = addAfter(storeDetailFields, 11, {
+        id: "city",
         title: "Select Cities",
         placeholder: "Select Cities",
         options: [
@@ -157,29 +230,69 @@ const ProviderInitialSteps = () => {
   }, [storeDetails.locationAvailability]);
 
   const handleSetPasswordReq = async () => {
-    let org = JSON.parse(Cookies.get("org"));
+    const user_id = localStorage.getItem("user_id");
     const url = `/api/v1/auth/resetPassword`;
     try {
       const res = await postCall(url, { password: password.password_1 });
-
-      if (org.storeDetailsAvailable) {
-        let user = JSON.parse(Cookies.get("user"));
-        user.isSystemGeneratedPassword = false;
-
-        AddCookie("user", JSON.stringify(user));
-        navigate("/application/inventory");
-      } else setStep(2);
+      // navigate("/application/inventory");
+      getUser(user_id).then((u) => {
+        if (u.isSystemGeneratedPassword) setStep(1);
+        else {
+          if (u.role.name == "Organization Admin") {
+            getOrgDetails(u.organization).then((org) => {
+              if (isObjEmpty(org.storeDetails)) setStep(2);
+              else navigate("/application/inventory");
+            });
+          } else navigate("/application/user-listings");
+        }
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleStoreDetailsReq = async () => {
-    const url = `/api/v1/organizations/{orgId}/storeDetails`;
+    console.log(storeDetails);
+    const data = storeDetails;
+
+    data.address = {
+      building: storeDetails.building,
+      city: storeDetails.address_city,
+      state: storeDetails.state,
+      country: storeDetails.country,
+      area_code: storeDetails.area_code,
+      locality: storeDetails.locality,
+    };
+
+    data["supportDetails"] = {
+      email: storeDetails.email,
+      mobile: storeDetails.mobile,
+    };
+
+    data["locationAvailabilityPANIndia"] =
+      storeDetails.locationAvailability == "PAN INDIA" ? true : false;
+
+    delete data["building"];
+    delete data["address_city"];
+    delete data["state"];
+    delete data["country"];
+    delete data["area_code"];
+    delete data["locality"];
+    delete data["location"];
+    delete data["locationAvailability"];
+    delete data["email"];
+    delete data["mobile"];
+
+    console.log("FInAL data", data);
+
+    const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
-      const res = await postCall(url, password.password_1);
+      const res = await postCall(url, data);
       navigate("/application/inventory");
-    } catch (error) {}
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+      console.log(error.response);
+    }
   };
 
   const handleContinue = () => {

@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
@@ -16,6 +17,7 @@ import {
 import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import Cookies from "js-cookie";
+import MyButton from "../Components/Shared/Button";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -220,9 +222,9 @@ const RenderInput = ({ item, state, stateHandler }) => {
     );
   } else if (item.type == "upload") {
     const getSignUrl = async (file) => {
-      const url = `/api/v1/upload/aadhar`;
+      const url = `/api/v1/upload/${item?.file_type}`;
       const data = {
-        fileName: file.fileName,
+        fileName: file.name,
         fileType: file.type.split("/")[1],
       };
       const res = await postCall(url, data);
@@ -237,8 +239,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
 
       getSignUrl(file).then((d) => {
         const url = d.urls;
-        stateHandler({ ...state, [item.id]: d.path });
-
         fetch(url, {
           method: "PUT",
           body: formData,
@@ -247,6 +247,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           .then((response) => {
             console.log(item.id, state);
             response.json();
+            stateHandler({ ...state, [item.id]: d.path });
           })
           .then((json) => {});
       });
@@ -268,9 +269,10 @@ const RenderInput = ({ item, state, stateHandler }) => {
           > */}
           <input
             id="contained-button-file"
-            style={{ opacity: "none" }}
+            style={{ opacity: "none", marginBottom: 10 }}
             accept="image/*"
             type="file"
+            key={item?.id}
             onChange={(e) => {
               const token = Cookies.get("token");
               const file = e.target.files[0];
@@ -289,14 +291,49 @@ const RenderInput = ({ item, state, stateHandler }) => {
                   },
                 })
                   .then((response) => {
-                    stateHandler({ ...state, [item.id]: d.path });
-                    console.log(item, state);
+                    if (item.multiple) {
+                      stateHandler((prevState) => {
+                        const newState = {
+                          ...prevState,
+                          [item.id]: [...prevState[item.id], d.path],
+                        };
+                        return newState;
+                      });
+                    } else {
+                      stateHandler({ ...state, [item.id]: d.path });
+                    }
                     response.json();
                   })
                   .then((json) => {});
               });
             }}
           />
+          {item.multiple &&
+            state[item.id].map((name) => {
+              return (
+                <div className="flex">
+                  <Button
+                    size="small"
+                    className="w-10 mr-2 !text-black"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      stateHandler((prevState) => {
+                        const newState = {
+                          ...prevState,
+                          [item.id]: prevState[item.id].filter(
+                            (ele) => ele != name
+                          ),
+                        };
+                        return newState;
+                      });
+                    }}
+                  >
+                    <DeleteIcon sx={{ fontSize: 20 }} />
+                  </Button>
+                  <p className="text-sm mt-1 ml-2">{name}</p>
+                </div>
+              );
+            })}
           {/* Upload */}
           {/* </Button> */}
         </label>

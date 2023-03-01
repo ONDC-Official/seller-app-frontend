@@ -56,6 +56,26 @@ export function putCall(url, params) {
   });
 }
 
+export function patchCall(url, params) {
+  const token = Cookies.get("token");
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.patch(url, params, {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+          Origin: "http://localhost:3000",
+          "Content-Type": "application/binary",
+        },
+      });
+      return resolve(response.data);
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) return unAuthorizedResponse();
+      return reject(err);
+    }
+  });
+}
+
 export function makeCancelable(promise) {
   let isCanceled = false;
   const wrappedPromise = new Promise((resolve, reject) => {

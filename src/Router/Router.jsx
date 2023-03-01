@@ -14,6 +14,7 @@ import ProviderDetails from "../Components/Application/UserListings/ProviderDeta
 import InviteAdmin from "../Components/OnBoarding/InviteAdmin";
 import InviteProvider from "../Components/OnBoarding/inviteProvider";
 import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
+import BulkUpload from "../Components/Application/Product/BulkUpload";
 
 export default function OndcRoutes() {
   return (
@@ -61,6 +62,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <AddProduct />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/bulk-upload"
+          element={
+            <PrivateRoute>
+              <BulkUpload />
             </PrivateRoute>
           }
         />

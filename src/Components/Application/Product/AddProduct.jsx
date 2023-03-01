@@ -1,17 +1,245 @@
 import { useEffect, useState } from "react";
+import cogoToast from "cogo-toast";
 import Navbar from "../../Shared/Navbar";
-import TextField from "@mui/material/TextField";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Button from "@mui/material/Button";
 import MyButton from "../../Shared/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
+import RenderInput from "../../../utils/RenderInput";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useLocation, useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall, postCall, putCall } from "../../../Api/axios";
-import cogoToast from "cogo-toast";
+
+const productFields = [
+  {
+    id: "productCode",
+    title: "Product Code",
+    placeholder: "Product code",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "productName",
+    title: "Product name",
+    placeholder: "Product name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "MRP",
+    title: "MRP",
+    placeholder: "MRP",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "retailPrice",
+    title: "Retail price",
+    placeholder: "Retail price",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "purchasePrice",
+    title: "Purchase price",
+    placeholder: "Purchase price",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "HSNCode",
+    title: "HSN code",
+    placeholder: "HSN code",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "GST_Percentage",
+    title: "GST Percentage",
+    placeholder: "GST Percentage",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "productCategory",
+    title: "Product category",
+    placeholder: "Product category",
+    options: [
+      { key: "Grocery", value: "grocery" },
+      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
+      { key: "Fashion", value: "fashion" },
+      { key: "Home and Decor", value: "home_and_decor" },
+      { key: "F&B", value: "f_and_b" },
+    ],
+    type: "select",
+    required: true,
+  },
+  {
+    id: "quantity",
+    title: "Quantity",
+    placeholder: "Quantity",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "barcode",
+    title: "Barcode",
+    placeholder: "Barcode",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "maxAllowedQty",
+    title: "Max allowed quantity",
+    placeholder: "Max allowed quantity",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "UOM",
+    title: "UOM",
+    placeholder: "UOM",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "packQty",
+    title: "Pack quantity",
+    placeholder: "Pack quantity",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "length",
+    title: "Length",
+    placeholder: "Length",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "breadth",
+    title: "Breadth",
+    placeholder: "Breadth",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "height",
+    title: "Height",
+    placeholder: "Height",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "weight",
+    title: "Weight",
+    placeholder: "Weight",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "returnWindow",
+    title: "Return Window",
+    placeholder: "Return Window",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "manufacturerName",
+    title: "Manufacturer name",
+    placeholder: "Manufacturer name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "manufacturedDate",
+    title: "Manufactured date",
+    placeholder: "Manufactured date",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "nutritionalInfo",
+    title: "Nutritional info",
+    placeholder: "Nutritional info",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "additiveInfo",
+    title: "Additive info",
+    placeholder: "Additive info",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "instructions",
+    title: "Instructions",
+    placeholder: "Instructions",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "longDescription",
+    title: "Long description",
+    placeholder: "Long description",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "description",
+    title: "Description",
+    placeholder: "Description",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "isCancellable",
+    title: "Cancellable",
+    type: "radio",
+    options: [
+      { key: "Yes", value: true },
+      { key: "No", value: false },
+    ],
+    required: true,
+  },
+  {
+    id: "isReturnable",
+    title: "Returnable",
+    type: "radio",
+    options: [
+      { key: "Yes", value: true },
+      { key: "No", value: false },
+    ],
+    required: true,
+  },
+  {
+    id: "isVegetarian",
+    title: "Vegetarian",
+    type: "radio",
+    options: [
+      { key: "Yes", value: true },
+      { key: "No", value: false },
+    ],
+    required: true,
+  },
+  {
+    id: "availableOnCod",
+    title: "Available on Cash on delivery",
+    type: "radio",
+    options: [
+      { key: "Yes", value: true },
+      { key: "No", value: false },
+    ],
+    required: true,
+  },
+  {
+    id: "images",
+    title: "Images",
+    type: "upload",
+    multiple: true,
+    filt_type: "product_image",
+    required: true,
+  },
+];
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -20,59 +248,48 @@ export default function AddProduct() {
   const { cancellablePromise } = useCancellablePromise();
 
   const [product, setProduct] = useState({
-    name: "",
-    shortDescription: "",
+    productCode: "",
+    productName: "",
+    MRP: "",
+    retailPrice: "",
+    purchasePrice: "",
+    HSNCode: "",
+    GST_Percentage: "",
+    productCategory: [],
+    quantity: "",
+    barcode: "",
+    maxAllowedQty: "",
+    UOM: "",
+    packQty: "",
+    length: "",
+    breadth: "",
+    height: "",
+    weight: "",
+    returnWindow: "",
+    manufacturerName: "",
+    manufacturedDate: "",
+    nutritionalInfo: "",
+    additiveInfo: "",
+    instructions: "",
     longDescription: "",
-    price: "",
-    thumbnail: "",
-    media: [],
-    category: [],
-    availableQty: "",
-    SKUCode: "",
-    isAvailableOnCOD: false,
+    description: "",
+    isReturnable: false,
+    isVegetarian: false,
     isCancellable: false,
-    isReturnable: true,
+    availableOnCod: false,
+    images: [],
   });
-
-  const [thumbnail, setThumbnail] = useState();
-  const [productImages, setProductImages] = useState([]);
-  const [previewProductImages, setPreviewProductImages] = useState([]);
-
-  const handleAddProduct = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setProduct({ ...product, [name]: value });
-  };
-
-  const handleAddons = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.checked });
-  };
-
-  const handleThumbnail = (e) => {
-    const objectUrl = URL.createObjectURL(e.target.files[0]);
-    setThumbnail(objectUrl);
-  };
-
-  const handleProductImages = (e) => {
-    setProductImages([...productImages, e.target.files[0].name]);
-    setPreviewProductImages([...previewProductImages, e.target.files[0]]);
-  };
-
-  const removeProductImage = (img) => {
-    setProductImages(productImages.filter((item) => item != img.name));
-    setPreviewProductImages(
-      previewProductImages.filter((item) => item.name != img.name)
-    );
-  };
-
+  console.log(product);
   const addProduct = async () => {
     try {
-      const data = await cancellablePromise(postCall(`/api/product`, product));
+      const data = await cancellablePromise(
+        postCall(`/api/v1/products`, product)
+      );
       setProduct({});
       navigate("/application/inventory");
       cogoToast.success("Product added successfully!");
     } catch (error) {
-      cogoToast.error("Something went wrong!");
+      cogoToast.error(error.response.data.error);
       console.log(error);
     }
   };
@@ -103,6 +320,14 @@ export default function AddProduct() {
     }
   };
 
+  const renderFields = () => {
+    return productFields.map((item) => {
+      return (
+        <RenderInput item={item} state={product} stateHandler={setProduct} />
+      );
+    });
+  };
+
   useEffect(() => {
     if (state?.productId) {
       getProduct();
@@ -125,162 +350,7 @@ export default function AddProduct() {
           <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
             {state?.productId == undefined ? "Add Product" : "Update Product"}
           </label>
-          <div className="mt-2">
-            <div className="w-full flex my-5">
-              <TextField
-                id="outlined-basic"
-                label="Product Name"
-                variant="outlined"
-                className="!w-full !mr-10 max-w-xl"
-                name="name"
-                value={product.name || ""}
-                onChange={handleAddProduct}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Product Category"
-                variant="outlined"
-                className="!w-full !mx-0 max-w-xl"
-                name="category"
-                value={product.category || ""}
-                onChange={handleAddProduct}
-              />
-            </div>
-            <div className="w-full flex my-5">
-              <TextField
-                id="outlined-basic"
-                label="Product Quantity"
-                variant="outlined"
-                className="!w-full !mr-10 max-w-xl"
-                name="availableQty"
-                value={product.availableQty || ""}
-                onChange={handleAddProduct}
-              />
-              <TextField
-                id="outlined-basic"
-                label="Product Price"
-                variant="outlined"
-                className="!w-full !mx-0 max-w-xl"
-                name="price"
-                value={product.price || ""}
-                onChange={handleAddProduct}
-              />
-            </div>
-            <div className="w-full sm:flex my-5">
-              <TextField
-                id="outlined-basic"
-                label="SKU Code"
-                variant="outlined"
-                className="!w-full !mr-10 max-w-xl"
-                name="SKUCode"
-                value={product.SKUCode || ""}
-                onChange={handleAddProduct}
-              />
-              <div className="sm:w-2/4 md:w-1/2 p-2 pt-3 flex items-center">
-                <label className="mr-5">Addons:</label>
-                <FormGroup>
-                  <div className="flex">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="isReturnable"
-                          onChange={handleAddons}
-                          checked={product.isReturnable}
-                        />
-                      }
-                      label="Returnable"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="isCancellable"
-                          onChange={handleAddons}
-                          checked={product.isCancellable}
-                        />
-                      }
-                      label="Cancelable"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="isAvailableOnCOD"
-                          onChange={handleAddons}
-                          checked={product.isAvailableOnCOD}
-                        />
-                      }
-                      label="Cash on delivery"
-                    />
-                  </div>
-                </FormGroup>
-              </div>
-            </div>
-            <div className="w-full my-5">
-              <TextField
-                id="outlined-basic"
-                label="Short description"
-                variant="outlined"
-                className="!w-full !mx-0"
-                name="shortDescription"
-                value={product.shortDescription || ""}
-                onChange={handleAddProduct}
-              />
-              <br />
-              <br />
-              <TextField
-                id="outlined-basic"
-                label="Long description"
-                variant="outlined"
-                minRows={2}
-                multiline={true}
-                className="!w-full !mx-0"
-                name="longDescription"
-                value={product.longDescription || ""}
-                onChange={handleAddProduct}
-              />
-            </div>
-            <div className="p-2">
-              <label className="mr-8">Product Thumbnail</label>
-              <Button variant="contained" component="label" size="small">
-                upload thumbnail
-                <input
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  onChange={handleThumbnail}
-                />
-              </Button>
-              {thumbnail && (
-                <img
-                  className="w-3/12 border-4 mt-5 border-black"
-                  src={thumbnail}
-                />
-              )}
-            </div>
-            <div className="p-2">
-              <label className="mr-14">Product Images</label>
-              <Button variant="contained" component="label" size="small">
-                upload images
-                <input
-                  hidden
-                  accept="image/*"
-                  multiple
-                  type="file"
-                  onChange={handleProductImages}
-                />
-              </Button>
-              <div className="flex flex-row">
-                {productImages.length > 0 &&
-                  previewProductImages.map((p) => {
-                    return (
-                      <div className="previewContainer">
-                        <DeleteIcon onClick={() => removeProductImage(p)} />
-                        <img src={URL.createObjectURL(p)} />
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          </div>
+          <div className="mt-2">{renderFields()}</div>
           <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
             <MyButton title="CANCEL" className="text-black" />
             <MyButton

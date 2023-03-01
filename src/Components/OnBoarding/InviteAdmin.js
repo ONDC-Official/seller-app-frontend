@@ -3,6 +3,8 @@ import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
+import cogoToast from "cogo-toast";
+import { useNavigate } from "react-router-dom";
 
 const userFields = [
   {
@@ -31,6 +33,7 @@ const userFields = [
 ];
 
 const InviteAdmin = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [user, setUser] = useState({
     email: "",
@@ -39,9 +42,13 @@ const InviteAdmin = () => {
   });
 
   const sendInvite = () => {
-    const url = `/api/v1/users/invite/admin`;
-    const res = postCall(url, user);
-    console.log(res);
+    try {
+      const url = `/api/v1/users/invite/admin`;
+      const res = postCall(url, user);
+      navigate("/application/user-listings");
+    } catch (error) {
+      cogoToast.error("Invitation sent");
+    }
   };
 
   const checkDisabled = () => {

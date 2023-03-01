@@ -6,31 +6,26 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
-import Cookies from "js-cookie";
-import { AddCookie } from "../../../utils/cookies";
+import { isObjEmpty } from "../../../utils/validations";
+import cogoToast from "cogo-toast";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 100 },
+  { id: "productName", label: "Name", minWidth: 100 },
   {
-    id: "category",
+    id: "productCategory",
     label: "Category",
     minWidth: 120,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "SKUCode",
-    label: "SKU Code",
-    minWidth: 100,
-  },
-  {
-    id: "availableQty",
+    id: "quantity",
     label: "Quantity",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "price",
-    label: "Price per quantity",
+    id: "purchasePrice",
+    label: "Purchase price",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },
@@ -56,35 +51,38 @@ export default function Inventory() {
 
   const getProducts = async () => {
     try {
-      const res = await cancellablePromise(getCall(`/api/product`));
-      let products = [];
-      res.data.map((item) => {
-        item.attributes.id = item.id;
-        products.push(item.attributes);
-      });
-      setProducts(products);
+      const res = await cancellablePromise(getCall(`/api/v1/products`));
+      setProducts(res.data);
     } catch (error) {
-      console.log(error);
+      // cogoToast.error("Something went wrong!");
     }
+  };
+
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    return res;
   };
 
   const getUser = async (id) => {
     const url = `/api/v1/users/${id}`;
     const res = await getCall(url);
-    //  console.log("getUser", res[0]);
-    return res[0].data.user;
+    return res[0];
   };
 
   useEffect(() => {
-    const user = JSON.parse(Cookies.get("user"));
-    const org = JSON.parse(Cookies.get("org"));
-
-    if (!user.isSystemGeneratedPassword && org.storeDetailsAvailable) return;
-    if (user.isSystemGeneratedPassword) {
-      navigate("/initial-steps");
-    } else if (org.storeDetailsAvailable) {
-      navigate("/initial-steps");
-    }
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id).then((u) => {
+      // roles - Organization Admin, Super Admin
+      if (u.isSystemGeneratedPassword) navigate("/initial-steps");
+      else {
+        if (u.role.name == "Organization Admin") {
+          getOrgDetails(u.organization).then((org) => {
+            if (isObjEmpty(org.storeDetails)) navigate("/initial-steps");
+          });
+        } else navigate("/application/user-listings");
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -97,13 +95,23 @@ export default function Inventory() {
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Inventory</label>
-          <Button
-            variant="contained"
-            icon={<AddIcon />}
-            className=""
-            title="ADD PRODUCT"
-            onClick={() => navigate("/application/add-products")}
-          />
+          <div className="flex">
+            <div style={{ marginRight: 15 }}>
+              <Button
+                variant="contained"
+                icon={<AddIcon />}
+                title="Bulk upload"
+                onClick={() => navigate("/application/bulk-upload")}
+              />
+            </div>
+            <Button
+              variant="contained"
+              icon={<AddIcon />}
+              className=""
+              title="ADD PRODUCT"
+              onClick={() => navigate("/application/add-products")}
+            />
+          </div>
         </div>
         <InventoryTable columns={columns} data={products} />
       </div>
