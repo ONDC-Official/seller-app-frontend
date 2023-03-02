@@ -289,6 +289,14 @@ const InviteProvider = () => {
     if (step == 4) return renderBankDetails();
   };
 
+  const handleBack = () => {
+    if (step === 1) {
+      navigate("/application/user-listings");
+    } else {
+      setStep(step - 1);
+    }
+  };
+
   return (
     <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
       <div className="h-full flex fex-row items-center justify-center">
@@ -306,8 +314,7 @@ const InviteProvider = () => {
                 size="small"
                 style={{ marginRight: 10 }}
                 variant="text"
-                onClick={() => setStep(step - 1)}
-                disabled={step == 1}
+                onClick={handleBack}
               >
                 Back
               </Button>

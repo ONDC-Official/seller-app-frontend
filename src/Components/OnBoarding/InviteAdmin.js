@@ -73,6 +73,10 @@ const InviteAdmin = () => {
     if (step == 1) return renderUserFields();
   };
 
+  const handleBack = () => {
+    navigate("/application/user-listings");
+  };
+
   return (
     <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
       <div className="h-full flex fex-row items-center justify-center">
@@ -86,6 +90,14 @@ const InviteAdmin = () => {
             </p>
             <div>{renderSteps()}</div>
             <div className="flex mt-6">
+              <Button
+                size="small"
+                style={{ marginRight: 10 }}
+                variant="text"
+                onClick={handleBack}
+              >
+                Back
+              </Button>
               <Button
                 size="small"
                 variant="contained"
