@@ -1,99 +1,96 @@
-import React, { useState } from "react";
-import Navbar from "../../Shared/Navbar";
+import React, { useEffect, useState } from "react";
+import cogoToast from "cogo-toast";
 import UserTable from "./UserTable";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
 import { Button } from "@mui/material";
+import Tab from "@material-ui/core/Tab";
 import { Link } from "react-router-dom";
+import Navbar from "../../Shared/Navbar";
+import Tabs from "@material-ui/core/Tabs";
+import { getCall } from "../../../Api/axios";
+
+const superAdminCols = [
+  {
+    id: "name",
+    label: "Name",
+  },
+  {
+    id: "email",
+    label: "Email",
+  },
+  {
+    id: "mobile",
+    label: "Mobile",
+  },
+  {
+    id: "status",
+    label: "Status",
+  },
+  {
+    id: "Action",
+    label: "Action",
+  },
+];
+
+const providerCols = [
+  {
+    id: "email",
+    label: "Email",
+  },
+  {
+    id: "mobile",
+    label: "Mobile",
+  },
+  {
+    id: "name",
+    label: "Legal name of provider",
+  },
+  {
+    id: "providerAdminName",
+    label: "Provider Admin name",
+  },
+  {
+    id: "status",
+    label: "Status",
+  },
+  {
+    id: "Action",
+    label: "Action",
+  },
+];
 
 const UserListings = () => {
   const [value, setValue] = useState(0);
+  const [providers, setProviders] = useState([]);
+  const [admins, setAdmins] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const superAdminCols = [
-    {
-      id: "name",
-      label: "Name",
-    },
-    {
-      id: "email",
-      label: "Email",
-    },
-    {
-      id: "mobile",
-      label: "Mobile",
-    },
-    {
-      id: "status",
-      label: "Status",
-    },
-    {
-      id: "Action",
-      label: "Action",
-    },
-  ];
+  const getAdmins = async () => {
+    const url = `/api/v1/users?limit=10&offset=0&role=Super Admin`;
+    try {
+      const res = await getCall(url);
+      setAdmins(res.data);
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
 
-  const superAdminData = [
-    {
-      name: "Rohaan",
-      email: "rohaan@dataorc.in",
-      mobile: "8997575712",
-      status: "active",
-    },
-    {
-      name: "Rohaan",
-      email: "rohaan@dataorc.in",
-      mobile: "8997575712",
-      status: "active",
-    },
-  ];
+  const getProviders = async () => {
+    const url = `/api/v1/users?limit=10&offset=0&role=Organization Admin`;
+    try {
+      const res = await getCall(url);
+      setProviders(res.data);
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
 
-  const providerCols = [
-    {
-      id: "email",
-      label: "Email",
-    },
-    {
-      id: "mobile",
-      label: "Mobile",
-    },
-    {
-      id: "legal_name_of_provider",
-      label: "Legal name of provider",
-    },
-    {
-      id: "provider_admin_name",
-      label: "Provider Admin name",
-    },
-    {
-      id: "status",
-      label: "Status",
-    },
-    {
-      id: "Action",
-      label: "Action",
-    },
-  ];
-
-  const providerData = [
-    {
-      email: "rohaan@dataorc.in",
-      mobile: "8997575712",
-      legal_name_of_provider: "Abhinandan",
-      provider_admin_name: "Abhinandan",
-      status: "active",
-    },
-    {
-      email: "rohaan@dataorc.in",
-      mobile: "8997575712",
-      legal_name_of_provider: "Abhinandan",
-      provider_admin_name: "Abhinandan",
-      status: "inactive",
-    },
-  ];
+  useEffect(() => {
+    if (value == 0) getAdmins();
+    else getProviders();
+  }, [value]);
 
   return (
     <div>
@@ -130,7 +127,7 @@ const UserListings = () => {
 
         <UserTable
           columns={value == 0 ? superAdminCols : providerCols}
-          data={value == 0 ? superAdminData : providerData}
+          data={value == 0 ? admins : providers}
           isProvider={value == 0 ? false : true}
         />
       </div>

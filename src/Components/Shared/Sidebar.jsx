@@ -99,14 +99,16 @@ export default function Sidebar(props) {
           onKeyDown={toggleDrawer(anchor, false)}
         >
           <List component="div" disablePadding>
-            <NavLink
-              to="/application/inventory"
-              className="no-underline text-black"
-            >
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemText primary="Inventory" />
-              </ListItemButton>
-            </NavLink>
+            {user?.role?.name == "Organization Admin" && (
+              <NavLink
+                to="/application/inventory"
+                className="no-underline text-black"
+              >
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Inventory" />
+                </ListItemButton>
+              </NavLink>
+            )}
             <NavLink
               to="/application/orders"
               className="no-underline	text-black"
