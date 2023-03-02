@@ -22,13 +22,14 @@ const superAdminCols = [
     label: "Mobile",
   },
   {
-    id: "status",
+    id: "formatted_status",
     label: "Status",
   },
-  {
-    id: "Action",
-    label: "Action",
-  },
+  // {
+  //   id: "Action",
+  //   label: "Action",
+  // }
+  ,
 ];
 
 const providerCols = [
@@ -44,18 +45,20 @@ const providerCols = [
     id: "name",
     label: "Legal name of provider",
   },
+  // {
+  //   id: "providerAdminName",
+  //   label: "Provider Admin name",
+  // }
+  ,
   {
-    id: "providerAdminName",
-    label: "Provider Admin name",
-  },
-  {
-    id: "status",
+    id: "formatted_status",
     label: "Status",
   },
-  {
-    id: "Action",
-    label: "Action",
-  },
+  // {
+  //   id: "Action",
+  //   label: "Action",
+  // }
+  ,
 ];
 
 const UserListings = () => {
@@ -71,7 +74,11 @@ const UserListings = () => {
     const url = `/api/v1/users?limit=10&offset=0&role=Super Admin`;
     try {
       const res = await getCall(url);
-      setAdmins(res.data);
+      let data = res.data;
+      data.forEach(d => {
+        d['formatted_status'] = d?.enabled ? 'Active' : 'Inactive';
+      });
+      setAdmins(data);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -81,7 +88,11 @@ const UserListings = () => {
     const url = `/api/v1/users?limit=10&offset=0&role=Organization Admin`;
     try {
       const res = await getCall(url);
-      setProviders(res.data);
+      let data = res.data;
+      data.forEach(d => {
+        d['formatted_status'] = d?.enabled ? 'Active' : 'Inactive';
+      });
+      setProviders(data);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
