@@ -89,6 +89,10 @@ export default function Inventory() {
     getProducts();
   }, []);
 
+  const handleRefresh = (data) => {
+    getProducts();
+  }
+
   return (
     <>
       <Navbar />
@@ -113,7 +117,7 @@ export default function Inventory() {
             />
           </div>
         </div>
-        <InventoryTable columns={columns} data={products} />
+        <InventoryTable columns={columns} data={products} onRefresh={handleRefresh} />
       </div>
     </>
   );

@@ -13,10 +13,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import { Link } from "react-router-dom";
+import { getCall, postCall, putCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 
 export default function InventoryTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { onRefresh } = props;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,6 +44,19 @@ export default function InventoryTable(props) {
 
     const { row } = props;
 
+    const handlePublishState = (product_id, published) => {
+      const url = `/api/v1/products/${product_id}/publish`;
+      putCall(url, {published: !published})
+        .then(resp => {
+          cogoToast.success("Product state updated successfully");
+          onRefresh();
+        })
+        .catch(error => {
+          console.log(error)
+          cogoToast.error(error.response.data.error);
+        });
+    };
+
     return (
       <Fragment>
         <Button onClick={handleClick}>
@@ -52,9 +69,12 @@ export default function InventoryTable(props) {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <Link to="/application/add-products" state={{ productId: row.id }}>
+          <Link to="/application/add-products" state={{ productId: row._id }}>
             <MenuItem>Edit Product</MenuItem>
           </Link>
+          <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
+            {row?.published ? "Unpublish" : "Publish"}
+          </MenuItem>
         </Menu>
       </Fragment>
     );
@@ -110,7 +130,7 @@ export default function InventoryTable(props) {
                       );
                     })}
                     <TableCell component="th" scope="row">
-                      <ThreeDotsMenu row={row} />
+                      <ThreeDotsMenu row={row}/>
                     </TableCell>
                   </TableRow>
                 );

@@ -45,7 +45,7 @@ export function putCall(url, params) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios.put(url, params, {
-        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+        headers: { ...(token && { "access-token": `Bearer ${token}` }) },
       });
       return resolve(response.data);
     } catch (err) {
