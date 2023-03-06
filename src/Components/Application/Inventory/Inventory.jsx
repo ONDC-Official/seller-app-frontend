@@ -101,12 +101,12 @@ export default function Inventory() {
           <label className="font-semibold text-2xl">Inventory</label>
           <div className="flex">
             <div style={{ marginRight: 15 }}>
-              <Button
+              {/*<Button
                 variant="contained"
                 icon={<AddIcon />}
                 title="Bulk upload"
                 onClick={() => navigate("/application/bulk-upload")}
-              />
+                />*/}
             </div>
             <Button
               variant="contained"
