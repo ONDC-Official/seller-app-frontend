@@ -296,6 +296,7 @@ export default function AddProduct() {
   const getProduct = () => {
     getCall(`/api/v1/products/${state.productId}`)
       .then(resp => {
+        resp["uploaded_urls"] = resp?.images || [];
         setProduct(resp);
       })
       .catch(error => {
