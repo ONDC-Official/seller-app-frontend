@@ -236,7 +236,7 @@ const productFields = [
     title: "Images",
     type: "upload",
     multiple: true,
-    filt_type: "product_image",
+    file_type: "product_image",
     required: true,
   },
 ];
@@ -279,7 +279,6 @@ export default function AddProduct() {
     availableOnCod: false,
     images: [],
   });
-  console.log(product);
   const addProduct = async () => {
     try {
       const data = await cancellablePromise(
@@ -294,25 +293,27 @@ export default function AddProduct() {
     }
   };
 
-  const getProduct = async () => {
-    try {
-      const res = await cancellablePromise(
-        getCall(`/api/product/${state.productId}`)
-      );
-      const { attributes } = res.data;
-      setProduct(attributes);
-    } catch (error) {
-      cogoToast.error("Something went wrong!");
-      console.log(error.response);
-    }
+  const getProduct = () => {
+    getCall(`/api/v1/products/${state.productId}`)
+      .then(resp => {
+        setProduct(resp);
+      })
+      .catch(error => {
+        cogoToast.error("Something went wrong!");
+        console.log(error.response);
+      });
   };
 
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      const res = await cancellablePromise(
-        putCall(`/api/product/${state.productId}`, product)
-      );
+      delete product["__v"];
+      delete product["_id"];
+      delete product["organization"];
+      delete product["createdAt"];
+      delete product["updatedAt"];
+      delete product["published"];
+      const res = await  putCall(`/api/v1/products/${state.productId}`, product);
       cogoToast.success("Product updated successfully!");
     } catch (error) {
       cogoToast.error("Something went wrong!");
@@ -352,7 +353,7 @@ export default function AddProduct() {
           </label>
           <div className="mt-2">{renderFields()}</div>
           <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-            <MyButton title="CANCEL" className="text-black" />
+            <MyButton title="CANCEL" className="text-black" onClick={() => navigate("/application/inventory")}/>
             <MyButton
               onClick={() => {
                 state?.productId ? updateProduct() : addProduct();
