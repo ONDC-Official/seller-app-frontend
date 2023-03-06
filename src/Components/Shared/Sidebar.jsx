@@ -100,14 +100,24 @@ export default function Sidebar(props) {
         >
           <List component="div" disablePadding>
             {user?.role?.name == "Organization Admin" && (
-              <NavLink
-                to="/application/inventory"
-                className="no-underline text-black"
-              >
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="Inventory" />
-                </ListItemButton>
-              </NavLink>
+              <div>
+                <NavLink
+                  to="/application/inventory"
+                  className="no-underline text-black"
+                  >
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="Inventory" />
+                  </ListItemButton>
+                </NavLink>
+                <NavLink
+                  to={{pathname: "/application/store-details", userProps: {org_id: user?.organization}}}
+                  className="no-underline text-black"
+                  >
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="Store Details" />
+                  </ListItemButton>
+                </NavLink>
+              </div>
             )}
             <NavLink
               to="/application/orders"

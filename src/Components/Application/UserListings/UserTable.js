@@ -51,10 +51,10 @@ const UserTable = ({ columns, data, isProvider }) => {
                     hover
                     tabIndex={-1}
                     key={index}
-                    onClick={() => {
-                      isProvider &&
-                        navigate(`/user-listings/provider-details/${index}`);
-                    }}
+                    // onClick={() => {
+                    //   isProvider &&
+                    //     navigate(`/user-listings/provider-details/${index}`, { state: { org_id: row?.organization?._id } });
+                    // }}
                   >
                     {columns.map((column) => {
                       const value = row[column.id];

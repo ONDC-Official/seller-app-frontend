@@ -15,6 +15,8 @@ import InviteAdmin from "../Components/OnBoarding/InviteAdmin";
 import InviteProvider from "../Components/OnBoarding/inviteProvider";
 import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
 import BulkUpload from "../Components/Application/Product/BulkUpload";
+import StoreDetails from "../Components/Application/Store/StoreDetails.jsx";
+import { getUser } from "../utils/validateToken.js";
 
 export default function OndcRoutes() {
   return (
@@ -102,6 +104,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <InviteProvider />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/store-details"
+          element={
+            <PrivateRoute>
+              <StoreDetails />
             </PrivateRoute>
           }
         />

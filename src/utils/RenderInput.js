@@ -63,6 +63,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           autoComplete="off"
           placeholder={item.placeholder}
           error={error}
+          disabled={item?.isDisabled || false}
           helperText={error && error_text}
           value={state[item.id]}
           onChange={(e) =>
@@ -80,8 +81,8 @@ const RenderInput = ({ item, state, stateHandler }) => {
             {item.required && <span className="text-[#FF0000]"> *</span>}
           </label>
           <RadioGroup
-            aria-label="gender"
-            name="gender1"
+            aria-label={item.id}
+            name={item.id}
             value={state[item.id]}
             onChange={(e) =>
               stateHandler({ ...state, [item.id]: e.target.value })
@@ -194,8 +195,8 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Autocomplete
-            hiddenLabel="true"
             multiple
+            filterSelectedOptions
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
@@ -259,6 +260,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
+        {state[item?.id] && (<img src={state[item?.id]}/>)}
         <label htmlFor="contained-button-file">
           {/* <Button
             size="small"
