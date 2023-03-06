@@ -184,7 +184,8 @@ const StoreDetails = (props) => {
           location_availability: store_details?.locationAvailabilityPANIndia,
           default_cancellable: store_details?.defaultCancellable,
           default_returnable: store_details?.defaultReturnable,
-          logo: store_details?.logo?.url,
+          logo: store_details?.logo?.path,
+          uploaded_urls: [store_details?.logo?.url],
         });
         setAddressDetails(store_details?.address);
       }).catch(error => {
@@ -209,7 +210,8 @@ const StoreDetails = (props) => {
   };
 
   const onUpdate = () => {
-    const url = `/api/v1/organizations/${auth?.user?.organization}/storeDetails`;
+    const org_id = auth?.user?.organization;
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
     const { categories, logo, location_availability,
             default_cancellable, default_returnable,
             mobile, email, city } = storeDetails;
@@ -232,6 +234,7 @@ const StoreDetails = (props) => {
     postCall(url, payload)
       .then(resp => {
         cogoToast.success("Store details updated successfully");
+        getStoreDetails(org_id);
       })
       .catch(error => {
         console.log(error)

@@ -18,6 +18,7 @@ import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import Cookies from "js-cookie";
 import MyButton from "../Components/Shared/Button";
+import axios from "axios";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -224,35 +225,45 @@ const RenderInput = ({ item, state, stateHandler }) => {
   } else if (item.type == "upload") {
     const getSignUrl = async (file) => {
       const url = `/api/v1/upload/${item?.file_type}`;
+      const file_type = file.type.split("/")[1];
       const data = {
-        fileName: file.name,
-        fileType: file.type.split("/")[1],
+        fileName: file.name.replace(`\.${file_type}`, ""),
+        fileType: file_type,
       };
       const res = await postCall(url, data);
       return res;
     };
-    const uploadFile = async (e) => {
-      const token = Cookies.get("token");
-      const file = e.target.files[0];
+    // const uploadFile = async (e) => {
+    //   const token = Cookies.get("token");
+    //   const file = e.target.files[0];
 
-      const formData = new FormData();
-      formData.append("file", file);
+    //   const formData = new FormData();
+    //   formData.append("file", file);
 
-      getSignUrl(file).then((d) => {
-        const url = d.urls;
-        fetch(url, {
-          method: "PUT",
-          body: formData,
-          headers: { ...(token && { "access-token": `Bearer ${token}` }) },
+    //   getSignUrl(file).then((d) => {
+    //     const url = d.urls;
+    //     fetch(url, {
+    //       method: "PUT",
+    //       data: formData,
+    //       headers: { ...(token && { "access-token": `Bearer ${token}` }),
+    //                  contentType : 'multipart/form-data'},
+    //     })
+    //       .then((response) => {
+    //         console.log(item.id, state);
+    //         response.json();
+    //         stateHandler({ ...state, [item.id]: d.path });
+    //       })
+    //       .then((json) => {});
+    //   });
+    // };
+
+    const renderUploadedUrls = () => {
+      if (state?.uploaded_urls) {
+        return state?.uploaded_urls?.map(url => {
+          return <img src={url} height={50} width={50}/>
         })
-          .then((response) => {
-            console.log(item.id, state);
-            response.json();
-            stateHandler({ ...state, [item.id]: d.path });
-          })
-          .then((json) => {});
-      });
-    };
+      }
+    }
 
     return (
       <div className="py-1 flex flex-col">
@@ -260,7 +271,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
-        {state[item?.id] && (<img src={state[item?.id]}/>)}
+        {renderUploadedUrls()}
         <label htmlFor="contained-button-file">
           {/* <Button
             size="small"
@@ -285,11 +296,12 @@ const RenderInput = ({ item, state, stateHandler }) => {
               getSignUrl(file).then((d) => {
                 const url = d.urls;
 
-                fetch(url, {
+                axios(url, {
                   method: "PUT",
-                  body: formData,
+                  data: file,
                   headers: {
                     ...(token && { "access-token": `Bearer ${token}` }),
+                    'Content-Type' : 'multipart/form-data'
                   },
                 })
                   .then((response) => {
@@ -298,11 +310,14 @@ const RenderInput = ({ item, state, stateHandler }) => {
                         const newState = {
                           ...prevState,
                           [item.id]: [...prevState[item.id], d.path],
+                          uploaded_urls: []
                         };
                         return newState;
                       });
                     } else {
-                      stateHandler({ ...state, [item.id]: d.path });
+                      stateHandler({ ...state,
+                                     [item.id]: d.path,
+                                     uploaded_urls: [] });
                     }
                     response.json();
                   })
