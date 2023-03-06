@@ -314,6 +314,7 @@ export default function AddProduct() {
       delete product["createdAt"];
       delete product["updatedAt"];
       delete product["published"];
+      delete product["uploaded_urls"];
       const res = await  putCall(`/api/v1/products/${state.productId}`, product);
       cogoToast.success("Product updated successfully!");
     } catch (error) {
