@@ -281,6 +281,7 @@ export default function AddProduct() {
   });
   const addProduct = async () => {
     try {
+      delete product["uploaded_urls"];
       const data = await cancellablePromise(
         postCall(`/api/v1/products`, product)
       );
@@ -296,7 +297,8 @@ export default function AddProduct() {
   const getProduct = () => {
     getCall(`/api/v1/products/${state.productId}`)
       .then(resp => {
-        resp["uploaded_urls"] = resp?.images || [];
+        resp["uploaded_urls"] = resp?.images?.map(i => i?.url) || [];
+        resp["images"] = resp?.images?.map(i => i?.path) || [];
         setProduct(resp);
       })
       .catch(error => {

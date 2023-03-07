@@ -282,6 +282,7 @@ const ProviderInitialSteps = () => {
     delete data["locationAvailability"];
     delete data["email"];
     delete data["mobile"];
+    delete data["uploaded_urls"];
 
     console.log("FInAL data", data);
 
