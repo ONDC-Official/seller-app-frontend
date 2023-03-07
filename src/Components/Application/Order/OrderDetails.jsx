@@ -17,12 +17,13 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import moment from "moment";
 import useCancellablePromise from "../../../Api/cancelRequest";
-import { getCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
 import MoreVert from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import { getFulfillmentData, getShortAddress } from "./../../../utils/orders.js";
+import cogoToast from "cogo-toast";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -30,9 +31,11 @@ const OrderDetails = () => {
   const params = useParams();
 
   const getOrder = async () => {
-    const url = `/api/orders/${params?.id}`;
-    const res = await cancellablePromise(getCall(url));
-    setOrder(res.data.attributes);
+    const url = `/api/v1/orders/${params?.id}`;
+    getCall(url).then(resp => {
+      console.log(resp);
+      setOrder(resp);
+    });
   };
 
   useEffect(() => {
@@ -43,16 +46,16 @@ const OrderDetails = () => {
 
   const total_order_price = order?.quote?.price?.value || 0;
   const price_breakup = order?.quote?.breakup;
-  const delivery_charges = 0;
-  const total_base_cost = 0;
+  let delivery_charges = 0;
+  let total_base_cost = 0;
   if (price_breakup) {
-    const delivery_charges_object = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "delivery");
+    const delivery_charges_object = price_breakup?.filter(b => b["@ondc/org/title_type"] == "delivery");
 
     if (delivery_charges_object && delivery_charges_object?.length > 0) {
       delivery_charges = delivery_charges_object[0]?.price?.value;
     }
 
-    const order_items = price_breakup?.filter(b => b?.type["@ondc/org/title_type"] == "item");
+    const order_items = price_breakup?.filter(b => b["@ondc/org/title_type"] == "item");
     if (order_items && order_items?.length > 0) {
       order_items?.forEach(o => {
         total_base_cost += o?.price?.value;
@@ -66,18 +69,41 @@ const OrderDetails = () => {
     delivery_info = getFulfillmentData(fulfillments, "Delivery");
   }
 
+  const handleCompleteOrderCancel = (order_id) => {
+    postCall(`/api/v1/orders/${order_id}/cancel`, {cancellation_reason_id: "004"}).then(resp => {
+      cogoToast.success("Product cancelled successfully!");
+      getOrder();
+    }).catch(error => {
+      console.log(error);
+      cogoToast.error(error.response.data.error);
+    });
+  };
+
+  const renderOrderStatus = (order_details) => {
+    if (order_details?.state == "Created" || order_details?.state == "Accepted") {
+      return (
+        <span className="bg-slate-100 p-2 rounded-lg">
+          <Button color="error" onClick={() => handleCompleteOrderCancel(order_details?._id)}>Cancel Order</Button>
+        </span>
+      );
+    }
+    return (
+      <span className="bg-slate-100 p-2 rounded-lg">
+        <p className="text-sm font-normal text-amber-400">{order_details?.state}</p>
+      </span>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen w-screen py-2 px-8">
       <div className={`${cardClass} my-4 p-4`}>
         <div className="flex justify-between">
           <p className="text-lg font-semibold mb-2">Order Summary</p>
-          {/* <span className="bg-slate-100 p-2 rounded-lg">
-            <p className="text-sm font-normal text-amber-400">On the way</p>
-          </span> */}
+          {renderOrderStatus(order)}
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Order ID</p>
-          <p className="text-base font-normal">{order?.order_id}</p>
+          <p className="text-base font-normal">{order?.orderId}</p>
         </div>
         <div className="flex justify-between mt-3">
           <p className="text-base font-normal">Created On</p>
@@ -117,7 +143,7 @@ const OrderDetails = () => {
         </div>
       </div>
       <div className={`${cardClass}`}>
-        <OrderItemsSummaryCard orderItems={order?.order_items?.data} />
+        <OrderItemsSummaryCard orderItems={order?.items} order={order}/>
       </div>
       <div className={`${cardClass} my-4 p-4`}>
         <div className="flex h-full">
@@ -173,20 +199,24 @@ const OrderDetails = () => {
   );
 };
 
+const isOrderCancellable = (order_state) => {
+  return (order_state != "Completed" || order_state != "Cancelled");
+};
+
 const OrderItemsSummaryCard = (props) => {
   const [open, setOpen] = React.useState(false);
 
   let order_items = [];
   props?.orderItems?.map((item) => {
-    order_items.push(item.attributes);
+    order_items.push(item);
   });
 
   const cols = [
     { id: "url name", align: "left", minWidth: 50, label: "Items Summary" },
-    { id: "qty", align: "center", minWidth: "auto", label: "Qty" },
+    { id: "quantity", align: "center", minWidth: "auto", label: "Qty" },
     { id: "price", align: "center", minWidth: "50", label: "Price" },
     {
-      id: "status",
+      id: "state",
       align: "center",
       minWidth: "50",
       label: "Fulfilment status",
@@ -239,6 +269,16 @@ const OrderItemsSummaryCard = (props) => {
 
     const { data } = props;
 
+    const handlePartialOrderCancel = (order_id, order_item_id) => {
+      postCall(`/api/v1/orders/${order_id}/item/cancel`, [{cancellation_reason_id: "004", id: order_item_id}]).then(resp => {
+        cogoToast.success("Product cancelled successfully!");
+        //getOrder();
+      }).catch(error => {
+        console.log(error);
+        cogoToast.error(error.response.data.error);
+      });
+    };
+
     return (
       <>
         <Button onClick={(e) => handleClick(e)}>
@@ -251,7 +291,7 @@ const OrderItemsSummaryCard = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem style={{ padding: 6 }} onClick={() => {}}>
+          <MenuItem style={{ padding: 6 }} onClick={() => handlePartialOrderCancel(props?.order_id, props?.row?.id)}>
             Cancel Order
           </MenuItem>
         </Menu>
@@ -307,7 +347,7 @@ const OrderItemsSummaryCard = (props) => {
             </TableHead>
             <TableBody>
               {order_items?.map((order_item) => {
-                let product = order_item.product.data.attributes;
+                let product = order_item?.details;
                 return (
                   <ExpandableTableRow
                     sx={{ "& > *": { borderBottom: "unset" } }}
@@ -334,29 +374,31 @@ const OrderItemsSummaryCard = (props) => {
                               {/* <span>{row[col.id.split(" ")[1]]}</span> */}
                               <div className="flex flex-col">
                                 <span style={{ fontWeight: 600 }}>
-                                  {product.name}
+                                  {product?.productName}
                                 </span>
                                 <span style={{ fontSize: 14 }}>
-                                  {product.SKUCode}
+                                  {product?.HSNCode}
                                 </span>
                               </div>
                             </div>
+                          ) : col.id === "state" ? (
+                            <div>{order_item?.state}</div>
                           ) : col.id === "price" ? (
-                            <div>₹ {product.price.toLocaleString()}</div>
+                            <div>₹ {product?.MRP?.toLocaleString()}</div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
-                              <ThreeDotsMenu row={order_item} />
+                              {isOrderCancellable(props?.order?.state) ? (<ThreeDotsMenu order_id={props?.order?._id} row={order_item} />) : props?.order?.state}
                             </div>
                           ) : col.id === "totalPrice" ? (
                             <div>
                               ₹{" "}
                               {(
-                                product.price * order_item["qty"]
+                                product?.MRP * order_item?.quantity?.count
                               ).toLocaleString()}
                             </div>
-                          ) : (
-                            <span>{order_item[col.id]}</span>
-                          )}
+                          ) : col.id === "quantity" ? (
+                            <span>{order_item[col.id]?.count}</span>
+                          ) : null}
                         </TableCell>
                       );
                     })}

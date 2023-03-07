@@ -6,7 +6,7 @@ import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall } from "../../../Api/axios";
 
 const columns = [
-  { id: "order_id", label: "Order Id", minWidth: 90, align: "center" },
+  { id: "orderId", label: "Order Id", minWidth: 90, align: "center" },
   {
     id: "publishedAt",
     label: "Date",
@@ -61,14 +61,13 @@ export default function Orders() {
   const { cancellablePromise } = useCancellablePromise();
   const [orders, setOrders] = useState([]);
 
-  const getOrders = async () => {
-    try {
-      const url = `/api/order`;
-      const res = await cancellablePromise(getCall(url));
-      setOrders(res.data);
-    } catch (error) {
+  const getOrders = () => {
+    const url = `/api/v1/orders`;
+    getCall(url).then(resp => {
+      setOrders(resp.data);
+    }).catch(error => {
       console.log(error.response);
-    }
+    });
   };
 
   useEffect(() => {

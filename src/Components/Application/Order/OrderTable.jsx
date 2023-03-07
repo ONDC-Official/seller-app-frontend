@@ -74,13 +74,13 @@ export default function InventoryTable(props) {
   };
 
   const renderColumn = (row, column) => {
-    const value = row["attributes"][column.id];
-    const payment = row["attributes"]["payment"];
-    const delivery_info = getFulfillmentData(row["attributes"]["fulfillments"], "Delivery");
-    const ordered_items = row.attributes.order_items.data;
+    const value = row[column.id];
+    const payment = row["payment"];
+    const delivery_info = getFulfillmentData(row["fulfillments"], "Delivery");
+    const ordered_items = row.items;
 
     switch (column.id) {
-      case "order_id":
+      case "orderId":
         return (
           <>
             <span>{value}</span>
@@ -160,7 +160,7 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+             //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow
@@ -171,7 +171,7 @@ export default function InventoryTable(props) {
                     key={index}
                     onClick={() => {
                       navigate(
-                        `/application/orders/${row?.id}`
+                        `/application/orders/${row?._id}`
                       );
                     }}
                   >
