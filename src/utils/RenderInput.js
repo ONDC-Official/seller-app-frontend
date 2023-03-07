@@ -260,7 +260,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
     const renderUploadedUrls = () => {
       if (state?.uploaded_urls) {
         return state?.uploaded_urls?.map(url => {
-          return <img src={url} height={50} width={50}/>
+          return <img src={url} height={50} width={50} style={{margin:"10px"}}/>
         })
       }
     }
@@ -271,7 +271,9 @@ const RenderInput = ({ item, state, stateHandler }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
-        {renderUploadedUrls()}
+        <div style={{display: "flex"}}>
+          {renderUploadedUrls()}
+        </div>
         <label htmlFor="contained-button-file">
           {/* <Button
             size="small"
