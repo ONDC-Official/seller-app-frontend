@@ -33,6 +33,7 @@ const UserTable = ({ columns, data, isProvider }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (e) => {
+      e.stopPropagation();
       setAnchorEl(e.currentTarget);
     };
 
@@ -41,7 +42,7 @@ const UserTable = ({ columns, data, isProvider }) => {
     };
 
     return (
-      <>
+      <di>
         <Button onClick={handleClick} sx={{ width: 30 }}>
           <MoreVertIcon />
         </Button>
@@ -55,7 +56,7 @@ const UserTable = ({ columns, data, isProvider }) => {
           <MenuItem>Mark as Active</MenuItem>
           <MenuItem>Mark as Inactive</MenuItem>
         </Menu>
-      </>
+      </di>
     );
   };
 
@@ -85,10 +86,12 @@ const UserTable = ({ columns, data, isProvider }) => {
                     hover
                     tabIndex={-1}
                     key={index}
-                    // onClick={() => {
-                    //   isProvider &&
-                    //     navigate(`/user-listings/provider-details/${index}`, { state: { org_id: row?.organization?._id } });
-                    // }}
+                    onClick={() => {
+                      isProvider &&
+                        navigate(
+                          `/user-listings/provider-details/${row?.organization}`
+                        );
+                    }}
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
