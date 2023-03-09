@@ -25,11 +25,10 @@ const superAdminCols = [
     id: "formatted_status",
     label: "Status",
   },
-  // {
-  //   id: "Action",
-  //   label: "Action",
-  // }
-  ,
+  {
+    id: "Action",
+    label: "Action",
+  },
 ];
 
 const providerCols = [
@@ -45,20 +44,15 @@ const providerCols = [
     id: "name",
     label: "Legal name of provider",
   },
-  // {
-  //   id: "providerAdminName",
-  //   label: "Provider Admin name",
-  // }
-  ,
   {
     id: "formatted_status",
     label: "Status",
   },
-  // {
-  //   id: "Action",
-  //   label: "Action",
-  // }
-  ,
+  {
+    id: "Action",
+    label: "Action",
+    align: "left",
+  },
 ];
 
 const UserListings = () => {
@@ -75,8 +69,8 @@ const UserListings = () => {
     try {
       const res = await getCall(url);
       let data = res.data;
-      data.forEach(d => {
-        d['formatted_status'] = d?.enabled ? 'Active' : 'Inactive';
+      data.forEach((d) => {
+        d["formatted_status"] = d?.enabled ? "Active" : "Inactive";
       });
       setAdmins(data);
     } catch (error) {
@@ -89,8 +83,8 @@ const UserListings = () => {
     try {
       const res = await getCall(url);
       let data = res.data;
-      data.forEach(d => {
-        d['formatted_status'] = d?.enabled ? 'Active' : 'Inactive';
+      data.forEach((d) => {
+        d["formatted_status"] = d?.enabled ? "Active" : "Inactive";
       });
       setProviders(data);
     } catch (error) {

@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
 
 const UserTable = ({ columns, data, isProvider }) => {
   const navigate = useNavigate();
@@ -23,6 +27,36 @@ const UserTable = ({ columns, data, isProvider }) => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const ThreeDotsMenu = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (e) => {
+      setAnchorEl(e.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    return (
+      <>
+        <Button onClick={handleClick} sx={{ width: 30 }}>
+          <MoreVertIcon />
+        </Button>
+        <Menu
+          id="card-actions-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem>Mark as Active</MenuItem>
+          <MenuItem>Mark as Inactive</MenuItem>
+        </Menu>
+      </>
+    );
   };
 
   return (
@@ -58,6 +92,13 @@ const UserTable = ({ columns, data, isProvider }) => {
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
+                      if (column.id == "Action") {
+                        return (
+                          <TableCell key={column.id} align={"left"}>
+                            <ThreeDotsMenu />
+                          </TableCell>
+                        );
+                      }
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {value}
