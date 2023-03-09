@@ -15,6 +15,7 @@ const passwordFields = [
     title: "Password",
     placeholder: "Password",
     type: "input",
+    password: true,
     required: true,
   },
   {
@@ -22,6 +23,7 @@ const passwordFields = [
     title: "Confirm Password",
     placeholder: "Confirm Password",
     type: "input",
+    password: true,
     required: true,
   },
 ];
