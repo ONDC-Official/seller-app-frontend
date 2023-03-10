@@ -6,7 +6,7 @@ import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall } from "../../../Api/axios";
 
 const columns = [
-  { id: "orderId", label: "Order Id", minWidth: 90, align: "center" },
+  { id: "_id", label: "Order Id", minWidth: 120, align: "center" },
   {
     id: "publishedAt",
     label: "Date",
@@ -63,11 +63,13 @@ export default function Orders() {
 
   const getOrders = () => {
     const url = `/api/v1/orders`;
-    getCall(url).then(resp => {
-      setOrders(resp.data);
-    }).catch(error => {
-      console.log(error.response);
-    });
+    getCall(url)
+      .then((resp) => {
+        setOrders(resp.data);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   };
 
   useEffect(() => {

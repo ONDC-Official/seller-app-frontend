@@ -80,7 +80,7 @@ export default function InventoryTable(props) {
     const ordered_items = row.items;
 
     switch (column.id) {
-      case "orderId":
+      case "_id":
         return (
           <>
             <span>{value}</span>
@@ -160,7 +160,7 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-             //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow
@@ -170,9 +170,7 @@ export default function InventoryTable(props) {
                     tabIndex={-1}
                     key={index}
                     onClick={() => {
-                      navigate(
-                        `/application/orders/${row?._id}`
-                      );
+                      navigate(`/application/orders/${row?._id}`);
                     }}
                   >
                     {props.columns.map((column, idx) => {
