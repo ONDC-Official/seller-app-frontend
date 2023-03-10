@@ -131,9 +131,12 @@ const UserListings = () => {
         </div>
 
         <UserTable
+          value={value}
           columns={value == 0 ? superAdminCols : providerCols}
           data={value == 0 ? admins : providers}
           isProvider={value == 0 ? false : true}
+          getAdmins={getAdmins}
+          getProviders={getProviders}
         />
       </div>
     </div>

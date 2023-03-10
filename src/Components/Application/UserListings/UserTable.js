@@ -14,8 +14,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { putCall } from "../../../Api/axios";
 
-const UserTable = ({ columns, data, isProvider }) => {
+const UserTable = (props) => {
+  const { value, getProviders, getAdmins, columns, data, isProvider } = props;
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -29,7 +31,8 @@ const UserTable = ({ columns, data, isProvider }) => {
     setPage(0);
   };
 
-  const ThreeDotsMenu = () => {
+  const ThreeDotsMenu = (props) => {
+    const { row } = props;
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (e) => {
@@ -41,6 +44,22 @@ const UserTable = ({ columns, data, isProvider }) => {
       setAnchorEl(null);
     };
 
+    const action = async (e, param) => {
+      e.stopPropagation();
+      try {
+        let val;
+        if (param == "enable") val = true;
+        if (param == "disable") val = false;
+        const data = { enabled: val };
+
+        const url = `/api/v1/users/${row?._id}/enable`;
+        const res = await putCall(url, data);
+        getAdmins();
+        getProviders();
+      } catch (error) {
+        console.log(error.response);
+      }
+    };
     return (
       <di>
         <Button onClick={handleClick} sx={{ width: 30 }}>
@@ -53,8 +72,12 @@ const UserTable = ({ columns, data, isProvider }) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem>Mark as Active</MenuItem>
-          <MenuItem>Mark as Inactive</MenuItem>
+          <MenuItem onClick={(e) => action(e, "enable")}>
+            Mark as Active
+          </MenuItem>
+          <MenuItem onClick={(e) => action(e, "disable")}>
+            Mark as Inactive
+          </MenuItem>
         </Menu>
       </di>
     );
@@ -98,7 +121,7 @@ const UserTable = ({ columns, data, isProvider }) => {
                       if (column.id == "Action") {
                         return (
                           <TableCell key={column.id} align={"left"}>
-                            <ThreeDotsMenu />
+                            <ThreeDotsMenu row={row} />
                           </TableCell>
                         );
                       }
