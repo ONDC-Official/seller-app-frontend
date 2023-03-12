@@ -112,7 +112,7 @@ const UserTable = (props) => {
                     onClick={() => {
                       isProvider &&
                         navigate(
-                          `/user-listings/provider-details/${row?.organization}`
+                          `/user-listings/provider-details/${row?.organization?._id}`
                         );
                     }}
                   >

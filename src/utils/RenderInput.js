@@ -34,7 +34,7 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RenderInput = ({ item, state, stateHandler }) => {
+const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
   let error = false;
   let error_text = "";
 
@@ -65,7 +65,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
           autoComplete="off"
           placeholder={item.placeholder}
           error={error}
-          disabled={item?.isDisabled || false}
+          disabled={item?.isDisabled || previewOnly || false}
           helperText={error && error_text}
           value={state[item.id]}
           onChange={(e) =>
@@ -93,6 +93,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
+                  disabled={item?.isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
                   control={<Radio size="small" />}
@@ -141,6 +142,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={item?.isDisabled || previewOnly || false}
                   key={checkboxItem.key}
                   onChange={onChange}
                   name={checkboxItem.value}
@@ -169,6 +171,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Select
+            disabled={item?.isDisabled || previewOnly || false}
             size="small"
             placeholder={item.placeholder}
             value={state[item.id]}
@@ -197,11 +200,15 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Autocomplete
+            disabled={item?.isDisabled || previewOnly || false}
             multiple
             filterSelectedOptions
             size="small"
             options={item.options}
-            getOptionLabel={(option) => option.key}
+            getOptionLabel={(option) => {
+              if (previewOnly) return option;
+              return option.key;
+            }}
             value={state[item.id]}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
@@ -234,29 +241,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
       const res = await postCall(url, data);
       return res;
     };
-    // const uploadFile = async (e) => {
-    //   const token = Cookies.get("token");
-    //   const file = e.target.files[0];
-
-    //   const formData = new FormData();
-    //   formData.append("file", file);
-
-    //   getSignUrl(file).then((d) => {
-    //     const url = d.urls;
-    //     fetch(url, {
-    //       method: "PUT",
-    //       data: formData,
-    //       headers: { ...(token && { "access-token": `Bearer ${token}` }),
-    //                  contentType : 'multipart/form-data'},
-    //     })
-    //       .then((response) => {
-    //         console.log(item.id, state);
-    //         response.json();
-    //         stateHandler({ ...state, [item.id]: d.path });
-    //       })
-    //       .then((json) => {});
-    //   });
-    // };
 
     const renderUploadedUrls = () => {
       if (state?.uploaded_urls) {
@@ -268,6 +252,29 @@ const RenderInput = ({ item, state, stateHandler }) => {
       }
     };
 
+    if (previewOnly) {
+      if (typeof state[item.id] == "string") {
+        return (
+          <div
+            style={{ height: 100, width: 100, marginBottom: 20, marginTop: 10 }}
+          >
+            <img className="ml-1 h-full w-full" src={state[item.id]} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
+            className="flex"
+          >
+            {state[item.id].map((img_url) => (
+              <img className="ml-1 h-full w-full" key={img_url} src={img_url} />
+            ))}
+          </div>
+        );
+      }
+    }
+
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -276,13 +283,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
         <label htmlFor="contained-button-file">
-          {/* <Button
-            size="small"
-            variant="contained"
-            component="span"
-            sx={{ background: "E0E0E0" }}
-            onClick={(e) => console.log(e.target.files)}
-          > */}
           <input
             id="contained-button-file"
             style={{ opacity: "none", marginBottom: 10 }}
@@ -356,8 +356,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
                 </div>
               );
             })}
-          {/* Upload */}
-          {/* </Button> */}
         </label>
       </div>
     );

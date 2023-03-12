@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
 import { useEffect } from "react";
+import { getCall } from "../../../Api/axios";
 
 let storeFields = [
   {
@@ -50,12 +51,13 @@ let storeFields = [
     type: "radio",
     required: false,
   },
+
   {
     id: "default_cancellable",
     title: "Default cancellable setting",
     options: [
-      { key: "Cancellable", value: "cancellable" },
-      { key: "Non Cancellable", value: "non_cancellable" },
+      { key: "Cancellable", value: true },
+      { key: "Non Cancellable", value: false },
     ],
     type: "radio",
     required: false,
@@ -64,8 +66,8 @@ let storeFields = [
     id: "default_returnable",
     title: "Default returnable setting",
     options: [
-      { key: "Returnable", value: "returnable" },
-      { key: "Non Returnable", value: "non_returnable" },
+      { key: "Returnable", value: true },
+      { key: "Non Returnable", value: false },
     ],
     type: "radio",
     required: false,
@@ -80,16 +82,35 @@ let storeFields = [
 
 const ProviderDetails = () => {
   const navigate = useNavigate();
+  const params = useParams();
+
+  const getProviderDetails = async (id) => {
+    try {
+      const url = `/api/v1/users/${id}`;
+      const res = await getCall(url);
+
+      console.log("getProviderDetails", res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    let provider_id = params?.id;
+    getProviderDetails(provider_id);
+  }, []);
+
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
   const [storeDetails, setStoreDetails] = useState({
-    logo: "",
-    supported_product_categories: "none",
-    store_location: "",
-    location_availability: [],
-    default_cancellable: "",
-    default_returnable: "",
-    email: "",
-    mobile_number: "",
+    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJg-4S3AohGb_Nnea52bExRtchH6AFN0PC4Q&usqp=CAU",
+    supported_product_categories: "grocery",
+    store_location: "Bengaluru",
+    location_availability: "city",
+    cities: ["delhi", "pune"],
+    default_cancellable: false,
+    default_returnable: true,
+    email: "rohaan@dataorc.com",
+    mobile_number: "8445666963",
   });
 
   function addAfter(array, index, newItem) {
@@ -121,6 +142,7 @@ const ProviderDetails = () => {
   const renderSteps = () => {
     return storeDetailFields.map((item) => (
       <RenderInput
+        previewOnly={true}
         item={item}
         state={storeDetails}
         stateHandler={setStoreDetails}
