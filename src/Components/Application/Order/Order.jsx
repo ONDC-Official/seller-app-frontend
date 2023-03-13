@@ -21,13 +21,13 @@ const columns = [
     minWidth: 140,
     align: "center",
   },
-  //   {
-  //     id: "Provider_Name",
-  //     label: "Provider Name",
-  //     format: (value) => value.toLocaleString("en-US"),
-  //     minWidth: 130,
-  //     align: "center",
-  //   },
+  {
+    id: "provider_name",
+    label: "Provider Name",
+    format: (value) => value.toLocaleString("en-US"),
+    minWidth: 130,
+    align: "center",
+  },
   {
     id: "order_items",
     label: "Items Ordered",

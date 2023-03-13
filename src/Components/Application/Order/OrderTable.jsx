@@ -106,6 +106,13 @@ export default function InventoryTable(props) {
             <br />
           </div>
         );
+      case "provider_name":
+        return (
+          <div>
+            <span>{row?.organization?.name}</span>
+            <br />
+          </div>
+        );
       case "total_amt":
         return (
           <div>
