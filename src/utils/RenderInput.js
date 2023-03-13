@@ -205,10 +205,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             filterSelectedOptions
             size="small"
             options={item.options}
-            getOptionLabel={(option) => {
-              if (previewOnly) return option;
-              return option.key;
-            }}
+            getOptionLabel={(option) => option.key}
             value={state[item.id]}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
@@ -256,8 +253,14 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       if (typeof state[item.id] == "string") {
         return (
           <div
-            style={{ height: 100, width: 100, marginBottom: 20, marginTop: 10 }}
+            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
           >
+            <label
+              className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+              style={{ width: 200 }}
+            >
+              {item.title}
+            </label>
             <img className="ml-1 h-full w-full" src={state[item.id]} />
           </div>
         );
@@ -267,7 +270,10 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
             className="flex"
           >
-            {state[item.id].map((img_url) => (
+            <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              {item.title}
+            </label>
+            {state[item.id]?.map((img_url) => (
               <img className="ml-1 h-full w-full" key={img_url} src={img_url} />
             ))}
           </div>
