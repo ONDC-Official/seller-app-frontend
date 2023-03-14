@@ -87,7 +87,7 @@ export default function InventoryTable(props) {
       return (
         <div>
           <span className="ml-2">
-            {value === false || value === null ? "false" : "true"}
+            {value === false || value === null ? "No" : "Yes"}
           </span>
         </div>
       );

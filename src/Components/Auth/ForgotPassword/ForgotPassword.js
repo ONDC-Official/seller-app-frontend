@@ -43,7 +43,6 @@ const ForgotPassword = () => {
       const res = await postCall(url, { email });
       setSent(true);
       setError(false);
-      console.log(res);
     } catch (error) {
       setSent(false);
       setError(error.response.data.error);

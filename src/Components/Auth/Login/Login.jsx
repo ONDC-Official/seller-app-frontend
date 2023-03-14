@@ -66,8 +66,7 @@ export default function Login() {
       const res = await postCall(url, login);
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
-      console.log(error);
-      cogoToast.error("Invalid email or password");
+      cogoToast.error(error.response.data.error);
     }
   };
 

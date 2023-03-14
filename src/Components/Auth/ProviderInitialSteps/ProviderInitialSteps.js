@@ -254,7 +254,6 @@ const ProviderInitialSteps = () => {
   };
 
   const handleStoreDetailsReq = async () => {
-    console.log(storeDetails);
     const data = storeDetails;
 
     data.address = {
@@ -285,8 +284,6 @@ const ProviderInitialSteps = () => {
     delete data["email"];
     delete data["mobile"];
     delete data["uploaded_urls"];
-
-    console.log("FInAL data", data);
 
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
