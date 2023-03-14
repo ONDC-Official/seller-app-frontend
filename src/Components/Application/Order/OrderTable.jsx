@@ -167,7 +167,7 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-              //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow
