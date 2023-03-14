@@ -6,7 +6,7 @@ import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall } from "../../../Api/axios";
 
 const columns = [
-  { id: "_id", label: "Order Id", minWidth: 120, align: "center" },
+  { id: "orderId", label: "Order Id", minWidth: 120, align: "center" },
   {
     id: "publishedAt",
     label: "Date",
