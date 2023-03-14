@@ -41,6 +41,10 @@ const columns = [
     boolean: true,
     minWidth: 100,
   },
+  {
+    id: "published",
+    label: "Published",
+  },
 ];
 
 export default function Inventory() {
@@ -91,7 +95,7 @@ export default function Inventory() {
 
   const handleRefresh = (data) => {
     getProducts();
-  }
+  };
 
   return (
     <>
@@ -117,7 +121,11 @@ export default function Inventory() {
             />
           </div>
         </div>
-        <InventoryTable columns={columns} data={products} onRefresh={handleRefresh} />
+        <InventoryTable
+          columns={columns}
+          data={products}
+          onRefresh={handleRefresh}
+        />
       </div>
     </>
   );

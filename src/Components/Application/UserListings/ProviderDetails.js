@@ -299,6 +299,8 @@ const ProviderDetails = () => {
     }
   }, [storeDetails.location_availability]);
 
+  let userRole = JSON.parse(localStorage.getItem("user"))?.role?.name;
+
   return (
     <div>
       <div className="mx-auto !p-2 h-screen min-vh-100 overflow-auto">
@@ -349,7 +351,11 @@ const ProviderDetails = () => {
                   size="small"
                   style={{ marginRight: 10 }}
                   variant="text"
-                  onClick={() => navigate("/application/user-listings")}
+                  onClick={() => {
+                    userRole == "Super Admin"
+                      ? navigate("/application/user-listings")
+                      : navigate("/application/inventory");
+                  }}
                 >
                   Back
                 </Button>

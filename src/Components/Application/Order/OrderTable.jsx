@@ -80,10 +80,10 @@ export default function InventoryTable(props) {
     const ordered_items = row.items;
 
     switch (column.id) {
-      case "_id":
+      case "orderId":
         return (
           <>
-            <span>{value}</span>
+            <span>{row.orderId}</span>
           </>
         );
       case "publishedAt":
@@ -167,7 +167,7 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-              //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow

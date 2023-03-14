@@ -92,9 +92,9 @@ const ForgotPassword = () => {
   );
   const navigation_link = (
     <div className="py-2 text-center">
-      <p className="text-xs text-[#606161]">Already Have an account</p>
+      <p className="text-xs text-[#606161]">Already have an account</p>
       <NavLink to="/login" className="">
-        <p className="text-xs text-[#346cc1]">Login</p>
+        <p className="text-xs text-[#3d629ad2] hover:text-[#0066ffd2]">Login</p>
       </NavLink>
     </div>
   );

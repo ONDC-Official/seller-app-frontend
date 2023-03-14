@@ -206,7 +206,7 @@ export default function Navbar() {
             >
               <MenuIcon />
             </IconButton>
-            <Search>
+            {/* <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -215,7 +215,7 @@ export default function Navbar() {
                 inputProps={{ "aria-label": "search" }}
                 onChange={handleSearch}
               />
-            </Search>
+            </Search> */}
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton

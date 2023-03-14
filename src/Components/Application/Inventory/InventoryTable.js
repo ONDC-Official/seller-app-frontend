@@ -46,13 +46,13 @@ export default function InventoryTable(props) {
 
     const handlePublishState = (product_id, published) => {
       const url = `/api/v1/products/${product_id}/publish`;
-      putCall(url, {published: !published})
-        .then(resp => {
+      putCall(url, { published: !published })
+        .then((resp) => {
           cogoToast.success("Product state updated successfully");
           onRefresh();
         })
-        .catch(error => {
-          console.log(error)
+        .catch((error) => {
+          console.log(error);
           cogoToast.error(error.response.data.error);
         });
     };
@@ -72,7 +72,9 @@ export default function InventoryTable(props) {
           <Link to="/application/add-products" state={{ productId: row._id }}>
             <MenuItem>Edit Product</MenuItem>
           </Link>
-          <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
+          <MenuItem
+            onClick={() => handlePublishState(row?._id, row?.published)}
+          >
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
         </Menu>
@@ -112,7 +114,7 @@ export default function InventoryTable(props) {
                   {column.label}
                 </TableCell>
               ))}
-              <TableCell></TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -130,7 +132,7 @@ export default function InventoryTable(props) {
                       );
                     })}
                     <TableCell component="th" scope="row">
-                      <ThreeDotsMenu row={row}/>
+                      <ThreeDotsMenu row={row} />
                     </TableCell>
                   </TableRow>
                 );

@@ -92,29 +92,52 @@ const OrderDetails = () => {
       });
   };
 
+  const handleCompleteOrderAccept = (order_id) => {
+    const url = `/api/v1/orders/${order_id}/status`;
+    postCall(url, {
+      status: "Accepted",
+    })
+      .then((resp) => {
+        cogoToast.success("Order accepted successfully!");
+        getOrder();
+      })
+      .catch((error) => {
+        console.log(error);
+        cogoToast.error(error.response.data.error);
+      });
+  };
+
   const renderOrderStatus = (order_details) => {
-    if (
-      order_details?.state == "Created" ||
-      order_details?.state == "Accepted"
-    ) {
+    if (order_details?.state == "Created") {
       return (
-        <span className="bg-slate-100 p-2 rounded-lg">
+        <div>
           <Button
+            sx={{ width: 120 }}
+            className="w-56 !capitalize !py-2 !px-0"
+            color="success"
+            onClick={() => handleCompleteOrderAccept(order_details?._id)}
+          >
+            Accept Order
+          </Button>
+          <Button
+            sx={{ width: 120 }}
+            className="w-56 !capitalize !py-2 !px-0"
             color="error"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
           >
             Cancel Order
           </Button>
+        </div>
+      );
+    } else {
+      return (
+        <span className="bg-slate-100 p-2 rounded-lg">
+          <p className="text-sm font-normal text-amber-400">
+            {order_details?.state}
+          </p>
         </span>
       );
     }
-    return (
-      <span className="bg-slate-100 p-2 rounded-lg">
-        <p className="text-sm font-normal text-amber-400">
-          {order_details?.state}
-        </p>
-      </span>
-    );
   };
 
   return (
