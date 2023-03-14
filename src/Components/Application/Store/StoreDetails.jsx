@@ -120,7 +120,7 @@ let addressFields = [
     title: "PIN Code",
     type: "input",
     required: true,
-  }
+  },
 ];
 
 const StoreDetails = (props) => {
@@ -175,8 +175,9 @@ const StoreDetails = (props) => {
 
   const getStoreDetails = (org_id) => {
     const url = `/api/v1/organizations/${org_id}/storeDetails`;
+
     getCall(url)
-      .then(res => {
+      .then((res) => {
         const store_details = res?.storeDetails;
         setStoreDetails({
           ...store_details,
@@ -188,19 +189,21 @@ const StoreDetails = (props) => {
           uploaded_urls: [store_details?.logo?.url],
         });
         setAddressDetails(store_details?.address);
-      }).catch(error => {
+      })
+      .catch((error) => {
         cogoToast.error(error.response.data.error);
       });
   };
 
   useEffect(() => {
     const org_id = auth?.user?.organization;
-    if(org_id) getStoreDetails(org_id);
-  }, [])
+    if (org_id) getStoreDetails(org_id);
+  }, []);
 
   const renderSteps = () => {
     return storeDetailFields.map((item) => (
       <RenderInput
+        previewOnly={true}
         key={item?.id}
         item={item}
         state={storeDetails}
@@ -212,9 +215,16 @@ const StoreDetails = (props) => {
   const onUpdate = () => {
     const org_id = auth?.user?.organization;
     const url = `/api/v1/organizations/${org_id}/storeDetails`;
-    const { categories, logo, location_availability,
-            default_cancellable, default_returnable,
-            mobile, email, city } = storeDetails;
+    const {
+      categories,
+      logo,
+      location_availability,
+      default_cancellable,
+      default_returnable,
+      mobile,
+      email,
+      city,
+    } = storeDetails;
     const locationAvailability = eval(location_availability);
     let payload = {
       categories,
@@ -225,22 +235,22 @@ const StoreDetails = (props) => {
       address: addressDetails,
       supportDetails: {
         email,
-        mobile
-      }
+        mobile,
+      },
     };
     if (locationAvailability == false) {
       payload["city"] = city;
     }
     postCall(url, payload)
-      .then(resp => {
+      .then((resp) => {
         cogoToast.success("Store details updated successfully");
         getStoreDetails(org_id);
       })
-      .catch(error => {
-        console.log(error)
+      .catch((error) => {
+        console.log(error);
         cogoToast.error(error.response.data.error);
       });
-  }
+  };
 
   const renderAddressFields = () => {
     return addressFields?.map((item) => (
@@ -251,18 +261,18 @@ const StoreDetails = (props) => {
         stateHandler={setAddressDetails}
       />
     ));
-  }
+  };
 
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto my-8">
-        <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto">
+      <div>
+        <div className="mx-auto !p-2 h-screen min-vh-100 overflow-auto">
           <div>
             <div
               className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
               style={{ minHeight: "85%", maxHeight: "100%", overflow: "auto" }}
-              >
+            >
               <div className="m-auto w-10/12 md:w-3/4 h-max">
                 <p className="text-2xl font-semibold mb-4">Store Details</p>
                 <div>{renderSteps()}</div>
@@ -274,7 +284,7 @@ const StoreDetails = (props) => {
                     variant="contained"
                     color="primary"
                     onClick={onUpdate}
-                    >
+                  >
                     Update
                   </Button>
                 </div>

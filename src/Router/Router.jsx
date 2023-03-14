@@ -108,10 +108,10 @@ export default function OndcRoutes() {
           }
         />
         <Route
-          path="/application/store-details"
+          path="/application/store-details/:id"
           element={
             <PrivateRoute>
-              <StoreDetails />
+              <ProviderDetails />
             </PrivateRoute>
           }
         />
