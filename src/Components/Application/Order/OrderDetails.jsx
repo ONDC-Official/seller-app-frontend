@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Collapse,
@@ -22,17 +22,22 @@ import MoreVert from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import { getFulfillmentData, getShortAddress } from "./../../../utils/orders.js";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {
+  getFulfillmentData,
+  getShortAddress,
+} from "./../../../utils/orders.js";
 import cogoToast from "cogo-toast";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
+  const navigate = useNavigate();
 
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
-    getCall(url).then(resp => {
+    getCall(url).then((resp) => {
       console.log(resp);
       setOrder(resp);
     });
@@ -49,17 +54,21 @@ const OrderDetails = () => {
   let delivery_charges = 0;
   let total_base_cost = 0;
   if (price_breakup) {
-    const delivery_charges_object = price_breakup?.filter(b => b["@ondc/org/title_type"] == "delivery");
+    const delivery_charges_object = price_breakup?.filter(
+      (b) => b["@ondc/org/title_type"] == "delivery"
+    );
 
     if (delivery_charges_object && delivery_charges_object?.length > 0) {
       delivery_charges = delivery_charges_object[0]?.price?.value;
     }
 
-    const order_items = price_breakup?.filter(b => b["@ondc/org/title_type"] == "item");
+    const order_items = price_breakup?.filter(
+      (b) => b["@ondc/org/title_type"] == "item"
+    );
     if (order_items && order_items?.length > 0) {
-      order_items?.forEach(o => {
+      order_items?.forEach((o) => {
         total_base_cost += o?.price?.value;
-      })
+      });
     }
   }
 
@@ -70,137 +79,160 @@ const OrderDetails = () => {
   }
 
   const handleCompleteOrderCancel = (order_id) => {
-    postCall(`/api/v1/orders/${order_id}/cancel`, {cancellation_reason_id: "004"}).then(resp => {
-      cogoToast.success("Product cancelled successfully!");
-      getOrder();
-    }).catch(error => {
-      console.log(error);
-      cogoToast.error(error.response.data.error);
-    });
+    postCall(`/api/v1/orders/${order_id}/cancel`, {
+      cancellation_reason_id: "004",
+    })
+      .then((resp) => {
+        cogoToast.success("Product cancelled successfully!");
+        getOrder();
+      })
+      .catch((error) => {
+        console.log(error);
+        cogoToast.error(error.response.data.error);
+      });
   };
 
   const renderOrderStatus = (order_details) => {
-    if (order_details?.state == "Created" || order_details?.state == "Accepted") {
+    if (
+      order_details?.state == "Created" ||
+      order_details?.state == "Accepted"
+    ) {
       return (
         <span className="bg-slate-100 p-2 rounded-lg">
-          <Button color="error" onClick={() => handleCompleteOrderCancel(order_details?._id)}>Cancel Order</Button>
+          <Button
+            color="error"
+            onClick={() => handleCompleteOrderCancel(order_details?._id)}
+          >
+            Cancel Order
+          </Button>
         </span>
       );
     }
     return (
       <span className="bg-slate-100 p-2 rounded-lg">
-        <p className="text-sm font-normal text-amber-400">{order_details?.state}</p>
+        <p className="text-sm font-normal text-amber-400">
+          {order_details?.state}
+        </p>
       </span>
     );
-  }
+  };
 
   return (
-    <div className="flex flex-col h-screen w-screen py-2 px-8">
-      <div className={`${cardClass} my-4 p-4`}>
+    <>
+      <Button
+        style={{ marginLeft: 30, marginTop: 10 }}
+        onClick={() => navigate("/application/inventory")}
+      >
+        <ArrowBackIcon style={{ marginRight: 10, fontSize: 20 }} />
+        Back
+      </Button>
+      <div className="flex flex-col h-screen w-screen py-2 px-8">
+        <div className={`${cardClass} my-4 p-4`}>
+          <div className="flex justify-between">
+            <p className="text-lg font-semibold mb-2">Order Summary</p>
+            {renderOrderStatus(order)}
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Order ID</p>
+            <p className="text-base font-normal">{order?.orderId}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Created On</p>
+            <p className="text-base font-normal">
+              {moment(order?.createdAt).format("MM-DD-YYYY")}{" "}
+              {moment(order?.createdAt).format("hh:mm a")}
+            </p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Order Status</p>
+            <p className="text-base font-normal">{order?.state}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Payment Method</p>
+            <p className="text-base font-normal">{order?.payment.type}</p>
+          </div>
+          <div className="flex justify-between mt-3 mb-3">
+            <p className="text-base font-normal">Buyer name</p>
+            <p className="text-md font-normal">{order?.billing?.name}</p>
+          </div>
+          <Divider orientation="horizontal" />
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Total Base Price</p>
+            <p className="text-base font-normal">{total_base_cost}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Total Taxes</p>
+            <p className="text-base font-normal">-</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Total Delivery Fee</p>
+            <p className="text-base font-normal">{delivery_charges}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Total Price</p>
+            <p className="text-base font-normal">{total_order_price || "-"}</p>
+          </div>
+        </div>
+        <div className={`${cardClass}`}>
+          <OrderItemsSummaryCard orderItems={order?.items} order={order} />
+        </div>
+        <div className={`${cardClass} my-4 p-4`}>
+          <div className="flex h-full">
+            <div className="flex-1 mr-8">
+              <p className="text-lg font-semibold mb-2">Delivery Address</p>
+              <div className="flex flex-col justify-between my-3">
+                <p className="text-lg font-medium">
+                  {getShortAddress(delivery_info?.end?.location?.address)}
+                </p>
+                <p>{delivery_info?.end?.location?.address?.state}</p>
+                <p>{delivery_info?.end?.location?.address?.area_code}</p>
+              </div>
+            </div>
+            <Divider orientation="vertical" />
+            <div className="flex-1 ml-8">
+              <p className="text-lg font-semibold mb-2">Billing Address</p>
+              <div className="flex flex-col justify-between my-3">
+                <p className="text-lg font-medium">
+                  {getShortAddress(order?.billing?.address)}
+                </p>
+                <p>{order?.billing?.address?.state}</p>
+                <p>{order?.billing?.address?.area_code}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="flex justify-between">
-          <p className="text-lg font-semibold mb-2">Order Summary</p>
-          {renderOrderStatus(order)}
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Order ID</p>
-          <p className="text-base font-normal">{order?.orderId}</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Created On</p>
-          <p className="text-base font-normal">
-            {moment(order?.createdAt).format("MM-DD-YYYY")}{" "}
-            {moment(order?.createdAt).format("hh:mm a")}
-          </p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Order Status</p>
-          <p className="text-base font-normal">{order?.state}</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Payment Method</p>
-          <p className="text-base font-normal">{order?.payment.type}</p>
-        </div>
-        <div className="flex justify-between mt-3 mb-3">
-          <p className="text-base font-normal">Buyer name</p>
-          <p className="text-md font-normal">{order?.billing?.name}</p>
-        </div>
-        <Divider orientation="horizontal" />
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total Base Price</p>
-          <p className="text-base font-normal">{total_base_cost}</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total Taxes</p>
-          <p className="text-base font-normal">-</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total Delivery Fee</p>
-          <p className="text-base font-normal">{delivery_charges}</p>
-        </div>
-        <div className="flex justify-between mt-3">
-          <p className="text-base font-normal">Total Price</p>
-          <p className="text-base font-normal">{total_order_price || '-'}</p>
-        </div>
-      </div>
-      <div className={`${cardClass}`}>
-        <OrderItemsSummaryCard orderItems={order?.items} order={order}/>
-      </div>
-      <div className={`${cardClass} my-4 p-4`}>
-        <div className="flex h-full">
-          <div className="flex-1 mr-8">
-            <p className="text-lg font-semibold mb-2">Delivery Address</p>
-            <div className="flex flex-col justify-between my-3">
-              <p className="text-lg font-medium">
-                {getShortAddress(delivery_info?.end?.location?.address)}
-              </p>
-              <p>{delivery_info?.end?.location?.address?.state}</p>
-              <p>{delivery_info?.end?.location?.address?.area_code}</p>
-            </div>
-          </div>
-          <Divider orientation="vertical" />
-          <div className="flex-1 ml-8">
-            <p className="text-lg font-semibold mb-2">Billing Address</p>
-            <div className="flex flex-col justify-between my-3">
-              <p className="text-lg font-medium">
-                {getShortAddress(order?.billing?.address)}
-              </p>
-              <p>{order?.billing?.address?.state}</p>
-              <p>{order?.billing?.address?.area_code}</p>
+          <div className="w-full">
+            <div className={`${cardClass} my-4 p-4`}>
+              <p className="text-lg font-semibold mb-2">Customer Details</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-semibold">Name : &nbsp;</p>
+                <p className="text-sm font-medium">
+                  {delivery_info?.end?.person?.name}
+                </p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-semibold">Mobile : &nbsp;</p>
+                <p className="text-sm font-medium">
+                  +91 {delivery_info?.end?.contact?.phone}
+                </p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-semibold">Email : &nbsp;</p>
+                <p className="text-sm font-medium">
+                  {delivery_info?.end?.contact?.email}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-between">
-        <div className="w-full">
-          <div className={`${cardClass} my-4 p-4`}>
-            <p className="text-lg font-semibold mb-2">Customer Details</p>
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">Name : &nbsp;</p>
-              <p className="text-sm font-medium">
-                {delivery_info?.end?.person?.name}
-              </p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">Mobile : &nbsp;</p>
-              <p className="text-sm font-medium">
-                +91 {delivery_info?.end?.contact?.phone}
-              </p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">Email : &nbsp;</p>
-              <p className="text-sm font-medium">
-                {delivery_info?.end?.contact?.email}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
 const isOrderCancellable = (order_state) => {
-  return (order_state != "Completed" || order_state != "Cancelled");
+  return order_state != "Completed" || order_state != "Cancelled";
 };
 
 const OrderItemsSummaryCard = (props) => {
@@ -270,13 +302,17 @@ const OrderItemsSummaryCard = (props) => {
     const { data } = props;
 
     const handlePartialOrderCancel = (order_id, order_item_id) => {
-      postCall(`/api/v1/orders/${order_id}/item/cancel`, [{cancellation_reason_id: "004", id: order_item_id}]).then(resp => {
-        cogoToast.success("Product cancelled successfully!");
-        //getOrder();
-      }).catch(error => {
-        console.log(error);
-        cogoToast.error(error.response.data.error);
-      });
+      postCall(`/api/v1/orders/${order_id}/item/cancel`, [
+        { cancellation_reason_id: "004", id: order_item_id },
+      ])
+        .then((resp) => {
+          cogoToast.success("Product cancelled successfully!");
+          //getOrder();
+        })
+        .catch((error) => {
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
     };
 
     return (
@@ -291,7 +327,12 @@ const OrderItemsSummaryCard = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem style={{ padding: 6 }} onClick={() => handlePartialOrderCancel(props?.order_id, props?.row?.id)}>
+          <MenuItem
+            style={{ padding: 6 }}
+            onClick={() =>
+              handlePartialOrderCancel(props?.order_id, props?.row?.id)
+            }
+          >
             Cancel Order
           </MenuItem>
         </Menu>
@@ -387,7 +428,14 @@ const OrderItemsSummaryCard = (props) => {
                             <div>₹ {product?.MRP?.toLocaleString()}</div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
-                              {isOrderCancellable(props?.order?.state) ? (<ThreeDotsMenu order_id={props?.order?._id} row={order_item} />) : props?.order?.state}
+                              {isOrderCancellable(props?.order?.state) ? (
+                                <ThreeDotsMenu
+                                  order_id={props?.order?._id}
+                                  row={order_item}
+                                />
+                              ) : (
+                                props?.order?.state
+                              )}
                             </div>
                           ) : col.id === "totalPrice" ? (
                             <div>

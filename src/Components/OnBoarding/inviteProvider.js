@@ -82,7 +82,7 @@ const kycDetailFields = [
     title: "FSSAI Number",
     placeholder: "Enter your FSSAI number",
     type: "input",
-    required: true,
+    required: false,
   },
 ];
 

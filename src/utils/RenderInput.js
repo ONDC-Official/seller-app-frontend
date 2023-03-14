@@ -34,7 +34,7 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RenderInput = ({ item, state, stateHandler }) => {
+const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
   let error = false;
   let error_text = "";
 
@@ -58,13 +58,14 @@ const RenderInput = ({ item, state, stateHandler }) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
+          type={item.password ? "password" : "input"}
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           required
           size="small"
           autoComplete="off"
           placeholder={item.placeholder}
           error={error}
-          disabled={item?.isDisabled || false}
+          disabled={item?.isDisabled || previewOnly || false}
           helperText={error && error_text}
           value={state[item.id]}
           onChange={(e) =>
@@ -92,6 +93,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
+                  disabled={item?.isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
                   control={<Radio size="small" />}
@@ -140,6 +142,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={item?.isDisabled || previewOnly || false}
                   key={checkboxItem.key}
                   onChange={onChange}
                   name={checkboxItem.value}
@@ -168,6 +171,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Select
+            disabled={item?.isDisabled || previewOnly || false}
             size="small"
             placeholder={item.placeholder}
             value={state[item.id]}
@@ -196,6 +200,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
         </label>
         <FormControl>
           <Autocomplete
+            disabled={item?.isDisabled || previewOnly || false}
             multiple
             filterSelectedOptions
             size="small"
@@ -233,35 +238,46 @@ const RenderInput = ({ item, state, stateHandler }) => {
       const res = await postCall(url, data);
       return res;
     };
-    // const uploadFile = async (e) => {
-    //   const token = Cookies.get("token");
-    //   const file = e.target.files[0];
-
-    //   const formData = new FormData();
-    //   formData.append("file", file);
-
-    //   getSignUrl(file).then((d) => {
-    //     const url = d.urls;
-    //     fetch(url, {
-    //       method: "PUT",
-    //       data: formData,
-    //       headers: { ...(token && { "access-token": `Bearer ${token}` }),
-    //                  contentType : 'multipart/form-data'},
-    //     })
-    //       .then((response) => {
-    //         console.log(item.id, state);
-    //         response.json();
-    //         stateHandler({ ...state, [item.id]: d.path });
-    //       })
-    //       .then((json) => {});
-    //   });
-    // };
 
     const renderUploadedUrls = () => {
       if (state?.uploaded_urls) {
-        return state?.uploaded_urls?.map(url => {
-          return <img src={url} height={50} width={50} style={{margin:"10px"}}/>
-        })
+        return state?.uploaded_urls?.map((url) => {
+          return (
+            <img src={url} height={50} width={50} style={{ margin: "10px" }} />
+          );
+        });
+      }
+    };
+
+    if (previewOnly) {
+      if (typeof state[item.id] == "string") {
+        return (
+          <div
+            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
+          >
+            <label
+              className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+              style={{ width: 200 }}
+            >
+              {item.title}
+            </label>
+            <img className="ml-1 h-full w-full" src={state[item.id]} />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
+            className="flex"
+          >
+            <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              {item.title}
+            </label>
+            {state[item.id]?.map((img_url) => (
+              <img className="ml-1 h-full w-full" key={img_url} src={img_url} />
+            ))}
+          </div>
+        );
       }
     }
 
@@ -271,17 +287,8 @@ const RenderInput = ({ item, state, stateHandler }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
-        <div style={{display: "flex"}}>
-          {renderUploadedUrls()}
-        </div>
+        <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
         <label htmlFor="contained-button-file">
-          {/* <Button
-            size="small"
-            variant="contained"
-            component="span"
-            sx={{ background: "E0E0E0" }}
-            onClick={(e) => console.log(e.target.files)}
-          > */}
           <input
             id="contained-button-file"
             style={{ opacity: "none", marginBottom: 10 }}
@@ -303,7 +310,7 @@ const RenderInput = ({ item, state, stateHandler }) => {
                   data: file,
                   headers: {
                     ...(token && { "access-token": `Bearer ${token}` }),
-                    'Content-Type' : 'multipart/form-data'
+                    "Content-Type": "multipart/form-data",
                   },
                 })
                   .then((response) => {
@@ -312,14 +319,16 @@ const RenderInput = ({ item, state, stateHandler }) => {
                         const newState = {
                           ...prevState,
                           [item.id]: [...prevState[item.id], d.path],
-                          uploaded_urls: []
+                          uploaded_urls: [],
                         };
                         return newState;
                       });
                     } else {
-                      stateHandler({ ...state,
-                                     [item.id]: d.path,
-                                     uploaded_urls: [] });
+                      stateHandler({
+                        ...state,
+                        [item.id]: d.path,
+                        uploaded_urls: [],
+                      });
                     }
                     response.json();
                   })
@@ -353,8 +362,6 @@ const RenderInput = ({ item, state, stateHandler }) => {
                 </div>
               );
             })}
-          {/* Upload */}
-          {/* </Button> */}
         </label>
       </div>
     );
