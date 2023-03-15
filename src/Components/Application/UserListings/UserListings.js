@@ -59,13 +59,16 @@ const UserListings = () => {
   const [value, setValue] = useState(0);
   const [providers, setProviders] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const getAdmins = async () => {
-    const url = `/api/v1/users?limit=10&offset=0&role=Super Admin`;
+    const url = `/api/v1/users?limit=${rowsPerPage}&offset=${page}&role=Super Admin`;
     try {
       const res = await getCall(url);
       let data = res.data;
@@ -73,13 +76,14 @@ const UserListings = () => {
         d["formatted_status"] = d?.enabled ? "Active" : "Inactive";
       });
       setAdmins(data);
+      setTotalRecords(res.count);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
   };
 
   const getProviders = async () => {
-    const url = `/api/v1/users?limit=10&offset=0&role=Organization Admin`;
+    const url = `/api/v1/users?limit=${rowsPerPage}&offset=${page}&role=Organization Admin`;
     try {
       const res = await getCall(url);
       let data = res.data;
@@ -87,6 +91,7 @@ const UserListings = () => {
         d["formatted_status"] = d?.enabled ? "Active" : "Inactive";
       });
       setProviders(data);
+      setTotalRecords(res.count);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -95,7 +100,7 @@ const UserListings = () => {
   useEffect(() => {
     if (value == 0) getAdmins();
     else getProviders();
-  }, [value]);
+  }, [value, page, rowsPerPage]);
 
   return (
     <div>
@@ -137,6 +142,11 @@ const UserListings = () => {
           isProvider={value == 0 ? false : true}
           getAdmins={getAdmins}
           getProviders={getProviders}
+          totalRecords={totalRecords}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handlePageChange={(val) => setPage(val)}
+          handleRowsPerPageChange={(val) => setRowsPerPage(val)}
         />
       </div>
     </div>

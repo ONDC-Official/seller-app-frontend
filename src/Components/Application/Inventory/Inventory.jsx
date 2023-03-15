@@ -48,15 +48,18 @@ const columns = [
 ];
 
 export default function Inventory() {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
   const navigate = useNavigate();
   const { cancellablePromise } = useCancellablePromise();
-
   const [products, setProducts] = useState([]);
 
   const getProducts = async () => {
     try {
-      const res = await cancellablePromise(getCall(`/api/v1/products`));
+      const res = await cancellablePromise(getCall(`/api/v1/products?limit=${rowsPerPage}&offset=${page}`));
       setProducts(res.data);
+      setTotalRecords(res.count);
     } catch (error) {
       // cogoToast.error("Something went wrong!");
     }
@@ -91,7 +94,7 @@ export default function Inventory() {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [page, rowsPerPage]);
 
   const handleRefresh = (data) => {
     getProducts();
@@ -125,6 +128,11 @@ export default function Inventory() {
           columns={columns}
           data={products}
           onRefresh={handleRefresh}
+          totalRecords={totalRecords}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handlePageChange={(val) => setPage(val)}
+          handleRowsPerPageChange={(val) => setRowsPerPage(val)}
         />
       </div>
     </>

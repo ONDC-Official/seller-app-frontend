@@ -17,18 +17,27 @@ import Menu from "@mui/material/Menu";
 import { putCall } from "../../../Api/axios";
 
 const UserTable = (props) => {
-  const { value, getProviders, getAdmins, columns, data, isProvider } = props;
+  const {
+    getProviders, 
+    getAdmins,
+    columns,
+    data,
+    isProvider,
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+  } = props;
   const navigate = useNavigate();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const onPageChange = (event, newPage) => {
+    handlePageChange(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  const onRowsPerPageChange = (event) => {
+    handleRowsPerPageChange(parseInt(event.target.value, 10))
+    handlePageChange(0)
   };
 
   const ThreeDotsMenu = (props) => {
@@ -100,9 +109,7 @@ const UserTable = (props) => {
             ))}
           </TableHead>
           <TableBody>
-            {data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
+            {data.map((row, index) => {
                 return (
                   <TableRow
                     style={{ cursor: isProvider ? "pointer" : "default" }}
@@ -140,11 +147,11 @@ const UserTable = (props) => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={data.length}
+        count={totalRecords}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </Paper>
   );
