@@ -17,18 +17,15 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 
 export default function InventoryTable(props) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props
 
-  const { onRefresh } = props;
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const onPageChange = (event, newPage) => {
+    handlePageChange(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  const onRowsPerPageChange = (event) => {
+    handleRowsPerPageChange(parseInt(event.target.value, 10))
+    handlePageChange(0)
   };
 
   const ThreeDotsMenu = (props) => {
@@ -119,7 +116,6 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={index}>
@@ -143,11 +139,11 @@ export default function InventoryTable(props) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={props.data.length}
+        count={totalRecords}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </Paper>
   );

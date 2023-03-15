@@ -16,60 +16,59 @@ import { useNavigate } from "react-router-dom";
 import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
 
 export default function InventoryTable(props) {
+  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange } = props
   const navigate = useNavigate();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const onPageChange = (event, newPage) => {
+    handlePageChange(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  const onRowsPerPageChange = (event) => {
+    handleRowsPerPageChange(parseInt(event.target.value, 10))
+    handlePageChange(0)
   };
 
-  const ThreeDotsMenu = (props) => {
-    const [anchorEl, setAnchorEl] = useState(null);
+  // const ThreeDotsMenu = (props) => {
+  //   const [anchorEl, setAnchorEl] = useState(null);
 
-    function handleMenuClick(data) {}
+  //   function handleMenuClick(data) {}
 
-    const handleClick = (e) => {
-      setAnchorEl(e.currentTarget);
-    };
+  //   const handleClick = (e) => {
+  //     setAnchorEl(e.currentTarget);
+  //   };
 
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
+  //   const handleClose = () => {
+  //     setAnchorEl(null);
+  //   };
 
-    const { data } = props;
+  //   const { data } = props;
 
-    return (
-      <Fragment>
-        <Button onClick={(e) => handleClick(e)}>
-          <MoreVertIcon />
-        </Button>
-        <Menu
-          id="card-actions-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem
-            onClick={() => {
-              navigate(`/application/orders/${props.row.attributes.order_id}`);
-            }}
-          >
-            Order Details
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuClick(data.Val1)}>
-            Edit Order
-          </MenuItem>
-        </Menu>
-      </Fragment>
-    );
-  };
+  //   return (
+  //     <Fragment>
+  //       <Button onClick={(e) => handleClick(e)}>
+  //         <MoreVertIcon />
+  //       </Button>
+  //       <Menu
+  //         id="card-actions-menu"
+  //         anchorEl={anchorEl}
+  //         keepMounted
+  //         open={Boolean(anchorEl)}
+  //         onClose={handleClose}
+  //       >
+  //         <MenuItem
+  //           onClick={() => {
+  //             navigate(`/application/orders/${props.row.attributes.order_id}`);
+  //           }}
+  //         >
+  //           Order Details
+  //         </MenuItem>
+  //         <MenuItem onClick={() => handleMenuClick(data.Val1)}>
+  //           Edit Order
+  //         </MenuItem>
+  //       </Menu>
+  //     </Fragment>
+  //   );
+  // };
 
   const renderColumn = (row, column) => {
     const value = row[column.id];
@@ -165,7 +164,6 @@ export default function InventoryTable(props) {
           </TableHead>
           <TableBody>
             {props.data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
                 return (
                   <TableRow
@@ -194,11 +192,11 @@ export default function InventoryTable(props) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={props.data.length}
+        count={totalRecords}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </Paper>
   );

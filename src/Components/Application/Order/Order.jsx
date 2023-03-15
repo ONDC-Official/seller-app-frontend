@@ -60,21 +60,25 @@ const columns = [
 export default function Orders() {
   const { cancellablePromise } = useCancellablePromise();
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const getOrders = () => {
-    const url = `/api/v1/orders`;
+    const url = `/api/v1/orders?limit=${rowsPerPage}&offset=${page}`;
     getCall(url)
       .then((resp) => {
         setOrders(resp.data);
+        setTotalRecords(resp.count);
       })
       .catch((error) => {
         console.log(error.response);
-      });
+      })
   };
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [page, rowsPerPage]);
 
   return (
     <>
@@ -83,7 +87,15 @@ export default function Orders() {
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Orders</label>
         </div>
-        <OrderTable columns={columns} data={orders} />
+        <OrderTable
+          columns={columns}
+          data={orders}
+          totalRecords={totalRecords}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          handlePageChange={(val) => setPage(val)}
+          handleRowsPerPageChange={(val) => setRowsPerPage(val)}
+        />
       </div>
     </>
   );
