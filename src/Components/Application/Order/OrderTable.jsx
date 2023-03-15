@@ -32,9 +32,7 @@ export default function InventoryTable(props) {
   const ThreeDotsMenu = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
-    function handleMenuClick(data) {
-      console.log(data);
-    }
+    function handleMenuClick(data) {}
 
     const handleClick = (e) => {
       setAnchorEl(e.currentTarget);

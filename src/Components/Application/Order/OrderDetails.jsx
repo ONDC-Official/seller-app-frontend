@@ -112,17 +112,17 @@ const OrderDetails = () => {
       return (
         <div>
           <Button
-            sx={{ width: 120 }}
+            sx={{ width: 110 }}
             className="w-56 !capitalize !py-2 !px-0"
-            color="success"
+            variant="contained"
             onClick={() => handleCompleteOrderAccept(order_details?._id)}
           >
             Accept Order
           </Button>
           <Button
-            sx={{ width: 120 }}
+            sx={{ width: 110, marginLeft: 1 }}
+            variant="contained"
             className="w-56 !capitalize !py-2 !px-0"
-            color="error"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
           >
             Cancel Order
@@ -143,8 +143,9 @@ const OrderDetails = () => {
   return (
     <>
       <Button
-        style={{ marginLeft: 30, marginTop: 10 }}
-        onClick={() => navigate("/application/inventory")}
+        variant="outlined"
+        style={{ marginLeft: 32, marginTop: 10 }}
+        onClick={() => navigate("/application/orders")}
       >
         <ArrowBackIcon style={{ marginRight: 10, fontSize: 20 }} />
         Back
