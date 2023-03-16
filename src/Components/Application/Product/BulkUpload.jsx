@@ -46,7 +46,7 @@ const BulkUpload = () => {
           </label>
           <div className="mt-6 flex flex-col">
             <label className="ml-2 md:mb-4 md:mt-3 mt-2 font text-xm">
-              Please select an excel file. To download sample template, click <Link href={`${process.env.REACT_APP_BASE_URL}/api/v1/products/upload/bulk/template`} target="_blank" style={{}}>here</Link>
+              Please select an excel file. To download sample template, click <Link href={`${process.env.REACT_APP_SELLER_BACKEND_URL}/api/v1/products/upload/bulk/template`} target="_blank" style={{}}>here</Link>
             </label>
             <input
               className="ml-2"
