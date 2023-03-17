@@ -18,6 +18,7 @@ import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import Cookies from "js-cookie";
 import MyButton from "../Components/Shared/Button";
+import PlacePickerMap from '../Components/PlacePickerMap/PlacePickerMap'
 import axios from "axios";
 
 const CssTextField = styled(TextField)({
@@ -189,6 +190,32 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             ))}
           </Select>
         </FormControl>
+      </div>
+    );
+  } else if (item.type == "location-picker") {
+    return (
+      <div className="py-1 flex flex-col">
+        <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+          {item.title}
+          {item.required && <span className="text-[#FF0000]"> *</span>}
+        </label>
+        <div style={{ width: '100%', height: '400px' }}>
+          <PlacePickerMap location={state[item.id] ? {lat: state[item.id].lat, lng: state[item.id].long} : {}} setLocation={(location) => {
+            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location
+            stateHandler({
+              ...state,
+              [item.id]: {
+                lat: lat,
+                long: lng,
+              },
+              address_city: city,
+              state: stateVal,
+              country,
+              area_code,
+              locality
+            })
+          }} />
+        </div>
       </div>
     );
   } else if (item.type == "multi-select") {

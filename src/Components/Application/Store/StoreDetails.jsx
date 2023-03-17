@@ -42,9 +42,9 @@ let storeFields = [
   //   id: "store_location",
   //   title: "Store Location",
   //   placeholder: "Store Location",
-  //   type: "input",
+  //   type: "location-picker",
   //   required: false,
-  // }
+  // },
   {
     id: "location_availability",
     title: "Location availability",

@@ -63,7 +63,7 @@ let storeFields = [
     id: "location",
     title: "Store Location",
     placeholder: "Store Location",
-    type: "input",
+    type: "location-picker",
     required: false,
   },
   {
@@ -279,7 +279,7 @@ const ProviderInitialSteps = () => {
     delete data["country"];
     delete data["area_code"];
     delete data["locality"];
-    delete data["location"];
+    // delete data["location"];
     delete data["locationAvailability"];
     delete data["email"];
     delete data["mobile"];
