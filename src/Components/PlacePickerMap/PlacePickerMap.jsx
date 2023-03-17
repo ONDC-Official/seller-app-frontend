@@ -21,10 +21,8 @@ export default function MapPointer(props) {
 
   // fetch MMI API token
   useEffect(() => {
-    axios.post('/api/v1/auth/mmi/token', null, {
-      headers: { "Content-Type": 'application/json' },
-    }).then((res) => {
-      setApiKey(res.access_token)
+    axios.post('/api/v1/auth/mmi/token').then((res) => {
+      setApiKey(res.data.access_token)
     })
   }, [])
 
