@@ -19,9 +19,13 @@ export default function MapPointer(props) {
   const [script1Loaded, setScript1Loaded] = useState(false)
   const [script2Loaded, setScript2Loaded] = useState(false)
   
+  console.log('*********process.env.REACT_APP_BUYER_BACKEND_URL*********', process.env.REACT_APP_BUYER_BACKEND_URL)
   // fetch MMI API token
   useEffect(() => {
-    axios.post(`${process.env.REACT_APP_BUYER_BACKEND_URL}/mmi/api/fetch_tokens_for_mmi`, null, {
+    axios.request({
+      baseURL: process.env.REACT_APP_BUYER_BACKEND_URL,
+      url: '/mmi/api/fetch_tokens_for_mmi',
+      method: 'POST',
       headers: {
         "Content-Type": 'application/json'
       },
