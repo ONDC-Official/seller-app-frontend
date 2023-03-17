@@ -23,7 +23,7 @@ export default function MapPointer(props) {
   // fetch MMI API token
   useEffect(() => {
     axios.request({
-      baseURL: process.env.REACT_APP_BUYER_BACKEND_URL,
+      baseURL: 'https://buyer-app-preprod.ondc.org',
       url: '/mmi/api/fetch_tokens_for_mmi',
       method: 'POST',
       headers: {
