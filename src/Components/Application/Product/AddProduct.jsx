@@ -55,7 +55,14 @@ const productFields = [
     id: "GST_Percentage",
     title: "GST Percentage",
     placeholder: "GST Percentage",
-    type: "input",
+    type: "select",
+    options: [
+      { key: "0", value: 0 },
+      { key: "5", value: 5 },
+      { key: "12", value: 12 },
+      { key: "18", value: 18 },
+      { key: "28", value: 28 },
+    ],
     required: true,
   },
   {
@@ -186,8 +193,8 @@ const productFields = [
   },
   {
     id: "description",
-    title: "Description",
-    placeholder: "Description",
+    title: "Short description",
+    placeholder: "Short description",
     type: "input",
     required: true,
   },
