@@ -96,8 +96,8 @@ let storeFields = [
   },
   {
     id: "area_code",
-    title: "Area code",
-    placeholder: "Area code",
+    title: "PIN code",
+    placeholder: "PIN code",
     type: "input",
     required: false,
   },

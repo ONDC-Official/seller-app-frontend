@@ -180,7 +180,7 @@ let storeFields = [
   },
   {
     id: "area_code",
-    title: "Area code",
+    title: "PIN code",
     type: "input",
     required: true,
   },

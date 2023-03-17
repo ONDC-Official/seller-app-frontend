@@ -75,6 +75,30 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         />
       </div>
     );
+  } else if (item.type == "number") {
+    return (
+      <div className="py-1 flex flex-col">
+        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          {item.title}
+          {item.required && <span className="text-[#FF0000]"> *</span>}
+        </label>
+        <CssTextField
+          type="number"
+          className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          required
+          size="small"
+          InputProps={{ inputProps: { min: item.min || 0, max: item.max || 100000 } }}
+          placeholder={item.placeholder}
+          error={error}
+          disabled={item?.isDisabled || previewOnly || false}
+          helperText={error && error_text}
+          value={state[item.id]}
+          onChange={(e) =>
+            stateHandler({ ...state, [item.id]: e.target.value })
+          }
+        />
+      </div>
+    );
   } else if (item.type == "radio") {
     return (
       <div className="py-1 flex flex-col">
