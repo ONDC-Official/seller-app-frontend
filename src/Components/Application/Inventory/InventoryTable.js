@@ -12,9 +12,16 @@ import CachedIcon from "@mui/icons-material/Cached";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
+
+const StyledTableCell = styled(TableCell)({
+  "&.MuiTableCell-root": {
+    fontWeight: 'bold'
+  },
+});
 
 export default function InventoryTable(props) {
   const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props
@@ -67,7 +74,7 @@ export default function InventoryTable(props) {
           onClose={handleClose}
         >
           <Link to="/application/add-products" state={{ productId: row._id }}>
-            <MenuItem>Edit Product</MenuItem>
+            <MenuItem>Edit</MenuItem>
           </Link>
           <MenuItem
             onClick={() => handlePublishState(row?._id, row?.published)}
@@ -102,16 +109,15 @@ export default function InventoryTable(props) {
           <TableHead>
             <TableRow>
               {props.columns.map((column) => (
-                <TableCell
+                <StyledTableCell
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
-                  className="!font-medium"
                 >
                   {column.label}
-                </TableCell>
+                </StyledTableCell>
               ))}
-              <TableCell>Action</TableCell>
+              <StyledTableCell>Action</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -11,9 +11,16 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { styled } from "@mui/material/styles";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
+
+const StyledTableCell = styled(TableCell)({
+  "&.MuiTableCell-root": {
+    fontWeight: 'bold'
+  },
+});
 
 export default function InventoryTable(props) {
   const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange } = props
@@ -151,14 +158,14 @@ export default function InventoryTable(props) {
           <TableHead>
             <TableRow>
               {props.columns.map((column) => (
-                <TableCell
+                <StyledTableCell
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
                   className="font-medium"
                 >
                   {column.label}
-                </TableCell>
+                </StyledTableCell>
               ))}
             </TableRow>
           </TableHead>

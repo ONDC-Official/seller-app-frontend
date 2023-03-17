@@ -97,8 +97,9 @@ const productFields = [
     id: "maxAllowedQty",
     title: "Max allowed quantity",
     placeholder: "Max allowed quantity",
-    type: "input",
+    type: "number",
     required: true,
+    min: 1
   },
   {
     id: "UOM",
@@ -293,8 +294,8 @@ export default function AddProduct() {
         postCall(`/api/v1/products`, product)
       );
       setProduct({});
-      navigate("/application/inventory");
       cogoToast.success("Product added successfully!");
+      navigate("/application/inventory");
     } catch (error) {
       cogoToast.error(error.response.data.error);
       console.log(error);
@@ -326,6 +327,7 @@ export default function AddProduct() {
       delete product["uploaded_urls"];
       const res = await  putCall(`/api/v1/products/${state.productId}`, product);
       cogoToast.success("Product updated successfully!");
+      navigate("/application/inventory");
     } catch (error) {
       cogoToast.error("Something went wrong!");
       console.log(error);

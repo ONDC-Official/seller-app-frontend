@@ -14,7 +14,14 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { styled } from "@mui/material/styles";
 import { putCall } from "../../../Api/axios";
+
+const StyledTableCell = styled(TableCell)({
+  "&.MuiTableCell-root": {
+    fontWeight: 'bold'
+  },
+});
 
 const UserTable = (props) => {
   const {
@@ -98,14 +105,13 @@ const UserTable = (props) => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             {columns.map((column) => (
-              <TableCell
+              <StyledTableCell
                 key={column.id}
                 align={column.align}
                 style={{ minWidth: column.minWidth }}
-                className="!font-medium"
               >
                 {column.label}
-              </TableCell>
+              </StyledTableCell>
             ))}
           </TableHead>
           <TableBody>
