@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
+import axios from "axios";
+import ScriptTag from 'react-script-tag';
 import './PlacePickerMap.css'
 
 export default function MapPointer(props) {
@@ -13,6 +15,21 @@ export default function MapPointer(props) {
     setLocation
   } = props
   const [map, setMap] = useState()
+  const [apiKey, setApiKey] = useState()
+  const [script1Loaded, setScript1Loaded] = useState(false)
+  const [script2Loaded, setScript2Loaded] = useState(false)
+  
+  // fetch MMI API token
+  useEffect(() => {
+    axios.post(`${process.env.REACT_APP_BUYER_BACKEND_URL}/mmi/api/fetch_tokens_for_mmi`, null, {
+      headers: {
+        "Content-Type": 'application/json'
+      },
+    }).then((res) => {
+      setApiKey(res.data)
+    })
+  }, [])
+
   const ref = useCallback((node) => {
     // eslint-disable-next-line
     const map = new MapmyIndia.Map(node, { center, zoom, zoomControl, search });
@@ -34,18 +51,16 @@ export default function MapPointer(props) {
       search: true,
       closeBtn: false,
       topText: 'Search location',
-      /*
-      closeBtn_callback:closeBtn_callback,
-      pinImage:'pin.png', //custom pin image
-      pinHeight:40
-      */
     };
     // eslint-disable-next-line
     new MapmyIndia.placePicker(options);
-    // picker.setLocation(location);
   }, [map, props])
 
   return (
-    <div id="map" ref={ref} />
+    <div style={{ width: '100%', height: '100%' }}>
+      <ScriptTag isHydrating={true} type="text/javascript" src={`https://apis.mapmyindia.com/advancedmaps/v1/${apiKey}/map_load?v=1.3`} onLoad={() => setScript1Loaded(true)} />
+      <ScriptTag isHydrating={true} type="text/javascript" src={`https://apis.mapmyindia.com/advancedmaps/api/${apiKey}/map_sdk_plugins`} onLoad={() => setScript2Loaded(true)} />
+      {script1Loaded && script2Loaded && <div id="map" ref={ref} />}
+    </div>
   );
 }
