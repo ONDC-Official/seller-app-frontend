@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import cogoToast from "cogo-toast";
 import axios from "axios";
 import ScriptTag from 'react-script-tag';
@@ -14,8 +14,9 @@ export default function MapPointer(props) {
     location,
     setLocation
   } = props
-  const [map, setMap] = useState()
   const [apiKey, setApiKey] = useState()
+  const [map, setMap] = useState()
+  const [mapInitialised, setMapInitialised] = useState(false)
   const [script1Loaded, setScript1Loaded] = useState(false)
   const [script2Loaded, setScript2Loaded] = useState(false)
 
@@ -27,30 +28,35 @@ export default function MapPointer(props) {
   }, [])
 
   const ref = useCallback((node) => {
-    // eslint-disable-next-line
-    const map = new MapmyIndia.Map(node, { center, zoom, zoomControl, search });
-    setMap(map)
+    if (!mapInitialised && node != null) {
+      // eslint-disable-next-line
+      const map = new MapmyIndia.Map(node, { center, zoom, zoomControl, search });
+      setMap(map)
+      setMapInitialised(true)
+    }
   }, [])
 
   const onChange = (data) => {
     const { lat, lng } = data
-    if (lat && lng) setLocation(data)
+    if (lat && lng) {
+      setLocation(data)
+    }
     else cogoToast.error('Location not found. Please try moving map.');
   }
 
   useEffect(() => {
-    if (!map) return
+    if (!mapInitialised) return
     const options = {
       map,
       callback: onChange,
-      location,//to open that location on map on initailization
       search: true,
       closeBtn: false,
       topText: 'Search location',
     };
+    options.location = (location?.lat && location?.lng) ? location : { lat: 28.679079, lng: 77.069710 }
     // eslint-disable-next-line
     new MapmyIndia.placePicker(options);
-  }, [map, props])
+  }, [mapInitialised, props])
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
