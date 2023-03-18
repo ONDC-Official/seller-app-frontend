@@ -46,20 +46,6 @@ let storeFields = [
     required: true,
   },
   {
-    id: "categories",
-    title: "Supported product categories",
-    placeholder: "Supported product categories",
-    options: [
-      { key: "Grocery", value: "grocery" },
-      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-      { key: "Fashion", value: "fashion" },
-      { key: "Home and Decor", value: "home_and_decor" },
-      { key: "F&B", value: "f_and_b" },
-    ],
-    type: "multi-select",
-    required: true,
-  },
-  {
     id: "location",
     title: "Store Location",
     placeholder: "Store Location",
@@ -107,6 +93,20 @@ let storeFields = [
     placeholder: "Locality",
     type: "input",
     required: false,
+  },
+  {
+    id: "categories",
+    title: "Supported product categories",
+    placeholder: "Supported product categories",
+    options: [
+      { key: "Grocery", value: "grocery" },
+      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
+      { key: "Fashion", value: "fashion" },
+      { key: "Home and Decor", value: "home_and_decor" },
+      { key: "F&B", value: "f_and_b" },
+    ],
+    type: "multi-select",
+    required: true,
   },
   {
     id: "locationAvailability",
