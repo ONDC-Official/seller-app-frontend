@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../Shared/ErrorMessage";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import { AddCookie, getValueFromCookie } from "../../../utils/cookies";
 import { postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
@@ -33,7 +34,10 @@ export default function Login() {
   const [inlineError, setInlineError] = useState({
     email_error: "",
     password_error: "",
+    captcha_error: "",
   });
+  const [captchaVal, setCaptchaVal] = useState('');
+  const [enableCaptcha, setEnableCaptcha] = useState(false);
 
   // use this function to check the email
   function checkEmail() {
@@ -61,11 +65,19 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (enableCaptcha && !validateCaptcha(captchaVal)) {
+      setInlineError((inlineError) => ({
+        ...inlineError,
+        captcha_error: "Captcha does not match",
+      }));
+      return
+    }
     const url = "/api/v1/auth/login";
     try {
       const res = await postCall(url, login);
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
+      setEnableCaptcha(true)
       cogoToast.error(error.response.data.error);
     }
   };
@@ -82,6 +94,10 @@ export default function Login() {
       navigate("/application/inventory");
     }
   }, []);
+
+  useEffect(() => {
+    if (enableCaptcha) loadCaptchaEnginge(6)
+  }, [enableCaptcha])
 
   const loginForm = (
     <div className="m-auto w-10/12 md:w-3/4">
@@ -156,6 +172,26 @@ export default function Login() {
       </div>
       {inlineError.password_error && (
         <ErrorMessage>{inlineError.password_error}</ErrorMessage>
+      )}
+      {enableCaptcha && (
+        <>
+          <div className="py-1"><LoadCanvasTemplate /></div>
+          <div className="py-1">
+            <CssTextField
+              required
+              size="small"
+              name="captchaVal"
+              type="text"
+              placeholder="Enter Captcha Value"
+              autoComplete="off"
+              className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              onChange={(event) => setCaptchaVal(event.target.value)}
+            />
+          </div>
+          {inlineError.captcha_error && (
+            <ErrorMessage>{inlineError.captcha_error}</ErrorMessage>
+          )}
+        </>
       )}
       <div className="py-3 pt-6  text-center flex flex-row justify-center">
         <Button
