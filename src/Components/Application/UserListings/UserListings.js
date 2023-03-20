@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
 import UserTable from "./UserTable";
-import { Button } from "@mui/material";
-import Tab from "@material-ui/core/Tab";
+import { Button, Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import Navbar from "../../Shared/Navbar";
-import Tabs from "@material-ui/core/Tabs";
 import { getCall } from "../../../Api/axios";
 
 const superAdminCols = [
