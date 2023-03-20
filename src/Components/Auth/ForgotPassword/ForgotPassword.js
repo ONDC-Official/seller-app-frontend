@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import AuthActionCard from "../AuthActionCard/AuthActionCard";
 import { NavLink } from "react-router-dom";
 import { Button } from "@mui/material";
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 import { isEmailValid } from "../../../utils/validations";
 import { postCall } from "../../../Api/axios";
 
@@ -22,30 +23,38 @@ const CssTextField = styled(TextField)({
 });
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [sent, setSent] = useState(true);
+  const [email, setEmail] = useState('');
+  const [captchaVal, setCaptchaVal] = useState('');
+  const [error, setError] = useState(false);
+  const [msg, setMsg] = useState('');
 
   useEffect(() => {
-    setError("");
-    setSent(false);
+    loadCaptchaEnginge(6)
   }, []);
 
   const checkDisabled = () => {
-    if (email.trim() == "" || !isEmailValid(email)) return true;
+    if (email.trim() === '' || !isEmailValid(email) || captchaVal.trim() === '') return true;
     return false;
   };
 
   const forgotPassword = async () => {
     const url = `/api/v1/auth/forgotPassword`;
-    setSent(false);
     try {
-      const res = await postCall(url, { email });
-      setSent(true);
+      await postCall(url, { email });
       setError(false);
+      setMsg('OTP sent to your email')
     } catch (error) {
-      setSent(false);
-      setError(error.response.data.error);
+      setError(true);
+      setMsg(error.response.data.error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (validateCaptcha(captchaVal) === true) {
+      await forgotPassword()
+    } else {
+      setError(true)
+      setMsg('Captcha does not match');
     }
   };
 
@@ -71,17 +80,26 @@ const ForgotPassword = () => {
             onChange={(event) => setEmail(event.target.value)}
           />
         </div>
-        {error && <p className={`text-xs text-red-600 mt-2`}>{error}</p>}
-        {sent && (
-          <p className={`text-xs text-green-600 mt-2`}>
-            "OTP sent to your email"
-          </p>
-        )}
+        <br />
+        <LoadCanvasTemplate />
+        <div className="py-1">
+          <CssTextField
+            required
+            size="small"
+            name="captchaVal"
+            type="text"
+            placeholder="Enter Captcha Value"
+            autoComplete="off"
+            className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+            onChange={(event) => setCaptchaVal(event.target.value)}
+          />
+        </div>
+        {msg && <p className={`text-xs ${error ? 'text-red-600' : 'text-green-600'} mt-2`}>{msg}</p>}
         <br />
         <Button
           variant="contained"
           primary
-          onClick={forgotPassword}
+          onClick={handleSubmit}
           disabled={checkDisabled()}
         >
           Get OTP
