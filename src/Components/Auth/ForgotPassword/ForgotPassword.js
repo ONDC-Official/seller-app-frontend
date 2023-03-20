@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import AuthActionCard from "../AuthActionCard/AuthActionCard";
 import { NavLink } from "react-router-dom";
 import { Button } from "@mui/material";
-import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
 import { isEmailValid } from "../../../utils/validations";
 import { postCall } from "../../../Api/axios";
 

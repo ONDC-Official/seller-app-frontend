@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../Shared/ErrorMessage";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
-import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { loadCaptchaEnginge, LoadCanvasTemplate, validateCaptcha } from 'react-simple-captcha';
 import { AddCookie, getValueFromCookie } from "../../../utils/cookies";
 import { postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
@@ -77,8 +77,9 @@ export default function Login() {
       const res = await postCall(url, login);
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
-      setEnableCaptcha(true)
       cogoToast.error(error.response.data.error);
+      setEnableCaptcha(true)
+      loadCaptchaEnginge(6)
     }
   };
 
