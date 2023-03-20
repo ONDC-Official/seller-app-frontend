@@ -62,6 +62,7 @@ export default function Sidebar(props) {
 
   async function logout() {
     deleteAllCookies();
+    localStorage.clear();
     navigate("/");
   }
 
