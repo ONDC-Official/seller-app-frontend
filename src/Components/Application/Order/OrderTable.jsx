@@ -93,13 +93,13 @@ export default function InventoryTable(props) {
       case "createdAt":
         return (
           <>
-            <span>{moment(value).format("DD-MM-YYYY")}</span>
+            <span>{moment(value).format("DD-MM-YYYY hh:mm A")}</span>
           </>
         );
       case "updatedAt":
         return (
           <>
-            <span>{moment(value).format("DD-MM-YYYY")}</span>
+            <span>{moment(value).format("DD-MM-YYYY hh:mm A")}</span>
           </>
         );
       case "state":
