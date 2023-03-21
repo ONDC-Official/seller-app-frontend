@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import MyButton from "../../Shared/Button";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Navbar from "../../Shared/Navbar";
 import { getCall, postCall } from "../../../Api/axios.js";
-import { Link, Button } from "@mui/material";
+import { Link, Button, CircularProgress } from "@mui/material";
 import cogoToast from "cogo-toast";
 
 const BulkUpload = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = React.useState(null);
+  const [loading, setLoading] = useState(false)
 
   const uploadSelectedFile = () => {
     if (selectedFile) {
+      setLoading(true)
       const formData = new FormData();
       formData.append("xlsx", selectedFile);
       postCall("api/v1/products/upload/bulk", formData)
@@ -21,7 +23,7 @@ const BulkUpload = () => {
         }).catch(error => {
           console.log(error);
           cogoToast.error(error.response.data.error);
-        });
+        }).finally(() => setLoading(false));
     } else {
       alert("Please select the file to upload");
     }
@@ -60,7 +62,7 @@ const BulkUpload = () => {
           </div>
           <div className="mt-6 flex flex-col-1">
             <Button variant="contained" color="primary" onClick={uploadSelectedFile}>
-              Upload
+              {loading ? <>Upload&nbsp;&nbsp;<CircularProgress size={24} sx={{ color: 'white' }} /></>: <span>Upload</span>}
             </Button>
           </div>
         </div>

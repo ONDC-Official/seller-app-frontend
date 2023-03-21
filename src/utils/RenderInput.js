@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -38,6 +38,7 @@ const CssTextField = styled(TextField)({
 const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
   let error = false;
   let error_text = "";
+  const uploadFileRef = useRef(null)
 
   if (item.email) {
     if (state[item.id] != "" && !isEmailValid(state[item.id])) {
@@ -334,57 +335,59 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
 
     return (
       <div className="py-1 flex flex-col">
-        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+        <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
-        <label htmlFor="contained-button-file">
+        {/* <label htmlFor="contained-button-file"> */}
           <input
+            ref={uploadFileRef}
             id="contained-button-file"
+            name="contained-button-file"
             style={{ opacity: "none", marginBottom: 10 }}
             accept="image/*"
             type="file"
+            multiple={item?.multiple || false}
             key={item?.id}
             onChange={(e) => {
               const token = Cookies.get("token");
-              const file = e.target.files[0];
+              for (const file of e.target.files) {
+                const formData = new FormData();
+                formData.append("file", file);
+                getSignUrl(file).then((d) => {
+                  const url = d.urls;
 
-              const formData = new FormData();
-              formData.append("file", file);
-
-              getSignUrl(file).then((d) => {
-                const url = d.urls;
-
-                axios(url, {
-                  method: "PUT",
-                  data: file,
-                  headers: {
-                    ...(token && { "access-token": `Bearer ${token}` }),
-                    "Content-Type": "multipart/form-data",
-                  },
-                })
-                  .then((response) => {
-                    if (item.multiple) {
-                      stateHandler((prevState) => {
-                        const newState = {
-                          ...prevState,
-                          [item.id]: [...prevState[item.id], d.path],
-                          uploaded_urls: [],
-                        };
-                        return newState;
-                      });
-                    } else {
-                      stateHandler({
-                        ...state,
-                        [item.id]: d.path,
-                        uploaded_urls: [],
-                      });
-                    }
-                    response.json();
+                  axios(url, {
+                    method: "PUT",
+                    data: formData,
+                    headers: {
+                      ...(token && { "access-token": `Bearer ${token}` }),
+                      "Content-Type": "multipart/form-data",
+                    },
                   })
-                  .then((json) => {});
-              });
+                    .then((response) => {
+                      if (item.multiple) {
+                        stateHandler((prevState) => {
+                          const newState = {
+                            ...prevState,
+                            [item.id]: [...prevState[item.id], d.path],
+                            uploaded_urls: [],
+                          };
+                          return newState;
+                        });
+                      } else {
+                        stateHandler({
+                          ...state,
+                          [item.id]: d.path,
+                          uploaded_urls: [],
+                        });
+                      }
+                      response.json();
+                    })
+                    .then((json) => {});
+                });
+              };
             }}
           />
           {item.multiple &&
@@ -396,6 +399,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                     className="w-10 mr-2 !text-black"
                     onClick={(e) => {
                       e.stopPropagation();
+                      // reset file input 
+                      uploadFileRef.current.value = null
                       stateHandler((prevState) => {
                         const newState = {
                           ...prevState,
@@ -413,7 +418,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 </div>
               );
             })}
-        </label>
+        {/* </label> */}
       </div>
     );
   }

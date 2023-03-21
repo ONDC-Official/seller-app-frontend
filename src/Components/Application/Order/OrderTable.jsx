@@ -90,10 +90,16 @@ export default function InventoryTable(props) {
             <span>{row.orderId}</span>
           </>
         );
-      case "publishedAt":
+      case "createdAt":
         return (
           <>
-            <span>{moment(value).format("d-MM-YYYY")}</span>
+            <span>{moment(value).format("DD-MM-YYYY")}</span>
+          </>
+        );
+      case "updatedAt":
+        return (
+          <>
+            <span>{moment(value).format("DD-MM-YYYY")}</span>
           </>
         );
       case "state":
