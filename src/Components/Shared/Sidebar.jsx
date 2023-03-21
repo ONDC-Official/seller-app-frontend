@@ -13,7 +13,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { deleteAllCookies } from "../../utils/cookies";
-import { getCall } from "../../Api/axios";
+import { getCall, postCall } from "../../Api/axios";
 
 export default function Sidebar(props) {
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ export default function Sidebar(props) {
   };
 
   async function logout() {
+    await postCall(`/api/v1/auth/logout`);
     deleteAllCookies();
     localStorage.clear();
     navigate("/");
