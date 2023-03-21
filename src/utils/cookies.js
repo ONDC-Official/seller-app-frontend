@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 export function AddCookie(key, value) {
   const cookie_expiry_time = new Date();
-  cookie_expiry_time.setTime(cookie_expiry_time.getTime() + 3600 * 1000); // expires in 1 hour
+  cookie_expiry_time.setTime(cookie_expiry_time.getTime() + 28800 * 1000); // expires in 8 hr
   Cookies.set(key, value, {
     expires: cookie_expiry_time,
   });

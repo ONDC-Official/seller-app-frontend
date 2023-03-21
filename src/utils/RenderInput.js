@@ -360,7 +360,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
 
                   axios(url, {
                     method: "PUT",
-                    data: formData,
+                    data: file,
                     headers: {
                       ...(token && { "access-token": `Bearer ${token}` }),
                       "Content-Type": "multipart/form-data",
@@ -407,6 +407,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                           [item.id]: prevState[item.id].filter(
                             (ele) => ele != name
                           ),
+                          uploaded_urls: [],
                         };
                         return newState;
                       });
