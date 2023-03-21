@@ -8,9 +8,16 @@ import { getCall } from "../../../Api/axios";
 const columns = [
   { id: "orderId", label: "Order Id", minWidth: 120, align: "center" },
   {
-    id: "publishedAt",
-    label: "Date",
-    minWidth: 110,
+    id: "createdAt",
+    label: "Created On",
+    minWidth: 120,
+    format: (value) => value.toLocaleString("en-US"),
+    align: "center",
+  },
+  {
+    id: "updatedAt",
+    label: "Updated On",
+    minWidth: 120,
     format: (value) => value.toLocaleString("en-US"),
     align: "center",
   },
