@@ -8,12 +8,17 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   TextField,
 } from "@mui/material";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import moment from 'moment'
 import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import Cookies from "js-cookie";
@@ -36,21 +41,7 @@ const CssTextField = styled(TextField)({
 });
 
 const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
-  let error = false;
-  let error_text = "";
   const uploadFileRef = useRef(null)
-
-  if (item.email) {
-    if (state[item.id] != "" && !isEmailValid(state[item.id])) {
-      error = true;
-      error_text = "Please enter a valid email address";
-    }
-  } else if (item.mobile) {
-    if (!isPhoneNoValid(state[item.id])) {
-      error = true;
-      error_text = "Please enter a valid mobile number";
-    }
-  }
 
   if (item.type == "input") {
     return (
@@ -62,13 +53,13 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <CssTextField
           type={item.password ? "password" : "input"}
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-          required
+          required={item.required}
           size="small"
           autoComplete="off"
           placeholder={item.placeholder}
-          error={error}
+          error={item.error || false}
           disabled={item?.isDisabled || previewOnly || false}
-          helperText={error && error_text}
+          helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
             stateHandler({ ...state, [item.id]: e.target.value })
@@ -86,13 +77,13 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <CssTextField
           type="number"
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-          required
+          required={item.required}
           size="small"
           InputProps={{ inputProps: { min: item.min || 0, max: item.max || 100000 } }}
           placeholder={item.placeholder}
-          error={error}
+          error={item.error || false}
           disabled={item?.isDisabled || previewOnly || false}
-          helperText={error && error_text}
+          helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
             stateHandler({ ...state, [item.id]: e.target.value })
@@ -195,10 +186,11 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
-        <FormControl>
+        <FormControl error={item.error || false}>
           <Select
             disabled={item?.isDisabled || previewOnly || false}
             size="small"
+            required={item.required}
             placeholder={item.placeholder}
             value={state[item.id]}
             onChange={(e) =>
@@ -214,6 +206,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               </MenuItem>
             ))}
           </Select>
+          {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
         </FormControl>
       </div>
     );
@@ -241,6 +234,31 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             })
           }} />
         </div>
+      </div>
+    );
+  } else if (item.type == "date-picker") {
+    return (
+      <div className="py-1 flex flex-col">
+        <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+          {item.title}
+          {item.required && <span className="text-[#FF0000]"> *</span>}
+        </label>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            format={item.format || "DD/MM/YYYY"}
+            view={['year', 'month']}
+            onChange={(newValue) => {
+              const date = moment(newValue).format(item.format || 'DD/MM/YYYY').toString();
+              stateHandler((prevState) => {
+                const newState = {
+                  ...prevState,
+                  [item.id]: date,
+                };
+                return newState;
+              });
+            }}
+          />
+        </LocalizationProvider>
       </div>
     );
   } else if (item.type == "multi-select") {
@@ -340,6 +358,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
+        <FormControl error={item.error}>
         {/* <label htmlFor="contained-button-file"> */}
           <input
             ref={uploadFileRef}
@@ -419,7 +438,9 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 </div>
               );
             })}
+            {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
         {/* </label> */}
+        </FormControl>
       </div>
     );
   }
