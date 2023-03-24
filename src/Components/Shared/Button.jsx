@@ -5,7 +5,8 @@ import Stack from '@mui/material/Stack';
 export default function AddButton(props) {
   return (
     <Stack direction="row" spacing={2}>
-      <Button 
+      <Button
+        { ...props }
         variant={props.variant} 
         startIcon={props.icon} 
         className={props.className} 

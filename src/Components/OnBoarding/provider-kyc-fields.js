@@ -1,0 +1,53 @@
+export default [
+    {
+      id: "providerName",
+      title: "Provider Name",
+      placeholder: "Enter provider name",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "address",
+      title: "Registered address",
+      placeholder: "Enter your registered address",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "contactEmail",
+      title: "Email",
+      placeholder: "Enter your email address",
+      type: "input",
+      email: true,
+      required: true,
+    },
+    {
+      id: "contactMobile",
+      title: "Mobile",
+      placeholder: "Enter your mobile number",
+      type: "input",
+      mobile: true,
+      required: true,
+    },
+    {
+      id: "PAN",
+      title: "PAN",
+      placeholder: "Enter your PAN",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "GSTN",
+      title: "GSTN",
+      placeholder: "Enter your GSTN",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "FSSAI",
+      title: "FSSAI Number",
+      placeholder: "Enter your FSSAI number",
+      type: "input",
+      required: false,
+    },
+];

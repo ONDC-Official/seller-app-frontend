@@ -84,6 +84,7 @@ const kycFields = [
 
 const bankFields = [
   { id: "bankName", title: "Bank Name", type: "input" },
+  { id: "branchName", title: "Branch Name", type: "input" },
   { id: "IFSC", title: "IFSC", type: "input" },
   { id: "accHolderName", title: "Account Holder Name", type: "input" },
   { id: "accNumber", title: "Account Number", type: "input" },
@@ -239,6 +240,7 @@ const ProviderDetails = () => {
 
       setBankDetails({
         bankName: res?.providerDetail?.bankDetails?.bankName,
+        branchName: res?.providerDetail?.bankDetails?.branchName,
         IFSC: res?.providerDetail?.bankDetails?.IFSC,
         accHolderName: res?.providerDetail?.bankDetails?.accHolderName,
         accNumber: res?.providerDetail?.bankDetails?.accNumber,

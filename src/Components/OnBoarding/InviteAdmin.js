@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
 import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
+import useForm from '../../hooks/useForm'
 
 const userFields = [
   {
@@ -35,16 +36,29 @@ const userFields = [
 const InviteAdmin = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [user, setUser] = useState({
+  const initialValues = {
     email: "",
     mobile: "",
     name: "",
-  });
+  };
+  const { formValues, setFormValues, errors, setErrors } = useForm({ ...initialValues })
+  const [formSubmitted, setFormSubmited] = useState(false)
+
+  const validate = () => {
+    const formErrors = {}
+    formErrors.email = !isEmailValid(formValues.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.name = formValues.name.trim() === '' ? 'Name is required' : ''
+    setErrors({
+      ...formErrors
+    })
+    return !Object.values(formErrors).some(val => val !== '')
+  }
 
   const sendInvite = () => {
     try {
       const url = `/api/v1/users/invite/admin`;
-      const res = postCall(url, user);
+      const res = postCall(url, formValues);
       navigate("/application/user-listings");
     } catch (error) {
       cogoToast.error("Invitation sent");
@@ -52,11 +66,7 @@ const InviteAdmin = () => {
   };
 
   const checkDisabled = () => {
-    if (user.email == "" || !isEmailValid(user.email)) return true;
-    if (user.mobile == "" || !isPhoneNoValid(user.mobile)) return true;
-    if (user.name.trim() == "") return true;
-
-    return false;
+    return formValues.email === '' || formValues.mobile === '' || formValues.name.trim() === ''
   };
 
   const renderHeading = () => {
@@ -65,7 +75,11 @@ const InviteAdmin = () => {
 
   const renderUserFields = () => {
     return userFields.map((item) => (
-      <RenderInput item={item} state={user} stateHandler={setUser} />
+      <RenderInput
+        item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
+        state={formValues}
+        stateHandler={setFormValues}
+      />
     ));
   };
 
@@ -77,6 +91,18 @@ const InviteAdmin = () => {
     navigate("/application/user-listings");
   };
 
+  const handleSubmit = () => {
+    setFormSubmited(true)
+    if (validate()) {
+      sendInvite()
+    }
+  }
+
+  useEffect(() => {
+    if (!formSubmitted) return
+    validate()
+  }, [formValues])
+
   return (
     <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
       <div className="h-full flex fex-row items-center justify-center">
@@ -85,29 +111,33 @@ const InviteAdmin = () => {
           style={{ minHeight: "75%" }}
         >
           <div className="m-auto w-10/12 md:w-3/4 h-max">
-            <p className="text-2xl font-semibold mb-4 text-center">
-              {renderHeading()}
-            </p>
-            <div>{renderSteps()}</div>
-            <div className="flex mt-6">
-              <Button
-                size="small"
-                style={{ marginRight: 10 }}
-                variant="text"
-                onClick={handleBack}
-              >
-                Back
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="primary"
-                onClick={sendInvite}
-                disabled={checkDisabled()}
-              >
-                Invite
-              </Button>
-            </div>
+            <form>
+              <p className="text-2xl font-semibold mb-4 text-center">
+                {renderHeading()}
+              </p>
+              <div>{renderSteps()}</div>
+              <div className="flex mt-6">
+                <Button
+                  type="button"
+                  size="small"
+                  style={{ marginRight: 10 }}
+                  variant="text"
+                  onClick={handleBack}
+                >
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={checkDisabled()}
+                >
+                  Invite
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

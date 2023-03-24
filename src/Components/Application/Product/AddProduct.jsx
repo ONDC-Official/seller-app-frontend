@@ -7,6 +7,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useLocation, useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall, postCall, putCall } from "../../../Api/axios";
+import useForm from '../../../hooks/useForm'
+import { containsOnlyNumbers } from '../../../utils/formatting/string'
 
 const productFields = [
   {
@@ -255,14 +257,14 @@ export default function AddProduct() {
 
   const { cancellablePromise } = useCancellablePromise();
 
-  const [product, setProduct] = useState({
+  const initialValues = {
     productCode: "",
     productName: "",
     MRP: "",
     retailPrice: "",
     purchasePrice: "",
     HSNCode: "",
-    GST_Percentage: "",
+    GST_Percentage: 18,
     productCategory: [],
     quantity: "",
     barcode: "",
@@ -286,14 +288,17 @@ export default function AddProduct() {
     isCancellable: false,
     availableOnCod: false,
     images: [],
-  });
+  };
+  const { formValues, setFormValues, errors, setErrors } = useForm({ ...initialValues })
+  const [formSubmitted, setFormSubmited] = useState(false)
+
   const addProduct = async () => {
     try {
-      delete product["uploaded_urls"];
-      const data = await cancellablePromise(
-        postCall(`/api/v1/products`, product)
+      const data = Object.assign({}, formValues);
+      delete data["uploaded_urls"];
+      await cancellablePromise(
+        postCall(`/api/v1/products`, data)
       );
-      setProduct({});
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");
     } catch (error) {
@@ -307,7 +312,7 @@ export default function AddProduct() {
       .then(resp => {
         resp["uploaded_urls"] = resp?.images?.map(i => i?.url) || [];
         resp["images"] = resp?.images?.map(i => i?.path) || [];
-        setProduct(resp);
+        setFormValues({ ...resp});
       })
       .catch(error => {
         cogoToast.error("Something went wrong!");
@@ -318,14 +323,15 @@ export default function AddProduct() {
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      delete product["__v"];
-      delete product["_id"];
-      delete product["organization"];
-      delete product["createdAt"];
-      delete product["updatedAt"];
-      delete product["published"];
-      delete product["uploaded_urls"];
-      const res = await  putCall(`/api/v1/products/${state.productId}`, product);
+      const data = Object.assign({}, formValues);
+      delete data["__v"];
+      delete data["_id"];
+      delete data["organization"];
+      delete data["createdAt"];
+      delete data["updatedAt"];
+      delete data["published"];
+      delete data["uploaded_urls"];
+      await  putCall(`/api/v1/products/${state.productId}`, data);
       cogoToast.success("Product updated successfully!");
       navigate("/application/inventory");
     } catch (error) {
@@ -337,7 +343,11 @@ export default function AddProduct() {
   const renderFields = () => {
     return productFields.map((item) => {
       return (
-        <RenderInput item={item} state={product} stateHandler={setProduct} />
+        <RenderInput
+          item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
+          state={formValues}
+          stateHandler={setFormValues}
+        />
       );
     });
   };
@@ -347,6 +357,52 @@ export default function AddProduct() {
       getProduct();
     }
   }, []);
+
+  const validate = () => {
+    let formErrors = {}
+    formErrors.productCode = formValues.productCode.trim() === '' ? 'Product code is required' : ''
+    formErrors.productName = formValues.productName.trim() === '' ? 'Product name is required' : ''
+    formErrors.MRP = !containsOnlyNumbers(formValues.MRP) ? 'Please enter a valid number' : ''
+    formErrors.retailPrice = !containsOnlyNumbers(formValues.retailPrice) ? 'Please enter a valid number' : ''
+    formErrors.purchasePrice = !containsOnlyNumbers(formValues.purchasePrice) ? 'Please enter a valid number' : ''
+    formErrors.HSNCode = formValues.HSNCode.trim() === '' ? 'HSN code is required' : ''
+    formErrors.GST_Percentage = !formValues.GST_Percentage ? 'GST percentage is required' : ''
+    formErrors.productCategory = formValues.productCategory.length < 1 ? 'Product category is required' : ''
+    formErrors.quantity = !containsOnlyNumbers(formValues.quantity) ? 'Please enter a valid number' : ''
+    formErrors.barcode = !containsOnlyNumbers(formValues.barcode) ? 'Please enter a valid number' : ''
+    formErrors.maxAllowedQty = !formValues.maxAllowedQty ? 'Max allowed quantity is required' : ''
+    formErrors.UOM = formValues.UOM.trim() === '' ? 'UOM is required' : ''
+    formErrors.packQty = formValues.packQty.trim() === '' ? 'Pack quantity is required' : ''
+    formErrors.length = formValues.length.trim() === '' ? 'Length is required' : ''
+    formErrors.breadth = formValues.breadth.trim() === '' ? 'Breadth is required' : ''
+    formErrors.height = formValues.height.trim() === '' ? 'Height is required' : ''
+    formErrors.weight = formValues.weight.trim() === '' ? 'Weight is required' : ''
+    formErrors.returnWindow = formValues.returnWindow.trim() === '' ? 'Return window is required' : ''
+    formErrors.manufacturerName = formValues.manufacturerName.trim() === '' ? 'Manufacturer name is required' : ''
+    formErrors.manufacturedDate = formValues.manufacturedDate.trim() === '' ? 'Manufactured date is required' : ''
+    formErrors.nutritionalInfo = formValues.nutritionalInfo.trim() === '' ? 'Nutritional info is required' : ''
+    formErrors.additiveInfo = formValues.additiveInfo.trim() === '' ? 'Additive info is required' : ''
+    formErrors.instructions = formValues.instructions.trim() === '' ? 'Instruction is required' : ''
+    formErrors.longDescription = formValues.longDescription.trim() === '' ? 'Long description is required' : ''
+    formErrors.description = formValues.description.trim() === '' ? 'Short description is required' : ''
+    formErrors.images = formValues.images.length < 1 ? 'At least one image is required' : ''
+    setErrors({
+      ...formErrors
+    })
+    return !Object.values(formErrors).some(val => val !== '')
+  }
+
+  const handleSubmit = () => {
+    setFormSubmited(true)
+    if (validate()) {
+      state?.productId ? updateProduct() : addProduct();
+    }
+  }
+
+  useEffect(() => {
+    if (!formSubmitted) return
+    validate()
+  }, [formValues])
 
   return (
     <>
@@ -364,18 +420,24 @@ export default function AddProduct() {
           <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
             {state?.productId == undefined ? "Add Product" : "Update Product"}
           </label>
-          <div className="mt-2">{renderFields()}</div>
-          <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-            <MyButton title="CANCEL" className="text-black" onClick={() => navigate("/application/inventory")}/>
-            <MyButton
-              onClick={() => {
-                state?.productId ? updateProduct() : addProduct();
-              }}
-              title={state?.productId ? "Update Product" : "ADD PRODUCT"}
-              variant="contained"
-              className="!ml-5"
-            />
-          </div>
+          <form>
+            <div className="mt-2">{renderFields()}</div>
+            <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
+              <MyButton
+                type="button"
+                title="CANCEL"
+                className="text-black"
+                onClick={() => navigate("/application/inventory")}
+              />
+              <MyButton
+                type="button"
+                title={state?.productId ? "Update Product" : "ADD PRODUCT"}
+                variant="contained"
+                className="!ml-5"
+                onClick={handleSubmit}
+              />
+            </div>
+          </form>
         </div>
       </div>
     </>
