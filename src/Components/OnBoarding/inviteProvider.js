@@ -23,7 +23,7 @@ const InviteProvider = () => {
   };
 
   const kycDetails = {
-    providerName: "",
+    providerStoreName: "",
     address: "",
     contactEmail: "",
     contactMobile: "",
@@ -64,7 +64,7 @@ const InviteProvider = () => {
           mobile: formValues.mobile
         },
         providerDetails: {
-          name: formValues.providerName,
+          name: formValues.providerStoreName,
           address: formValues.address,
           contactEmail: formValues.contactEmail,
           contactMobile: formValues.contactMobile,
@@ -139,21 +139,21 @@ const InviteProvider = () => {
       formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
       formErrors.name = formValues.name.trim() === '' ? 'Name is required' : ''
     } else if (step === 2) {
-      formErrors.providerName = formValues.providerName.trim() === '' ? 'Provider name is required' : ''
+      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
       formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Mobile is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
       formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : ''
-      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTN is required' : ''
-      formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI is required' : formValues.FSSAI.length < 14 ? 'Please enter a valid FSSAI' : ''
+      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : ''
+      formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI is required' : !containsOnlyNumbers(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
     } else if (step === 3) {
       formErrors.address_proof = formValues.address_proof.trim() === '' ? 'Address proof is required' : ''
       formErrors.id_proof = formValues.id_proof.trim() === '' ? 'ID proof is required' : ''
       formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN is required' : ''
-      formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GST proof is required' : ''
+      formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN proof is required' : ''
     } else if (step === 4) {
       formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Name is required' : ''
-      formErrors.accNumber = !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
+      formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
       formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC code is required' : ''

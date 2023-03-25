@@ -1,14 +1,14 @@
 export default [
     {
       id: "address_proof",
-      title: "Address proof",
+      title: "Address Proof",
       type: "upload",
       file_type: "address_proof",
       required: true,
     },
     {
       id: "id_proof",
-      title: "Id proof",
+      title: "ID Proof",
       type: "upload",
       file_type: "id_proof",
       required: true,
@@ -22,7 +22,7 @@ export default [
     },
     {
       id: "GST_proof",
-      title: "GST certificate",
+      title: "GSTIN Certificate",
       type: "upload",
       file_type: "gst",
       required: true,

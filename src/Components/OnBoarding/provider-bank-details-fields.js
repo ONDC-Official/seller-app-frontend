@@ -11,6 +11,7 @@ export default [
       title: "Account Number",
       placeholder: "Enter account number",
       type: "input",
+      maxLength: 17,
       required: true,
     },
     {
@@ -32,6 +33,7 @@ export default [
       title: "IFSC code",
       placeholder: "Enter IFSC code",
       type: "input",
+      maxLength: 11,
       required: true,
     },
     {

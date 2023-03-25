@@ -22,6 +22,7 @@ const userFields = [
     placeholder: "Enter your mobile number",
     type: "input",
     mobile: true,
+    maxLength: 10,
     required: true,
   },
   {
