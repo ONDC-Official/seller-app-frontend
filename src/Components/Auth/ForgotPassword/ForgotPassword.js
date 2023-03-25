@@ -43,6 +43,7 @@ const ForgotPassword = () => {
       await postCall(url, { email });
       setError(false);
       setMsg('OTP sent to your email')
+      loadCaptchaEnginge(6)
     } catch (error) {
       setError(true);
       setMsg(error.response.data.error);

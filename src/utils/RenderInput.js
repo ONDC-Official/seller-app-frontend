@@ -64,6 +64,10 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           onChange={(e) =>
             stateHandler({ ...state, [item.id]: e.target.value })
           }
+          inputProps={{
+            maxLength: item.maxLength || undefined,
+            minLength: item.minLength || undefined,
+          }}
         />
       </div>
     );

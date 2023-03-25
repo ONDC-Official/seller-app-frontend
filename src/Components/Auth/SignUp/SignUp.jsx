@@ -69,8 +69,8 @@ const kycDetailFields = [
   },
   {
     id: "GSTN",
-    title: "GSTN",
-    placeholder: "Enter your GSTN",
+    title: "GSTIN",
+    placeholder: "Enter your GSTIN",
     type: "input",
     required: true,
   },

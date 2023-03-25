@@ -1,14 +1,14 @@
 export default [
     {
-      id: "providerName",
-      title: "Provider Name",
-      placeholder: "Enter provider name",
+      id: "providerStoreName",
+      title: "Provider Store Name",
+      placeholder: "Enter provider store name",
       type: "input",
       required: true,
     },
     {
       id: "address",
-      title: "Registered address",
+      title: "Registered Address",
       placeholder: "Enter your registered address",
       type: "input",
       required: true,
@@ -27,6 +27,7 @@ export default [
       placeholder: "Enter your mobile number",
       type: "input",
       mobile: true,
+      maxLength: 10,
       required: true,
     },
     {
@@ -34,13 +35,15 @@ export default [
       title: "PAN",
       placeholder: "Enter your PAN",
       type: "input",
+      maxLength: 10,
       required: true,
     },
     {
       id: "GSTN",
-      title: "GSTN",
-      placeholder: "Enter your GSTN",
+      title: "GSTIN",
+      placeholder: "Enter your GSTIN",
       type: "input",
+      maxLength: 15,
       required: true,
     },
     {
@@ -48,6 +51,7 @@ export default [
       title: "FSSAI Number",
       placeholder: "Enter your FSSAI number",
       type: "input",
+      maxLength: 14,
       required: false,
     },
 ];
