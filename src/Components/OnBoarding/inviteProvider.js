@@ -126,7 +126,7 @@ const InviteProvider = () => {
 
   const handleBack = () => {
     if (step === 1) {
-      navigate("/application/user-listings");
+      navigate("/application/user-listings?view=provider");
     } else {
       setStep(step - 1);
     }

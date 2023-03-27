@@ -28,7 +28,7 @@ const ThreeDotsMenu = (props) => {
   const { row, getAdmins, getProviders } = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (e) => {
+  const openActionMenu = (e) => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
@@ -53,6 +53,7 @@ const ThreeDotsMenu = (props) => {
         default:
           break;
       }
+      setAnchorEl(null);
       getAdmins();
       getProviders();
     } catch (error) {
@@ -67,7 +68,7 @@ const ThreeDotsMenu = (props) => {
         aria-controls={Boolean(anchorEl) ? 'user-action-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-        onClick={handleClick}
+        onMouseOver={openActionMenu}
         sx={{ width: 30 }}
       >
         <MoreVert />
@@ -75,10 +76,10 @@ const ThreeDotsMenu = (props) => {
       <Menu
         id="user-action-menu"
         anchorEl={anchorEl}
-        // keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
         MenuListProps={{
+          onMouseLeave: handleClose,
           'aria-labelledby': 'user-action-menu-button',
         }}
       >
@@ -156,7 +157,7 @@ const UserTable = (props) => {
                       const value = row[column.id];
                       if (column.id == "Action") {
                         return (
-                          <TableCell key={column.id} align={"left"}>
+                          <TableCell onClick={(event) => event.stopPropagation()} key={column.id} align={"left"}>
                             <ThreeDotsMenu row={row} getAdmins={getAdmins} getProviders={getProviders} />
                           </TableCell>
                         );

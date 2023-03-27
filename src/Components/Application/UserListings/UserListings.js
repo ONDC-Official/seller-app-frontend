@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useLocation } from 'react-router'
 import cogoToast from "cogo-toast";
 import UserTable from "./UserTable";
 import { Button, Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import Navbar from "../../Shared/Navbar";
 import { getCall } from "../../../Api/axios";
+import useNavigation from '../../../hooks/useNavigation'
+import useQueryParams from '../../../hooks/useQueryParams'
+import { evalQueryString } from '../../../utils/index'
 
 const superAdminCols = [
   {
@@ -54,15 +58,18 @@ const providerCols = [
 ];
 
 const UserListings = () => {
-  const [value, setValue] = useState(0);
+  const queryParams = useQueryParams()
+  const [view, setView] = useState(queryParams.view || 'admin');
   const [providers, setProviders] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
+  const navigation = useNavigation()
+  const location = useLocation()
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setView(newValue);
   };
 
   const getAdmins = async () => {
@@ -95,10 +102,21 @@ const UserListings = () => {
     }
   };
 
+  const isAdmin = useMemo(() => {
+    return view === 'admin'
+  }, [view])
+
   useEffect(() => {
-    if (value == 0) getAdmins();
+    if (isAdmin) getAdmins();
     else getProviders();
-  }, [value, page, rowsPerPage]);
+  }, [isAdmin, page, rowsPerPage]);
+
+  useEffect(() => {
+    navigation.toPathWithQuery(
+      `${location.pathname}`,
+      evalQueryString(location.search, { view })
+    )
+  }, [view])
 
   return (
     <div>
@@ -112,13 +130,13 @@ const UserListings = () => {
         <div className="flex flex-row justify-between items-center">
           <Tabs
             style={{ marginBottom: 30 }}
-            value={value}
+            value={view}
             onChange={handleChange}
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label="Super Admins" />
-            <Tab label="Providers" />
+            <Tab value="admin" label="Super Admins" />
+            <Tab value="provider" label="Providers" />
           </Tabs>
           <Button
             sx={{ height: 30, textTransform: "none" }}
@@ -127,17 +145,16 @@ const UserListings = () => {
             color="primary"
             onClick={""}
           >
-            <Link to={value == 0 ? "/invite-admin" : "/invite-provider"}>
-              Invite {value == 0 ? "Admin" : "Provider"}
+            <Link to={isAdmin ? "/invite-admin" : "/invite-provider"}>
+              Invite {isAdmin ? "Admin" : "Provider"}
             </Link>
           </Button>
         </div>
 
         <UserTable
-          value={value}
-          columns={value == 0 ? superAdminCols : providerCols}
-          data={value == 0 ? admins : providers}
-          isProvider={value == 0 ? false : true}
+          columns={isAdmin ? superAdminCols : providerCols}
+          data={isAdmin ? admins : providers}
+          isProvider={isAdmin ? false : true}
           getAdmins={getAdmins}
           getProviders={getProviders}
           totalRecords={totalRecords}

@@ -276,7 +276,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
             multiple
-            filterSelectedOptions
+            // filterSelectedOptions
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
@@ -295,6 +295,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 {...params}
                 placeholder={item.placeholder}
                 variant="outlined"
+                error={item.error || false}
+                helperText={item.error && item.helperText}
               />
             )}
           />
