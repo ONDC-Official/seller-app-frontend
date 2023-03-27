@@ -1,13 +1,17 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+import {
+  Box,
+  SwipeableDrawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+  Stack,
+  Typography,
+} from '@mui/material';
 import logo from "../../Assets/Images/logo.png";
-import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -72,17 +76,10 @@ export default function Sidebar(props) {
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
       role="presentation"
     >
-      <List>
-        <ListItem key="SELLER APP" disablePadding>
-          <ListItemButton>
-            <img src={logo} alt="logo" style={{ height: "45px" }} />
-            <ListItemText
-              primary="SELLER APP"
-              style={{ textAlign: "center" }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      <Stack direction="row" alignItems="center" style={{ padding: '8px 16px' }}>
+        <img src={logo} alt="logo" style={{ height: "45px" }} />
+        <Typography>SELLER APP</Typography>
+      </Stack>
       <Divider />
       <List
         sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}

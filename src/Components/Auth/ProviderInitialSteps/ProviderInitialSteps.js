@@ -5,9 +5,11 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCall, patchCall, postCall } from "../../../Api/axios";
+import useForm from "../../../hooks/useForm";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
-import { isObjEmpty } from "../../../utils/validations";
+import { isEmailValid, isObjEmpty, isPhoneNoValid } from "../../../utils/validations";
+import { containsOnlyNumbers, validatePasswordComplexity } from '../../../utils/formatting/string'
 
 const passwordFields = [
   {
@@ -43,6 +45,7 @@ let storeFields = [
     placeholder: "Enter your mobile number",
     type: "input",
     mobile: true,
+    maxLength: 10,
     required: true,
   },
   {
@@ -85,6 +88,7 @@ let storeFields = [
     title: "PIN code",
     placeholder: "PIN code",
     type: "input",
+    maxLength: 6,
     required: false,
   },
   {
@@ -156,8 +160,8 @@ const ProviderInitialSteps = () => {
   const [step, setStep] = useState(1);
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
 
-  const [password, setPassword] = useState({ password_1: "", password_2: "" });
-  const [storeDetails, setStoreDetails] = useState({
+  const password = { password_1: "", password_2: "" };
+  const storeDetails = {
     logo: "",
     categories: [],
     location: "",
@@ -173,7 +177,44 @@ const ProviderInitialSteps = () => {
     defaultReturnable: false,
     email: "",
     mobile: "",
-  });
+  };
+
+  const { formValues: form1Values, setFormValues: setForm1Values, errors: form1Errors, setErrors: setForm1Errors } = useForm({ ...password })
+  const { formValues: form2Values, setFormValues: setForm2Values, errors: form2Errors, setErrors: setForm2Errors } = useForm({ ...storeDetails })
+  const [form1Submitted, setForm1Submited] = useState(false)
+  const [form2Submitted, setForm2Submited] = useState(false)
+
+  const validateForm1 = () => {
+    const formErrors = {}
+    formErrors.password_1 = form1Values.password_1 === '' ? 'Password is required': !validatePasswordComplexity(form1Values.password_1) ? 'Password should have minimum eight characters, at least one letter and one number' : ''
+    formErrors.password_2 = form1Values.password_2 === '' ? 'Confirm password is required' : form1Values.password_1 !== form1Values.password_2 ? 'Passwords don\'t match' : ''
+    setForm1Errors({
+      ...formErrors
+    })
+    return !Object.values(formErrors).some(val => val !== '')
+  }
+
+  const validateForm2 = () => {
+    const formErrors = {}
+    formErrors.logo = form2Values.logo.trim() === '' ? 'Logo is required' : ''
+    formErrors.categories = form2Values.categories.length < 1 ? 'Category is required' : ''
+    formErrors.location = !form2Values.location ? 'Location is required' : ''
+    formErrors.building = form2Values.building.trim() === '' ? 'Building is required' : ''
+    formErrors.address_city = form2Values.address_city.trim() === '' ? 'City is required' : ''
+    formErrors.state = form2Values.state.trim() === '' ? 'State is required' : ''
+    formErrors.country = form2Values.country.trim() === '' ? 'Country is required' : ''
+    formErrors.area_code = !containsOnlyNumbers(form2Values.area_code) ? 'Please enter a valid PIN code' : ''
+    formErrors.locality = form2Values.locality.trim() === '' ? 'Locality is required' : ''
+    if (form2Values.locationAvailability === 'city') {
+      formErrors.city = form2Values.city.length < 1 ? 'City is required' : ''
+    }
+    formErrors.email = form2Values.email.trim() === '' ? 'Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = form2Values.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
+    setForm2Errors({
+      ...formErrors
+    })
+    return !Object.values(formErrors).some(val => val !== '')
+  }
 
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
@@ -210,7 +251,7 @@ const ProviderInitialSteps = () => {
   }, []);
 
   useEffect(() => {
-    if (storeDetails.locationAvailability == "city") {
+    if (form2Values.locationAvailability == "city") {
       let fieldsWithCityInput = addAfter(storeDetailFields, 11, {
         id: "city",
         title: "Select Cities",
@@ -229,13 +270,13 @@ const ProviderInitialSteps = () => {
     } else {
       setStoreDetailFields(storeFields);
     }
-  }, [storeDetails.locationAvailability]);
+  }, [form2Values.locationAvailability]);
 
   const handleSetPasswordReq = async () => {
     const user_id = localStorage.getItem("user_id");
     const url = `/api/v1/auth/resetPassword`;
     try {
-      const res = await postCall(url, { password: password.password_1 });
+      const res = await postCall(url, { password: form1Values.password_1 });
       // navigate("/application/inventory");
       getUser(user_id).then((u) => {
         if (u.isSystemGeneratedPassword) setStep(1);
@@ -254,24 +295,24 @@ const ProviderInitialSteps = () => {
   };
 
   const handleStoreDetailsReq = async () => {
-    const data = storeDetails;
+    const data = Object.assign({}, form2Values);
 
     data.address = {
-      building: storeDetails.building,
-      city: storeDetails.address_city,
-      state: storeDetails.state,
-      country: storeDetails.country,
-      area_code: storeDetails.area_code,
-      locality: storeDetails.locality,
+      building: form2Values.building,
+      city: form2Values.address_city,
+      state: form2Values.state,
+      country: form2Values.country,
+      area_code: form2Values.area_code,
+      locality: form2Values.locality,
     };
 
     data["supportDetails"] = {
-      email: storeDetails.email,
-      mobile: storeDetails.mobile,
+      email: form2Values.email,
+      mobile: form2Values.mobile,
     };
 
     data["locationAvailabilityPANIndia"] =
-      storeDetails.locationAvailability == "PAN INDIA" ? true : false;
+    form2Values.locationAvailability == "PAN INDIA" ? true : false;
 
     delete data["building"];
     delete data["address_city"];
@@ -295,34 +336,53 @@ const ProviderInitialSteps = () => {
     }
   };
 
-  const handleContinue = () => {
-    if (step == 1) handleSetPasswordReq();
-    if (step == 2) handleStoreDetailsReq();
-  };
-
-  const checkDisabled = () => {
+  const handleSubmit = () => {
     if (step == 1) {
-      if (password.password_1.trim() == "") return true;
-      if (password.password_1 != password.password_2) {
-        return true;
-      }
+      setForm1Submited(true)
+      if (validateForm1()) handleSetPasswordReq();
+    } else if (step == 2) {
+      setForm2Submited(true)
+      if (validateForm2()) handleStoreDetailsReq();
     }
-
-    return false;
   };
+
+  useEffect(() => {
+    if (!form1Submitted) return
+    validateForm1()
+  }, [form1Values])
+
+  useEffect(() => {
+    if (!form2Submitted) return
+    validateForm2()
+  }, [form2Values])
+
+  // const checkDisabled = () => {
+  //   if (step == 1) {
+  //     if (password.password_1.trim() == "") return true;
+  //     if (password.password_1 != password.password_2) {
+  //       return true;
+  //     }
+  //   }
+
+  //   return false;
+  // };
 
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
-      <RenderInput item={item} state={password} stateHandler={setPassword} />
+      <RenderInput
+        item={{ ...item, error: form1Errors?.[item.id] ? true : false, helperText: form1Errors?.[item.id] || '' }}
+        state={form1Values}
+        stateHandler={setForm1Values}
+      />
     ));
   };
 
   const renderStoreDetailsFields = () => {
     return storeDetailFields.map((item) => (
       <RenderInput
-        item={item}
-        state={storeDetails}
-        stateHandler={setStoreDetails}
+        item={{ ...item, error: form2Errors?.[item.id] ? true : false, helperText: form2Errors?.[item.id] || '' }}
+        state={form2Values}
+        stateHandler={setForm2Values}
       />
     ));
   };
@@ -346,21 +406,24 @@ const ProviderInitialSteps = () => {
             style={{ minHeight: "85%", maxHeight: "100%", overflow: "auto" }}
           >
             <div className="m-auto w-10/12 md:w-3/4 h-max">
-              <p className="text-2xl font-semibold mb-4 text-center">
-                {renderHeading()}
-              </p>
-              <div>{renderSteps()}</div>
-              <div className="flex mt-6">
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="primary"
-                  onClick={handleContinue}
-                  disabled={checkDisabled()}
-                >
-                  {step == 2 ? "Finish" : "Continue"}
-                </Button>
-              </div>
+              <form>
+                <p className="text-2xl font-semibold mb-4 text-center">
+                  {renderHeading()}
+                </p>
+                <div>{renderSteps()}</div>
+                <div className="flex mt-6">
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}
+                    // disabled={checkDisabled()}
+                  >
+                    {step == 2 ? "Finish" : "Continue"}
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

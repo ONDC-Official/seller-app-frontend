@@ -356,7 +356,7 @@ const ProviderDetails = () => {
                   variant="text"
                   onClick={() => {
                     userRole == "Super Admin"
-                      ? navigate("/application/user-listings")
+                      ? navigate("/application/user-listings?view=provider")
                       : navigate("/application/inventory");
                   }}
                 >

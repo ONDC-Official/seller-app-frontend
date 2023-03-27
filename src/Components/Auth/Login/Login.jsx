@@ -77,7 +77,7 @@ export default function Login() {
       const res = await postCall(url, login);
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
-      cogoToast.error(error.response.data.error);
+      cogoToast.error('Incorrect email or password, please try again');
       setEnableCaptcha(true)
       loadCaptchaEnginge(6)
     }
@@ -186,7 +186,13 @@ export default function Login() {
               placeholder="Enter Captcha Value"
               autoComplete="off"
               className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              onChange={(event) => setCaptchaVal(event.target.value)}
+              onChange={(event) => {
+                setCaptchaVal(event.target.value);
+                setInlineError((inlineError) => ({
+                  ...inlineError,
+                  captcha_error: "",
+                }));
+              }}
             />
           </div>
           {inlineError.captcha_error && (

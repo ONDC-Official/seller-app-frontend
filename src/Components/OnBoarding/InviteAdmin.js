@@ -89,7 +89,7 @@ const InviteAdmin = () => {
   };
 
   const handleBack = () => {
-    navigate("/application/user-listings");
+    navigate("/application/user-listings?view=admin");
   };
 
   const handleSubmit = () => {
