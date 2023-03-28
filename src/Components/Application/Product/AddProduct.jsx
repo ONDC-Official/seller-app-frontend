@@ -9,6 +9,7 @@ import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 const productFields = [
   {
@@ -29,21 +30,21 @@ const productFields = [
     id: "MRP",
     title: "MRP",
     placeholder: "MRP",
-    type: "input",
+    type: "number",
     required: true,
   },
   {
     id: "retailPrice",
     title: "Retail price",
     placeholder: "Retail price",
-    type: "input",
+    type: "number",
     required: true,
   },
   {
     id: "purchasePrice",
     title: "Purchase price",
     placeholder: "Purchase price",
-    type: "input",
+    type: "number",
     required: true,
   },
   {
@@ -71,13 +72,9 @@ const productFields = [
     id: "productCategory",
     title: "Product category",
     placeholder: "Product category",
-    options: [
-      { key: "Grocery", value: "grocery" },
-      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-      { key: "Fashion", value: "fashion" },
-      { key: "Home and Decor", value: "home_and_decor" },
-      { key: "F&B", value: "f_and_b" },
-    ],
+    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+      return { key: value, value: key}
+    }),
     type: "select",
     required: true,
   },
@@ -85,14 +82,14 @@ const productFields = [
     id: "quantity",
     title: "Quantity",
     placeholder: "Quantity",
-    type: "input",
+    type: "number",
     required: true,
   },
   {
     id: "barcode",
     title: "Barcode",
     placeholder: "Barcode",
-    type: "input",
+    type: "number",
     required: true,
   },
   {
@@ -362,15 +359,15 @@ export default function AddProduct() {
     let formErrors = {}
     formErrors.productCode = formValues.productCode.trim() === '' ? 'Product code is required' : ''
     formErrors.productName = formValues.productName.trim() === '' ? 'Product name is required' : ''
-    formErrors.MRP = !containsOnlyNumbers(formValues.MRP) ? 'Please enter a valid number' : ''
-    formErrors.retailPrice = !containsOnlyNumbers(formValues.retailPrice) ? 'Please enter a valid number' : ''
-    formErrors.purchasePrice = !containsOnlyNumbers(formValues.purchasePrice) ? 'Please enter a valid number' : ''
+    formErrors.MRP = !formValues.MRP ? 'Please enter a valid number' : ''
+    formErrors.retailPrice = !formValues.retailPrice ? 'Please enter a valid number' : ''
+    formErrors.purchasePrice = !formValues.purchasePrice ? 'Please enter a valid number' : ''
     formErrors.HSNCode = formValues.HSNCode.trim() === '' ? 'HSN code is required' : ''
     formErrors.GST_Percentage = !formValues.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues.productCategory.length < 1 ? 'Product category is required' : ''
-    formErrors.quantity = !containsOnlyNumbers(formValues.quantity) ? 'Please enter a valid number' : ''
-    formErrors.barcode = !containsOnlyNumbers(formValues.barcode) ? 'Please enter a valid number' : ''
-    formErrors.maxAllowedQty = !formValues.maxAllowedQty ? 'Max allowed quantity is required' : ''
+    formErrors.quantity = !formValues.quantity ? 'Please enter a valid number' : ''
+    formErrors.barcode = !formValues.barcode ? 'Please enter a valid number' : ''
+    formErrors.maxAllowedQty = !formValues.maxAllowedQty ? 'Please enter a valid number' : ''
     formErrors.UOM = formValues.UOM.trim() === '' ? 'UOM is required' : ''
     formErrors.packQty = formValues.packQty.trim() === '' ? 'Pack quantity is required' : ''
     formErrors.length = formValues.length.trim() === '' ? 'Length is required' : ''

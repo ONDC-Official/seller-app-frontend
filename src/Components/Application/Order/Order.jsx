@@ -9,14 +9,14 @@ const columns = [
   { id: "orderId", label: "Order Id", minWidth: 120, align: "center" },
   {
     id: "createdAt",
-    label: "Created At",
+    label: "Created On",
     minWidth: 180,
     format: (value) => value.toLocaleString("en-US"),
     align: "center",
   },
   {
     id: "updatedAt",
-    label: "Updated At",
+    label: "Modified On",
     minWidth: 180,
     format: (value) => value.toLocaleString("en-US"),
     align: "center",
