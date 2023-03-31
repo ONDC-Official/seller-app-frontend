@@ -89,8 +89,7 @@ export default function Orders() {
 
   return (
     <>
-      <Navbar />
-      <div className="container container mx-auto px-4 lg:px-[5rem] my-4">
+      <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">Orders</label>
         </div>

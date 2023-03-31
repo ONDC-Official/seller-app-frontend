@@ -52,6 +52,6 @@ export default [
       placeholder: "Enter your FSSAI number",
       type: "input",
       maxLength: 14,
-      required: false,
+      required: true,
     },
 ];

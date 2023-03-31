@@ -306,7 +306,7 @@ const ProviderDetails = () => {
 
   return (
     <div>
-      <div className="mx-auto !p-2 h-screen min-vh-100 overflow-auto">
+      <div className="container mx-auto my-8">
         <div>
           <div
             className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"

@@ -12,23 +12,23 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from "@material-ui/core";
+  MenuItem,
+  Button,
+  Menu
+} from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import moment from "moment";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall, postCall } from "../../../Api/axios";
 import MoreVert from "@mui/icons-material/MoreVert";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   getFulfillmentData,
   getShortAddress,
 } from "./../../../utils/orders.js";
 import cogoToast from "cogo-toast";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -68,7 +68,7 @@ const OrderDetails = () => {
     );
     if (order_items && order_items?.length > 0) {
       order_items?.forEach((o) => {
-        total_base_cost += o?.price?.value;
+        total_base_cost += parseFloat(o?.price?.value);
       });
     }
   }
@@ -84,7 +84,7 @@ const OrderDetails = () => {
       cancellation_reason_id: "004",
     })
       .then((resp) => {
-        cogoToast.success("Product cancelled successfully!");
+        cogoToast.success("Order cancelled successfully!");
         getOrder();
       })
       .catch((error) => {
@@ -111,19 +111,17 @@ const OrderDetails = () => {
   const renderOrderStatus = (order_details) => {
     if (order_details?.state == "Created") {
       return (
-        <div>
+        <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
           <Button
-            sx={{ width: 110 }}
-            className="w-56 !capitalize !py-2 !px-0"
+            className="!capitalize"
             variant="contained"
             onClick={() => handleCompleteOrderAccept(order_details?._id)}
           >
             Accept Order
           </Button>
           <Button
-            sx={{ width: 110, marginLeft: 1 }}
             variant="contained"
-            className="w-56 !capitalize !py-2 !px-0"
+            className="!capitalize"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
           >
             Cancel Order
@@ -142,16 +140,9 @@ const OrderDetails = () => {
   };
 
   return (
-    <>
-      <Button
-        variant="outlined"
-        style={{ marginLeft: 32, marginTop: 10 }}
-        onClick={() => navigate("/application/orders")}
-      >
-        <ArrowBackIcon style={{ marginRight: 10, fontSize: 20 }} />
-        Back
-      </Button>
-      <div className="flex flex-col h-screen w-screen py-2 px-8">
+    <div className="container mx-auto my-8">
+      <BackNavigationButton onClick={() => navigate("/application/orders")} />
+      <div className="flex flex-col">
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex justify-between">
             <p className="text-lg font-semibold mb-2">Order Summary</p>
@@ -253,7 +244,7 @@ const OrderDetails = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
