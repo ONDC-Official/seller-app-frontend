@@ -19,12 +19,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment'
+import axios from "axios";
+import cogoToast from "cogo-toast";
+import Cookies from "js-cookie";
 import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
-import Cookies from "js-cookie";
 import MyButton from "../Components/Shared/Button";
 import PlacePickerMap from '../Components/PlacePickerMap/PlacePickerMap'
-import axios from "axios";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -304,6 +305,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "upload") {
+    const allowedMaxSize = 2 * 1024 * 1024 // 2 MB in Bytes
     const getSignUrl = async (file) => {
       const url = `/api/v1/upload/${item?.file_type}`;
       const file_type = file.type.split("/")[1];
@@ -378,6 +380,18 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             onChange={(e) => {
               const token = Cookies.get("token");
               for (const file of e.target.files) {
+                if (!file.type.startsWith("image/")) {
+                  cogoToast.warn("Only image files are allowed")
+                  // reset file input 
+                  uploadFileRef.current.value = null
+                  return
+                }
+                if (file.size > allowedMaxSize) {
+                  cogoToast.warn("File size should be less than 2 MB");
+                  // reset file input
+                  uploadFileRef.current.value = null
+                  return
+                }
                 const formData = new FormData();
                 formData.append("file", file);
                 getSignUrl(file).then((d) => {

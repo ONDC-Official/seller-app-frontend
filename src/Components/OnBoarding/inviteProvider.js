@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
-import { isEmailValid, isPhoneNoValid } from "../../utils/validations";
+import { isAlphaNumericOnly, isEmailValid, isPANValid, isPhoneNoValid } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
@@ -110,7 +110,7 @@ const InviteProvider = () => {
   const renderFormFields = (fields) => {
     return fields.map((item) => (
       <RenderInput
-        item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
+        item={{ ...item, error: !!errors?.[item.id], helperText: errors?.[item.id] || '' }}
         state={formValues}
         stateHandler={setFormValues}
       />
@@ -139,12 +139,12 @@ const InviteProvider = () => {
       formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
       formErrors.name = formValues.name.trim() === '' ? 'Name is required' : ''
     } else if (step === 2) {
-      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider name is required' : ''
+      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
       formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Mobile is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
-      formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : ''
-      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : ''
+      formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : !isPANValid(formValues.PAN) ? 'Please enter a valid PAN number' : ''
+      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : !isAlphaNumericOnly(formValues.GSTN) ? 'Please enter a valid GSTIN number' : ''
       formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI is required' : !containsOnlyNumbers(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
     } else if (step === 3) {
       formErrors.address_proof = formValues.address_proof.trim() === '' ? 'Address proof is required' : ''
@@ -156,7 +156,7 @@ const InviteProvider = () => {
       formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
-      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC code is required' : ''
+      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC code is required' : !isAlphaNumericOnly(formValues.IFSC) || formValues.IFSC.trim().length < 11 ? 'Please enter a valid IFSC code' : ''
       formErrors.cancelledCheque = formValues.cancelledCheque.trim() === '' ? 'Cancelled cheque is required' : ''
     }
     setErrors({

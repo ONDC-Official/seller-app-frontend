@@ -120,8 +120,6 @@ const UserListings = () => {
 
   return (
     <div>
-      <Navbar />
-
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label className="font-semibold text-2xl">User Listings</label>

@@ -6,6 +6,7 @@ import Navbar from "../../Shared/Navbar";
 import { getCall, postCall } from "../../../Api/axios.js";
 import { Link, Button, CircularProgress } from "@mui/material";
 import cogoToast from "cogo-toast";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const BulkUpload = () => {
   const navigate = useNavigate();
@@ -31,17 +32,8 @@ const BulkUpload = () => {
 
   return (
     <div>
-      <Navbar />
-
-      <div className="p-4">
-        <MyButton
-          icon={<ArrowBackIcon />}
-          className="mr-2 !text-black"
-          title="BACK"
-          onClick={() => navigate("/application/inventory")}
-        />
-      </div>
-      <div className="container px-4 mx-auto mb-4 md:w-4/5 lg:w-full place-content-center max-w-[1240px]">
+      <div className="container mx-auto my-8">
+        <BackNavigationButton onClick={() => navigate("/application/inventory")} />
         <div className="w-full !h-full">
           <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
             Bulk Upload

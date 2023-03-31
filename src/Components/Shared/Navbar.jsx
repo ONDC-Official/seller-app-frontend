@@ -58,11 +58,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Navbar() {
+export default function Navbar({ sidebarOpen, setSidebarOpen }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -193,8 +191,8 @@ export default function Navbar() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+      {/* <Box sx={{ flexGrow: 1 }}> */}
+        <AppBar position="sticky">
           <Toolbar>
             <IconButton
               size="large"
@@ -246,8 +244,7 @@ export default function Navbar() {
         </AppBar>
         {renderMobileMenu}
         {renderMenu}
-      </Box>
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      {/* </Box> */}
     </>
   );
 }
