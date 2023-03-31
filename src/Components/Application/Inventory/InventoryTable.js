@@ -96,9 +96,7 @@ export default function InventoryTable(props) {
         </div>
       );
     } else {
-      return column.format && typeof value === "number"
-        ? column.format(value)
-        : value;
+      return column.format ? column.format(value) : value;
     }
   };
 

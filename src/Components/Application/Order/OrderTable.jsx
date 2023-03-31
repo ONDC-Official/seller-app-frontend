@@ -15,6 +15,7 @@ import { styled } from "@mui/material/styles";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
+import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -93,13 +94,13 @@ export default function InventoryTable(props) {
       case "createdAt":
         return (
           <>
-            <span>{moment(value).format("DD-MM-YYYY hh:mm A")}</span>
+            <span>{convertDateInStandardFormat(value)}</span>
           </>
         );
       case "updatedAt":
         return (
           <>
-            <span>{moment(value).format("DD-MM-YYYY hh:mm A")}</span>
+            <span>{convertDateInStandardFormat(value)}</span>
           </>
         );
       case "state":

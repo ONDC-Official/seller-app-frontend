@@ -10,6 +10,7 @@ import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
 import { isEmailValid, isObjEmpty, isPhoneNoValid } from "../../../utils/validations";
 import { containsOnlyNumbers, validatePasswordComplexity } from '../../../utils/formatting/string'
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 const passwordFields = [
   {
@@ -102,13 +103,9 @@ let storeFields = [
     id: "categories",
     title: "Supported product categories",
     placeholder: "Supported product categories",
-    options: [
-      { key: "Grocery", value: "grocery" },
-      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-      { key: "Fashion", value: "fashion" },
-      { key: "Home and Decor", value: "home_and_decor" },
-      { key: "F&B", value: "f_and_b" },
-    ],
+    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+      return { key: value, value: key}
+    }),
     type: "multi-select",
     required: true,
   },
@@ -186,7 +183,12 @@ const ProviderInitialSteps = () => {
 
   const validateForm1 = () => {
     const formErrors = {}
-    formErrors.password_1 = form1Values.password_1 === '' ? 'Password is required': !validatePasswordComplexity(form1Values.password_1) ? 'Password should have minimum eight characters, at least one letter and one number' : ''
+    formErrors.password_1 = form1Values.password_1 === '' ? 'Password is required': !validatePasswordComplexity(form1Values.password_1) ? `
+    Password should have minimum 8 characters,
+     at least one upper case character,
+     at least one lower case character,
+     at least one special character
+     and at least one digit` : ''
     formErrors.password_2 = form1Values.password_2 === '' ? 'Confirm password is required' : form1Values.password_1 !== form1Values.password_2 ? 'Passwords don\'t match' : ''
     setForm1Errors({
       ...formErrors

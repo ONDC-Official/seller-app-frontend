@@ -28,6 +28,7 @@ import {
   getShortAddress,
 } from "./../../../utils/orders.js";
 import cogoToast from "cogo-toast";
+import { convertDateInStandardFormat } from "../../../utils/formatting/date";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -162,10 +163,11 @@ const OrderDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Created On</p>
-            <p className="text-base font-normal">
-              {moment(order?.createdAt).format("MM-DD-YYYY")}{" "}
-              {moment(order?.createdAt).format("hh:mm a")}
-            </p>
+            <p className="text-base font-normal">{convertDateInStandardFormat(order?.createdAt)}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Modified On</p>
+            <p className="text-base font-normal">{convertDateInStandardFormat(order?.updatedAt)}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Order Status</p>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
-import cogoToast from "cogo-toast";
+import { PRODUCT_CATEGORY } from '../../../utils/constants'
 
 const columns = [
   { id: "productName", label: "Name", minWidth: 100 },
@@ -15,7 +15,7 @@ const columns = [
     id: "productCategory",
     label: "Category",
     minWidth: 120,
-    format: (value) => value.toLocaleString("en-US"),
+    format: (value) => PRODUCT_CATEGORY[value] || value,
   },
   {
     id: "quantity",
