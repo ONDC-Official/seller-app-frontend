@@ -77,7 +77,7 @@ export default function Login() {
       const res = await postCall(url, login);
       handleRedirect(res.data.access_token, res.data.user);
     } catch (error) {
-      cogoToast.error('Incorrect email or password, please try again');
+      cogoToast.error(error.response.data.error);
       setEnableCaptcha(true)
       loadCaptchaEnginge(6)
     }
