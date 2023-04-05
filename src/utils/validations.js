@@ -17,9 +17,19 @@ export const isEmailValid = (value) => {
   return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)
 };
 
-export const isPANValid = (value) => {
+export const isValidPAN = (value) => {
   return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)
 };
+
+export const isValidGSTIN = (value) => {
+  // GSTIN should be alphanumeric and 15 characters long
+  return /^[a-zA-Z0-9]{15}$/.test(value)
+}
+
+export const isValidFSSAI = (value) => {
+  // FSSAI should be 14 digit number
+  return /^[0-9]{14}$/.test(value)
+}
 
 export const isAlphaNumericOnly = (value) => {
   return /^[A-Za-z0-9]+$/i.test(value)

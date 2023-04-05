@@ -9,12 +9,15 @@ import {
   FormControlLabel,
   FormGroup,
   FormHelperText,
+  IconButton,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   TextField,
+  Stack,
 } from "@mui/material";
+import { DeleteOutlined } from "@mui/icons-material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -359,12 +362,47 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       }
     }
 
+    const UploadedFile = ({ name }) => {
+      if (!name) return
+      return (
+        <Stack direction="row" spacing={2}>
+          <IconButton
+            size="small"
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation();
+              // reset file input
+              uploadFileRef.current.value = null;
+              stateHandler((prevState) => {
+                const newState = {
+                  ...prevState,
+                  [item.id]: Array.isArray(prevState[item.id]) ? prevState[item.id].filter(
+                    (ele) => ele != name
+                  ) : '',
+                  uploaded_urls: [],
+                };
+                return newState;
+              });
+            }}
+          >
+            <DeleteOutlined fontSize="small" />
+          </IconButton>
+          <div>{name}</div>
+        </Stack>
+      )
+    }
+  
     return (
       <div className="py-1 flex flex-col">
         <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
+        {/* <Button sx={{ textTransform: 'none' }} variant="contained">
+          <label for="contained-button-file">
+            Choose file        
+          </label>
+        </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
         <FormControl error={item.error}>
         {/* <label htmlFor="contained-button-file"> */}
@@ -429,13 +467,15 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               };
             }}
           />
-          {item.multiple &&
+          {/* {item.multiple &&
             state[item.id].map((name) => {
               return (
-                <div className="flex">
-                  <Button
+                <Stack direction="row" justifyContent="revert">
+                  <IconButton
+                    color="error"
+                    // aria-label="upload picture"
                     size="small"
-                    className="w-10 mr-2 !text-black"
+                    // className="w-10 mr-2 !text-black"
                     onClick={(e) => {
                       e.stopPropagation();
                       // reset file input 
@@ -452,13 +492,15 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                       });
                     }}
                   >
-                    <DeleteIcon sx={{ fontSize: 20 }} />
-                  </Button>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
                   <p className="text-sm mt-1 ml-2">{name}</p>
-                </div>
+                </Stack>
               );
-            })}
-            {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
+            })
+          } */}
+          {item.multiple ? state[item.id]?.map((name) => <UploadedFile name={name} /> ) : <UploadedFile name={state[item.id]} />}
+          {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
         {/* </label> */}
         </FormControl>
       </div>
