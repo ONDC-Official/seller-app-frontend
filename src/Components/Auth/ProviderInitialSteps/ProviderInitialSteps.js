@@ -358,16 +358,25 @@ const ProviderInitialSteps = () => {
     validateForm2()
   }, [form2Values])
 
-  // const checkDisabled = () => {
-  //   if (step == 1) {
-  //     if (password.password_1.trim() == "") return true;
-  //     if (password.password_1 != password.password_2) {
-  //       return true;
-  //     }
-  //   }
-
-  //   return false;
-  // };
+  const checkDisabled = () => {
+    if (step === 2 && (
+      !form2Values.logo ||
+      form2Values.categories.length === 0 ||
+      !form2Values.location ||
+      !form2Values.building ||
+      !form2Values.address_city ||
+      !form2Values.state ||
+      !form2Values.country ||
+      !form2Values.area_code ||
+      !form2Values.locality ||
+      (form2Values.locationAvailability === 'city' && form2Values.city.length === 0) ||
+      !form2Values.logo ||
+      !form2Values.email ||
+      !form2Values.mobile)) {
+        return true
+    }
+    return false;
+  };
 
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
@@ -420,7 +429,7 @@ const ProviderInitialSteps = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
-                    // disabled={checkDisabled()}
+                    disabled={checkDisabled()}
                   >
                     {step == 2 ? "Finish" : "Continue"}
                   </Button>

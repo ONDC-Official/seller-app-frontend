@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
 import { useEffect } from "react";
 import { getCall } from "../../../Api/axios";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const providerFields = [
   {
@@ -34,61 +35,71 @@ const kycFields = [
     id: "contactEmail",
     title: "Contact email",
     type: "input",
+    required: true,
   },
   {
     id: "contactMobile",
     title: "Contact mobile",
     type: "input",
+    required: true,
   },
   {
     id: "fssai",
     title: "FSSAI",
     type: "input",
+    required: true,
   },
   {
     id: "address",
     title: "Address",
     type: "input",
+    required: true,
   },
   {
     id: "address_proof",
     title: "Address proof",
     type: "upload",
+    required: true,
   },
   {
     id: "gst_no",
-    title: "GSTN",
+    title: "GSTIN",
     type: "input",
+    required: true,
   },
   {
     id: "gst_proof",
-    title: "GSTN Proof",
+    title: "GSTIN Proof",
     type: "upload",
+    required: true,
   },
   {
     id: "pan_no",
     title: "PAN",
     type: "input",
+    required: true,
   },
   {
     id: "pan_proof",
     title: "PAN proof",
     type: "upload",
+    required: true,
   },
   {
     id: "id_proof",
     title: "ID proof",
     type: "upload",
+    required: true,
   },
 ];
 
 const bankFields = [
-  { id: "bankName", title: "Bank Name", type: "input" },
-  { id: "branchName", title: "Branch Name", type: "input" },
-  { id: "IFSC", title: "IFSC", type: "input" },
-  { id: "accHolderName", title: "Account Holder Name", type: "input" },
-  { id: "accNumber", title: "Account Number", type: "input" },
-  { id: "cancelledCheque", title: "Cancelled Cheque", type: "upload" },
+  { id: "bankName", title: "Bank Name", type: "input", required: true, },
+  { id: "branchName", title: "Branch Name", type: "input", required: true, },
+  { id: "IFSC", title: "IFSC", type: "input", required: true, },
+  { id: "accHolderName", title: "Account Holder Name", type: "input", required: true, },
+  { id: "accNumber", title: "Account Number", type: "input", required: true, },
+  { id: "cancelledCheque", title: "Cancelled Cheque", type: "upload", required: true, },
 ];
 
 let storeFields = [
@@ -118,13 +129,14 @@ let storeFields = [
       { key: "F&B", value: "f_and_b" },
     ],
     type: "multi-select",
+    required: true,
   },
   {
     id: "location",
     title: "Store Location",
     placeholder: "Store Location",
     type: "location-picker",
-    required: false,
+    required: true,
   },
   {
     id: "location_availability",
@@ -134,6 +146,7 @@ let storeFields = [
       { key: "City", value: "city" },
     ],
     type: "radio",
+    required: true,
   },
   {
     id: "default_cancellable",
@@ -143,7 +156,7 @@ let storeFields = [
       { key: "Non Cancellable", value: false },
     ],
     type: "radio",
-    required: false,
+    required: true,
   },
   {
     id: "default_returnable",
@@ -153,7 +166,7 @@ let storeFields = [
       { key: "Non Returnable", value: false },
     ],
     type: "radio",
-    required: false,
+    required: true,
   },
   {
     id: "country",
@@ -189,7 +202,7 @@ let storeFields = [
     id: "logo",
     title: "Logo",
     type: "upload",
-    required: false,
+    required: true,
   },
 ];
 
@@ -294,7 +307,7 @@ const ProviderDetails = () => {
           { key: "Noida", value: "noida" },
         ],
         type: "multi-select",
-        required: false,
+        required: true,
       });
       setStoreDetailFields(fieldsWithCityInput);
     } else {
@@ -313,6 +326,11 @@ const ProviderDetails = () => {
             style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
           >
             <div className="m-auto w-10/12 md:w-3/4 h-max">
+              <BackNavigationButton onClick={() => {
+                userRole == "Super Admin"
+                  ? navigate("/application/user-listings?view=provider")
+                  : navigate("/application/inventory");
+              }} />
               <p className="text-2xl font-semibold mb-4">Provider Details</p>
               {providerFields.map((item) => (
                 <RenderInput
@@ -349,7 +367,7 @@ const ProviderDetails = () => {
                   stateHandler={setStoreDetails}
                 />
               ))}
-              <div className="flex mt-16">
+              {/* <div className="flex mt-16">
                 <Button
                   size="small"
                   style={{ marginRight: 10 }}
@@ -362,7 +380,7 @@ const ProviderDetails = () => {
                 >
                   Back
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
