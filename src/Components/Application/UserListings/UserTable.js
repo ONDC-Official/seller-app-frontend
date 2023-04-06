@@ -25,8 +25,9 @@ const StyledTableCell = styled(TableCell)({
 });
 
 const ThreeDotsMenu = (props) => {
-  const { row, getAdmins, getProviders } = props;
+  const { row, isProvider, getAdmins, getProviders } = props;
   const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
 
   const openActionMenu = (e) => {
     e.stopPropagation();
@@ -83,6 +84,11 @@ const ThreeDotsMenu = (props) => {
           'aria-labelledby': 'user-action-menu-button',
         }}
       >
+        {isProvider && (
+          <MenuItem onClick={() => navigate(`/user-listings/provider-details/${row?.organization?._id}`)}>
+            View
+          </MenuItem>
+        )}
         <MenuItem onClick={(e) => action(e, "enable")}>
           Mark as Active
         </MenuItem>
@@ -142,23 +148,17 @@ const UserTable = (props) => {
             {data.map((row, index) => {
                 return (
                   <TableRow
-                    style={{ cursor: isProvider ? "pointer" : "default" }}
+                    // style={{ cursor: isProvider ? "pointer" : "default" }}
                     hover
                     tabIndex={-1}
                     key={index}
-                    onClick={() => {
-                      isProvider &&
-                        navigate(
-                          `/user-listings/provider-details/${row?.organization?._id}`
-                        );
-                    }}
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
                       if (column.id == "Action") {
                         return (
-                          <TableCell onClick={(event) => event.stopPropagation()} key={column.id} align={"left"}>
-                            <ThreeDotsMenu row={row} getAdmins={getAdmins} getProviders={getProviders} />
+                          <TableCell key={column.id} align={"left"}>
+                            <ThreeDotsMenu row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
                           </TableCell>
                         );
                       } else if  (column.id == "formatted_status") {
