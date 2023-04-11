@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Order from "../Components/Application/Order/Order";
+import Returns from "../Components/Application/Returns/Returns";
 import Inventory from "../Components/Application/Inventory/Inventory";
 import AddProduct from "../Components/Application/Product/AddProduct";
 import PageNotFound from "../Components/PageNotFound/PageNotFound";
@@ -56,6 +57,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <OrderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/returns"
+          element={
+            <PrivateRoute>
+              <Returns />
             </PrivateRoute>
           }
         />

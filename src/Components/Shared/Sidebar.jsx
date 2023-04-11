@@ -98,7 +98,7 @@ export default function Sidebar(props) {
           onKeyDown={toggleDrawer(anchor, false)}
         >
           <List component="div" disablePadding>
-            {user?.role?.name == "Organization Admin" && (
+            {user?.role?.name === "Organization Admin" && (
               <div>
                 <NavLink
                   to="/application/inventory"
@@ -118,6 +118,14 @@ export default function Sidebar(props) {
                     <ListItemText primary="Store Details" />
                   </ListItemButton>
                 </NavLink>
+                <NavLink
+                  to="/application/returns"
+                  className="no-underline	text-black"
+                >
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="Returns" />
+                  </ListItemButton>
+                </NavLink>
               </div>
             )}
             <NavLink
@@ -128,7 +136,7 @@ export default function Sidebar(props) {
                 <ListItemText primary="Orders" />
               </ListItemButton>
             </NavLink>
-            {user?.role?.name == "Super Admin" && (
+            {user?.role?.name === "Super Admin" && (
               <NavLink
                 to="/application/user-listings"
                 className="no-underline	text-black"
