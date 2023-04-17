@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
-import { isAlphaNumericOnly, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
+import { isAlphaNumericOnly, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
@@ -137,7 +137,7 @@ const InviteProvider = () => {
     if (step === 1) {
       formErrors.email = formValues.email.trim() === '' ? 'Email is required' : !isEmailValid(formValues.email) ? 'Please enter a valid email address' : ''
       formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
-      formErrors.name = formValues.name.trim() === '' ? 'Name is required' : ''
+      formErrors.name = formValues.name.trim() === '' ? 'Name is required' : !isNameValid(formValues.name) ? 'Please enter a valid name' : ''
     } else if (step === 2) {
       formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered address is required' : ''
@@ -152,7 +152,7 @@ const InviteProvider = () => {
       formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN card imgage is required' : ''
       formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN certificate is required' : ''
     } else if (step === 4) {
-      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Name is required' : ''
+      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid name' : ''
       formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
