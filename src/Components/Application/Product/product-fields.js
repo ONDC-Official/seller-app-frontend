@@ -49,7 +49,6 @@ const productFields = [
       placeholder: "GST Percentage",
       type: "select",
       options: [
-        { key: "0", value: 0 },
         { key: "5", value: 5 },
         { key: "12", value: 12 },
         { key: "18", value: 18 },
