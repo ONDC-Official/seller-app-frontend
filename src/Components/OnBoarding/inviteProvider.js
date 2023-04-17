@@ -152,7 +152,7 @@ const InviteProvider = () => {
       formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN card imgage is required' : ''
       formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN certificate is required' : ''
     } else if (step === 4) {
-      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid name' : ''
+      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Account holder name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid account holder name' : ''
       formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
