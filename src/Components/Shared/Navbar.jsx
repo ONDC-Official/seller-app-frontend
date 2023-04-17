@@ -224,8 +224,11 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }) {
                 aria-haspopup="true"
                 //  onClick={handleProfileMenuOpen}
                 color="inherit"
+                disabled
               >
-                <AccountCircle />
+                <AccountCircle
+                  style={{fill: '#fff'}}
+                />
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
