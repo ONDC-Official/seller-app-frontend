@@ -106,6 +106,7 @@ export default function AddProduct() {
     return productFields.map((item) => {
       return (
         <RenderInput
+          previewOnly={state?.productId && item.id === "productCode"?true:false}
           item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
           state={formValues}
           stateHandler={setFormValues}
