@@ -268,7 +268,7 @@ const OrderItemsSummaryCard = (props) => {
       id: "state",
       align: "center",
       minWidth: "50",
-      label: "Fulfilment status",
+      label: "Fulfillment Status",
     },
     { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
     { id: "action", align: "right", minWidth: "50", label: "Actions" },
