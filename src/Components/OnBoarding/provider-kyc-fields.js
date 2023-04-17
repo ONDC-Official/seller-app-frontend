@@ -23,8 +23,8 @@ export default [
     },
     {
       id: "contactMobile",
-      title: "Mobile Number",
-      placeholder: "Enter your mobile number",
+      title: "Mobile",
+      placeholder: "Enter your mobile",
       type: "input",
       mobile: true,
       maxLength: 10,
