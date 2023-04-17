@@ -30,7 +30,7 @@ const columns = [
   },
   {
     id: "provider_name",
-    label: "Provider Name",
+    label: "Provider Store Name",
     format: (value) => value.toLocaleString("en-US"),
     minWidth: 130,
     align: "center",
