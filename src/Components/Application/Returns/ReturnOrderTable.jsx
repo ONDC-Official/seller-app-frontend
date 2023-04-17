@@ -25,7 +25,7 @@ import cogoToast from "cogo-toast";
 import { EditOutlined } from "@mui/icons-material";
 
 const RETURN_ORDER_STATUS = {
-  Return_Initiated: 'Return_Initiated',
+  Return_Initiated: 'Return Initiated',
   Liquidate: 'Liquidated',
   Reject: 'Rejected',
 }
