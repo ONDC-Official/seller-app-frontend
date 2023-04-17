@@ -65,10 +65,12 @@ export default function Sidebar(props) {
   };
 
   async function logout() {
-    await postCall(`/api/v1/auth/logout`);
-    deleteAllCookies();
-    localStorage.clear();
-    navigate("/");
+    if(window.confirm("Are you sure you want to logout your session?")){
+      await postCall(`/api/v1/auth/logout`);
+      deleteAllCookies();
+      localStorage.clear();
+      navigate("/");
+    }
   }
 
   const list = (anchor) => (
