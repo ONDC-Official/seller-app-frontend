@@ -141,8 +141,8 @@ const InviteProvider = () => {
     } else if (step === 2) {
       formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered address is required' : ''
-      formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
-      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
+      formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
+      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
       formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : !isValidPAN(formValues.PAN) ? 'Please enter a valid PAN number' : ''
       formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : !isValidGSTIN(formValues.GSTN) ? 'GSTIN should be alphanumeric and 15 characters long' : ''
       formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI Number is required' : !isValidFSSAI(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
