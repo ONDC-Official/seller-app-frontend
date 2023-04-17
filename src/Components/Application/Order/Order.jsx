@@ -70,6 +70,20 @@ export default function Orders() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [user, setUser] = useState();
+  const [columnList, setColumnList] = useState(columns);
+  
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id);
+  }, []);
 
   const getOrders = () => {
     const url = `/api/v1/orders?limit=${rowsPerPage}&offset=${page}`;
@@ -87,6 +101,13 @@ export default function Orders() {
     getOrders();
   }, [page, rowsPerPage]);
 
+  useEffect(() => {
+    if(user && user?.role?.name === "Organization Admin"){
+      const data = columns.filter((item) => item.id !== "provider_name")
+      setColumnList(data);
+    }
+  }, [user]);
+
   return (
     <>
       <div className="container mx-auto my-8">
@@ -94,7 +115,7 @@ export default function Orders() {
           <label className="font-semibold text-2xl">Orders</label>
         </div>
         <OrderTable
-          columns={columns}
+          columns={columnList}
           data={orders}
           totalRecords={totalRecords}
           page={page}
