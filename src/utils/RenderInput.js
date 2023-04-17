@@ -199,7 +199,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             disabled={item?.isDisabled || previewOnly || false}
             size="small"
             required={item.required}
-            placeholder={item.placeholder}
+            placeholder={!previewOnly?item.placeholder:""}
             value={state[item.id]}
             onChange={(e) =>
               stateHandler({ ...state, [item.id]: e.target.value })
@@ -297,7 +297,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={item.placeholder}
+                placeholder={!previewOnly?item.placeholder:''}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
