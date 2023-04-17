@@ -189,7 +189,7 @@ const ProviderInitialSteps = () => {
      at least one lower case character,
      at least one special character
      and at least one digit` : ''
-    formErrors.password_2 = form1Values.password_2 === '' ? 'Confirm password is required' : form1Values.password_1 !== form1Values.password_2 ? 'Passwords don\'t match' : ''
+    formErrors.password_2 = form1Values.password_2 === '' ? 'Confirm Password is required' : form1Values.password_1 !== form1Values.password_2 ? 'Passwords don\'t match' : ''
     setForm1Errors({
       ...formErrors
     })
@@ -199,7 +199,7 @@ const ProviderInitialSteps = () => {
   const validateForm2 = () => {
     const formErrors = {}
     formErrors.logo = form2Values.logo.trim() === '' ? 'Logo is required' : ''
-    formErrors.categories = form2Values.categories.length < 1 ? 'Category is required' : ''
+    formErrors.categories = form2Values.categories.length < 1 ? 'Support product categories are required' : ''
     formErrors.location = !form2Values.location ? 'Location is required' : ''
     formErrors.building = form2Values.building.trim() === '' ? 'Building is required' : ''
     formErrors.address_city = form2Values.address_city.trim() === '' ? 'City is required' : ''
@@ -210,7 +210,7 @@ const ProviderInitialSteps = () => {
     if (form2Values.locationAvailability === 'city') {
       formErrors.city = form2Values.city.length < 1 ? 'City is required' : ''
     }
-    formErrors.email = form2Values.email.trim() === '' ? 'Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
+    formErrors.email = form2Values.email.trim() === '' ? 'Support Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = form2Values.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
     setForm2Errors({
       ...formErrors
