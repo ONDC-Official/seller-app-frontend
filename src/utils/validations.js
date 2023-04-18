@@ -42,3 +42,5 @@ export const isAlphaNumericOnly = (value) => {
 export function isObjEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
+export const areObjectsEqual = (firstObj, secondObj) => JSON.stringify(firstObj) === JSON.stringify(secondObj);

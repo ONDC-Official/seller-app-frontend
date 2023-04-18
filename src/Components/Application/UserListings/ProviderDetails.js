@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
+import {areObjectsEqual} from '../../../utils/validations';
 import { useEffect } from "react";
-import { getCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const providerFields = [
@@ -227,6 +229,18 @@ const ProviderDetails = () => {
     ],
   });
 
+  const [defaultStoreDetails, setDefaultStoreDetails] = useState({
+    location: {},
+    categories: [],
+    location_availability: "",
+    default_cancellable: "",
+    default_returnable: "",
+    cities: [
+      { key: "Delhi", value: "delhi" },
+      { key: "Pune", value: "pune" },
+    ],
+  });
+
   const getOrgDetails = async (id) => {
     try {
       const url = `/api/v1/organizations/${id}`;
@@ -260,7 +274,7 @@ const ProviderDetails = () => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      setStoreDetails({
+      const storeData = {
         email: res.providerDetail.storeDetails.supportDetails.email,
         mobile: res.providerDetail.storeDetails.supportDetails.mobile,
         categories: res?.providerDetail?.storeDetails?.categories,
@@ -278,7 +292,9 @@ const ProviderDetails = () => {
         building: res.providerDetail.storeDetails.address.building,
         area_code: res.providerDetail.storeDetails.address.area_code,
         logo: res?.providerDetail?.storeDetails?.logo?.url,
-      });
+      };
+      setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
+      setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
     } catch (error) {
       console.log(error);
     }
@@ -292,6 +308,59 @@ const ProviderDetails = () => {
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
+
+  const onUpdate = () => {
+    const provider_id = params?.id;
+    const url = `/api/v1/organizations/${provider_id}/storeDetails`;
+    const {
+      categories,
+      logo,
+      location_availability,
+      default_cancellable,
+      default_returnable,
+      mobile,
+      email,
+      city,
+
+      building,
+      state,
+      country,
+      area_code,
+      locality = ''
+    } = storeDetails;
+    const locationAvailability = location_availability === "pan_india"?true:false;
+    const addressDetails = {
+      building: building,
+      city: city,
+      state: state,
+      country: country,
+      area_code: area_code
+    };
+    let payload = {
+      categories,
+      logo: logo,
+      locationAvailabilityPANIndia: locationAvailability,
+      defaultCancellable: eval(default_cancellable),
+      defaultReturnable: eval(default_returnable),
+      address: addressDetails,
+      supportDetails: {
+        email,
+        mobile,
+      },
+    };
+    if (locationAvailability == false) {
+      payload["city"] = city;
+    }
+    postCall(url, payload)
+      .then((resp) => {
+        cogoToast.success("Store details updated successfully");
+        getOrgDetails(provider_id);
+      })
+      .catch((error) => {
+        console.log(error);
+        cogoToast.error(error.response.data.error);
+      });
+  };
 
   useEffect(() => {
     if (storeDetails.location_availability == "city") {
@@ -361,26 +430,25 @@ const ProviderDetails = () => {
               <p className="text-2xl font-semibold mb-4 mt-14">Store Details</p>
               {storeDetailFields.map((item) => (
                 <RenderInput
-                  previewOnly={true}
+                  // previewOnly={true}
                   item={item}
                   state={storeDetails}
                   stateHandler={setStoreDetails}
                 />
               ))}
-              {/* <div className="flex mt-16">
-                <Button
-                  size="small"
-                  style={{ marginRight: 10 }}
-                  variant="text"
-                  onClick={() => {
-                    userRole == "Super Admin"
-                      ? navigate("/application/user-listings?view=provider")
-                      : navigate("/application/inventory");
-                  }}
-                >
-                  Back
-                </Button>
-              </div> */}
+              {
+                !areObjectsEqual(storeDetails, defaultStoreDetails) && (
+                  <div className="flex mt-16">
+                    <Button
+                      style={{ marginRight: 10 }}
+                      variant="contained"
+                      onClick={onUpdate}
+                    >
+                      Update Store
+                    </Button>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
