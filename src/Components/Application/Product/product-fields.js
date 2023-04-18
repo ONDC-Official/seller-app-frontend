@@ -149,7 +149,7 @@ const productFields = [
       id: "manufacturedDate",
       title: "Manufactured date",
       placeholder: "Manufactured date",
-      type: "input",
+      type: "date-picker",
       required: true,
     },
     {

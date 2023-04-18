@@ -22,6 +22,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment'
+import dayjs from 'dayjs';
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import Cookies from "js-cookie";
@@ -245,6 +246,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "date-picker") {
+    const dateValue = moment(state[item.id], 'DD/MM/YYYY').format('YYYY/MM/DD');
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -265,6 +267,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 return newState;
               });
             }}
+            value={dayjs(dateValue)}
           />
         </LocalizationProvider>
       </div>
