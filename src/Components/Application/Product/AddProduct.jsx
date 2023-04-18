@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
+import moment from "moment";
 import Navbar from "../../Shared/Navbar";
 import MyButton from "../../Shared/Button";
 import RenderInput from "../../../utils/RenderInput";
@@ -56,7 +57,14 @@ export default function AddProduct() {
 
   const addProduct = async () => {
     try {
-      const data = Object.assign({}, formValues);
+      let data = Object.assign({}, formValues);
+      // Create a duration object with the hours you want to convert
+      const duration = moment.duration(parseInt(data.returnWindow), 'hours');
+
+      // Format the duration in ISO 8601 format
+      const iso8601 = duration.toISOString();
+      data.returnWindow = iso8601;
+
       delete data["uploaded_urls"];
       await cancellablePromise(
         postCall(`/api/v1/products`, data)
@@ -74,6 +82,12 @@ export default function AddProduct() {
       .then(resp => {
         resp["uploaded_urls"] = resp?.images?.map(i => i?.url) || [];
         resp["images"] = resp?.images?.map(i => i?.path) || [];
+        // Create a duration object from the ISO 8601 string
+        const duration = moment.duration(resp.returnWindow);
+
+        // Get the number of hours from the duration object
+        const hours = duration.asHours();
+        resp.returnWindow = hours;
         setFormValues({ ...resp});
       })
       .catch(error => {
@@ -85,7 +99,14 @@ export default function AddProduct() {
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      const data = Object.assign({}, formValues);
+      let data = Object.assign({}, formValues);
+      // Create a duration object with the hours you want to convert
+      const duration = moment.duration(parseInt(data.returnWindow), 'hours');
+
+      // Format the duration in ISO 8601 format
+      const iso8601 = duration.toISOString();
+      data.returnWindow = iso8601;
+
       delete data["__v"];
       delete data["_id"];
       delete data["organization"];

@@ -133,9 +133,9 @@ const productFields = [
     },
     {
       id: "returnWindow",
-      title: "Return Window",
-      placeholder: "Return Window",
-      type: "input",
+      title: "Return Window (in hours)",
+      placeholder: "Return Window (in hours)",
+      type: "number",
       required: true,
     },
     {
