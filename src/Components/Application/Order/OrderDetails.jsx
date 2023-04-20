@@ -175,7 +175,7 @@ const OrderDetails = () => {
           <Divider orientation="horizontal" />
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Base Price</p>
-            <p className="text-base font-normal">{total_base_cost}</p>
+            <p className="text-base font-normal">{parseFloat(total_base_cost).toFixed(2)}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Taxes</p>
@@ -183,11 +183,11 @@ const OrderDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Delivery Fee</p>
-            <p className="text-base font-normal">{delivery_charges}</p>
+            <p className="text-base font-normal">{parseFloat(delivery_charges).toFixed(2)}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Price</p>
-            <p className="text-base font-normal">{total_order_price || "-"}</p>
+            <p className="text-base font-normal">{total_order_price ? parseFloat(total_order_price).toFixed(2) : "-"}</p>
           </div>
         </div>
         <div className={`${cardClass}`}>
