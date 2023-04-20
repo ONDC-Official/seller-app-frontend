@@ -222,19 +222,19 @@ const OrderDetails = () => {
           <div className="w-full">
             <div className={`${cardClass} my-4 p-4`}>
               <p className="text-lg font-semibold mb-2">Customer Details</p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Name : &nbsp;</p>
                 <p className="text-sm font-medium">
                   {delivery_info?.end?.person?.name}
                 </p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Mobile : &nbsp;</p>
                 <p className="text-sm font-medium">
                   +91 {delivery_info?.end?.contact?.phone}
                 </p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Email : &nbsp;</p>
                 <p className="text-sm font-medium">
                   {delivery_info?.end?.contact?.email}
