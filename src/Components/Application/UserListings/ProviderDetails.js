@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
-import {areObjectsEqual} from '../../../utils/validations';
+import {areObjectsEqual, isEmailValid, isPhoneNoValid} from '../../../utils/validations';
 import { useEffect } from "react";
 import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
@@ -228,6 +228,7 @@ const ProviderDetails = () => {
       { key: "Pune", value: "pune" },
     ],
   });
+  const [errors, setErrors] = useState(null)
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
     location: {},
@@ -275,23 +276,23 @@ const ProviderDetails = () => {
       });
 
       const storeData = {
-        email: res.providerDetail.storeDetails.supportDetails.email,
-        mobile: res.providerDetail.storeDetails.supportDetails.mobile,
-        categories: res?.providerDetail?.storeDetails?.categories,
-        location: res?.providerDetail?.storeDetails?.location,
+        email: res.providerDetail.storeDetails?.supportDetails.email || '',
+        mobile: res.providerDetail.storeDetails?.supportDetails.mobile || '',
+        categories: res?.providerDetail?.storeDetails?.categories || [],
+        location: res?.providerDetail?.storeDetails?.location || '',
         location_availability:
-          res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
+        res.providerDetail.storeDetails?res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
             ? "pan_india"
-            : "city",
-        cities: res?.providerDetail?.storeDetails?.city,
+            : "city":'',
+        cities: res?.providerDetail?.storeDetails?.city || [],
         default_cancellable: false,
         default_returnable: false,
-        country: res.providerDetail.storeDetails.address.country,
-        state: res.providerDetail.storeDetails.address.state,
-        city: res.providerDetail.storeDetails.address.city,
-        building: res.providerDetail.storeDetails.address.building,
-        area_code: res.providerDetail.storeDetails.address.area_code,
-        logo: res?.providerDetail?.storeDetails?.logo?.url,
+        country: res.providerDetail?.storeDetails?.address?.country || '',
+        state: res.providerDetail?.storeDetails?.address?.state || '',
+        city: res.providerDetail?.storeDetails?.address.city || '',
+        building: res.providerDetail?.storeDetails?.address?.building || '',
+        area_code: res.providerDetail?.storeDetails?.address?.area_code || '',
+        logo: res?.providerDetail?.storeDetails?.logo?.url || '',
       };
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
@@ -309,57 +310,77 @@ const ProviderDetails = () => {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
 
-  const onUpdate = () => {
-    const provider_id = params?.id;
-    const url = `/api/v1/organizations/${provider_id}/storeDetails`;
-    const {
-      categories,
-      logo,
-      location_availability,
-      default_cancellable,
-      default_returnable,
-      mobile,
-      email,
-      city,
+  const validate = () => {
+    const formErrors = {};
+    formErrors.email = storeDetails.email.trim() === '' ? 'Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.categories = storeDetails.categories.length === 0 ? 'Category is required' : ''
+    formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
+    formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
+    formErrors.country = storeDetails.country.trim() === '' ? 'Country is required' : ''
+    formErrors.state = storeDetails.state.trim() === '' ? 'State is required' : ''
+    formErrors.city = storeDetails.city.trim() === '' ? 'City is required' : ''
+    formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
+    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'Area code is required' : ''
+    formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
+    
+    setErrors(formErrors);
+    return !Object.values(formErrors).some(val => val !== '');
+  };
 
-      building,
-      state,
-      country,
-      area_code,
-      locality = ''
-    } = storeDetails;
-    const locationAvailability = location_availability === "pan_india"?true:false;
-    const addressDetails = {
-      building: building,
-      city: city,
-      state: state,
-      country: country,
-      area_code: area_code
-    };
-    let payload = {
-      categories,
-      logo: logo,
-      locationAvailabilityPANIndia: locationAvailability,
-      defaultCancellable: eval(default_cancellable),
-      defaultReturnable: eval(default_returnable),
-      address: addressDetails,
-      supportDetails: {
-        email,
+  const onUpdate = () => {
+    if(validate()){
+      const provider_id = params?.id;
+      const url = `/api/v1/organizations/${provider_id}/storeDetails`;
+      const {
+        categories,
+        logo,
+        location_availability,
+        default_cancellable,
+        default_returnable,
         mobile,
-      },
-    };
-    if (locationAvailability == false) {
-      payload["city"] = city;
+        email,
+        city,
+
+        building,
+        state,
+        country,
+        area_code,
+        locality = ''
+      } = storeDetails;
+      const locationAvailability = location_availability === "pan_india"?true:false;
+      const addressDetails = {
+        building: building,
+        city: city,
+        state: state,
+        country: country,
+        area_code: area_code
+      };
+      let payload = {
+        categories,
+        logo: logo,
+        locationAvailabilityPANIndia: locationAvailability,
+        defaultCancellable: eval(default_cancellable),
+        defaultReturnable: eval(default_returnable),
+        address: addressDetails,
+        supportDetails: {
+          email,
+          mobile,
+        },
+      };
+      if (locationAvailability == false) {
+        payload["city"] = city;
+      }
+      postCall(url, payload)
+        .then((resp) => {
+          cogoToast.success("Store details updated successfully");
+          getOrgDetails(provider_id);
+        })
+        .catch((error) => {
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
     }
-    postCall(url, payload)
-      .then((resp) => {
-        cogoToast.success("Store details updated successfully");
-        getOrgDetails(provider_id);
-      })
-      .catch((error) => {
-        console.log(error);
-        cogoToast.error(error.response.data.error);
-      });
   };
 
   useEffect(() => {
@@ -431,7 +452,8 @@ const ProviderDetails = () => {
               {storeDetailFields.map((item) => (
                 <RenderInput
                   // previewOnly={true}
-                  item={item}
+                  // item={item}
+                  item={{ ...item, error: !!errors?.[item.id], helperText: errors?.[item.id] || '' }}
                   state={storeDetails}
                   stateHandler={setStoreDetails}
                 />
