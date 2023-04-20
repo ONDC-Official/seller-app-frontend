@@ -11,12 +11,13 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY } from "../../../utils/constants";
 import productFields from './product-fields'
 
 export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [fields, setFields] = useState(productFields);
 
   const { cancellablePromise } = useCancellablePromise();
 
@@ -28,7 +29,8 @@ export default function AddProduct() {
     purchasePrice: "",
     HSNCode: "",
     GST_Percentage: 18,
-    productCategory: [],
+    productCategory: '',
+    productSubCategory: '',
     quantity: "",
     barcode: "",
     maxAllowedQty: "",
@@ -124,15 +126,32 @@ export default function AddProduct() {
   };
 
   const renderFields = () => {
-    return productFields.map((item) => {
-      return (
-        <RenderInput
-          previewOnly={state?.productId && item.id === "productCode"?true:false}
-          item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
-          state={formValues}
-          stateHandler={setFormValues}
-        />
-      );
+    return fields.map((item) => {
+      let returnElement = true;
+      if(formValues.productSubCategory){
+        const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
+        const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubCategory);
+        if(selectedSubCatObject){
+          console.log("FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY=====>", FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]);
+          const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+          const fielditemAvailableInHidden = hiddenFields.find((hiddenItem) => hiddenItem === item.id)
+           if(fielditemAvailableInHidden){
+            returnElement = false;
+           }
+        }
+      }else{}
+      if(returnElement){
+        return (
+          <RenderInput
+            previewOnly={state?.productId && item.id === "productCode"?true:false}
+            item={{ ...item, error: errors?.[item.id] ? true : false, helperText: errors?.[item.id] || '' }}
+            state={formValues}
+            stateHandler={setFormValues}
+          />
+        );
+      }else{
+        return <></>
+      }
     });
   };
 
@@ -141,6 +160,17 @@ export default function AddProduct() {
       getProduct();
     }
   }, []);
+
+  useEffect(() => {
+    console.log("formValues=====>", formValues);
+    if(formValues.productCategory){
+      let data = Object.assign([], JSON.parse(JSON.stringify(fields)));
+      const subCategoryIndex = data.findIndex((item) => item.id === 'productSubCategory');
+      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues.productCategory];
+      setFields(data);
+    }
+    // stateHandler({ ...state, [item.id]: e.target.value })
+  }, [formValues]);
 
   const validate = () => {
     let formErrors = {}

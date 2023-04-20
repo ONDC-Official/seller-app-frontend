@@ -1,4 +1,4 @@
-import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { PRODUCT_CATEGORY} from "../../../utils/constants";
 
 const productFields = [
     {
@@ -63,6 +63,14 @@ const productFields = [
       options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
         return { key: value, value: key}
       }),
+      type: "select",
+      required: true,
+    },
+    {
+      id: "productSubCategory",
+      title: "Product subcategory",
+      placeholder: "Please select product category",
+      options: [],
       type: "select",
       required: true,
     },
