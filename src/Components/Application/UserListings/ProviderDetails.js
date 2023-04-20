@@ -118,6 +118,8 @@ let storeFields = [
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
+    maxLength: 10,
+    required: true,
   },
   {
     id: "categories",
@@ -311,19 +313,22 @@ const ProviderDetails = () => {
   }
 
   const validate = () => {
+    console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
     formErrors.email = storeDetails.email.trim() === '' ? 'Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
     formErrors.categories = storeDetails.categories.length === 0 ? 'Category is required' : ''
-    formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
-    formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
+    // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
+    if(storeDetails.location_availability === 'city'){
+      formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
+    }else{}
     formErrors.country = storeDetails.country.trim() === '' ? 'Country is required' : ''
     formErrors.state = storeDetails.state.trim() === '' ? 'State is required' : ''
     formErrors.city = storeDetails.city.trim() === '' ? 'City is required' : ''
     formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
     formErrors.area_code = storeDetails.area_code.trim() === '' ? 'Area code is required' : ''
     formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
-    
+    console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
     return !Object.values(formErrors).some(val => val !== '');
   };
@@ -340,12 +345,14 @@ const ProviderDetails = () => {
         default_returnable,
         mobile,
         email,
-        city,
+        cities,
 
         building,
         state,
+        city,
         country,
         area_code,
+        location,
         locality = ''
       } = storeDetails;
       const locationAvailability = location_availability === "pan_india"?true:false;
@@ -357,7 +364,7 @@ const ProviderDetails = () => {
         area_code: area_code
       };
       let payload = {
-        categories,
+        categories: categories.map((item) => item.value),
         logo: logo,
         locationAvailabilityPANIndia: locationAvailability,
         defaultCancellable: eval(default_cancellable),
@@ -368,8 +375,11 @@ const ProviderDetails = () => {
           mobile,
         },
       };
+      if(location){
+        payload.location = location;
+      }else{}
       if (locationAvailability == false) {
-        payload["city"] = city;
+        payload["city"] = cities;
       }
       postCall(url, payload)
         .then((resp) => {
