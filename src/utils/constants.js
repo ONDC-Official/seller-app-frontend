@@ -1,3 +1,5 @@
+export const MAX_STRING_LENGTH = 255;
+
 export const PRODUCT_CATEGORY = {
     "grocery": "Grocery",
     "beauty_and_personal_care": "Beauty & Personal Care",

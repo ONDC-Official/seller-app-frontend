@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH } from "../../../utils/constants";
 import productFields from './product-fields'
 
 export default function AddProduct() {
@@ -132,7 +132,6 @@ export default function AddProduct() {
         const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
         const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubCategory);
         if(selectedSubCatObject){
-          console.log("FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY=====>", FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]);
           const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
           const fielditemAvailableInHidden = hiddenFields.find((hiddenItem) => hiddenItem === item.id)
            if(fielditemAvailableInHidden){
@@ -174,31 +173,31 @@ export default function AddProduct() {
 
   const validate = () => {
     let formErrors = {}
-    formErrors.productCode = formValues.productCode.trim() === '' ? 'Product code is required' : ''
-    formErrors.productName = formValues.productName.trim() === '' ? 'Product name is required' : ''
+    formErrors.productCode = formValues.productCode.trim() === '' ? 'Product code is required' : formValues.productCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.productName = formValues.productName.trim() === '' ? 'Product name is required' : formValues.productName.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.MRP = !formValues.MRP ? 'Please enter a valid number' : ''
     formErrors.retailPrice = !formValues.retailPrice ? 'Please enter a valid number' : ''
     formErrors.purchasePrice = !formValues.purchasePrice ? 'Please enter a valid number' : ''
-    formErrors.HSNCode = formValues.HSNCode.trim() === '' ? 'HSN code is required' : ''
+    formErrors.HSNCode = formValues.HSNCode.trim() === '' ? 'HSN code is required' : formValues.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.GST_Percentage = !formValues.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues.productCategory.length < 1 ? 'Product category is required' : ''
     formErrors.quantity = !formValues.quantity ? 'Please enter a valid number' : ''
     formErrors.barcode = !formValues.barcode ? 'Please enter a valid number' : ''
     formErrors.maxAllowedQty = !formValues.maxAllowedQty ? 'Please enter a valid number' : ''
-    formErrors.UOM = formValues.UOM.trim() === '' ? 'UOM is required' : ''
+    formErrors.UOM = formValues.UOM.trim() === '' ? 'UOM is required' : formValues.UOM.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.packQty = !formValues.packQty ? 'Pack quantity is required' : ''
-    formErrors.length = formValues.length.trim() === '' ? 'Length is required' : ''
-    formErrors.breadth = formValues.breadth.trim() === '' ? 'Breadth is required' : ''
-    formErrors.height = formValues.height.trim() === '' ? 'Height is required' : ''
-    formErrors.weight = formValues.weight.trim() === '' ? 'Weight is required' : ''
+    formErrors.length = formValues.length.trim() === '' ? 'Length is required' : ''; //formValues.length.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.breadth = formValues.breadth.trim() === '' ? 'Breadth is required' : ''; //formValues.breadth.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.height = formValues.height.trim() === '' ? 'Height is required' : ''; //formValues.height.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.weight = formValues.weight.trim() === '' ? 'Weight is required' : ''; //formValues.weight.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.returnWindow = formValues.returnWindow.trim() === '' ? 'Return window is required' : ''
-    formErrors.manufacturerName = formValues.manufacturerName.trim() === '' ? 'Manufacturer name is required' : ''
+    formErrors.manufacturerName = formValues.manufacturerName.trim() === '' ? 'Manufacturer name is required' : formValues.manufacturerName.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.manufacturedDate = formValues.manufacturedDate.trim() === '' ? 'Manufactured date is required' : ''
-    formErrors.nutritionalInfo = formValues.nutritionalInfo.trim() === '' ? 'Nutritional info is required' : ''
-    formErrors.additiveInfo = formValues.additiveInfo.trim() === '' ? 'Additive info is required' : ''
-    formErrors.instructions = formValues.instructions.trim() === '' ? 'Instruction is required' : ''
-    formErrors.longDescription = formValues.longDescription.trim() === '' ? 'Long description is required' : ''
-    formErrors.description = formValues.description.trim() === '' ? 'Short description is required' : ''
+    formErrors.nutritionalInfo = formValues.nutritionalInfo.trim() === '' ? 'Nutritional info is required' : formValues.nutritionalInfo.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.additiveInfo = formValues.additiveInfo.trim() === '' ? 'Additive info is required' : formValues.additiveInfo.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.instructions = formValues.instructions.trim() === '' ? 'Instruction is required' : formValues.instructions.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.longDescription = formValues.longDescription.trim() === '' ? 'Long description is required' : formValues.longDescription.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.description = formValues.description.trim() === '' ? 'Short description is required' : formValues.description.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.images = formValues.images.length < 1 ? 'At least one image is required' : ''
     setErrors({
       ...formErrors
