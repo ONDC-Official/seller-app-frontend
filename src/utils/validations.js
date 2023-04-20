@@ -9,6 +9,10 @@ export const checkEmpty = (obj) => {
   return ans;
 };
 
+export const isNumberOnly = (value) => {
+  return /^[0-9]*$/.test(value)
+};
+
 export const isNameValid = (value) => {
   return /^[a-zA-Z]+[a-zA-Z '.-]*$/.test(value)
 };
