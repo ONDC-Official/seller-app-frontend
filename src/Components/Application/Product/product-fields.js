@@ -21,6 +21,7 @@ const productFields = [
       placeholder: "MRP",
       type: "number",
       required: true,
+      valueInDecimal: true
     },
     {
       id: "retailPrice",
@@ -28,6 +29,7 @@ const productFields = [
       placeholder: "Retail price",
       type: "number",
       required: true,
+      valueInDecimal: true
     },
     {
       id: "purchasePrice",
@@ -35,6 +37,7 @@ const productFields = [
       placeholder: "Purchase price",
       type: "number",
       required: true,
+      valueInDecimal: true
     },
     {
       id: "HSNCode",
