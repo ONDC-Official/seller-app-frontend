@@ -32,6 +32,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
+  const [user, setUser] = React.useState();
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
@@ -47,6 +48,18 @@ const OrderDetails = () => {
   useEffect(() => {
     if (params.id) getOrder();
   }, [params]);
+
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  React.useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id);
+  }, []);
 
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
@@ -109,7 +122,7 @@ const OrderDetails = () => {
   };
 
   const renderOrderStatus = (order_details) => {
-    if (order_details?.state == "Created") {
+    if (order_details?.state == "Created" && user?.role?.name !== "Super Admin") {
       return (
         <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
           <Button
@@ -191,7 +204,7 @@ const OrderDetails = () => {
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || true} orderItems={order?.items} order={order} />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
@@ -260,7 +273,7 @@ const OrderItemsSummaryCard = (props) => {
     order_items.push(item);
   });
 
-  const cols = [
+  let cols = [
     { id: "url name", align: "left", minWidth: 50, label: "Items Summary" },
     { id: "quantity", align: "center", minWidth: "auto", label: "Qty" },
     { id: "price", align: "center", minWidth: "50", label: "Price" },
@@ -271,8 +284,11 @@ const OrderItemsSummaryCard = (props) => {
       label: "Fulfillment Status",
     },
     { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
-    { id: "action", align: "right", minWidth: "50", label: "Actions" },
   ];
+
+  if(!props.isSuperAdmin){
+    cols.push({ id: "action", align: "right", minWidth: "50", label: "Actions" })
+  }else{}
 
   const rows = [
     {
