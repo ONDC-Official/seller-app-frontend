@@ -41,10 +41,12 @@ const ActionMenu = ({ row, handleRefresh }) => {
   const [orderStatus, setOrderStatus] = useState(null);
 
   const handleClick = (e) => {
+    setOrderStatus(null);
     setAnchorEl(e.currentTarget);
   };
 
   const handleClose = () => {
+    setOrderStatus(null);
     setAnchorEl(null);
   };
 
