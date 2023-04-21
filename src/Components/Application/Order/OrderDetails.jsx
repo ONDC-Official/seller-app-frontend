@@ -98,7 +98,8 @@ const OrderDetails = () => {
     })
       .then((resp) => {
         cogoToast.success("Order cancelled successfully!");
-        getOrder();
+        // getOrder();
+        setOrder(resp);
       })
       .catch((error) => {
         console.log(error);
@@ -113,7 +114,8 @@ const OrderDetails = () => {
     })
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
-        getOrder();
+        // getOrder();
+        setOrder(resp);
       })
       .catch((error) => {
         console.log(error);
