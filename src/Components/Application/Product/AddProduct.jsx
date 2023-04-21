@@ -31,7 +31,7 @@ export default function AddProduct() {
     HSNCode: "",
     GST_Percentage: 18,
     productCategory: '',
-    productSubCategory: '',
+    productSubcategory1: '',
     quantity: "",
     barcode: "",
     maxAllowedQty: "",
@@ -129,10 +129,10 @@ export default function AddProduct() {
   const renderFields = () => {
     return fields.map((item) => {
       let returnElement = true;
-      if(formValues.productSubCategory){
+      if(formValues.productSubcategory1){
         const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
-        const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubCategory);
-        if(selectedSubCatObject){
+        const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubcategory1);
+        if(selectedSubCatObject && selectedSubCatObject.protocolKey){
           const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
           const fielditemAvailableInHidden = hiddenFields.find((hiddenItem) => hiddenItem === item.id)
            if(fielditemAvailableInHidden){
@@ -165,7 +165,7 @@ export default function AddProduct() {
     console.log("formValues=====>", formValues);
     if(formValues.productCategory){
       let data = Object.assign([], JSON.parse(JSON.stringify(fields)));
-      const subCategoryIndex = data.findIndex((item) => item.id === 'productSubCategory');
+      const subCategoryIndex = data.findIndex((item) => item.id === 'productSubcategory1');
       data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues.productCategory];
       setFields(data);
     }
@@ -182,7 +182,7 @@ export default function AddProduct() {
     formErrors.HSNCode = formValues.HSNCode.trim() === '' ? 'HSN code is not allowed to be empty' : formValues.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.GST_Percentage = !formValues.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues.productCategory.length < 1 ? 'Product category is required' : ''
-    formErrors.productSubCategory = formValues.productSubCategory.length < 1 ? 'Product category is required' : ''
+    formErrors.productSubcategory1 = formValues.productSubcategory1.length < 1 ? 'Product category is required' : ''
     formErrors.quantity = !formValues.quantity ? 'Please enter a valid number' : !isNumberOnly(formValues.quantity) ? 'Please enter only digit' : ''
     formErrors.barcode = !formValues.barcode ? 'Barcode must be a safe number' : ''
     formErrors.maxAllowedQty = !formValues.maxAllowedQty ? 'Please enter a valid number' : ''

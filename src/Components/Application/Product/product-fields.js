@@ -70,13 +70,69 @@ const productFields = [
       required: true,
     },
     {
-      id: "productSubCategory",
+      id: "productSubcategory1",
       title: "Product subcategory",
       placeholder: "Please select product category",
       options: [],
       type: "select",
       required: true,
+    }
+    
+    
+    
+    
+
+
+    ,
+    {
+      id: "manufacturerOrPackerName",
+      title: "Manufacturer Or Packer Name",
+      placeholder: "Manufacturer Or Packer Name",
+      type: "input",
+      required: true,
     },
+    {
+      id: "manufacturerOrPackerAddress",
+      title: "Manufacturer Or Packer Address",
+      placeholder: "Manufacturer Or Packer Address",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "commonOrGenericNameOfCommodity",
+      title: "Common Or Generic Name Of Commodity",
+      placeholder: "commonOr Generic Name Of Commodity",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "monthYearOfManufacturePackingImport",
+      title: "Month Year Of Manufacture Packing Import",
+      placeholder: "Month YearOf Manufacture Packing Import",
+      type: "date-picker",
+      required: true,
+    },
+    {
+      id: "importerFSSAILicenseNo",
+      title: "Importer FSSAI License No",
+      placeholder: "Importer FSSAI License No",
+      type: "input",
+      required: true,
+    },
+    {
+      id: "brandOwnerFSSAILicenseNo",
+      title: "Brand Owner FSSAI License No",
+      placeholder: "Brand Owner FSSAI License No",
+      type: "input",
+      required: true,
+    }
+    
+    
+    
+    
+    
+    
+    ,
     {
       id: "quantity",
       title: "Quantity",
