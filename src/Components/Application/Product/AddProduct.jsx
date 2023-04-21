@@ -54,6 +54,12 @@ export default function AddProduct() {
     isCancellable: false,
     availableOnCod: false,
     images: [],
+    manufacturerOrPackerName: "",
+    manufacturerOrPackerAddress: "",
+    commonOrGenericNameOfCommodity: "",
+    monthYearOfManufacturePackingImport: "",
+    importerFSSAILicenseNo: "",
+    brandOwnerFSSAILicenseNo: "",
   };
   const { formValues, setFormValues, errors, setErrors } = useForm({ ...initialValues })
   const [formSubmitted, setFormSubmited] = useState(false)
@@ -61,6 +67,15 @@ export default function AddProduct() {
   const addProduct = async () => {
     try {
       let data = Object.assign({}, formValues);
+      const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
+      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubcategory1);
+      if(selectedSubCatObject && selectedSubCatObject.protocolKey){
+        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+        hiddenFields.forEach(field => {
+          delete data[field];
+        });
+      }else{}
+    
       // Create a duration object with the hours you want to convert
       const duration = moment.duration(parseInt(data.returnWindow), 'hours');
 
@@ -103,6 +118,15 @@ export default function AddProduct() {
     // id will be dynamic after schema changes
     try {
       let data = Object.assign({}, formValues);
+      const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
+      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubcategory1);
+      if(selectedSubCatObject && selectedSubCatObject.protocolKey){
+        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+        hiddenFields.forEach(field => {
+          delete data[field];
+        });
+      }else{}
+      
       // Create a duration object with the hours you want to convert
       const duration = moment.duration(parseInt(data.returnWindow), 'hours');
 
@@ -201,6 +225,26 @@ export default function AddProduct() {
     formErrors.longDescription = formValues.longDescription.trim() === '' ? 'Long description is required' : formValues.longDescription.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.description = formValues.description.trim() === '' ? 'Short description is required' : formValues.description.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.images = formValues.images.length < 1 ? 'At least one image is required' : ''
+    
+    formErrors.manufacturerOrPackerName = formValues.manufacturerOrPackerName.trim() === '' ? 'Manufacturer or packer name is required' : formValues.manufacturerOrPackerName.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.manufacturerOrPackerAddress = formValues.manufacturerOrPackerAddress.trim() === '' ? 'Manufacturer or packer address is required' : formValues.manufacturerOrPackerAddress.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.commonOrGenericNameOfCommodity = formValues.commonOrGenericNameOfCommodity.trim() === '' ? 'Common or generic name of commodity is required' : formValues.commonOrGenericNameOfCommodity.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.monthYearOfManufacturePackingImport = formValues.monthYearOfManufacturePackingImport.trim() === '' ? 'Month year of manufacture packing import is required' : formValues.monthYearOfManufacturePackingImport.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.importerFSSAILicenseNo = formValues.importerFSSAILicenseNo.trim() === '' ? 'Importer FSSAI license no is required' : formValues.importerFSSAILicenseNo.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.brandOwnerFSSAILicenseNo = formValues.brandOwnerFSSAILicenseNo.trim() === '' ? 'Brand owner FSSAI license no is required' : formValues.brandOwnerFSSAILicenseNo.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    
+    console.log("formErrors=====>", formErrors);
+    
+    const subCatList = PRODUCT_SUBCATEGORY[formValues.productCategory];
+    const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues.productSubcategory1);
+    if(selectedSubCatObject && selectedSubCatObject.protocolKey){
+      console.log("selectedSubCatObject=====>", selectedSubCatObject);
+      const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+      console.log("hiddenFields=====>", hiddenFields);
+      hiddenFields.forEach(field => {
+        formErrors[field] = "";
+      });
+    }else{}
     setErrors({
       ...formErrors
     })

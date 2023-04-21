@@ -249,7 +249,16 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "date-picker") {
-    const dateValue = moment(state[item.id], 'DD/MM/YYYY').format('YYYY/MM/DD');
+    function reverseString(str) {
+
+      // empty string
+      let newString = "";
+      for (let i = str.length - 1; i >= 0; i--) {
+          newString += str[i];
+      }
+      return newString;
+    }
+    const dateValue = moment(state[item.id], item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD');
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
