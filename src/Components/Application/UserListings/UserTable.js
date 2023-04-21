@@ -142,7 +142,7 @@ const UserTable = (props) => {
               <StyledTableCell
                 key={column.id}
                 align={column.align}
-                style={{ minWidth: column.minWidth }}
+                style={{ minWidth: column.minWidth, backgroundColor: '#1976d2', color: '#fff' }}
               >
                 {column.label}
               </StyledTableCell>
