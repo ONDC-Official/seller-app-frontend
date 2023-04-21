@@ -111,6 +111,8 @@ const productFields = [
       placeholder: "Month YearOf Manufacture Packing Import",
       type: "date-picker",
       required: true,
+      format: "MM/YYYY",
+      views: ['year', 'month']
     },
     {
       id: "importerFSSAILicenseNo",

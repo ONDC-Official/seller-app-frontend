@@ -259,7 +259,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             format={item.format || "DD/MM/YYYY"}
-            view={['year', 'month']}
+            views={item.views || ['year', 'month', 'day']}
             onChange={(newValue) => {
               const date = moment(newValue).format(item.format || 'DD/MM/YYYY').toString();
               stateHandler((prevState) => {
