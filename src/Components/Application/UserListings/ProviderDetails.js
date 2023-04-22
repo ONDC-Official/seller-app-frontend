@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
+import {areObjectsEqual, isEmailValid, isPhoneNoValid} from '../../../utils/validations';
 import { useEffect } from "react";
-import { getCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const providerFields = [
@@ -116,6 +118,8 @@ let storeFields = [
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
+    maxLength: 10,
+    required: true,
   },
   {
     id: "categories",
@@ -226,6 +230,19 @@ const ProviderDetails = () => {
       { key: "Pune", value: "pune" },
     ],
   });
+  const [errors, setErrors] = useState(null)
+
+  const [defaultStoreDetails, setDefaultStoreDetails] = useState({
+    location: {},
+    categories: [],
+    location_availability: "",
+    default_cancellable: "",
+    default_returnable: "",
+    cities: [
+      { key: "Delhi", value: "delhi" },
+      { key: "Pune", value: "pune" },
+    ],
+  });
 
   const getOrgDetails = async (id) => {
     try {
@@ -260,25 +277,27 @@ const ProviderDetails = () => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      setStoreDetails({
-        email: res.providerDetail.storeDetails.supportDetails.email,
-        mobile: res.providerDetail.storeDetails.supportDetails.mobile,
-        categories: res?.providerDetail?.storeDetails?.categories,
-        location: res?.providerDetail?.storeDetails?.location,
+      const storeData = {
+        email: res.providerDetail.storeDetails?.supportDetails.email || '',
+        mobile: res.providerDetail.storeDetails?.supportDetails.mobile || '',
+        categories: res?.providerDetail?.storeDetails?.categories || [],
+        location: res?.providerDetail?.storeDetails?.location || '',
         location_availability:
-          res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
+        res.providerDetail.storeDetails?res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
             ? "pan_india"
-            : "city",
-        cities: res?.providerDetail?.storeDetails?.city,
+            : "city":'',
+        cities: res?.providerDetail?.storeDetails?.city || [],
         default_cancellable: false,
         default_returnable: false,
-        country: res.providerDetail.storeDetails.address.country,
-        state: res.providerDetail.storeDetails.address.state,
-        city: res.providerDetail.storeDetails.address.city,
-        building: res.providerDetail.storeDetails.address.building,
-        area_code: res.providerDetail.storeDetails.address.area_code,
-        logo: res?.providerDetail?.storeDetails?.logo?.url,
-      });
+        country: res.providerDetail?.storeDetails?.address?.country || '',
+        state: res.providerDetail?.storeDetails?.address?.state || '',
+        city: res.providerDetail?.storeDetails?.address.city || '',
+        building: res.providerDetail?.storeDetails?.address?.building || '',
+        area_code: res.providerDetail?.storeDetails?.address?.area_code || '',
+        logo: res?.providerDetail?.storeDetails?.logo?.url || '',
+      };
+      setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
+      setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
     } catch (error) {
       console.log(error);
     }
@@ -292,6 +311,87 @@ const ProviderDetails = () => {
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
+
+  const validate = () => {
+    console.log("storeDetails=====>", storeDetails);
+    const formErrors = {};
+    formErrors.email = storeDetails.email.trim() === '' ? 'Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.categories = storeDetails.categories.length === 0 ? 'Category is required' : ''
+    // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
+    if(storeDetails.location_availability === 'city'){
+      formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
+    }else{}
+    formErrors.country = storeDetails.country.trim() === '' ? 'Country is required' : ''
+    formErrors.state = storeDetails.state.trim() === '' ? 'State is required' : ''
+    formErrors.city = storeDetails.city.trim() === '' ? 'City is required' : ''
+    formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
+    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'Area code is required' : ''
+    formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
+    console.log("formErrors=====>", formErrors);
+    setErrors(formErrors);
+    return !Object.values(formErrors).some(val => val !== '');
+  };
+
+  const onUpdate = () => {
+    if(validate()){
+      const provider_id = params?.id;
+      const url = `/api/v1/organizations/${provider_id}/storeDetails`;
+      const {
+        categories,
+        logo,
+        location_availability,
+        default_cancellable,
+        default_returnable,
+        mobile,
+        email,
+        cities,
+
+        building,
+        state,
+        city,
+        country,
+        area_code,
+        location,
+        locality = ''
+      } = storeDetails;
+      const locationAvailability = location_availability === "pan_india"?true:false;
+      const addressDetails = {
+        building: building,
+        city: city,
+        state: state,
+        country: country,
+        area_code: area_code
+      };
+      let payload = {
+        categories: categories.map((item) => item.value),
+        logo: logo,
+        locationAvailabilityPANIndia: locationAvailability,
+        defaultCancellable: eval(default_cancellable),
+        defaultReturnable: eval(default_returnable),
+        address: addressDetails,
+        supportDetails: {
+          email,
+          mobile,
+        },
+      };
+      if(location){
+        payload.location = location;
+      }else{}
+      if (locationAvailability == false) {
+        payload["city"] = cities;
+      }
+      postCall(url, payload)
+        .then((resp) => {
+          cogoToast.success("Store details updated successfully");
+          getOrgDetails(provider_id);
+        })
+        .catch((error) => {
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
+    }
+  };
 
   useEffect(() => {
     if (storeDetails.location_availability == "city") {
@@ -361,26 +461,26 @@ const ProviderDetails = () => {
               <p className="text-2xl font-semibold mb-4 mt-14">Store Details</p>
               {storeDetailFields.map((item) => (
                 <RenderInput
-                  previewOnly={true}
-                  item={item}
+                  // previewOnly={true}
+                  // item={item}
+                  item={{ ...item, error: !!errors?.[item.id], helperText: errors?.[item.id] || '' }}
                   state={storeDetails}
                   stateHandler={setStoreDetails}
                 />
               ))}
-              {/* <div className="flex mt-16">
-                <Button
-                  size="small"
-                  style={{ marginRight: 10 }}
-                  variant="text"
-                  onClick={() => {
-                    userRole == "Super Admin"
-                      ? navigate("/application/user-listings?view=provider")
-                      : navigate("/application/inventory");
-                  }}
-                >
-                  Back
-                </Button>
-              </div> */}
+              {
+                !areObjectsEqual(storeDetails, defaultStoreDetails) && (
+                  <div className="flex mt-16">
+                    <Button
+                      style={{ marginRight: 10 }}
+                      variant="contained"
+                      onClick={onUpdate}
+                    >
+                      Update Store
+                    </Button>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>

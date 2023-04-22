@@ -150,6 +150,7 @@ const UserListings = () => {
         </div>
 
         <UserTable
+          view={view}
           columns={isAdmin ? superAdminCols : providerCols}
           data={isAdmin ? admins : providers}
           isProvider={isAdmin ? false : true}

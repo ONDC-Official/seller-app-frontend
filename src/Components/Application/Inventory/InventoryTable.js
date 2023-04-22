@@ -124,7 +124,7 @@ export default function InventoryTable(props) {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                     {props.columns.map((column) => {
-                      const value = row[column.id];
+                      const value = row[column.id] === undefined ? ' - ' : row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {renderCellContent(column, value)}

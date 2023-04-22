@@ -56,13 +56,16 @@ const InviteAdmin = () => {
     return !Object.values(formErrors).some(val => val !== '')
   }
 
-  const sendInvite = () => {
+  const sendInvite = async () => {
     try {
       const url = `/api/v1/users/invite/admin`;
-      const res = postCall(url, formValues);
-      navigate("/application/user-listings");
+      const res = await postCall(url, formValues);
+      if(res){
+        navigate("/application/user-listings");
+        cogoToast.success("Admin created successfully and invitation sent");
+      }
     } catch (error) {
-      cogoToast.error("Invitation sent");
+      cogoToast.error(error.response.data.error);
     }
   };
 

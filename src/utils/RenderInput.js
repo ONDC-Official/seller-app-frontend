@@ -22,6 +22,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment'
+import dayjs from 'dayjs';
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import Cookies from "js-cookie";
@@ -94,8 +95,11 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
-            stateHandler({ ...state, [item.id]: e.target.value })
+            stateHandler({ ...state, [item.id]: item.valueInDecimal?parseFloat(e.target.value).toFixed(2):e.target.value })
           }
+          inputProps={{
+            step: "1"
+          }}
         />
       </div>
     );
@@ -199,7 +203,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             disabled={item?.isDisabled || previewOnly || false}
             size="small"
             required={item.required}
-            placeholder={item.placeholder}
+            placeholder={!previewOnly?item.placeholder:""}
             value={state[item.id]}
             onChange={(e) =>
               stateHandler({ ...state, [item.id]: e.target.value })
@@ -245,6 +249,16 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "date-picker") {
+    function reverseString(str) {
+
+      // empty string
+      let newString = "";
+      for (let i = str.length - 1; i >= 0; i--) {
+          newString += str[i];
+      }
+      return newString;
+    }
+    const dateValue = moment(state[item.id], item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD');
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -254,7 +268,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             format={item.format || "DD/MM/YYYY"}
-            view={['year', 'month']}
+            views={item.views || ['year', 'month', 'day']}
             onChange={(newValue) => {
               const date = moment(newValue).format(item.format || 'DD/MM/YYYY').toString();
               stateHandler((prevState) => {
@@ -265,6 +279,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 return newState;
               });
             }}
+            value={dayjs(dateValue)}
           />
         </LocalizationProvider>
       </div>
@@ -297,7 +312,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={item.placeholder}
+                placeholder={!previewOnly?item.placeholder:''}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -397,6 +412,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
+          <span className="text-[#FF0000]"> *</span>
         </label>
         {/* <Button sx={{ textTransform: 'none' }} variant="contained">
           <label for="contained-button-file">

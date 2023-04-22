@@ -32,6 +32,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
+  const [user, setUser] = React.useState();
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
@@ -47,6 +48,18 @@ const OrderDetails = () => {
   useEffect(() => {
     if (params.id) getOrder();
   }, [params]);
+
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  React.useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id);
+  }, []);
 
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
@@ -85,7 +98,8 @@ const OrderDetails = () => {
     })
       .then((resp) => {
         cogoToast.success("Order cancelled successfully!");
-        getOrder();
+        // getOrder();
+        setOrder(resp);
       })
       .catch((error) => {
         console.log(error);
@@ -100,7 +114,8 @@ const OrderDetails = () => {
     })
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
-        getOrder();
+        // getOrder();
+        setOrder(resp);
       })
       .catch((error) => {
         console.log(error);
@@ -109,7 +124,7 @@ const OrderDetails = () => {
   };
 
   const renderOrderStatus = (order_details) => {
-    if (order_details?.state == "Created") {
+    if (order_details?.state == "Created" && user?.role?.name !== "Super Admin") {
       return (
         <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
           <Button
@@ -175,7 +190,7 @@ const OrderDetails = () => {
           <Divider orientation="horizontal" />
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Base Price</p>
-            <p className="text-base font-normal">{total_base_cost}</p>
+            <p className="text-base font-normal">{parseFloat(total_base_cost).toFixed(2)}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Taxes</p>
@@ -183,15 +198,15 @@ const OrderDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Delivery Fee</p>
-            <p className="text-base font-normal">{delivery_charges}</p>
+            <p className="text-base font-normal">{parseFloat(delivery_charges).toFixed(2)}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Price</p>
-            <p className="text-base font-normal">{total_order_price || "-"}</p>
+            <p className="text-base font-normal">{total_order_price ? parseFloat(total_order_price).toFixed(2) : "-"}</p>
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || true} orderItems={order?.items} order={order} />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
@@ -222,19 +237,19 @@ const OrderDetails = () => {
           <div className="w-full">
             <div className={`${cardClass} my-4 p-4`}>
               <p className="text-lg font-semibold mb-2">Customer Details</p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Name : &nbsp;</p>
                 <p className="text-sm font-medium">
                   {delivery_info?.end?.person?.name}
                 </p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Mobile : &nbsp;</p>
                 <p className="text-sm font-medium">
                   +91 {delivery_info?.end?.contact?.phone}
                 </p>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <p className="text-lg font-semibold">Email : &nbsp;</p>
                 <p className="text-sm font-medium">
                   {delivery_info?.end?.contact?.email}
@@ -260,7 +275,7 @@ const OrderItemsSummaryCard = (props) => {
     order_items.push(item);
   });
 
-  const cols = [
+  let cols = [
     { id: "url name", align: "left", minWidth: 50, label: "Items Summary" },
     { id: "quantity", align: "center", minWidth: "auto", label: "Qty" },
     { id: "price", align: "center", minWidth: "50", label: "Price" },
@@ -268,11 +283,14 @@ const OrderItemsSummaryCard = (props) => {
       id: "state",
       align: "center",
       minWidth: "50",
-      label: "Fulfilment status",
+      label: "Fulfillment Status",
     },
     { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
-    { id: "action", align: "right", minWidth: "50", label: "Actions" },
   ];
+
+  if(!props.isSuperAdmin){
+    cols.push({ id: "action", align: "right", minWidth: "50", label: "Actions" })
+  }else{}
 
   const rows = [
     {

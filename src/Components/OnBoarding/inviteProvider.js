@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
-import { isAlphaNumericOnly, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
+import { isAlphaNumericOnly, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
@@ -86,7 +86,7 @@ const InviteProvider = () => {
       const url = `/api/v1/organizations`;
       const res = await postCall(url, data);
       navigate("/application/user-listings");
-      cogoToast.success("Invitation sent");
+      cogoToast.success("Provider created successfully and Invitation sent");
     } catch (error) {
       console.log("error.response", error.response);
       cogoToast.error(error.response.data.error);
@@ -136,24 +136,24 @@ const InviteProvider = () => {
     const formErrors = {}
     if (step === 1) {
       formErrors.email = formValues.email.trim() === '' ? 'Email is required' : !isEmailValid(formValues.email) ? 'Please enter a valid email address' : ''
-      formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
-      formErrors.name = formValues.name.trim() === '' ? 'Name is required' : ''
+      formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
+      formErrors.name = formValues.name.trim() === '' ? 'Name is required' : !isNameValid(formValues.name) ? 'Please enter a valid name' : ''
     } else if (step === 2) {
       formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered address is required' : ''
-      formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
-      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
+      formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
+      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
       formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : !isValidPAN(formValues.PAN) ? 'Please enter a valid PAN number' : ''
       formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : !isValidGSTIN(formValues.GSTN) ? 'GSTIN should be alphanumeric and 15 characters long' : ''
-      formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI number is required' : !isValidFSSAI(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
+      formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI Number is required' : !isValidFSSAI(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
     } else if (step === 3) {
-      formErrors.address_proof = formValues.address_proof.trim() === '' ? 'Address proof is required' : ''
-      formErrors.id_proof = formValues.id_proof.trim() === '' ? 'ID proof is required' : ''
-      formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN card imgage is required' : ''
-      formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN certificate is required' : ''
+      formErrors.address_proof = formValues.address_proof.trim() === '' ? 'Address Proof is required' : ''
+      formErrors.id_proof = formValues.id_proof.trim() === '' ? 'ID Proof is required' : ''
+      formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN Card Imgage is required' : ''
+      formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN Certificate is required' : ''
     } else if (step === 4) {
-      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Name is required' : ''
-      formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
+      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Account holder name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid account holder name' : ''
+      formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account Number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
       formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC code is required' : !isAlphaNumericOnly(formValues.IFSC) || formValues.IFSC.trim().length < 11 ? 'Please enter a valid IFSC code' : ''

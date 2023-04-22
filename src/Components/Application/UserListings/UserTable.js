@@ -25,7 +25,7 @@ const StyledTableCell = styled(TableCell)({
 });
 
 const ThreeDotsMenu = (props) => {
-  const { row, isProvider, getAdmins, getProviders } = props;
+  const { row, isProvider, getAdmins, getProviders, view } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
@@ -55,8 +55,11 @@ const ThreeDotsMenu = (props) => {
           break;
       }
       setAnchorEl(null);
-      getAdmins();
-      getProviders();
+      if(view === "admin"){
+        getAdmins();
+      }else{
+        getProviders();
+      }
     } catch (error) {
       console.log(error.response);
     }
@@ -117,6 +120,7 @@ const UserTable = (props) => {
     totalRecords,
     handlePageChange,
     handleRowsPerPageChange,
+    view
   } = props;
   const navigate = useNavigate();
 
@@ -138,7 +142,7 @@ const UserTable = (props) => {
               <StyledTableCell
                 key={column.id}
                 align={column.align}
-                style={{ minWidth: column.minWidth }}
+                style={{ minWidth: column.minWidth, backgroundColor: '#1976d2', color: '#fff' }}
               >
                 {column.label}
               </StyledTableCell>
@@ -158,7 +162,7 @@ const UserTable = (props) => {
                       if (column.id == "Action") {
                         return (
                           <TableCell key={column.id} align={"left"}>
-                            <ThreeDotsMenu row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                            <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
                           </TableCell>
                         );
                       } else if  (column.id == "formatted_status") {

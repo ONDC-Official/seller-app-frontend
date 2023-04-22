@@ -25,7 +25,7 @@ import cogoToast from "cogo-toast";
 import { EditOutlined } from "@mui/icons-material";
 
 const RETURN_ORDER_STATUS = {
-  Return_Initiated: 'Return_Initiated',
+  Return_Initiated: 'Return Initiated',
   Liquidate: 'Liquidated',
   Reject: 'Rejected',
 }
@@ -41,10 +41,12 @@ const ActionMenu = ({ row, handleRefresh }) => {
   const [orderStatus, setOrderStatus] = useState(null);
 
   const handleClick = (e) => {
+    setOrderStatus(null);
     setAnchorEl(e.currentTarget);
   };
 
   const handleClose = () => {
+    setOrderStatus(null);
     setAnchorEl(null);
   };
 

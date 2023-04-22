@@ -9,6 +9,14 @@ export const checkEmpty = (obj) => {
   return ans;
 };
 
+export const isNumberOnly = (value) => {
+  return /^[0-9]*$/.test(value)
+};
+
+export const isNameValid = (value) => {
+  return /^[a-zA-Z]+[a-zA-Z '.-]*$/.test(value)
+};
+
 export const isPhoneNoValid = (value) => {
   return /^(0|91)?[6-9][0-9]{9}$/.test(value)
 };
@@ -38,3 +46,5 @@ export const isAlphaNumericOnly = (value) => {
 export function isObjEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
+export const areObjectsEqual = (firstObj, secondObj) => JSON.stringify(firstObj) === JSON.stringify(secondObj);
