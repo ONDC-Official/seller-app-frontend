@@ -86,7 +86,7 @@ const InviteProvider = () => {
       const url = `/api/v1/organizations`;
       const res = await postCall(url, data);
       navigate("/application/user-listings");
-      cogoToast.success("Provider created successfully and Invitation sent");
+      cogoToast.success("Provider created successfully and invitation sent on e-mail");
     } catch (error) {
       console.log("error.response", error.response);
       cogoToast.error(error.response.data.error);

@@ -62,7 +62,7 @@ const InviteAdmin = () => {
       const res = await postCall(url, formValues);
       if(res){
         navigate("/application/user-listings");
-        cogoToast.success("Admin created successfully and invitation sent");
+        cogoToast.success("Admin created successfully and invitation sent on e-mail");
       }
     } catch (error) {
       cogoToast.error(error.response.data.error);
