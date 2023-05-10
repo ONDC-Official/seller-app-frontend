@@ -16,7 +16,7 @@ export default [
     },
     {
       id: "bankName",
-      title: "Bank name",
+      title: "Bank Name",
       placeholder: "Enter bank name",
       type: "input",
       required: true,
