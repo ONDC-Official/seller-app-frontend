@@ -279,7 +279,17 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 return newState;
               });
             }}
-            value={dayjs(dateValue)}
+            value={state[item.id]?dayjs(dateValue):""}
+            components={{
+              TextField: (params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  error={item.error || false}
+                  helperText={item.error && item.helperText}
+                />
+              ),
+            }}
           />
         </LocalizationProvider>
       </div>

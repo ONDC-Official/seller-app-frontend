@@ -232,14 +232,17 @@ export default function AddProduct() {
     formErrors.importerFSSAILicenseNo = formValues?.importerFSSAILicenseNo?.trim() === '' ? 'Importer FSSAI license no is required' : formValues?.importerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.brandOwnerFSSAILicenseNo = formValues?.brandOwnerFSSAILicenseNo?.trim() === '' ? 'Brand owner FSSAI license no is required' : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     
-    const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-    const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
-    if(selectedSubCatObject && selectedSubCatObject.protocolKey){
-      const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
-      hiddenFields.forEach(field => {
-        formErrors[field] = "";
-      });
+    if(formValues?.productCategory){
+      const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      if(selectedSubCatObject && selectedSubCatObject.protocolKey){
+        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+        hiddenFields.forEach(field => {
+          formErrors[field] = "";
+        });
+      }else{}
     }else{}
+    
     setErrors({
       ...formErrors
     })
