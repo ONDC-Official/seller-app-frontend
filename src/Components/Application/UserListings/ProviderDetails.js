@@ -306,12 +306,12 @@ const ProviderDetails = () => {
         locality: res.providerDetail?.storeDetails?.address?.locality || '',
         logo: res?.providerDetail?.storeDetails?.logo?.url || '',
       };
-      if(storeData.categories && storeData.categories.length > 0){
-        storeData.categories = storeData.categories.map((item) => {
-          const findFromList = categoriesList.find((catItem) => catItem.value === item);
-          return findFromList;
-        })
-      }else{}
+      // if(storeData.categories && storeData.categories.length > 0){
+      //   storeData.categories = storeData.categories.map((item) => {
+      //     const findFromList = categoriesList.find((catItem) => catItem.value === item);
+      //     return findFromList;
+      //   })
+      // }else{}
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
     } catch (error) {
@@ -381,7 +381,7 @@ const ProviderDetails = () => {
         locality: locality
       };
       let payload = {
-        categories: categories.map((item) => item.value),
+        categories,
         logo: logo,
         locationAvailabilityPANIndia: locationAvailability,
         defaultCancellable: eval(default_cancellable),

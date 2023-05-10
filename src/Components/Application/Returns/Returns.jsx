@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import ReturnOrderTable from "./ReturnOrderTable";
 import { getCall } from "../../../Api/axios";
-import columns from './colDefs'
+import columns from './colDefs';
+import { useTheme } from '@mui/material/styles';
 
 export default function Returns() {
+  const theme = useTheme();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -33,7 +35,7 @@ export default function Returns() {
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label className="font-semibold text-2xl">Returns</label>
+          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">Returns</label>
         </div>
         <ReturnOrderTable
           columns={columns}

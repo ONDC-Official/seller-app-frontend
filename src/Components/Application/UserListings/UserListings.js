@@ -9,6 +9,7 @@ import { getCall } from "../../../Api/axios";
 import useNavigation from '../../../hooks/useNavigation'
 import useQueryParams from '../../../hooks/useQueryParams'
 import { evalQueryString } from '../../../utils/index'
+import { useTheme } from '@mui/material/styles';
 
 const superAdminCols = [
   {
@@ -58,6 +59,7 @@ const providerCols = [
 ];
 
 const UserListings = () => {
+  const theme = useTheme();
   const queryParams = useQueryParams()
   const [view, setView] = useState(queryParams.view || 'admin');
   const [providers, setProviders] = useState([]);
@@ -122,7 +124,7 @@ const UserListings = () => {
     <div>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label className="font-semibold text-2xl">User Listings</label>
+          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">User Listings</label>
         </div>
 
         <div className="flex flex-row justify-between items-center">
