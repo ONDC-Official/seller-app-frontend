@@ -312,7 +312,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={!previewOnly?item.placeholder:''}
+                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
