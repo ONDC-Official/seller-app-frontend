@@ -4,6 +4,7 @@ import OrderTable from "../Order/OrderTable";
 import { OrderData } from "../../../Constants/OrdersData";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { getCall } from "../../../Api/axios";
+import { useTheme } from '@mui/material/styles';
 
 const columns = [
   { id: "orderId", label: "Order Id", minWidth: 120, align: "center" },
@@ -65,6 +66,7 @@ const columns = [
 ];
 
 export default function Orders() {
+  const theme = useTheme();
   const { cancellablePromise } = useCancellablePromise();
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(0);
@@ -112,7 +114,7 @@ export default function Orders() {
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label className="font-semibold text-2xl">Orders</label>
+          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">Orders</label>
         </div>
         <OrderTable
           columns={columnList}

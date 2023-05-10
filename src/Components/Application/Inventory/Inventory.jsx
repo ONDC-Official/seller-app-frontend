@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
-import { PRODUCT_CATEGORY } from '../../../utils/constants'
+import { PRODUCT_CATEGORY } from '../../../utils/constants';
+import { useTheme } from '@mui/material/styles';
 
 const columns = [
   { id: "productName", label: "Name", minWidth: 100 },
@@ -48,6 +49,7 @@ const columns = [
 ];
 
 export default function Inventory() {
+  const theme = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -104,7 +106,7 @@ export default function Inventory() {
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label className="font-semibold text-2xl">Inventory</label>
+          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">Inventory</label>
           <div className="flex">
             <div style={{ marginRight: 15 }}>
               <Button
