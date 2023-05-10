@@ -38,7 +38,7 @@ export default [
     },
     {
       id: "cancelledCheque",
-      title: "Cancelled cheque",
+      title: "Cancelled Cheque",
       type: "upload",
       file_type: "cancelled_cheque",
       required: true,
