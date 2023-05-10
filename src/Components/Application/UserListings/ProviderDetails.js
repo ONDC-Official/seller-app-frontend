@@ -331,9 +331,9 @@ const ProviderDetails = () => {
   const validate = () => {
     console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
-    formErrors.email = storeDetails.email.trim() === '' ? 'Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
-    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
-    formErrors.categories = storeDetails.categories.length === 0 ? 'Category is required' : ''
+    formErrors.email = storeDetails.email.trim() === '' ? 'Support Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.categories = storeDetails.categories.length === 0 ? 'Supported Product Categories are required' : ''
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if(storeDetails.location_availability === 'city'){
       formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
