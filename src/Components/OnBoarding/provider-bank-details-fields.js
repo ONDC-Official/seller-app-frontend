@@ -30,7 +30,7 @@ export default [
     },
     {
       id: "IFSC",
-      title: "IFSC code",
+      title: "IFSC Code",
       placeholder: "Enter IFSC code",
       type: "input",
       maxLength: 11,
