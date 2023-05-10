@@ -23,7 +23,7 @@ export default [
     },
     {
       id: "branchName",
-      title: "Branch name",
+      title: "Branch Name",
       placeholder: "Enter branch name",
       type: "input",
       required: true,
