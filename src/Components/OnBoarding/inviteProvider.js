@@ -140,24 +140,24 @@ const InviteProvider = () => {
       formErrors.name = formValues.name.trim() === '' ? 'Name is required' : !isNameValid(formValues.name) ? 'Please enter a valid name' : ''
     } else if (step === 2) {
       formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
-      formErrors.address = formValues.address.trim() === '' ? 'Registered address is required' : ''
+      formErrors.address = formValues.address.trim() === '' ? 'Registered Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
       formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
       formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : !isValidPAN(formValues.PAN) ? 'Please enter a valid PAN number' : ''
-      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN is required' : !isValidGSTIN(formValues.GSTN) ? 'GSTIN should be alphanumeric and 15 characters long' : ''
+      formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN Certificate is required' : !isValidGSTIN(formValues.GSTN) ? 'GSTIN Certificate should be alphanumeric and 15 characters long' : ''
       formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI Number is required' : !isValidFSSAI(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''
     } else if (step === 3) {
       formErrors.address_proof = formValues.address_proof.trim() === '' ? 'Address Proof is required' : ''
       formErrors.id_proof = formValues.id_proof.trim() === '' ? 'ID Proof is required' : ''
-      formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN Card Imgage is required' : ''
+      formErrors.PAN_proof = formValues.PAN_proof.trim() === '' ? 'PAN Card Image is required' : ''
       formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN Certificate is required' : ''
     } else if (step === 4) {
-      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Account holder name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid account holder name' : ''
+      formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Account Holder Name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid account holder name' : ''
       formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account Number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
-      formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank name is required' : ''
-      formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch name is required' : ''
-      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC code is required' : !isAlphaNumericOnly(formValues.IFSC) || formValues.IFSC.trim().length < 11 ? 'Please enter a valid IFSC code' : ''
-      formErrors.cancelledCheque = formValues.cancelledCheque.trim() === '' ? 'Cancelled cheque is required' : ''
+      formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank Name is required' : ''
+      formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch Name is required' : ''
+      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC Code is required' : !isAlphaNumericOnly(formValues.IFSC) || formValues.IFSC.trim().length < 11 ? 'Please enter a valid IFSC Code' : ''
+      formErrors.cancelledCheque = formValues.cancelledCheque.trim() === '' ? 'Cancelled Cheque is required' : ''
     }
     setErrors({
       ...formErrors
