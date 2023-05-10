@@ -71,7 +71,7 @@ const ActionMenu = ({ row, handleRefresh }) => {
   return (
     <>
       <Tooltip title="Update status">
-        <IconButton color="primary" disabled={row.state !== RETURN_ORDER_STATUS.Return_Initiated}>
+        <IconButton color="primary" disabled={row.state !== "Return_Initiated"}>
           <EditOutlined onClick={handleClick} />
         </IconButton>
       </Tooltip>
@@ -96,7 +96,7 @@ const ActionMenu = ({ row, handleRefresh }) => {
                 label="Select Status"
                 onChange={(e) => setOrderStatus(e.target.value)}
               >
-                <MenuItem value={RETURN_ORDER_STATUS.Liquidate}>Liquidate</MenuItem>
+                <MenuItem value={RETURN_ORDER_STATUS.Liquidated}>Liquidate</MenuItem>
                 <MenuItem value={RETURN_ORDER_STATUS.Reject}>Reject</MenuItem>
               </Select>
             </FormControl>
