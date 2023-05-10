@@ -320,6 +320,10 @@ const ProviderDetails = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     let provider_id = params?.id;
     getOrgDetails(provider_id);
   }, [params.id]);
@@ -329,7 +333,6 @@ const ProviderDetails = () => {
   }
 
   const validate = () => {
-    console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
     formErrors.email = storeDetails.email.trim() === '' ? 'Support Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
