@@ -142,7 +142,7 @@ const InviteProvider = () => {
       formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
-      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
+      formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
       formErrors.PAN = formValues.PAN.trim() === '' ? 'PAN is required' : !isValidPAN(formValues.PAN) ? 'Please enter a valid PAN number' : ''
       formErrors.GSTN = formValues.GSTN.trim() === '' ? 'GSTIN Certificate is required' : !isValidGSTIN(formValues.GSTN) ? 'GSTIN Certificate should be alphanumeric and 15 characters long' : ''
       formErrors.FSSAI = formValues.FSSAI.trim() === '' ? 'FSSAI Number is required' : !isValidFSSAI(formValues.FSSAI) || formValues.FSSAI.length !== 14 ? 'FSSAI should be 14 digit number' : ''

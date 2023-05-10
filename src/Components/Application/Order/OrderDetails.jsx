@@ -206,7 +206,7 @@ const OrderDetails = () => {
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || true} orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || false} orderItems={order?.items} order={order} />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">

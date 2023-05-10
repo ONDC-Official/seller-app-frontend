@@ -174,6 +174,12 @@ const UserTable = (props) => {
                             </Stack>
                           </TableCell>
                         );
+                      }else if(column.id == "providerName"){
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {row.organization.name}
+                          </TableCell>
+                        );
                       }
                       return (
                         <TableCell key={column.id} align={column.align}>
