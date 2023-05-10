@@ -104,6 +104,14 @@ const bankFields = [
   { id: "cancelledCheque", title: "Cancelled Cheque", type: "upload", required: true, },
 ];
 
+const categoriesList = [
+  { key: "Grocery", value: "grocery" },
+  { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
+  { key: "Fashion", value: "fashion" },
+  { key: "Home and Decor", value: "home_and_decor" },
+  { key: "F&B", value: "f_and_b" },
+];
+
 let storeFields = [
   {
     id: "email",
@@ -125,13 +133,7 @@ let storeFields = [
     id: "categories",
     title: "Supported product categories",
     placeholder: "Supported product categories",
-    options: [
-      { key: "Grocery", value: "grocery" },
-      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-      { key: "Fashion", value: "fashion" },
-      { key: "Home and Decor", value: "home_and_decor" },
-      { key: "F&B", value: "f_and_b" },
-    ],
+    options: categoriesList,
     type: "multi-select",
     required: true,
   },
@@ -199,6 +201,13 @@ let storeFields = [
   {
     id: "area_code",
     title: "PIN code",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "locality",
+    title: "Locality",
+    placeholder: "Locality",
     type: "input",
     required: true,
   },
@@ -277,7 +286,7 @@ const ProviderDetails = () => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      const storeData = {
+      let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || '',
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || '',
         categories: res?.providerDetail?.storeDetails?.categories || [],
@@ -294,8 +303,15 @@ const ProviderDetails = () => {
         city: res.providerDetail?.storeDetails?.address.city || '',
         building: res.providerDetail?.storeDetails?.address?.building || '',
         area_code: res.providerDetail?.storeDetails?.address?.area_code || '',
+        locality: res.providerDetail?.storeDetails?.address?.locality || '',
         logo: res?.providerDetail?.storeDetails?.logo?.url || '',
       };
+      if(storeData.categories && storeData.categories.length > 0){
+        storeData.categories = storeData.categories.map((item) => {
+          const findFromList = categoriesList.find((catItem) => catItem.value === item);
+          return findFromList;
+        })
+      }else{}
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
     } catch (error) {
@@ -361,7 +377,8 @@ const ProviderDetails = () => {
         city: city,
         state: state,
         country: country,
-        area_code: area_code
+        area_code: area_code,
+        locality: locality
       };
       let payload = {
         categories: categories.map((item) => item.value),
@@ -377,10 +394,12 @@ const ProviderDetails = () => {
       };
       if(location){
         payload.location = location;
+        delete payload.location._id;
       }else{}
       if (locationAvailability == false) {
         payload["city"] = cities;
-      }
+      }else{}
+      console.log("payload=====>", payload);
       postCall(url, payload)
         .then((resp) => {
           cogoToast.success("Store details updated successfully");
