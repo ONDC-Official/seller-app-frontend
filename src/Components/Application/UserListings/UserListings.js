@@ -44,6 +44,10 @@ const providerCols = [
     label: "Mobile",
   },
   {
+    id: "name",
+    label: "User name",
+  },
+  {
     id: "providerName",
     label: "Legal name of provider",
   },
