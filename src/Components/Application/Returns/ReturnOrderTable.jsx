@@ -26,7 +26,7 @@ import { EditOutlined } from "@mui/icons-material";
 
 const RETURN_ORDER_STATUS = {
   Return_Initiated: 'Return Initiated',
-  Liquidate: 'Liquidated',
+  Liquidated: 'Liquidated',
   Reject: 'Rejected',
 }
 
@@ -172,11 +172,19 @@ export default function InventoryTable(props) {
                   >
                     {props.columns.map((column, idx) => {
                       const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {renderCellContent(column, value)}
-                        </TableCell>
-                      );
+                      if(column.id === "state"){
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {RETURN_ORDER_STATUS[value]}
+                          </TableCell>
+                        );
+                      }else{
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {renderCellContent(column, value)}
+                          </TableCell>
+                        );
+                      }
                     })}
                     <TableCell component="th" scope="row">
                       <ActionMenu row={row} handleRefresh={handleRefresh} />
