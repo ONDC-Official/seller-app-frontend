@@ -1,7 +1,7 @@
 export default [
     {
       id: "accHolderName",
-      title: "Account holder name",
+      title: "Account Holder Name",
       placeholder: "Enter account holder name",
       type: "input",
       required: true,
