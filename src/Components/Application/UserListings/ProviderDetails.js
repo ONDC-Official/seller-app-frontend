@@ -25,7 +25,7 @@ const providerFields = [
   },
   {
     id: "mobile",
-    title: "Support Mobile",
+    title: "Mobile Number",
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
@@ -35,37 +35,37 @@ const providerFields = [
 const kycFields = [
   {
     id: "contactEmail",
-    title: "Contact email",
+    title: "Contact Email",
     type: "input",
     required: true,
   },
   {
     id: "contactMobile",
-    title: "Contact mobile",
+    title: "Contact Mobile",
     type: "input",
     required: true,
   },
   {
     id: "fssai",
-    title: "FSSAI",
+    title: "FSSAI Number",
     type: "input",
     required: true,
   },
   {
     id: "address",
-    title: "Address",
+    title: "Registered Address",
     type: "input",
     required: true,
   },
   {
     id: "address_proof",
-    title: "Address proof",
+    title: "Address Proof",
     type: "upload",
     required: true,
   },
   {
     id: "gst_no",
-    title: "GSTIN",
+    title: "GSTIN Certificate",
     type: "input",
     required: true,
   },
@@ -83,13 +83,13 @@ const kycFields = [
   },
   {
     id: "pan_proof",
-    title: "PAN proof",
+    title: "PAN Card Proof",
     type: "upload",
     required: true,
   },
   {
     id: "id_proof",
-    title: "ID proof",
+    title: "ID Proof",
     type: "upload",
     required: true,
   },
