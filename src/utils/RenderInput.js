@@ -340,7 +340,6 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </label>
         <FormControl>
           <Autocomplete
-            open={true}
             disabled={item?.isDisabled || previewOnly || false}
             multiple
             // filterSelectedOptions
