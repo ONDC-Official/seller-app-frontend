@@ -13,6 +13,10 @@ export const isNumberOnly = (value) => {
   return /^[0-9]*$/.test(value)
 };
 
+export const isAmountValid = (value) => {
+  return /^\d{0,8}(\.\d{1,4})?$/.test(value)
+};
+
 export const isNameValid = (value) => {
   return /^[a-zA-Z]+[a-zA-Z '.-]*$/.test(value)
 };
