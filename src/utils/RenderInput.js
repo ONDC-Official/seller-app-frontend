@@ -229,11 +229,21 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             value={state[item.id] && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
-                const newState = {
-                  ...prevState,
-                  [item.id]: newValue?.value || '',
-                };
-                return newState;
+                if(item.id === "productCategory"){
+                  const newState = {
+                    ...prevState,
+                    [item.id]: newValue?.value || '',
+                    "productSubcategory1": ""
+                  };
+                  return newState;
+                }else{
+                  const newState = {
+                    ...prevState,
+                    [item.id]: newValue?.value || '',
+                  };
+                  return newState;
+                }
+                
               });
             }}
             renderInput={(params) => (

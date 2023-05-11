@@ -205,7 +205,7 @@ export default function AddProduct() {
     formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory.length < 1 ? 'Product category is required' : ''
-    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product category is required' : ''
+    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
     formErrors.quantity = !formValues?.quantity ? 'Please enter a valid number' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
     formErrors.barcode = !formValues?.barcode ? 'Barcode must be a safe number' : ''
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid number' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
