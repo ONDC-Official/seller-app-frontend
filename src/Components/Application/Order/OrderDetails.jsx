@@ -289,7 +289,7 @@ const OrderItemsSummaryCard = (props) => {
       minWidth: "50",
       label: "Fulfillment Status",
     },
-    { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
+    { id: "totalPrice", align: "right", minWidth: "50", label: "Total Amount" },
   ];
 
   if(!props.isSuperAdmin){
