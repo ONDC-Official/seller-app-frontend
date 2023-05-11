@@ -15,7 +15,7 @@ import bankDetailFields from './provider-bank-details-fields';
 
 const InviteProvider = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
   const user = {
     email: "",
     mobile: "",
