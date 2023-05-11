@@ -345,7 +345,7 @@ const ProviderDetails = () => {
     formErrors.state = storeDetails.state.trim() === '' ? 'State is required' : ''
     formErrors.city = storeDetails.city.trim() === '' ? 'City is required' : ''
     formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
-    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'Area code is required' : ''
+    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'PIN Code is required' : ''
     formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
