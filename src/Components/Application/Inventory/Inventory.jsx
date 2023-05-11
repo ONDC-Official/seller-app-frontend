@@ -26,7 +26,7 @@ const columns = [
   },
   {
     id: "purchasePrice",
-    label: "Purchase price",
+    label: "Purchase Price",
     minWidth: 100,
     format: (value) => value.toLocaleString("en-US"),
   },

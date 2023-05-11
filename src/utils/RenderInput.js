@@ -199,7 +199,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <FormControl error={item.error || false}>
-          <Select
+          {/* <Select
             disabled={item?.isDisabled || previewOnly || false}
             size="small"
             required={item.required}
@@ -218,7 +218,34 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               </MenuItem>
             ))}
           </Select>
-          {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
+          {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
+
+          <Autocomplete
+            disabled={item?.isDisabled || previewOnly || false}
+            // filterSelectedOptions
+            size="small"
+            options={item.options}
+            getOptionLabel={(option) => option.key}
+            value={state[item.id] && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
+            onChange={(event, newValue) => {
+              stateHandler((prevState) => {
+                const newState = {
+                  ...prevState,
+                  [item.id]: newValue?.value || '',
+                };
+                return newState;
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
+                variant="outlined"
+                error={item.error || false}
+                helperText={item.error && item.helperText}
+              />
+            )}
+          />
         </FormControl>
       </div>
     );
