@@ -199,7 +199,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <FormControl error={item.error || false}>
-          <Select
+          {/* <Select
             disabled={item?.isDisabled || previewOnly || false}
             size="small"
             required={item.required}
@@ -218,7 +218,44 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               </MenuItem>
             ))}
           </Select>
-          {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
+          {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
+
+          <Autocomplete
+            disabled={item?.isDisabled || previewOnly || false}
+            // filterSelectedOptions
+            size="small"
+            options={item.options}
+            getOptionLabel={(option) => option.key}
+            value={state[item.id] && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
+            onChange={(event, newValue) => {
+              stateHandler((prevState) => {
+                if(item.id === "productCategory"){
+                  const newState = {
+                    ...prevState,
+                    [item.id]: newValue?.value || '',
+                    "productSubcategory1": ""
+                  };
+                  return newState;
+                }else{
+                  const newState = {
+                    ...prevState,
+                    [item.id]: newValue?.value || '',
+                  };
+                  return newState;
+                }
+                
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
+                variant="outlined"
+                error={item.error || false}
+                helperText={item.error && item.helperText}
+              />
+            )}
+          />
         </FormControl>
       </div>
     );
@@ -231,7 +268,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </label>
         <div style={{ width: '100%', height: '400px' }}>
           <PlacePickerMap location={state[item.id] ? {lat: state[item.id].lat, lng: state[item.id].long} : {}} setLocation={(location) => {
-            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location
+            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location;
             stateHandler({
               ...state,
               [item.id]: {
@@ -242,7 +279,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               state: stateVal,
               country,
               area_code,
-              locality
+              locality,
+              city
             })
           }} />
         </div>
@@ -270,7 +308,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             format={item.format || "DD/MM/YYYY"}
             views={item.views || ['year', 'month', 'day']}
             onChange={(newValue) => {
-              const date = moment(newValue).format(item.format || 'DD/MM/YYYY').toString();
+              const date = moment(new Date(newValue)).format(item.format || 'DD/MM/YYYY').toString();
               stateHandler((prevState) => {
                 const newState = {
                   ...prevState,
@@ -279,7 +317,17 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                 return newState;
               });
             }}
-            value={dayjs(dateValue)}
+            value={state[item.id]?dayjs(dateValue):""}
+            components={{
+              TextField: (params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  error={item.error || false}
+                  helperText={item.error && item.helperText}
+                />
+              ),
+            }}
           />
         </LocalizationProvider>
       </div>
@@ -312,7 +360,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={!previewOnly?item.placeholder:''}
+                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -336,12 +384,18 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
     };
 
     const renderUploadedUrls = () => {
-      if (state?.uploaded_urls) {
-        return state?.uploaded_urls?.map((url) => {
-          return (
-            <img src={url} height={50} width={50} style={{ margin: "10px" }} />
-          );
-        });
+      if(item?.multiple){
+        if (state?.uploaded_urls) {
+          return state?.uploaded_urls?.map((url) => {
+            return (
+              <img src={url} height={50} width={50} style={{ margin: "10px" }} />
+            );
+          });
+        }
+      }else{
+        return (
+          <img src={state[item.id]} height={50} width={50} style={{ margin: "10px" }} />
+        );
       }
     };
 
@@ -412,7 +466,6 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
-          <span className="text-[#FF0000]"> *</span>
         </label>
         {/* <Button sx={{ textTransform: 'none' }} variant="contained">
           <label for="contained-button-file">

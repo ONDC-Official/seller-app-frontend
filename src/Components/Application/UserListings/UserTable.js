@@ -72,7 +72,7 @@ const ThreeDotsMenu = (props) => {
         aria-controls={Boolean(anchorEl) ? 'user-action-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-        onMouseOver={openActionMenu}
+        onClick={openActionMenu}
         sx={{ width: 30 }}
       >
         <MoreVert />
@@ -160,11 +160,25 @@ const UserTable = (props) => {
                     {columns.map((column) => {
                       const value = row[column.id];
                       if (column.id == "Action") {
-                        return (
-                          <TableCell key={column.id} align={"left"}>
-                            <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
-                          </TableCell>
-                        );
+                        const user_id = localStorage.getItem("user_id");
+                        if(props.isProvider){
+                          return (
+                            <TableCell key={column.id} align={"left"}>
+                              <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                            </TableCell>
+                          );  
+                        }else{
+                          if(user_id === row._id){
+                            return <></>
+                          }else{
+                            return (
+                              <TableCell key={column.id} align={"left"}>
+                                <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                              </TableCell>
+                            );
+                          }
+                        }
+                        
                       } else if  (column.id == "formatted_status") {
                         return (
                           <TableCell key={column.id} align={column.align}>
@@ -172,6 +186,12 @@ const UserTable = (props) => {
                               <span>{value}</span>
                               {row.bannedUser && <LockOutlined sx={{ color: 'red' }} />}
                             </Stack>
+                          </TableCell>
+                        );
+                      }else if(column.id == "providerName"){
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {row.organization.name}
                           </TableCell>
                         );
                       }

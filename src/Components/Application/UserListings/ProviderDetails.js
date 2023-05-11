@@ -25,7 +25,7 @@ const providerFields = [
   },
   {
     id: "mobile",
-    title: "Support Mobile",
+    title: "Mobile Number",
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
@@ -35,37 +35,37 @@ const providerFields = [
 const kycFields = [
   {
     id: "contactEmail",
-    title: "Contact email",
+    title: "Contact Email",
     type: "input",
     required: true,
   },
   {
     id: "contactMobile",
-    title: "Contact mobile",
+    title: "Contact Mobile",
     type: "input",
     required: true,
   },
   {
     id: "fssai",
-    title: "FSSAI",
+    title: "FSSAI Number",
     type: "input",
     required: true,
   },
   {
     id: "address",
-    title: "Address",
+    title: "Registered Address",
     type: "input",
     required: true,
   },
   {
     id: "address_proof",
-    title: "Address proof",
+    title: "Address Proof",
     type: "upload",
     required: true,
   },
   {
     id: "gst_no",
-    title: "GSTIN",
+    title: "GSTIN Certificate",
     type: "input",
     required: true,
   },
@@ -83,13 +83,13 @@ const kycFields = [
   },
   {
     id: "pan_proof",
-    title: "PAN proof",
+    title: "PAN Card Proof",
     type: "upload",
     required: true,
   },
   {
     id: "id_proof",
-    title: "ID proof",
+    title: "ID Proof",
     type: "upload",
     required: true,
   },
@@ -98,7 +98,7 @@ const kycFields = [
 const bankFields = [
   { id: "bankName", title: "Bank Name", type: "input", required: true, },
   { id: "branchName", title: "Branch Name", type: "input", required: true, },
-  { id: "IFSC", title: "IFSC", type: "input", required: true, },
+  { id: "IFSC", title: "IFSC Code", type: "input", required: true, },
   { id: "accHolderName", title: "Account Holder Name", type: "input", required: true, },
   { id: "accNumber", title: "Account Number", type: "input", required: true, },
   { id: "cancelledCheque", title: "Cancelled Cheque", type: "upload", required: true, },
@@ -122,7 +122,7 @@ let storeFields = [
   },
   {
     id: "mobile",
-    title: "Support Mobile",
+    title: "Support Mobile Number",
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
@@ -131,8 +131,8 @@ let storeFields = [
   },
   {
     id: "categories",
-    title: "Supported product categories",
-    placeholder: "Supported product categories",
+    title: "Supported Product Categories",
+    placeholder: "Supported Product Categories",
     options: categoriesList,
     type: "multi-select",
     required: true,
@@ -146,7 +146,7 @@ let storeFields = [
   },
   {
     id: "location_availability",
-    title: "Location availability",
+    title: "Location Availability",
     options: [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
@@ -156,7 +156,7 @@ let storeFields = [
   },
   {
     id: "default_cancellable",
-    title: "Default cancellable setting",
+    title: "Default Cancellable Setting",
     options: [
       { key: "Cancellable", value: true },
       { key: "Non Cancellable", value: false },
@@ -166,7 +166,7 @@ let storeFields = [
   },
   {
     id: "default_returnable",
-    title: "Default returnable setting",
+    title: "Default returnable Setting",
     options: [
       { key: "Returnable", value: true },
       { key: "Non Returnable", value: false },
@@ -200,7 +200,7 @@ let storeFields = [
   },
   {
     id: "area_code",
-    title: "PIN code",
+    title: "PIN Code",
     type: "input",
     required: true,
   },
@@ -320,6 +320,10 @@ const ProviderDetails = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     let provider_id = params?.id;
     getOrgDetails(provider_id);
   }, [params.id]);
@@ -329,11 +333,10 @@ const ProviderDetails = () => {
   }
 
   const validate = () => {
-    console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
-    formErrors.email = storeDetails.email.trim() === '' ? 'Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
-    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
-    formErrors.categories = storeDetails.categories.length === 0 ? 'Category is required' : ''
+    formErrors.email = storeDetails.email.trim() === '' ? 'Support Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
+    formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.categories = storeDetails.categories.length === 0 ? 'Supported Product Categories are required' : ''
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if(storeDetails.location_availability === 'city'){
       formErrors.cities = storeDetails.cities.length === 0 ? 'City is required' : ''
@@ -342,7 +345,7 @@ const ProviderDetails = () => {
     formErrors.state = storeDetails.state.trim() === '' ? 'State is required' : ''
     formErrors.city = storeDetails.city.trim() === '' ? 'City is required' : ''
     formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
-    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'Area code is required' : ''
+    formErrors.area_code = storeDetails.area_code.trim() === '' ? 'PIN Code is required' : ''
     formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);

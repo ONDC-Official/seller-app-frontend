@@ -99,7 +99,9 @@ const OrderDetails = () => {
       .then((resp) => {
         cogoToast.success("Order cancelled successfully!");
         // getOrder();
-        setOrder(resp);
+        let orderData = JSON.parse(JSON.stringify(order));
+        orderData.state = resp.state;
+        setOrder(orderData);
       })
       .catch((error) => {
         console.log(error);
@@ -115,7 +117,9 @@ const OrderDetails = () => {
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
         // getOrder();
-        setOrder(resp);
+        let orderData = JSON.parse(JSON.stringify(order));
+        orderData.state = resp.state;
+        setOrder(orderData);
       })
       .catch((error) => {
         console.log(error);
@@ -206,7 +210,7 @@ const OrderDetails = () => {
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || true} orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || false} orderItems={order?.items} order={order} />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
@@ -285,7 +289,7 @@ const OrderItemsSummaryCard = (props) => {
       minWidth: "50",
       label: "Fulfillment Status",
     },
-    { id: "totalPrice", align: "right", minWidth: "50", label: "Total Price" },
+    { id: "totalPrice", align: "right", minWidth: "50", label: "Total Amount" },
   ];
 
   if(!props.isSuperAdmin){

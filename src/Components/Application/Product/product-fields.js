@@ -4,14 +4,14 @@ const productFields = [
     {
       id: "productCode",
       title: "Product Code",
-      placeholder: "Product code",
+      placeholder: "Product Code",
       type: "input",
       required: true,
     },
     {
       id: "productName",
-      title: "Product name",
-      placeholder: "Product name",
+      title: "Product Name",
+      placeholder: "Product Name",
       type: "input",
       required: true,
     },
@@ -25,31 +25,31 @@ const productFields = [
     },
     {
       id: "retailPrice",
-      title: "Retail price",
-      placeholder: "Retail price",
+      title: "Retail Price",
+      placeholder: "Retail Price",
       type: "number",
       required: true,
       valueInDecimal: true
     },
     {
       id: "purchasePrice",
-      title: "Purchase price",
-      placeholder: "Purchase price",
+      title: "Purchase Price",
+      placeholder: "Purchase Price",
       type: "number",
       required: true,
       valueInDecimal: true
     },
     {
       id: "HSNCode",
-      title: "HSN code",
-      placeholder: "HSN code",
+      title: "HSN Code",
+      placeholder: "HSN Code",
       type: "input",
       required: true,
     },
     {
       id: "GST_Percentage",
       title: "GST Percentage",
-      placeholder: "GST Percentage",
+      placeholder: "Please Select GST Percentage",
       type: "select",
       options: [
         { key: "5", value: 5 },
@@ -61,8 +61,8 @@ const productFields = [
     },
     {
       id: "productCategory",
-      title: "Product category",
-      placeholder: "Product category",
+      title: "Product Category",
+      placeholder: "Please Select Product Category",
       options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
         return { key: value, value: key}
       }),
@@ -71,8 +71,8 @@ const productFields = [
     },
     {
       id: "productSubcategory1",
-      title: "Product subcategory",
-      placeholder: "Please select product category",
+      title: "Product SubCategory",
+      placeholder: "Please Select Product SubCategory",
       options: [],
       type: "select",
       required: true,
@@ -101,7 +101,7 @@ const productFields = [
     {
       id: "commonOrGenericNameOfCommodity",
       title: "Common Or Generic Name Of Commodity",
-      placeholder: "commonOr Generic Name Of Commodity",
+      placeholder: "Common Or Generic Name Of Commodity",
       type: "input",
       required: true,
     },
@@ -152,8 +152,8 @@ const productFields = [
     },
     {
       id: "maxAllowedQty",
-      title: "Max allowed quantity",
-      placeholder: "Max allowed quantity",
+      title: "Max Allowed Quantity",
+      placeholder: "Max Allowed Quantity",
       type: "number",
       required: true,
       min: 1
@@ -167,8 +167,8 @@ const productFields = [
     },
     {
       id: "packQty",
-      title: "Pack quantity",
-      placeholder: "Pack quantity",
+      title: "Pack Quantity",
+      placeholder: "Pack Quantity",
       type: "number",
       required: true,
     },
@@ -209,29 +209,29 @@ const productFields = [
     },
     {
       id: "manufacturerName",
-      title: "Manufacturer name",
-      placeholder: "Manufacturer name",
+      title: "Manufacturer Name",
+      placeholder: "Manufacturer Name",
       type: "input",
       required: true,
     },
     {
       id: "manufacturedDate",
-      title: "Manufactured date",
-      placeholder: "Manufactured date",
+      title: "Manufactured Date",
+      placeholder: "Manufactured Date",
       type: "date-picker",
       required: true,
     },
     {
       id: "nutritionalInfo",
-      title: "Nutritional info",
-      placeholder: "Nutritional info",
+      title: "Nutritional Info",
+      placeholder: "Nutritional Info",
       type: "input",
       required: true,
     },
     {
       id: "additiveInfo",
-      title: "Additive info",
-      placeholder: "Additive info",
+      title: "Additive Info",
+      placeholder: "Additive Info",
       type: "input",
       required: true,
     },
@@ -244,15 +244,15 @@ const productFields = [
     },
     {
       id: "longDescription",
-      title: "Long description",
-      placeholder: "Long description",
+      title: "Long Description",
+      placeholder: "Long Description",
       type: "input",
       required: true,
     },
     {
       id: "description",
-      title: "Short description",
-      placeholder: "Short description",
+      title: "Short Description",
+      placeholder: "Short Description",
       type: "input",
       required: true,
     },
@@ -288,7 +288,7 @@ const productFields = [
     },
     {
       id: "availableOnCod",
-      title: "Available on Cash on delivery",
+      title: "Available On Cash On Delivery",
       type: "radio",
       options: [
         { key: "Yes", value: true },

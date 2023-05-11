@@ -22,7 +22,7 @@ const superAdminCols = [
   },
   {
     id: "mobile",
-    label: "Mobile",
+    label: "Mobile Number",
   },
   {
     id: "formatted_status",
@@ -41,11 +41,15 @@ const providerCols = [
   },
   {
     id: "mobile",
-    label: "Mobile",
+    label: "Mobile Number",
   },
   {
     id: "name",
-    label: "Legal name of provider",
+    label: "User Name",
+  },
+  {
+    id: "providerName",
+    label: "Legal Name of Provider",
   },
   {
     id: "formatted_status",
@@ -135,7 +139,7 @@ const UserListings = () => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab value="admin" label="Super Admins" />
+            <Tab value="admin" label="ADMINS" />
             <Tab value="provider" label="Providers" />
           </Tabs>
           <Button

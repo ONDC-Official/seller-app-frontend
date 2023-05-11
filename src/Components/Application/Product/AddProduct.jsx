@@ -12,7 +12,7 @@ import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH } from "../../../utils/constants";
-import {isNumberOnly} from '../../../utils/validations';
+import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 
 export default function AddProduct() {
@@ -29,7 +29,7 @@ export default function AddProduct() {
     retailPrice: "",
     purchasePrice: "",
     HSNCode: "",
-    GST_Percentage: 18,
+    GST_Percentage: '',
     productCategory: '',
     productSubcategory1: '',
     quantity: "",
@@ -199,23 +199,23 @@ export default function AddProduct() {
     let formErrors = {}
     formErrors.productCode = formValues?.productCode?.trim() === '' ? 'Product code is not allowed to be empty' : formValues?.productCode?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.productName = formValues?.productName?.trim() === '' ? 'Product name is not allowed to be empty' : formValues?.productName?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.MRP = !formValues?.MRP ? 'Please enter a valid number' : ''
-    formErrors.retailPrice = !formValues?.retailPrice ? 'Please enter a valid number' : ''
-    formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : ''
+    formErrors.MRP = !formValues?.MRP ? 'Please enter a valid number' : !isAmountValid(formValues?.MRP)?'Please enter only digit':''
+    formErrors.retailPrice = !formValues?.retailPrice ? 'Please enter a valid number' : !isAmountValid(formValues?.retailPrice)?'Please enter only digit':''
+    formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : !isAmountValid(formValues?.purchasePrice)?'Please enter only digit':''
     formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory.length < 1 ? 'Product category is required' : ''
-    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product category is required' : ''
-    formErrors.quantity = !formValues?.quantity ? 'Please enter a valid number' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
-    formErrors.barcode = !formValues?.barcode ? 'Barcode must be a safe number' : ''
-    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid number' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
+    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
+    formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
+    formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : ''
+    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
     formErrors.UOM = formValues?.UOM?.trim() === '' ? 'UOM is required' : formValues?.UOM?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.packQty = !formValues?.packQty ? 'Pack quantity is required' : ''
+    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : '';
     formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : ''; //formValues?.length.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : ''; //formValues?.breadth.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : ''; //formValues?.height.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.weight = formValues?.weight?.trim() === '' ? 'Weight is required' : ''; //formValues?.weight.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.returnWindow = formValues?.returnWindow?.trim() === '' ? 'Return window is required' : ''
+    formErrors.returnWindow = formValues?.returnWindow?.trim() === '' ? 'Return window is required' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
     formErrors.manufacturerName = formValues?.manufacturerName?.trim() === '' ? 'Manufacturer name is required' : formValues?.manufacturerName?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.manufacturedDate = formValues?.manufacturedDate?.trim() === '' ? 'Manufactured date is required' : ''
     formErrors.nutritionalInfo = formValues?.nutritionalInfo?.trim() === '' ? 'Nutritional info is required' : formValues?.nutritionalInfo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
@@ -232,14 +232,17 @@ export default function AddProduct() {
     formErrors.importerFSSAILicenseNo = formValues?.importerFSSAILicenseNo?.trim() === '' ? 'Importer FSSAI license no is required' : formValues?.importerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.brandOwnerFSSAILicenseNo = formValues?.brandOwnerFSSAILicenseNo?.trim() === '' ? 'Brand owner FSSAI license no is required' : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     
-    const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-    const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
-    if(selectedSubCatObject && selectedSubCatObject.protocolKey){
-      const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
-      hiddenFields.forEach(field => {
-        formErrors[field] = "";
-      });
+    if(formValues?.productCategory){
+      const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      if(selectedSubCatObject && selectedSubCatObject.protocolKey){
+        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey]; 
+        hiddenFields.forEach(field => {
+          formErrors[field] = "";
+        });
+      }else{}
     }else{}
+    
     setErrors({
       ...formErrors
     })
