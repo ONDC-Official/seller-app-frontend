@@ -270,7 +270,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             format={item.format || "DD/MM/YYYY"}
             views={item.views || ['year', 'month', 'day']}
             onChange={(newValue) => {
-              const date = moment(newValue).format(item.format || 'DD/MM/YYYY').toString();
+              const date = moment(new Date(newValue)).format(item.format || 'DD/MM/YYYY').toString();
               stateHandler((prevState) => {
                 const newState = {
                   ...prevState,
