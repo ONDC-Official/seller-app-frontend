@@ -11,7 +11,7 @@ const userFields = [
   {
     id: "email",
     title: "Email",
-    placeholder: "Enter your email address",
+    placeholder: "Enter Admin Email Address",
     type: "input",
     email: true,
     required: true,
@@ -19,7 +19,7 @@ const userFields = [
   {
     id: "mobile",
     title: "Mobile Number",
-    placeholder: "Enter your mobile number",
+    placeholder: "Enter Admin Mobile Number",
     type: "input",
     mobile: true,
     maxLength: 10,
@@ -28,7 +28,7 @@ const userFields = [
   {
     id: "name",
     title: "Name",
-    placeholder: "Enter provider first name",
+    placeholder: "Enter Admin Name",
     type: "input",
     required: true,
   },
