@@ -268,7 +268,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </label>
         <div style={{ width: '100%', height: '400px' }}>
           <PlacePickerMap location={state[item.id] ? {lat: state[item.id].lat, lng: state[item.id].long} : {}} setLocation={(location) => {
-            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location
+            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location;
             stateHandler({
               ...state,
               [item.id]: {
@@ -279,7 +279,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
               state: stateVal,
               country,
               area_code,
-              locality
+              locality,
+              city
             })
           }} />
         </div>
