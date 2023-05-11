@@ -86,3 +86,7 @@ code {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.MuiAutocomplete-popper{
+  z-index: 11111 !important;
+}

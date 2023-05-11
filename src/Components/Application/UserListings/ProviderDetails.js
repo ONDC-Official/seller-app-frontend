@@ -98,7 +98,7 @@ const kycFields = [
 const bankFields = [
   { id: "bankName", title: "Bank Name", type: "input", required: true, },
   { id: "branchName", title: "Branch Name", type: "input", required: true, },
-  { id: "IFSC", title: "IFSC", type: "input", required: true, },
+  { id: "IFSC", title: "IFSC Code", type: "input", required: true, },
   { id: "accHolderName", title: "Account Holder Name", type: "input", required: true, },
   { id: "accNumber", title: "Account Number", type: "input", required: true, },
   { id: "cancelledCheque", title: "Cancelled Cheque", type: "upload", required: true, },
@@ -122,7 +122,7 @@ let storeFields = [
   },
   {
     id: "mobile",
-    title: "Support Mobile",
+    title: "Support Mobile Number",
     placeholder: "Enter your mobile number",
     type: "input",
     required: true,
@@ -131,8 +131,8 @@ let storeFields = [
   },
   {
     id: "categories",
-    title: "Supported product categories",
-    placeholder: "Supported product categories",
+    title: "Supported Product Categories",
+    placeholder: "Supported Product Categories",
     options: categoriesList,
     type: "multi-select",
     required: true,
@@ -146,7 +146,7 @@ let storeFields = [
   },
   {
     id: "location_availability",
-    title: "Location availability",
+    title: "Location Availability",
     options: [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
@@ -156,7 +156,7 @@ let storeFields = [
   },
   {
     id: "default_cancellable",
-    title: "Default cancellable setting",
+    title: "Default Cancellable Setting",
     options: [
       { key: "Cancellable", value: true },
       { key: "Non Cancellable", value: false },
@@ -166,7 +166,7 @@ let storeFields = [
   },
   {
     id: "default_returnable",
-    title: "Default returnable setting",
+    title: "Default returnable Setting",
     options: [
       { key: "Returnable", value: true },
       { key: "Non Returnable", value: false },
@@ -200,7 +200,7 @@ let storeFields = [
   },
   {
     id: "area_code",
-    title: "PIN code",
+    title: "PIN Code",
     type: "input",
     required: true,
   },

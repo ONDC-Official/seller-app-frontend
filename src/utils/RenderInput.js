@@ -330,6 +330,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </label>
         <FormControl>
           <Autocomplete
+            open={true}
             disabled={item?.isDisabled || previewOnly || false}
             multiple
             // filterSelectedOptions
@@ -373,12 +374,18 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
     };
 
     const renderUploadedUrls = () => {
-      if (state?.uploaded_urls) {
-        return state?.uploaded_urls?.map((url) => {
-          return (
-            <img src={url} height={50} width={50} style={{ margin: "10px" }} />
-          );
-        });
+      if(item?.multiple){
+        if (state?.uploaded_urls) {
+          return state?.uploaded_urls?.map((url) => {
+            return (
+              <img src={url} height={50} width={50} style={{ margin: "10px" }} />
+            );
+          });
+        }
+      }else{
+        return (
+          <img src={state[item.id]} height={50} width={50} style={{ margin: "10px" }} />
+        );
       }
     };
 
