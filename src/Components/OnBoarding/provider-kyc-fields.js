@@ -41,7 +41,7 @@ export default [
     {
       id: "GSTN",
       title: "GSTIN",
-      placeholder: "Enter your GSTIN",
+      placeholder: "Enter Provider GSTIN",
       type: "input",
       maxLength: 15,
       required: true,
@@ -49,7 +49,7 @@ export default [
     {
       id: "FSSAI",
       title: "FSSAI Number",
-      placeholder: "Enter your FSSAI number",
+      placeholder: "Enter Provider FSSAI Number",
       type: "input",
       maxLength: 14,
       required: true,
