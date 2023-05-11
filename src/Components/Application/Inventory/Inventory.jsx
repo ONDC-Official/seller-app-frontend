@@ -11,7 +11,7 @@ import { PRODUCT_CATEGORY } from '../../../utils/constants';
 import { useTheme } from '@mui/material/styles';
 
 const columns = [
-  { id: "productName", label: "Name", minWidth: 100 },
+  { id: "productName", label: "Product Name", minWidth: 100 },
   {
     id: "productCategory",
     label: "Category",
