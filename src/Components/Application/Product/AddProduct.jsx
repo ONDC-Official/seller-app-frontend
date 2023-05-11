@@ -29,7 +29,7 @@ export default function AddProduct() {
     retailPrice: "",
     purchasePrice: "",
     HSNCode: "",
-    GST_Percentage: 18,
+    GST_Percentage: '',
     productCategory: '',
     productSubcategory1: '',
     quantity: "",
@@ -206,11 +206,11 @@ export default function AddProduct() {
     formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory.length < 1 ? 'Product category is required' : ''
     formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
-    formErrors.quantity = !formValues?.quantity ? 'Please enter a valid number' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
-    formErrors.barcode = !formValues?.barcode ? 'Barcode must be a safe number' : ''
-    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid number' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
+    formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
+    formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : ''
+    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
     formErrors.UOM = formValues?.UOM?.trim() === '' ? 'UOM is required' : formValues?.UOM?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.packQty = !formValues?.packQty ? 'Pack quantity is required' : ''
+    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : ''
     formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : ''; //formValues?.length.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : ''; //formValues?.breadth.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : ''; //formValues?.height.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
