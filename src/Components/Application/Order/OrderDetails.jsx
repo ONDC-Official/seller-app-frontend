@@ -99,7 +99,9 @@ const OrderDetails = () => {
       .then((resp) => {
         cogoToast.success("Order cancelled successfully!");
         // getOrder();
-        setOrder(resp);
+        let orderData = JSON.parse(JSON.stringify(order));
+        orderData.state = resp.state;
+        setOrder(orderData);
       })
       .catch((error) => {
         console.log(error);
@@ -115,7 +117,9 @@ const OrderDetails = () => {
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
         // getOrder();
-        setOrder(resp);
+        let orderData = JSON.parse(JSON.stringify(order));
+        orderData.state = resp.state;
+        setOrder(orderData);
       })
       .catch((error) => {
         console.log(error);
