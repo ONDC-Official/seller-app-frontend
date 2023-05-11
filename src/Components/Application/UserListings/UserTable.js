@@ -160,11 +160,25 @@ const UserTable = (props) => {
                     {columns.map((column) => {
                       const value = row[column.id];
                       if (column.id == "Action") {
-                        return (
-                          <TableCell key={column.id} align={"left"}>
-                            <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
-                          </TableCell>
-                        );
+                        const user_id = localStorage.getItem("user_id");
+                        if(props.isProvider){
+                          return (
+                            <TableCell key={column.id} align={"left"}>
+                              <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                            </TableCell>
+                          );  
+                        }else{
+                          if(user_id === row._id){
+                            return <></>
+                          }else{
+                            return (
+                              <TableCell key={column.id} align={"left"}>
+                                <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                              </TableCell>
+                            );
+                          }
+                        }
+                        
                       } else if  (column.id == "formatted_status") {
                         return (
                           <TableCell key={column.id} align={column.align}>
