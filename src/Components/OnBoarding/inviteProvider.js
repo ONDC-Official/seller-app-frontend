@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
-import { isAlphaNumericOnly, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
+import { isAlphaNumericOnly, isValidIFSC, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
@@ -156,7 +156,7 @@ const InviteProvider = () => {
       formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account Number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank Name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch Name is required' : ''
-      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC Code is required' : !isAlphaNumericOnly(formValues.IFSC) || formValues.IFSC.trim().length < 11 ? 'Please enter a valid IFSC Code' : ''
+      formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC Code is required' : !isValidIFSC(formValues.IFSC) ? 'Please enter a valid IFSC Code' : ''
       formErrors.cancelledCheque = formValues.cancelledCheque.trim() === '' ? 'Cancelled Cheque is required' : ''
     }
     setErrors({

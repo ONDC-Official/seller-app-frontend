@@ -39,6 +39,11 @@ export const isValidFSSAI = (value) => {
   return /^[0-9]{14}$/.test(value)
 }
 
+export const isValidIFSC = (value) => {
+  // FSSAI should be 14 digit number
+  return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(value)
+}
+
 export const isAlphaNumericOnly = (value) => {
   return /^[A-Za-z0-9]+$/i.test(value)
 }
