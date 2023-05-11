@@ -72,7 +72,7 @@ const ThreeDotsMenu = (props) => {
         aria-controls={Boolean(anchorEl) ? 'user-action-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-        onMouseOver={openActionMenu}
+        onClick={openActionMenu}
         sx={{ width: 30 }}
       >
         <MoreVert />
