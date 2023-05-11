@@ -466,7 +466,6 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
-          <span className="text-[#FF0000]"> *</span>
         </label>
         {/* <Button sx={{ textTransform: 'none' }} variant="contained">
           <label for="contained-button-file">

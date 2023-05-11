@@ -52,4 +52,8 @@ export function isObjEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+export const isValidBankAccountNumber = (str) => {
+  return /^\d{9,18}$/.test(str);
+}
+
 export const areObjectsEqual = (firstObj, secondObj) => JSON.stringify(firstObj) === JSON.stringify(secondObj);

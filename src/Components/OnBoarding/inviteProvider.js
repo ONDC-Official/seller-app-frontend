@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import RenderInput from "../../utils/RenderInput";
-import { isAlphaNumericOnly, isValidIFSC, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
+import { isValidBankAccountNumber, isValidIFSC, isNameValid, isEmailValid, isValidPAN, isPhoneNoValid, isValidFSSAI, isValidGSTIN } from "../../utils/validations";
 import { postCall } from "../../Api/axios";
 import cogoToast from "cogo-toast";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import bankDetailFields from './provider-bank-details-fields';
 
 const InviteProvider = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
   const user = {
     email: "",
     mobile: "",
@@ -153,7 +153,7 @@ const InviteProvider = () => {
       formErrors.GST_proof = formValues.GST_proof.trim() === '' ? 'GSTIN Certificate is required' : ''
     } else if (step === 4) {
       formErrors.accHolderName = formValues.accHolderName.trim() === '' ? 'Account Holder Name is required' : !isNameValid(formValues.accHolderName) ? 'Please enter a valid account holder name' : ''
-      formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account Number is required' : !containsOnlyNumbers(formValues.accNumber) ? 'Please enter a valid number' : ''
+      formErrors.accNumber = formValues.accNumber.trim() === '' ? 'Account Number is required' : !isValidBankAccountNumber(formValues.accNumber) ? 'Please enter a valid number' : ''
       formErrors.bankName = formValues.bankName.trim() === '' ? 'Bank Name is required' : ''
       formErrors.branchName = formValues.branchName.trim() === '' ? 'Branch Name is required' : ''
       formErrors.IFSC = formValues.IFSC.trim() === '' ? 'IFSC Code is required' : !isValidIFSC(formValues.IFSC) ? 'Please enter a valid IFSC Code' : ''
