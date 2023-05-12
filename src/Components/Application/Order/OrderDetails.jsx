@@ -248,7 +248,7 @@ const OrderDetails = () => {
                 </p>
               </div>
               <div className="flex items-center">
-                <p className="text-lg font-semibold">Mobile : &nbsp;</p>
+                <p className="text-lg font-semibold">Mobile Number : &nbsp;</p>
                 <p className="text-sm font-medium">
                   +91 {delivery_info?.end?.contact?.phone}
                 </p>
@@ -464,7 +464,7 @@ const OrderItemsSummaryCard = (props) => {
                           ) : col.id === "state" ? (
                             <div>{order_item?.state}</div>
                           ) : col.id === "price" ? (
-                            <div>₹ {product?.MRP?.toLocaleString()}</div>
+                            <div>₹ {product?.MRP?.toFixed(2).toLocaleString()}</div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
                               {isOrderCancellable(props?.order?.state) ? (
@@ -481,7 +481,7 @@ const OrderItemsSummaryCard = (props) => {
                               ₹{" "}
                               {(
                                 product?.MRP * order_item?.quantity?.count
-                              ).toLocaleString()}
+                              ).toFixed(2).toLocaleString()}
                             </div>
                           ) : col.id === "quantity" ? (
                             <span>{order_item[col.id]?.count}</span>
