@@ -420,11 +420,24 @@ const ProviderInitialSteps = () => {
       (form2Values.locationAvailability === 'city' && form2Values.city.length === 0) ||
       !form2Values.logo ||
       !form2Values.email ||
-      !form2Values.mobile)) {
+      !form2Values.mobile ||
+      form2Values.days.length === 0 ||
+      !form2Values.frequency && !form2Values.StoreTimeType === "frequency" ||
+      !form2Values.startTime && !form2Values.StoreTimeType === "time" ||
+      !form2Values.endTime && !form2Values.StoreTimeType === "time" ||
+      form2Values.storeTimes.length === 0 && !form2Values.StoreTimeType === "frequency")) {
         return true
     }
     return false;
   };
+
+  delete data["days"];
+    delete data["holidays"];
+    delete data["frequency"];
+    delete data["startTime"];
+    delete data["endTime"];
+    delete data["storeTimes"];
+    delete data["StoreTimeType"];
 
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
