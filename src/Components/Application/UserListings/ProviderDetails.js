@@ -353,7 +353,7 @@ const ProviderDetails = () => {
   };
 
   const onUpdate = () => {
-    if(validate()){
+    if(!areObjectsEqual(storeDetails, defaultStoreDetails) && validate()){
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
@@ -490,8 +490,8 @@ const ProviderDetails = () => {
                   stateHandler={setStoreDetails}
                 />
               ))}
-              {
-                !areObjectsEqual(storeDetails, defaultStoreDetails) && (
+              {/* {
+                !areObjectsEqual(storeDetails, defaultStoreDetails) && ( */}
                   <div className="flex mt-16">
                     <Button
                       style={{ marginRight: 10 }}
@@ -501,8 +501,8 @@ const ProviderDetails = () => {
                       Update Store
                     </Button>
                   </div>
-                )
-              }
+                {/* )
+              } */}
             </div>
           </div>
         </div>
