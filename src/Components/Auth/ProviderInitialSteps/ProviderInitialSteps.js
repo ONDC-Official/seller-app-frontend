@@ -431,14 +431,6 @@ const ProviderInitialSteps = () => {
     return false;
   };
 
-  delete data["days"];
-    delete data["holidays"];
-    delete data["frequency"];
-    delete data["startTime"];
-    delete data["endTime"];
-    delete data["storeTimes"];
-    delete data["StoreTimeType"];
-
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
       <RenderInput
