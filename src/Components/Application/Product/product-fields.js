@@ -168,8 +168,8 @@ const productFields = [
     },
     {
       id: "packQty",
-      title: "Pack Quantity",
-      placeholder: "Pack Quantity",
+      title: "Measurement Quantity",
+      placeholder: "Measurement Quantity",
       type: "number",
       required: true,
     },
