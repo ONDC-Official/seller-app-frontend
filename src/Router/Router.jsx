@@ -96,7 +96,7 @@ export default function OndcRoutes() {
           path="/user-listings/provider-details/:id"
           element={
             <PrivateRoute>
-              <ProviderDetails />
+              <ProviderDetails isFromUserListing={true} />
             </PrivateRoute>
           }
         />

@@ -114,6 +114,14 @@ const categoriesList = [
 ];
 
 let storeFields = [
+  // {
+  //   id: "name",
+  //   title: "Store Name",
+  //   placeholder: "Enter Store Name",
+  //   type: "input",
+  //   email: true,
+  //   required: true,
+  // },
   {
     id: "email",
     title: "Support Email",
@@ -220,7 +228,7 @@ let storeFields = [
   },
 ];
 
-const ProviderDetails = () => {
+const ProviderDetails = ({isFromUserListing=false}) => {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -542,174 +550,181 @@ const ProviderDetails = () => {
                   stateHandler={setStoreDetails}
                 />
               ))}
-              <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
-              <RenderInput
-                item={{
-                  id: "days",
-                  title: "Days",
-                  options: [
-                    { key: "Monday", value: '1' },
-                    { key: "Tuesday", value: '2' },
-                    { key: "Wednesday", value: '3' },
-                    { key: "Thursday", value: '4' },
-                    { key: "Friday", value: '5' },
-                    { key: "Saturday", value: '6' },
-                    { key: "Sunday", value: '7' },
-                  ],
-                  type: "checkbox",
-                  required: true,
-                  error: errors?.['days'] ? true : false, 
-                  helperText: errors?.['days'] || ''
-                }}
-                state={storeDetails}
-                stateHandler={setStoreDetails}
-              />
-              <RenderInput
-                item={{
-                  id: "holidays",
-                  title: "Holidays",
-                  placeholder: "Holidays",
-                  type: "days-picker",
-                  required: true,
-                  format: "YYYY-MM-DD",
-                  error: errors?.['holidays'] ? true : false, 
-                  helperText: errors?.['holidays'] || ''
-                }}
-                state={storeDetails}
-                stateHandler={setStoreDetails}
-              />
-              <RenderInput
-                item={{
-                  id: "StoreTimeType",
-                  title: "StoreTimeType",
-                  options: [
-                    { key: "Frequency", value: 'frequency' },
-                    { key: "Time", value: 'time' },
-                  ],
-                  type: "radio",
-                  required: true,
-                  error: errors?.['StoreTimeType'] ? true : false, 
-                  helperText: errors?.['StoreTimeType'] || ''
-                }}
-                state={storeDetails}
-                stateHandler={setStoreDetails}
-              />
               {
-                storeDetails.StoreTimeType === "frequency"
-                ?(
+                !isFromUserListing && (
                   <>
+                    <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
                     <RenderInput
                       item={{
-                        id: "frequency",
-                        title: "Frequency (in hours)",
-                        placeholder: "Frequency (in hours)",
-                        type: "number",
+                        id: "days",
+                        title: "Days",
+                        options: [
+                          { key: "Monday", value: '1' },
+                          { key: "Tuesday", value: '2' },
+                          { key: "Wednesday", value: '3' },
+                          { key: "Thursday", value: '4' },
+                          { key: "Friday", value: '5' },
+                          { key: "Saturday", value: '6' },
+                          { key: "Sunday", value: '7' },
+                        ],
+                        type: "checkbox",
                         required: true,
-                        error: errors?.['frequency'] ? true : false, 
-                        helperText: errors?.['frequency'] || ''
+                        error: errors?.['days'] ? true : false, 
+                        helperText: errors?.['days'] || ''
                       }}
                       state={storeDetails}
                       stateHandler={setStoreDetails}
                     />
-                    <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
-                      Store Time
-                      <span className="text-[#FF0000]"> *</span>
-                    </label>
+                    <RenderInput
+                      item={{
+                        id: "holidays",
+                        title: "Holidays",
+                        placeholder: "Holidays",
+                        type: "days-picker",
+                        required: true,
+                        format: "YYYY-MM-DD",
+                        error: errors?.['holidays'] ? true : false, 
+                        helperText: errors?.['holidays'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                    <RenderInput
+                      item={{
+                        id: "StoreTimeType",
+                        title: "StoreTimeType",
+                        options: [
+                          { key: "Frequency", value: 'frequency' },
+                          { key: "Time", value: 'time' },
+                        ],
+                        type: "radio",
+                        required: true,
+                        error: errors?.['StoreTimeType'] ? true : false, 
+                        helperText: errors?.['StoreTimeType'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
                     {
-                      storeDetails.storeTimes && storeDetails.storeTimes.length > 0 && storeDetails.storeTimes.map((itemTime, idx) => {
-                        return (
-                          <div style={{display: 'flex'}}>
-                            <div style={{flex: 1}}>
-                              <RenderInput
-                                item={{
-                                  id: "time",
-                                  title: "",
-                                  format: 'HH:mm',
-                                  ampm: false,
-                                  placeholder: "Frequency (in hours)",
-                                  type: "time-picker",
-                                  required: true,
-                                  error: errors?.['frequency'] ? true : false, 
-                                  helperText: errors?.['frequency'] || ''
-                                }}
-                                state={{time: itemTime}}
-                                onChange={(value) => {
-                                  let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
-                                  data[idx] = value;
-                                  setStoreDetails((prevState) => {
-                                    const newState = {
-                                      ...prevState,
-                                      storeTimes: data,
-                                    };
-                                    return newState;
-                                  })
-                                }}
-                              />
-                            </div>
-                            <div style={{width: '100px', margin: 'auto', paddingLeft: '20px'}}>
-                              {
-                                ((storeDetails.storeTimes.length - 1) === idx) && (
-                                  <Button 
-                                    variant="contained"
-                                    onClick={() => {
-                                      console.log("storeDetails.storeTimes=====>", storeDetails.storeTimes);
-                                      let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
-                                      data.push("");
-                                      setStoreDetails((prevState) => {
-                                        const newState = {
-                                          ...prevState,
-                                          storeTimes: data,
-                                        };
-                                        return newState;
-                                      })
-                                    }}
-                                  >
-                                    Add
-                                  </Button>
-                                )
-                              }
-                            </div>
-                          </div>
-                        )
-                      })
+                      storeDetails.StoreTimeType === "frequency"
+                      ?(
+                        <>
+                          <RenderInput
+                            item={{
+                              id: "frequency",
+                              title: "Frequency (in hours)",
+                              placeholder: "Frequency (in hours)",
+                              type: "number",
+                              required: true,
+                              error: errors?.['frequency'] ? true : false, 
+                              helperText: errors?.['frequency'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                          <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+                            Store Time
+                            <span className="text-[#FF0000]"> *</span>
+                          </label>
+                          {
+                            storeDetails.storeTimes && storeDetails.storeTimes.length > 0 && storeDetails.storeTimes.map((itemTime, idx) => {
+                              return (
+                                <div style={{display: 'flex'}}>
+                                  <div style={{flex: 1}}>
+                                    <RenderInput
+                                      item={{
+                                        id: "time",
+                                        title: "",
+                                        format: 'HH:mm',
+                                        ampm: false,
+                                        placeholder: "Frequency (in hours)",
+                                        type: "time-picker",
+                                        required: true,
+                                        error: errors?.['frequency'] ? true : false, 
+                                        helperText: errors?.['frequency'] || ''
+                                      }}
+                                      state={{time: itemTime}}
+                                      onChange={(value) => {
+                                        let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
+                                        data[idx] = value;
+                                        setStoreDetails((prevState) => {
+                                          const newState = {
+                                            ...prevState,
+                                            storeTimes: data,
+                                          };
+                                          return newState;
+                                        })
+                                      }}
+                                    />
+                                  </div>
+                                  <div style={{width: '100px', margin: 'auto', paddingLeft: '20px'}}>
+                                    {
+                                      ((storeDetails.storeTimes.length - 1) === idx) && (
+                                        <Button 
+                                          variant="contained"
+                                          onClick={() => {
+                                            console.log("storeDetails.storeTimes=====>", storeDetails.storeTimes);
+                                            let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
+                                            data.push("");
+                                            setStoreDetails((prevState) => {
+                                              const newState = {
+                                                ...prevState,
+                                                storeTimes: data,
+                                              };
+                                              return newState;
+                                            })
+                                          }}
+                                        >
+                                          Add
+                                        </Button>
+                                      )
+                                    }
+                                  </div>
+                                </div>
+                              )
+                            })
+                          }
+                        </>
+                      )
+                      :(
+                        <>
+                          <RenderInput
+                            item={{
+                              ampm: false,
+                              id: "startTime",
+                              title: "Start Time",
+                              placeholder: "Start Time",
+                              type: "time-picker",
+                              format: 'HH:mm',
+                              required: true,
+                              error: errors?.['startTime'] ? true : false, 
+                              helperText: errors?.['startTime'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                          <RenderInput
+                            item={{
+                              ampm: false,
+                              id: "endTime",
+                              title: "End Time",
+                              placeholder: "End Time",
+                              type: "time-picker",
+                              format: 'HH:mm',
+                              required: true,
+                              error: errors?.['endTime'] ? true : false, 
+                              helperText: errors?.['endTime'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                        </>
+                      )
                     }
                   </>
                 )
-                :(
-                  <>
-                    <RenderInput
-                      item={{
-                        ampm: false,
-                        id: "startTime",
-                        title: "Start Time",
-                        placeholder: "Start Time",
-                        type: "time-picker",
-                        format: 'HH:mm',
-                        required: true,
-                        error: errors?.['startTime'] ? true : false, 
-                        helperText: errors?.['startTime'] || ''
-                      }}
-                      state={storeDetails}
-                      stateHandler={setStoreDetails}
-                    />
-                    <RenderInput
-                      item={{
-                        ampm: false,
-                        id: "endTime",
-                        title: "End Time",
-                        placeholder: "End Time",
-                        type: "time-picker",
-                        format: 'HH:mm',
-                        required: true,
-                        error: errors?.['endTime'] ? true : false, 
-                        helperText: errors?.['endTime'] || ''
-                      }}
-                      state={storeDetails}
-                      stateHandler={setStoreDetails}
-                    />
-                  </>
-                )
               }
+              
               {/* {
                 !areObjectsEqual(storeDetails, defaultStoreDetails) && ( */}
                   <div className="flex mt-16">

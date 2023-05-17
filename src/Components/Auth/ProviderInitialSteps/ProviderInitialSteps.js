@@ -33,6 +33,14 @@ const passwordFields = [
 ];
 
 let storeFields = [
+  // {
+  //   id: "name",
+  //   title: "Store Name",
+  //   placeholder: "Enter Store Name",
+  //   type: "input",
+  //   email: true,
+  //   required: true,
+  // },
   {
     id: "email",
     title: "Support Email",
@@ -175,7 +183,7 @@ const ProviderInitialSteps = () => {
     defaultReturnable: false,
     email: "",
     mobile: "",
-
+    
     days: [],
     holidays: [],
     StoreTimeType: "time",
