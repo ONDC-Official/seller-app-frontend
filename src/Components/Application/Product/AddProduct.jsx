@@ -217,7 +217,7 @@ export default function AddProduct() {
     formErrors.retailPrice = !formValues?.retailPrice ? 'Please enter a valid number' : !isAmountValid(formValues?.retailPrice)?'Please enter only digit':''
     formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : !isAmountValid(formValues?.purchasePrice)?'Please enter only digit':''
     formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH_8 ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters` : '';
-    formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
+    formErrors.GST_Percentage = ''//!formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory === "" ? 'Product category is required' : ''
     formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
     formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
