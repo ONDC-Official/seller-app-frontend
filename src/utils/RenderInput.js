@@ -74,7 +74,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
-            stateHandler({ ...state, [item.id]: e.target.value })
+            stateHandler({ ...state, [item.id]: item.isUperCase?e.target.value.toUpperCase():e.target.value })
           }
           inputProps={{
             maxLength: item.maxLength || undefined,
