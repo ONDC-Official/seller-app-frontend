@@ -15,7 +15,7 @@ import bankDetailFields from './provider-bank-details-fields';
 
 const InviteProvider = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const user = {
     email: "",
     mobile: "",
@@ -139,7 +139,7 @@ const InviteProvider = () => {
       formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
       formErrors.name = formValues.name.trim() === '' ? 'Name is required' : !isNameValid(formValues.name) ? 'Please enter a valid name' : ''
     } else if (step === 2) {
-      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
+      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider Store Name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
       formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
