@@ -261,8 +261,8 @@ const productFields = [
       title: "Cancellable",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -271,8 +271,8 @@ const productFields = [
       title: "Returnable",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -281,8 +281,8 @@ const productFields = [
       title: "Vegetarian",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -291,8 +291,8 @@ const productFields = [
       title: "Available On Cash On Delivery",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },

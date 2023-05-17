@@ -109,6 +109,10 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "radio") {
+    let isDisabled = false;
+    if(item.id === "isVegetarian" && state["productCategory"] && state["productCategory"] !== "f_and_b"){
+      isDisabled = true;
+    }else{}
     return (
       <div className="py-1 flex flex-col">
         <FormControl component="fieldset">
@@ -123,11 +127,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             onChange={(e) =>
               stateHandler({ ...state, [item.id]: e.target.value })
             }
+            disabled={isDisabled}
           >
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
-                  disabled={item?.isDisabled || previewOnly || false}
+                  disabled={item?.isDisabled || isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
                   control={<Radio size="small" checked={radioItem.value ===state[item.id]} />}

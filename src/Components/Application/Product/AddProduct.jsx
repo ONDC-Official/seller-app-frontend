@@ -49,10 +49,10 @@ export default function AddProduct() {
     instructions: "",
     longDescription: "",
     description: "",
-    isReturnable: false,
-    isVegetarian: false,
-    isCancellable: false,
-    availableOnCod: false,
+    isReturnable: "false",
+    isVegetarian: "false",
+    isCancellable: "false",
+    availableOnCod: "false",
     images: [],
     manufacturerOrPackerName: "",
     manufacturerOrPackerAddress: "",
@@ -82,6 +82,10 @@ export default function AddProduct() {
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
       data.returnWindow = iso8601;
+      data.isCancellable = data.isCancellable === "true" ? true : false;
+      data.isReturnable = data.isReturnable === "true" ? true : false
+      data.isVegetarian = data.isVegetarian === "true" ? true : false
+      data.availableOnCod = data.availableOnCod === "true" ? true : false
 
       delete data["uploaded_urls"];
       await cancellablePromise(
@@ -100,6 +104,12 @@ export default function AddProduct() {
       .then(resp => {
         resp["uploaded_urls"] = resp?.images?.map(i => i?.url) || [];
         resp["images"] = resp?.images?.map(i => i?.path) || [];
+        
+        resp.isCancellable = resp.isCancellable ? "true" : "false";
+        resp.isReturnable = resp.isReturnable ? "true" : "false"
+        resp.isVegetarian = resp.isVegetarian ? "true" : "false"
+        resp.availableOnCod = resp.availableOnCod ? "true" : "false"
+
         // Create a duration object from the ISO 8601 string
         const duration = moment.duration(resp.returnWindow);
 
@@ -190,6 +200,10 @@ export default function AddProduct() {
       let data = Object.assign([], JSON.parse(JSON.stringify(fields)));
       const subCategoryIndex = data.findIndex((item) => item.id === 'productSubcategory1');
       data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+      if(formValues.productCategory === "f_and_b"){
+        const imagesIndex = data.findIndex((item) => item.id === 'images');
+        data[imagesIndex].required = false;
+      }else{}
       setFields(data);
     }
     // stateHandler({ ...state, [item.id]: e.target.value })
@@ -204,7 +218,7 @@ export default function AddProduct() {
     formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : !isAmountValid(formValues?.purchasePrice)?'Please enter only digit':''
     formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
-    formErrors.productCategory = formValues?.productCategory.length < 1 ? 'Product category is required' : ''
+    formErrors.productCategory = formValues?.productCategory === "" ? 'Product category is required' : ''
     formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
     formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
     formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : ''
@@ -223,7 +237,7 @@ export default function AddProduct() {
     formErrors.instructions = formValues?.instructions?.trim() === '' ? 'Instruction is required' : formValues?.instructions?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.longDescription = formValues?.longDescription?.trim() === '' ? 'Long description is required' : formValues?.longDescription?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.description = formValues?.description?.trim() === '' ? 'Short description is required' : formValues?.description?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.images = formValues?.images.length < 1 ? 'At least one image is required' : ''
+    formErrors.images = formValues?.productCategory !== "f_and_b" && formValues?.images.length < 1 ? 'At least one image is required' : ''
     
     formErrors.manufacturerOrPackerName = formValues?.manufacturerOrPackerName?.trim() === '' ? 'Manufacturer or packer name is required' : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.manufacturerOrPackerAddress = formValues?.manufacturerOrPackerAddress?.trim() === '' ? 'Manufacturer or packer address is required' : formValues?.manufacturerOrPackerAddress.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
@@ -259,7 +273,7 @@ export default function AddProduct() {
   useEffect(() => {
     if (!formSubmitted) return
     validate()
-  }, [formValues])
+  }, [formValues]);
 
   return (
     <>
