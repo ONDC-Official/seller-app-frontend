@@ -408,7 +408,7 @@ const ProviderDetails = ({isFromUserListing=false}) => {
 
         building,
         state,
-        city,
+        address_city,
         country,
         area_code,
         location,
@@ -417,7 +417,7 @@ const ProviderDetails = ({isFromUserListing=false}) => {
       const locationAvailability = location_availability === "pan_india"?true:false;
       const addressDetails = {
         building: building,
-        city: city,
+        city: address_city,
         state: state,
         country: country,
         area_code: area_code,

@@ -365,7 +365,7 @@ const ProviderInitialSteps = () => {
     delete data["building"];
     delete data["address_city"];
     delete data["state"];
-    delete data["city"];
+    // delete data["city"];
     delete data["country"];
     delete data["area_code"];
     delete data["locality"];
@@ -383,7 +383,7 @@ const ProviderInitialSteps = () => {
     delete data["storeTimes"];
     delete data["StoreTimeType"];
     
-
+    console.log("DATA==========>", data);
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
       const res = await postCall(url, data);

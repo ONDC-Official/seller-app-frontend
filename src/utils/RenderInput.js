@@ -295,7 +295,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               country,
               area_code,
               locality,
-              city
+              // city
             })
           }} />
         </div>
