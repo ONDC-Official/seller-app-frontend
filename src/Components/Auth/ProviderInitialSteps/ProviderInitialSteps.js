@@ -209,7 +209,7 @@ const ProviderInitialSteps = () => {
   const validateForm2 = () => {
     const formErrors = {}
     formErrors.logo = form2Values.logo.trim() === '' ? 'Logo is required' : ''
-    formErrors.categories = form2Values.categories.length < 1 ? 'Support product categories are required' : ''
+    formErrors.categories = form2Values.categories.length < 1 ? 'Supported Product Categories are required' : ''
     formErrors.location = !form2Values.location ? 'Location is required' : ''
     formErrors.building = form2Values.building.trim() === '' ? 'Building is required' : ''
     formErrors.address_city = form2Values.address_city.trim() === '' ? 'City is required' : ''
@@ -221,7 +221,7 @@ const ProviderInitialSteps = () => {
       formErrors.city = form2Values.city.length < 1 ? 'City is required' : ''
     }
     formErrors.email = form2Values.email.trim() === '' ? 'Support Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
-    formErrors.mobile = form2Values.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
+    formErrors.mobile = form2Values.mobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
     
     form1Errors.days = form2Values.days.length === 0 ? 'Days is required' : '';
     form1Errors.holidays = '';
