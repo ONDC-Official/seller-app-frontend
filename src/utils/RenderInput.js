@@ -65,6 +65,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           required={item.required}
           size="small"
+          multiline={item.multiline || false}
+          maxRows={item.multiline?5:1}
           autoComplete="off"
           placeholder={item.placeholder}
           error={item.error || false}

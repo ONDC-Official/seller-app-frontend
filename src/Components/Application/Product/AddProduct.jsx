@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10, MAX_STRING_LENGTH_13, MAX_STRING_LENGTH_8 } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10, MAX_STRING_LENGTH_13, MAX_STRING_LENGTH_8, MAX_STRING_LENGTH_12 } from "../../../utils/constants";
 import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 

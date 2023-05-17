@@ -249,6 +249,7 @@ const productFields = [
       placeholder: "Long Description",
       type: "input",
       required: true,
+      multiline: true
     },
     {
       id: "description",
@@ -256,6 +257,7 @@ const productFields = [
       placeholder: "Short Description",
       type: "input",
       required: true,
+      multiline: true,
     },
     {
       id: "isCancellable",
