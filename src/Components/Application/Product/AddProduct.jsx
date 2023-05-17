@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10, MAX_STRING_LENGTH_13 } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10, MAX_STRING_LENGTH_13, MAX_STRING_LENGTH_8 } from "../../../utils/constants";
 import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 
@@ -216,7 +216,7 @@ export default function AddProduct() {
     formErrors.MRP = !formValues?.MRP ? 'Please enter a valid number' : !isAmountValid(formValues?.MRP)?'Please enter only digit':''
     formErrors.retailPrice = !formValues?.retailPrice ? 'Please enter a valid number' : !isAmountValid(formValues?.retailPrice)?'Please enter only digit':''
     formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : !isAmountValid(formValues?.purchasePrice)?'Please enter only digit':''
-    formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH_8 ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters` : '';
     formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory === "" ? 'Product category is required' : ''
     formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
