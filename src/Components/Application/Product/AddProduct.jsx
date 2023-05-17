@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14 } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6 } from "../../../utils/constants";
 import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 
@@ -222,15 +222,15 @@ export default function AddProduct() {
     formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
     formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
     formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : ''
-    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
+    formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10 ? `Cannot be more than ${MAX_STRING_LENGTH_10} characters` : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
     formErrors.UOM = formValues?.UOM?.trim() === '' ? 'UOM is required' : formValues?.UOM?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : '';
-    formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : ''; //formValues?.length.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : ''; //formValues?.breadth.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : ''; //formValues?.height.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.weight = formValues?.weight?.trim() === '' ? 'Weight is required' : ''; //formValues?.weight.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.returnWindow = formValues?.returnWindow?.trim() === '' ? 'Return window is required' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
-    formErrors.manufacturerName = formValues?.manufacturerName?.trim() === '' ? 'Manufacturer name is required' : formValues?.manufacturerName?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : formValues?.length.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
+    formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : formValues?.breadth.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
+    formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : formValues?.height.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
+    formErrors.weight = formValues?.weight?.trim() === '' ? 'Weight is required' : formValues?.weight.length > MAX_STRING_LENGTH_3 ? `Cannot be more than ${MAX_STRING_LENGTH_3} characters` : '';
+    formErrors.returnWindow = formValues?.returnWindow?.trim() === '' ? 'Return window is required' : !isNumberOnly(formValues?.returnWindow) ? 'Please enter only digit' : formValues?.returnWindow.length > MAX_STRING_LENGTH_3 ? `Cannot be more than ${MAX_STRING_LENGTH_3} characters` : ''
+    formErrors.manufacturerName = formValues?.manufacturerName?.trim() === '' ? 'Manufacturer name is required' : formValues?.manufacturerName?.length > MAX_STRING_LENGTH_50 ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters` : '';
     formErrors.manufacturedDate = formValues?.manufacturedDate?.trim() === '' ? 'Manufactured date is required' : ''
     formErrors.nutritionalInfo = formValues?.nutritionalInfo?.trim() === '' ? 'Nutritional info is required' : formValues?.nutritionalInfo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.additiveInfo = formValues?.additiveInfo?.trim() === '' ? 'Additive info is required' : formValues?.additiveInfo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
