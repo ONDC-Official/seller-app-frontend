@@ -16,6 +16,7 @@ import {
   Select,
   TextField,
   Stack,
+  Chip,
 } from "@mui/material";
 import { DeleteOutlined } from "@mui/icons-material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -30,6 +31,10 @@ import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import MyButton from "../Components/Shared/Button";
 import PlacePickerMap from '../Components/PlacePickerMap/PlacePickerMap'
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
+import DaysPicker from "react-multi-date-picker"
+import DatePanel from "react-multi-date-picker/plugins/date_panel"
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -45,7 +50,7 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
+const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
   const uploadFileRef = useRef(null)
 
   if (item.type == "input") {
@@ -104,6 +109,10 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "radio") {
+    let isDisabled = false;
+    if(item.id === "isVegetarian" && state["productCategory"] && state["productCategory"] !== "f_and_b"){
+      isDisabled = true;
+    }else{}
     return (
       <div className="py-1 flex flex-col">
         <FormControl component="fieldset">
@@ -118,14 +127,15 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
             onChange={(e) =>
               stateHandler({ ...state, [item.id]: e.target.value })
             }
+            disabled={isDisabled}
           >
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
-                  disabled={item?.isDisabled || previewOnly || false}
+                  disabled={item?.isDisabled || isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
-                  control={<Radio size="small" />}
+                  control={<Radio size="small" checked={radioItem.value ===state[item.id]} />}
                   label={
                     <div className="text-sm font-medium text-[#606161]">
                       {radioItem.key}
@@ -139,6 +149,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
       </div>
     );
   } else if (item.type == "checkbox") {
+    console.log("state[item.id]=====>", state[item.id]);
+    console.log("item.options=====>", item.options);
     const onChange = (e) => {
       const val = e.target.name;
       const itemIndex = state[item.id].indexOf(val);
@@ -176,6 +188,7 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
                   onChange={onChange}
                   name={checkboxItem.value}
                   size="small"
+                  checked={state[item.id] && state[item.id].find((day) => day === checkboxItem.value)?true:false}
                 />
               }
               label={
@@ -332,13 +345,147 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </LocalizationProvider>
       </div>
     );
-  } else if (item.type == "multi-select") {
+  } else if (item.type == "time-picker") {
+    function reverseString(str) {
+
+      // empty string
+      let newString = "";
+      for (let i = str.length - 1; i >= 0; i--) {
+          newString += str[i];
+      }
+      return newString;
+    }
+    const dateValue = moment(state[item.id], item.format || 'hh:mm A');
+    console.log("item.format======>", item.format);
+    console.log("dateValue=====>", dateValue);
+    return (
+      <div className="py-1 flex flex-col">
+        {
+          item.title && (
+            <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+              {item.title}
+              {item.required && <span className="text-[#FF0000]"> *</span>}
+            </label>
+          )
+        }
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            ampm={item.ampm !== undefined?item.ampm:true}
+            format={item.format || "hh:mm A"}
+            onChange={(newValue) => {
+              if(stateHandler){
+                const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
+                console.log("newValue=====>", newValue);
+                console.log("date=====>", date);
+                stateHandler((prevState) => {
+                  const newState = {
+                    ...prevState,
+                    [item.id]: date,
+                  };
+                  return newState;
+                });
+              }else{
+                const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
+                onChange(date);
+              }
+            }}
+            value={state[item.id]?dayjs(dateValue):""}
+            components={{
+              TextField: (params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  error={item.error || false}
+                  helperText={item.error && item.helperText}
+                />
+              ),
+            }}
+          />
+        </LocalizationProvider>
+      </div>
+    );
+  } else if (item.type == "days-picker") {
+    function reverseString(str) {
+
+      // empty string
+      let newString = "";
+      for (let i = str.length - 1; i >= 0; i--) {
+          newString += str[i];
+      }
+      return newString;
+    }
+    let values = state[item.id];
+    // if(values && values.length > 0){
+    //   values = values.map((itemDate) => moment(itemDate, item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD'));
+    // }else{}
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
+        <DaysPicker
+          value={values || []}
+          multiple
+          format={item.format || "DD/MM/YYYY"}
+          plugins={[
+            <DatePanel />
+          ]}
+          onChange={(newValue) => {
+            stateHandler((prevState) => {
+              const newState = {
+                ...prevState,
+                [item.id]: newValue.map((itemDate) => {
+                  const date = moment(new Date(itemDate)).format(item.format || 'DD/MM/YYYY').toString();
+                  console.log("date=====>", date);
+                  return date;
+                }),
+              };
+              return newState;
+            });
+          }}
+          render={(value, openCalendar) => {
+            const valuesArray = value?value.split(','):"";
+            return (
+              <Autocomplete
+                multiple
+                id="tags-readOnly"
+                options={[]}
+                readOnly
+                getOptionLabel={(option) => option}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip 
+                      label={option} 
+                      {...getTagProps({ index })}
+                      onClick={() => {}}  
+                    />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} 
+                    placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
+                    onClick={openCalendar}
+                  />
+                )}
+                value={valuesArray || []}
+              />
+            )
+          }}
+        />
+      </div>
+    );
+  } else if (item.type == "multi-select") {
+    return (
+      <div className="py-1 flex flex-col">
+        {
+          item.title && (
+            <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+              {item.title}
+              {item.required && <span className="text-[#FF0000]"> *</span>}
+            </label>
+          )
+        }
         <FormControl>
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
@@ -574,6 +721,8 @@ const RenderInput = ({ item, state, stateHandler, previewOnly }) => {
         </FormControl>
       </div>
     );
+  }else if(item.type == "label"){
+    return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>
   }
 };
 

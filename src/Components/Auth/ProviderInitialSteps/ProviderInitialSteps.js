@@ -8,9 +8,10 @@ import { getCall, patchCall, postCall } from "../../../Api/axios";
 import useForm from "../../../hooks/useForm";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
-import { isEmailValid, isObjEmpty, isPhoneNoValid } from "../../../utils/validations";
+import { isEmailValid, isNumberOnly, isObjEmpty, isPhoneNoValid } from "../../../utils/validations";
 import { containsOnlyNumbers, validatePasswordComplexity } from '../../../utils/formatting/string'
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import moment from "moment";
 
 const passwordFields = [
   {
@@ -174,6 +175,15 @@ const ProviderInitialSteps = () => {
     defaultReturnable: false,
     email: "",
     mobile: "",
+
+    days: [],
+    holidays: [],
+    StoreTimeType: "time",
+    startTime: "",
+    endTime: "",
+    frequency: "",
+    storeTimes: [""]
+    
   };
 
   const { formValues: form1Values, setFormValues: setForm1Values, errors: form1Errors, setErrors: setForm1Errors } = useForm({ ...password })
@@ -212,6 +222,13 @@ const ProviderInitialSteps = () => {
     }
     formErrors.email = form2Values.email.trim() === '' ? 'Support Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = form2Values.mobile.trim() === '' ? 'Mobile number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
+    
+    form1Errors.days = form2Values.days.length === 0 ? 'Days is required' : '';
+    form1Errors.holidays = '';
+    form1Errors.startTime = form2Values.startTime === '' ? 'Start time is required' : '';
+    form1Errors.endTime = form2Values.endTime === '' ? 'End time is required' : '';
+    form1Errors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
+    form1Errors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
     setForm2Errors({
       ...formErrors
     })
@@ -316,9 +333,31 @@ const ProviderInitialSteps = () => {
     data["locationAvailabilityPANIndia"] =
     form2Values.locationAvailability == "PAN INDIA" ? true : false;
 
+    let iso8601 = '';
+    if(form2Values.frequency){
+      // Create a duration object with the hours you want to convert
+      const duration = moment.duration(parseInt(form2Values.frequency), 'hours');
+
+      // Format the duration in ISO 8601 format
+      iso8601 = duration.toISOString();
+    }else{}
+    data.storeTiming = {
+      days: form2Values.days,
+      schedule: {
+        holidays: form2Values.holidays,
+        frequency: iso8601 || '',
+        times: form2Values.storeTimes || [],
+      },
+      range: {
+        start: form2Values.startTime || '',
+        end: form2Values.endTime || '',
+      },
+    };
+
     delete data["building"];
     delete data["address_city"];
     delete data["state"];
+    delete data["city"];
     delete data["country"];
     delete data["area_code"];
     delete data["locality"];
@@ -327,6 +366,15 @@ const ProviderInitialSteps = () => {
     delete data["email"];
     delete data["mobile"];
     delete data["uploaded_urls"];
+
+    delete data["days"];
+    delete data["holidays"];
+    delete data["frequency"];
+    delete data["startTime"];
+    delete data["endTime"];
+    delete data["storeTimes"];
+    delete data["StoreTimeType"];
+    
 
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
@@ -372,7 +420,12 @@ const ProviderInitialSteps = () => {
       (form2Values.locationAvailability === 'city' && form2Values.city.length === 0) ||
       !form2Values.logo ||
       !form2Values.email ||
-      !form2Values.mobile)) {
+      !form2Values.mobile ||
+      form2Values.days.length === 0 ||
+      !form2Values.frequency && !form2Values.StoreTimeType === "frequency" ||
+      !form2Values.startTime && !form2Values.StoreTimeType === "time" ||
+      !form2Values.endTime && !form2Values.StoreTimeType === "time" ||
+      form2Values.storeTimes.length === 0 && !form2Values.StoreTimeType === "frequency")) {
         return true
     }
     return false;
@@ -421,7 +474,187 @@ const ProviderInitialSteps = () => {
                 <p className="text-2xl font-semibold mb-4 text-center">
                   {renderHeading()}
                 </p>
-                <div>{renderSteps()}</div>
+                <div>
+                  {renderSteps()}
+                  {
+                    step == 2
+                    ?(
+                      <>
+                        <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
+                        <RenderInput
+                          item={{
+                            id: "days",
+                            title: "Days",
+                            options: [
+                              { key: "Monday", value: '1' },
+                              { key: "Tuesday", value: '2' },
+                              { key: "Wednesday", value: '3' },
+                              { key: "Thursday", value: '4' },
+                              { key: "Friday", value: '5' },
+                              { key: "Saturday", value: '6' },
+                              { key: "Sunday", value: '7' },
+                            ],
+                            type: "checkbox",
+                            required: true,
+                            error: form2Errors?.['days'] ? true : false, 
+                            helperText: form2Errors?.['days'] || ''
+                          }}
+                          state={form2Values}
+                          stateHandler={setForm2Values}
+                        />
+                        <RenderInput
+                          item={{
+                            id: "holidays",
+                            title: "Holidays",
+                            placeholder: "Holidays",
+                            type: "days-picker",
+                            format: "YYYY-MM-DD",
+                            required: true,
+                            error: form2Errors?.['holidays'] ? true : false, 
+                            helperText: form2Errors?.['holidays'] || ''
+                          }}
+                          state={form2Values}
+                          stateHandler={setForm2Values}
+                        />
+                        <RenderInput
+                          item={{
+                            id: "StoreTimeType",
+                            title: "StoreTimeType",
+                            options: [
+                              { key: "Frequency", value: 'frequency' },
+                              { key: "Time", value: 'time' },
+                            ],
+                            type: "radio",
+                            required: true,
+                            error: form2Errors?.['StoreTimeType'] ? true : false, 
+                            helperText: form2Errors?.['StoreTimeType'] || ''
+                          }}
+                          state={form2Values}
+                          stateHandler={setForm2Values}
+                        />
+                        
+                        {
+                          form2Values.StoreTimeType === "frequency"
+                          ?(
+                            <>
+                              <RenderInput
+                                item={{
+                                  id: "frequency",
+                                  title: "Frequency (in hours)",
+                                  placeholder: "Frequency (in hours)",
+                                  type: "number",
+                                  required: true,
+                                  error: form2Errors?.['frequency'] ? true : false, 
+                                  helperText: form2Errors?.['frequency'] || ''
+                                }}
+                                state={form2Values}
+                                stateHandler={setForm2Values}
+                              />
+                              <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+                                Store Time
+                                <span className="text-[#FF0000]"> *</span>
+                              </label>
+                              {
+                                form2Values.storeTimes && form2Values.storeTimes.length > 0 && form2Values.storeTimes.map((itemTime, idx) => {
+                                  return (
+                                    <div style={{display: 'flex'}}>
+                                      <div style={{flex: 1}}>
+                                        <RenderInput
+                                          item={{
+                                            id: "time",
+                                            title: "",
+                                            format: 'HH:mm',
+                                            ampm: false,
+                                            placeholder: "Frequency (in hours)",
+                                            type: "time-picker",
+                                            required: true,
+                                            error: form2Errors?.['frequency'] ? true : false, 
+                                            helperText: form2Errors?.['frequency'] || ''
+                                          }}
+                                          state={{time: itemTime}}
+                                          onChange={(value) => {
+                                            let data = JSON.parse(JSON.stringify(form2Values.storeTimes));
+                                            data[idx] = value;
+                                            setForm2Values((prevState) => {
+                                              const newState = {
+                                                ...prevState,
+                                                storeTimes: data,
+                                              };
+                                              return newState;
+                                            })
+                                          }}
+                                        />
+                                      </div>
+                                      <div style={{width: '100px', margin: 'auto', paddingLeft: '20px'}}>
+                                        {
+                                          ((form2Values.storeTimes.length - 1) === idx) && (
+                                            <Button 
+                                              variant="contained"
+                                              onClick={() => {
+                                                console.log("form2Values.storeTimes=====>", form2Values.storeTimes);
+                                                let data = JSON.parse(JSON.stringify(form2Values.storeTimes));
+                                                data.push("");
+                                                setForm2Values((prevState) => {
+                                                  const newState = {
+                                                    ...prevState,
+                                                    storeTimes: data,
+                                                  };
+                                                  return newState;
+                                                })
+                                              }}
+                                            >
+                                              Add
+                                            </Button>
+                                          )
+                                        }
+                                      </div>
+                                    </div>
+                                  )
+                                })
+                              }
+                              
+                            </>
+                          )
+                          :(
+                            <>
+                              <RenderInput
+                                item={{
+                                  id: "startTime",
+                                  title: "Start Time",
+                                  placeholder: "Start Time",
+                                  type: "time-picker",
+                                  format: 'HH:mm',
+                                  required: true,
+                                  error: form2Errors?.['startTime'] ? true : false, 
+                                  helperText: form2Errors?.['startTime'] || ''
+                                }}
+                                state={form2Values}
+                                stateHandler={setForm2Values}
+                              />
+                              <RenderInput
+                                item={{
+                                  id: "endTime",
+                                  title: "End Time",
+                                  placeholder: "End Time",
+                                  type: "time-picker",
+                                  format: 'HH:mm',
+                                  required: true,
+                                  error: form2Errors?.['endTime'] ? true : false, 
+                                  helperText: form2Errors?.['endTime'] || ''
+                                }}
+                                state={form2Values}
+                                stateHandler={setForm2Values}
+                              />
+                            </>
+                          )
+                        }
+                        
+                        
+                      </>
+                    )
+                    :<></>
+                  }
+                </div>
                 <div className="flex mt-6">
                   <Button
                     type="button"
