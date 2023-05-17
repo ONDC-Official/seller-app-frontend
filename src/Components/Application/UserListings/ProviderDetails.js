@@ -132,7 +132,7 @@ let storeFields = [
   {
     id: "mobile",
     title: "Support Mobile Number",
-    placeholder: "Enter your mobile number",
+    placeholder: "Enter your Support Mobile Number",
     type: "input",
     required: true,
     maxLength: 10,
@@ -141,7 +141,7 @@ let storeFields = [
   {
     id: "categories",
     title: "Supported Product Categories",
-    placeholder: "Supported Product Categories",
+    placeholder: "Please Select Supported Product Categories",
     options: categoriesList,
     type: "multi-select",
     required: true,
@@ -186,36 +186,42 @@ let storeFields = [
   {
     id: "country",
     title: "Country",
+    placeholder: "Country",
     type: "input",
     required: true,
   },
   {
     id: "state",
     title: "State",
+    placeholder: "State",
     type: "input",
     required: true,
   },
   {
     id: "city",
     title: "City",
+    placeholder: "City",
     type: "input",
     required: true,
   },
   {
     id: "building",
     title: "Building",
+    placeholder: "Building",
     type: "input",
     required: true,
   },
   {
     id: "area_code",
     title: "PIN Code",
+    placeholder: "PIN code",
     type: "input",
     required: true,
   },
   {
     id: "locality",
     title: "Locality",
+    placeholder: "Locality",
     placeholder: "Locality",
     type: "input",
     required: true,
@@ -480,7 +486,7 @@ const ProviderDetails = ({isFromUserListing=false}) => {
       let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
         id: "cities",
         title: "Select Cities",
-        placeholder: "Select Cities",
+        placeholder: "Please Select Cities",
         options: [
           { key: "Delhi", value: "delhi" },
           { key: "Pune", value: "pune" },
