@@ -190,6 +190,7 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (state?.productId) {
       getProduct();
     }
