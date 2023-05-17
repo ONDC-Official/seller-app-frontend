@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50 } from "../../../utils/constants";
 import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 
@@ -239,9 +239,9 @@ export default function AddProduct() {
     formErrors.description = formValues?.description?.trim() === '' ? 'Short description is required' : formValues?.description?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.images = formValues?.productCategory !== "f_and_b" && formValues?.images.length < 1 ? 'At least one image is required' : ''
     
-    formErrors.manufacturerOrPackerName = formValues?.manufacturerOrPackerName?.trim() === '' ? 'Manufacturer or packer name is required' : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.manufacturerOrPackerAddress = formValues?.manufacturerOrPackerAddress?.trim() === '' ? 'Manufacturer or packer address is required' : formValues?.manufacturerOrPackerAddress.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.commonOrGenericNameOfCommodity = formValues?.commonOrGenericNameOfCommodity?.trim() === '' ? 'Common or generic name of commodity is required' : formValues?.commonOrGenericNameOfCommodity.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.manufacturerOrPackerName = formValues?.manufacturerOrPackerName?.trim() === '' ? 'Manufacturer or packer name is required' : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH_50 ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.manufacturerOrPackerAddress = formValues?.manufacturerOrPackerAddress?.trim() === '' ? 'Manufacturer or packer address is required' : formValues?.manufacturerOrPackerAddress.length > MAX_STRING_LENGTH_50 ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.commonOrGenericNameOfCommodity = formValues?.commonOrGenericNameOfCommodity?.trim() === '' ? 'Common or generic name of commodity is required' : formValues?.commonOrGenericNameOfCommodity.length > MAX_STRING_LENGTH_50 ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.monthYearOfManufacturePackingImport = formValues?.monthYearOfManufacturePackingImport?.trim() === '' ? 'Month year of manufacture packing import is required' : formValues?.monthYearOfManufacturePackingImport.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.importerFSSAILicenseNo = formValues?.importerFSSAILicenseNo?.trim() === '' ? 'Importer FSSAI license no is required' : formValues?.importerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.brandOwnerFSSAILicenseNo = formValues?.brandOwnerFSSAILicenseNo?.trim() === '' ? 'Brand owner FSSAI license no is required' : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';

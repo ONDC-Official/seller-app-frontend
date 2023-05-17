@@ -1,4 +1,5 @@
 export const MAX_STRING_LENGTH = 255;
+export const MAX_STRING_LENGTH_50 = 50;
 
 export const PRODUCT_CATEGORY = {
     "grocery": "Grocery",
