@@ -203,8 +203,15 @@ export default function AddProduct() {
       data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues?.productCategory];
       if(formValues.productCategory === "f_and_b"){
         const imagesIndex = data.findIndex((item) => item.id === 'images');
+        const vegetarianIndex = data.findIndex((item) => item.id === 'isVegetarian');
         data[imagesIndex].required = false;
-      }else{}
+        data[vegetarianIndex].required = true;
+      }else{
+        const imagesIndex = data.findIndex((item) => item.id === 'images');
+        const vegetarianIndex = data.findIndex((item) => item.id === 'isVegetarian');
+        data[imagesIndex].required = true;
+        data[vegetarianIndex].required = false;
+      }
       setFields(data);
     }
     // stateHandler({ ...state, [item.id]: e.target.value })
