@@ -45,11 +45,11 @@ const providerCols = [
   },
   {
     id: "name",
-    label: "User Name",
+    label: "Provider Name",
   },
   {
     id: "providerName",
-    label: "Legal Name of Provider",
+    label: "Provider Store Name",
   },
   {
     id: "formatted_status",

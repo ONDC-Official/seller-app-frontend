@@ -11,7 +11,7 @@ import { getCall, postCall, putCall } from "../../../Api/axios";
 import useForm from '../../../hooks/useForm'
 import { containsOnlyNumbers } from '../../../utils/formatting/string'
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10 } from "../../../utils/constants";
+import { PRODUCT_SUBCATEGORY, FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY, MAX_STRING_LENGTH, MAX_STRING_LENGTH_50, MAX_STRING_LENGTH_14, MAX_STRING_LENGTH_3, MAX_STRING_LENGTH_6, MAX_STRING_LENGTH_10, MAX_STRING_LENGTH_13, MAX_STRING_LENGTH_8, MAX_STRING_LENGTH_12 } from "../../../utils/constants";
 import {isAmountValid, isNumberOnly} from '../../../utils/validations';
 import productFields from './product-fields'
 
@@ -190,6 +190,7 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (state?.productId) {
       getProduct();
     }
@@ -202,8 +203,15 @@ export default function AddProduct() {
       data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues?.productCategory];
       if(formValues.productCategory === "f_and_b"){
         const imagesIndex = data.findIndex((item) => item.id === 'images');
+        const vegetarianIndex = data.findIndex((item) => item.id === 'isVegetarian');
         data[imagesIndex].required = false;
-      }else{}
+        data[vegetarianIndex].required = true;
+      }else{
+        const imagesIndex = data.findIndex((item) => item.id === 'images');
+        const vegetarianIndex = data.findIndex((item) => item.id === 'isVegetarian');
+        data[imagesIndex].required = true;
+        data[vegetarianIndex].required = false;
+      }
       setFields(data);
     }
     // stateHandler({ ...state, [item.id]: e.target.value })
@@ -211,20 +219,20 @@ export default function AddProduct() {
 
   const validate = () => {
     let formErrors = {}
-    formErrors.productCode = formValues?.productCode?.trim() === '' ? 'Product code is not allowed to be empty' : formValues?.productCode?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
+    formErrors.productCode = formValues?.productCode?.trim() === '' ? 'Product code is not allowed to be empty' : !isNumberOnly(formValues?.productCode) ? 'Please enter only digit' : formValues?.productCode?.length > MAX_STRING_LENGTH_13 ? `Cannot be more than ${MAX_STRING_LENGTH_13} characters` : '';
     formErrors.productName = formValues?.productName?.trim() === '' ? 'Product name is not allowed to be empty' : formValues?.productName?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
     formErrors.MRP = !formValues?.MRP ? 'Please enter a valid number' : !isAmountValid(formValues?.MRP)?'Please enter only digit':''
     formErrors.retailPrice = !formValues?.retailPrice ? 'Please enter a valid number' : !isAmountValid(formValues?.retailPrice)?'Please enter only digit':''
     formErrors.purchasePrice = !formValues?.purchasePrice ? 'Please enter a valid number' : !isAmountValid(formValues?.purchasePrice)?'Please enter only digit':''
-    formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.GST_Percentage = !formValues?.GST_Percentage ? 'GST percentage is required' : ''
+    formErrors.HSNCode = formValues?.HSNCode?.trim() === '' ? 'HSN code is not allowed to be empty' : formValues?.HSNCode.length > MAX_STRING_LENGTH_8 ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters` : '';
+    formErrors.GST_Percentage = ''//!formValues?.GST_Percentage ? 'GST percentage is required' : ''
     formErrors.productCategory = formValues?.productCategory === "" ? 'Product category is required' : ''
-    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product sub category is required' : ''
+    formErrors.productSubcategory1 = formValues?.productSubcategory1.length < 1 ? 'Product SubCategory is required' : ''
     formErrors.quantity = !formValues?.quantity ? 'Please enter a valid Quantity' : !isNumberOnly(formValues?.quantity) ? 'Please enter only digit' : ''
-    formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : ''
+    formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : !isNumberOnly(formValues?.barcode) ? 'Please enter only digit' : formValues?.barcode?.length > MAX_STRING_LENGTH_12 ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters` : ''
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10 ? `Cannot be more than ${MAX_STRING_LENGTH_10} characters` : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
     formErrors.UOM = formValues?.UOM?.trim() === '' ? 'UOM is required' : formValues?.UOM?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : '';
+    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : !isNumberOnly(formValues?.packQty) ? 'Please enter only digit' : '';
     formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : formValues?.length.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
     formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : formValues?.breadth.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
     formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : formValues?.height.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';

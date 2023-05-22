@@ -139,7 +139,7 @@ const InviteProvider = () => {
       formErrors.mobile = formValues.mobile.trim() === '' ? 'Mobile Number is required' : !isPhoneNoValid(formValues.mobile) ? 'Please enter a valid mobile number' : ''
       formErrors.name = formValues.name.trim() === '' ? 'Name is required' : !isNameValid(formValues.name) ? 'Please enter a valid name' : ''
     } else if (step === 2) {
-      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider store name is required' : ''
+      formErrors.providerStoreName = formValues.providerStoreName.trim() === '' ? 'Provider Store Name is required' : ''
       formErrors.address = formValues.address.trim() === '' ? 'Registered Address is required' : ''
       formErrors.contactEmail = formValues.contactEmail.trim() === '' ? 'Support Email is required' : !isEmailValid(formValues.contactEmail) ? 'Please enter a valid email address' : ''
       formErrors.contactMobile = formValues.contactMobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(formValues.contactMobile) ? 'Please enter a valid mobile number' : ''
@@ -178,11 +178,11 @@ const InviteProvider = () => {
   }, [formValues])
 
   return (
-    <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
+    <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]" style={{height: '100%', marginTop: '10px'}}>
       <div className="h-full flex fex-row items-center justify-center">
         <div
           className="flex w-full md:w-2/4 bg-white px-4 py-4 rounded-md shadow-xl h-max"
-          style={{ minHeight: "75%" }}
+          // style={{ minHeight: "75%" }}
         >
           <div className="m-auto w-10/12 md:w-3/4 h-max">
             <form>

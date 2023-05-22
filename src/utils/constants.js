@@ -2,8 +2,11 @@ export const MAX_STRING_LENGTH = 255;
 export const MAX_STRING_LENGTH_50 = 50;
 export const MAX_STRING_LENGTH_14 = 14;
 export const MAX_STRING_LENGTH_10 = 10;
+export const MAX_STRING_LENGTH_12 = 12;
 export const MAX_STRING_LENGTH_3 = 3;
 export const MAX_STRING_LENGTH_6 = 6;
+export const MAX_STRING_LENGTH_8 = 8;
+export const MAX_STRING_LENGTH_13 = 13;
 
 export const PRODUCT_CATEGORY = {
     "grocery": "Grocery",

@@ -65,6 +65,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           required={item.required}
           size="small"
+          multiline={item.multiline || false}
+          maxRows={item.multiline?5:1}
           autoComplete="off"
           placeholder={item.placeholder}
           error={item.error || false}
@@ -72,7 +74,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
-            stateHandler({ ...state, [item.id]: e.target.value })
+            stateHandler({ ...state, [item.id]: item.isUperCase?e.target.value.toUpperCase():e.target.value })
           }
           inputProps={{
             maxLength: item.maxLength || undefined,
@@ -293,7 +295,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               country,
               area_code,
               locality,
-              city
+              // city
             })
           }} />
         </div>
@@ -359,7 +361,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     console.log("item.format======>", item.format);
     console.log("dateValue=====>", dateValue);
     return (
-      <div className="py-1 flex flex-col">
+      <div className="py-1 flex flex-col" style={{position: 'relative'}}>
         {
           item.title && (
             <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -370,13 +372,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
         }
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
+            closeOnSelect={false}
             ampm={item.ampm !== undefined?item.ampm:true}
             format={item.format || "hh:mm A"}
             onChange={(newValue) => {
               if(stateHandler){
                 const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
-                console.log("newValue=====>", newValue);
-                console.log("date=====>", date);
                 stateHandler((prevState) => {
                   const newState = {
                     ...prevState,
