@@ -15,7 +15,7 @@ import bankDetailFields from './provider-bank-details-fields';
 
 const InviteProvider = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const user = {
     email: "",
     mobile: "",
@@ -178,11 +178,11 @@ const InviteProvider = () => {
   }, [formValues])
 
   return (
-    <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]">
+    <div className="mx-auto !p-5 h-screen min-vh-100 overflow-auto bg-[#f0f0f0]" style={{height: '100%', marginTop: '10px'}}>
       <div className="h-full flex fex-row items-center justify-center">
         <div
           className="flex w-full md:w-2/4 bg-white px-4 py-4 rounded-md shadow-xl h-max"
-          style={{ minHeight: "75%" }}
+          // style={{ minHeight: "75%" }}
         >
           <div className="m-auto w-10/12 md:w-3/4 h-max">
             <form>

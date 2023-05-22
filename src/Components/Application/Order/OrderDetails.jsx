@@ -14,7 +14,8 @@ import {
   Typography,
   MenuItem,
   Button,
-  Menu
+  Menu,
+  CircularProgress
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -36,6 +37,7 @@ const OrderDetails = () => {
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
 
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
@@ -93,37 +95,48 @@ const OrderDetails = () => {
   }
 
   const handleCompleteOrderCancel = (order_id) => {
+    setLoading(true)
     postCall(`/api/v1/orders/${order_id}/cancel`, {
       cancellation_reason_id: "004",
     })
       .then((resp) => {
         cogoToast.success("Order cancelled successfully!");
-        // getOrder();
-        let orderData = JSON.parse(JSON.stringify(order));
-        orderData.state = resp.state;
-        setOrder(orderData);
+        setInterval(function () {
+          // getOrder();
+          let orderData = JSON.parse(JSON.stringify(order));
+          orderData.state = resp.state;
+          setOrder(orderData);
+          setLoading(false)
+        }, 10000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
+        setInterval(function () {setLoading(false)}, 10000);
       });
   };
 
   const handleCompleteOrderAccept = (order_id) => {
+    setLoading(true)
     const url = `/api/v1/orders/${order_id}/status`;
     postCall(url, {
       status: "Accepted",
     })
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
-        // getOrder();
-        let orderData = JSON.parse(JSON.stringify(order));
-        orderData.state = resp.state;
-        setOrder(orderData);
+        
+        setInterval(function () {
+            // getOrder();
+          let orderData = JSON.parse(JSON.stringify(order));
+          orderData.state = resp.state;
+          setOrder(orderData);
+          setLoading(false)
+        }, 10000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
+        setInterval(function () {setLoading(false)}, 10000);
       });
   };
 
@@ -135,13 +148,15 @@ const OrderDetails = () => {
             className="!capitalize"
             variant="contained"
             onClick={() => handleCompleteOrderAccept(order_details?._id)}
+            disabled={loading}
           >
-            Accept Order
+            {loading ? <>Accept Order&nbsp;&nbsp;<CircularProgress size={24} sx={{ color: 'white' }} /></>: <span>Accept Order</span>}
           </Button>
           <Button
             variant="contained"
             className="!capitalize"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
+            disabled={loading}
           >
             Cancel Order
           </Button>

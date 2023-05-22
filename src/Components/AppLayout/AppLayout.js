@@ -21,7 +21,7 @@ const AppLayout = (props) => {
         <Box>
             <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-            <main style={{ height: '100vh' }}>
+            <main style={{ height: '100%' }}>
                 {props.children}
             </main>
             {isSessionExpired && <SessionExpired />}
