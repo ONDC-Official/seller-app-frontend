@@ -385,12 +385,14 @@ const ProviderDetails = ({isFromUserListing=false}) => {
     formErrors.area_code = storeDetails.area_code.trim() === '' ? 'PIN Code is required' : ''
     formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
 
-    formErrors.days = storeDetails.days.length === 0 ? 'Days is required' : '';
-    formErrors.holidays = '';
-    formErrors.startTime = storeDetails.startTime === '' ? 'Start time is required' : '';
-    formErrors.endTime = storeDetails.endTime === '' ? 'End time is required' : '';
-    formErrors.frequency = storeDetails.StoreTimeType === "frequency"?storeDetails.frequency === '' ? 'Frequency is required' : !isNumberOnly(storeDetails?.frequency) ? 'Please enter only digit' : '':'';
-    formErrors.storeTimes = storeDetails.storeTimes.length === 0 ? 'Al least One store time is required' : '';
+    if(!isFromUserListing){
+      formErrors.days = storeDetails.days.length === 0 ? 'Days is required' : '';
+      formErrors.holidays = '';
+      formErrors.startTime = storeDetails.startTime === '' ? 'Start time is required' : '';
+      formErrors.endTime = storeDetails.endTime === '' ? 'End time is required' : '';
+      formErrors.frequency = storeDetails.StoreTimeType === "frequency"?storeDetails.frequency === '' ? 'Frequency is required' : !isNumberOnly(storeDetails?.frequency) ? 'Please enter only digit' : '':'';
+      formErrors.storeTimes = storeDetails.storeTimes.length === 0 ? 'Al least One store time is required' : '';
+    }else{}
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
     return !Object.values(formErrors).some(val => val !== '');
