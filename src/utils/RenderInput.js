@@ -361,7 +361,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     console.log("item.format======>", item.format);
     console.log("dateValue=====>", dateValue);
     return (
-      <div className="py-1 flex flex-col">
+      <div className="py-1 flex flex-col" style={{position: 'relative'}}>
         {
           item.title && (
             <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -372,13 +372,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
         }
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
+            closeOnSelect={false}
             ampm={item.ampm !== undefined?item.ampm:true}
             format={item.format || "hh:mm A"}
             onChange={(newValue) => {
               if(stateHandler){
                 const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
-                console.log("newValue=====>", newValue);
-                console.log("date=====>", date);
                 stateHandler((prevState) => {
                   const newState = {
                     ...prevState,
