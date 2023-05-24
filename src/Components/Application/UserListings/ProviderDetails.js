@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
-import {areObjectsEqual, isEmailValid, isPhoneNoValid} from '../../../utils/validations';
+import {areObjectsEqual, isEmailValid, isNumberOnly, isPhoneNoValid} from '../../../utils/validations';
 import { useEffect } from "react";
 import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
+import moment from "moment";
 
 const providerFields = [
   {
@@ -113,6 +114,14 @@ const categoriesList = [
 ];
 
 let storeFields = [
+  // {
+  //   id: "name",
+  //   title: "Store Name",
+  //   placeholder: "Enter Store Name",
+  //   type: "input",
+  //   email: true,
+  //   required: true,
+  // },
   {
     id: "email",
     title: "Support Email",
@@ -123,7 +132,7 @@ let storeFields = [
   {
     id: "mobile",
     title: "Support Mobile Number",
-    placeholder: "Enter your mobile number",
+    placeholder: "Enter your Support Mobile Number",
     type: "input",
     required: true,
     maxLength: 10,
@@ -132,7 +141,7 @@ let storeFields = [
   {
     id: "categories",
     title: "Supported Product Categories",
-    placeholder: "Supported Product Categories",
+    placeholder: "Please Select Supported Product Categories",
     options: categoriesList,
     type: "multi-select",
     required: true,
@@ -177,36 +186,42 @@ let storeFields = [
   {
     id: "country",
     title: "Country",
+    placeholder: "Country",
     type: "input",
     required: true,
   },
   {
     id: "state",
     title: "State",
+    placeholder: "State",
     type: "input",
     required: true,
   },
   {
     id: "city",
     title: "City",
+    placeholder: "City",
     type: "input",
     required: true,
   },
   {
     id: "building",
     title: "Building",
+    placeholder: "Building",
     type: "input",
     required: true,
   },
   {
     id: "area_code",
     title: "PIN Code",
+    placeholder: "PIN code",
     type: "input",
     required: true,
   },
   {
     id: "locality",
     title: "Locality",
+    placeholder: "Locality",
     placeholder: "Locality",
     type: "input",
     required: true,
@@ -219,7 +234,7 @@ let storeFields = [
   },
 ];
 
-const ProviderDetails = () => {
+const ProviderDetails = ({isFromUserListing=false}) => {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -258,6 +273,7 @@ const ProviderDetails = () => {
       const url = `/api/v1/organizations/${id}`;
       const res = await getCall(url);
 
+      console.log("getOrgDetails=====>", res);
       setProviderDetails({
         email: res.user.email,
         mobile: res.user.mobile,
@@ -305,13 +321,33 @@ const ProviderDetails = () => {
         area_code: res.providerDetail?.storeDetails?.address?.area_code || '',
         locality: res.providerDetail?.storeDetails?.address?.locality || '',
         logo: res?.providerDetail?.storeDetails?.logo?.url || '',
+
+        
+        days: res?.providerDetail?.storeDetails?.storeTiming?.days || [],
+        holidays: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays || [],
+        StoreTimeType: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency?"frequency":"time",
+        startTime: res?.providerDetail?.storeDetails?.storeTiming?.range?.start || '',
+        endTime: res?.providerDetail?.storeDetails?.storeTiming?.range?.end || '',
+        frequency: '',
+        storeTimes: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times.length > 0 ? res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times:['']
       };
+
+      if(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency){
+        // Create a duration object from the ISO 8601 string
+        const duration = moment.duration(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency);
+
+        // Get the number of hours from the duration object
+        const hours = duration.asHours();
+        storeData.frequency = String(hours);
+      }else{}
+      
       // if(storeData.categories && storeData.categories.length > 0){
       //   storeData.categories = storeData.categories.map((item) => {
       //     const findFromList = categoriesList.find((catItem) => catItem.value === item);
       //     return findFromList;
       //   })
       // }else{}
+      console.log("storeData=====>", storeData);
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
     } catch (error) {
@@ -333,6 +369,7 @@ const ProviderDetails = () => {
   }
 
   const validate = () => {
+    console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
     formErrors.email = storeDetails.email.trim() === '' ? 'Support Email is required' : !isEmailValid(storeDetails.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = storeDetails.mobile?.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(storeDetails.mobile) ? 'Please enter a valid mobile number' : ''
@@ -347,13 +384,24 @@ const ProviderDetails = () => {
     formErrors.building = storeDetails.building.trim() === '' ? 'Building is required' : ''
     formErrors.area_code = storeDetails.area_code.trim() === '' ? 'PIN Code is required' : ''
     formErrors.logo = storeDetails.logo.trim() === '' ? 'Logo is required' : ''
+
+    if(!isFromUserListing){
+      formErrors.days = storeDetails.days.length === 0 ? 'Days is required' : '';
+      formErrors.holidays = '';
+      formErrors.startTime = storeDetails.startTime === '' ? 'Start time is required' : '';
+      formErrors.endTime = storeDetails.endTime === '' ? 'End time is required' : '';
+      formErrors.frequency = storeDetails.StoreTimeType === "frequency"?storeDetails.frequency === '' ? 'Frequency is required' : !isNumberOnly(storeDetails?.frequency) ? 'Please enter only digit' : '':'';
+      formErrors.storeTimes = storeDetails.storeTimes.length === 0 ? 'Al least One store time is required' : '';
+    }else{}
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
     return !Object.values(formErrors).some(val => val !== '');
   };
 
   const onUpdate = () => {
-    if(validate()){
+    console.log("storeDetails, defaultStoreDetails", storeDetails, defaultStoreDetails);
+    console.log("areObjectsEqual(storeDetails, defaultStoreDetails)", !areObjectsEqual(storeDetails, defaultStoreDetails));
+    if(!areObjectsEqual(storeDetails, defaultStoreDetails) && validate()){
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
@@ -368,7 +416,7 @@ const ProviderDetails = () => {
 
         building,
         state,
-        city,
+        address_city,
         country,
         area_code,
         location,
@@ -377,12 +425,20 @@ const ProviderDetails = () => {
       const locationAvailability = location_availability === "pan_india"?true:false;
       const addressDetails = {
         building: building,
-        city: city,
+        city: address_city,
         state: state,
         country: country,
         area_code: area_code,
         locality: locality
       };
+      let iso8601 = '';
+      if(storeDetails.frequency && storeDetails.StoreTimeType === "frequency"){
+        // Create a duration object with the hours you want to convert
+        const duration = moment.duration(parseInt(storeDetails.frequency), 'hours');
+
+        // Format the duration in ISO 8601 format
+        iso8601 = duration.toISOString();
+      }else{}
       let payload = {
         categories,
         logo: logo,
@@ -394,6 +450,18 @@ const ProviderDetails = () => {
           email,
           mobile,
         },
+        storeTiming: {
+          days: storeDetails.days,
+          schedule: {
+            holidays: storeDetails.holidays,
+            frequency: iso8601 || '',
+            times: storeDetails.StoreTimeType === "frequency"?storeDetails.storeTimes:[],
+          },
+          range: {
+            start: storeDetails.StoreTimeType === "time"?storeDetails.startTime:'',
+            end: storeDetails.StoreTimeType === "time"?storeDetails.endTime:'',
+          },
+        }
       };
       if(location){
         payload.location = location;
@@ -420,7 +488,7 @@ const ProviderDetails = () => {
       let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
         id: "cities",
         title: "Select Cities",
-        placeholder: "Select Cities",
+        placeholder: "Please Select Cities",
         options: [
           { key: "Delhi", value: "delhi" },
           { key: "Pune", value: "pune" },
@@ -491,7 +559,182 @@ const ProviderDetails = () => {
                 />
               ))}
               {
-                !areObjectsEqual(storeDetails, defaultStoreDetails) && (
+                !isFromUserListing && (
+                  <>
+                    <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
+                    <RenderInput
+                      item={{
+                        id: "days",
+                        title: "Days",
+                        options: [
+                          { key: "Monday", value: '1' },
+                          { key: "Tuesday", value: '2' },
+                          { key: "Wednesday", value: '3' },
+                          { key: "Thursday", value: '4' },
+                          { key: "Friday", value: '5' },
+                          { key: "Saturday", value: '6' },
+                          { key: "Sunday", value: '7' },
+                        ],
+                        type: "checkbox",
+                        required: true,
+                        error: errors?.['days'] ? true : false, 
+                        helperText: errors?.['days'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                    <RenderInput
+                      item={{
+                        id: "holidays",
+                        title: "Holidays",
+                        placeholder: "Holidays",
+                        type: "days-picker",
+                        required: true,
+                        format: "YYYY-MM-DD",
+                        error: errors?.['holidays'] ? true : false, 
+                        helperText: errors?.['holidays'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                    <RenderInput
+                      item={{
+                        id: "StoreTimeType",
+                        title: "StoreTimeType",
+                        options: [
+                          { key: "Frequency", value: 'frequency' },
+                          { key: "Time", value: 'time' },
+                        ],
+                        type: "radio",
+                        required: true,
+                        error: errors?.['StoreTimeType'] ? true : false, 
+                        helperText: errors?.['StoreTimeType'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                    {
+                      storeDetails.StoreTimeType === "frequency"
+                      ?(
+                        <>
+                          <RenderInput
+                            item={{
+                              id: "frequency",
+                              title: "Frequency (in hours)",
+                              placeholder: "Frequency (in hours)",
+                              type: "number",
+                              required: true,
+                              error: errors?.['frequency'] ? true : false, 
+                              helperText: errors?.['frequency'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                          <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+                            Store Time
+                            <span className="text-[#FF0000]"> *</span>
+                          </label>
+                          {
+                            storeDetails.storeTimes && storeDetails.storeTimes.length > 0 && storeDetails.storeTimes.map((itemTime, idx) => {
+                              return (
+                                <div style={{display: 'flex'}}>
+                                  <div style={{flex: 1}}>
+                                    <RenderInput
+                                      item={{
+                                        id: "time",
+                                        title: "",
+                                        format: 'HH:mm',
+                                        ampm: false,
+                                        placeholder: "Frequency (in hours)",
+                                        type: "time-picker",
+                                        required: true,
+                                        error: errors?.['frequency'] ? true : false, 
+                                        helperText: errors?.['frequency'] || ''
+                                      }}
+                                      state={{time: itemTime}}
+                                      onChange={(value) => {
+                                        let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
+                                        data[idx] = value;
+                                        setStoreDetails((prevState) => {
+                                          const newState = {
+                                            ...prevState,
+                                            storeTimes: data,
+                                          };
+                                          return newState;
+                                        })
+                                      }}
+                                    />
+                                  </div>
+                                  <div style={{width: '100px', margin: 'auto', paddingLeft: '20px'}}>
+                                    {
+                                      ((storeDetails.storeTimes.length - 1) === idx) && (
+                                        <Button 
+                                          variant="contained"
+                                          onClick={() => {
+                                            console.log("storeDetails.storeTimes=====>", storeDetails.storeTimes);
+                                            let data = JSON.parse(JSON.stringify(storeDetails.storeTimes));
+                                            data.push("");
+                                            setStoreDetails((prevState) => {
+                                              const newState = {
+                                                ...prevState,
+                                                storeTimes: data,
+                                              };
+                                              return newState;
+                                            })
+                                          }}
+                                        >
+                                          Add
+                                        </Button>
+                                      )
+                                    }
+                                  </div>
+                                </div>
+                              )
+                            })
+                          }
+                        </>
+                      )
+                      :(
+                        <>
+                          <RenderInput
+                            item={{
+                              ampm: false,
+                              id: "startTime",
+                              title: "Start Time",
+                              placeholder: "Start Time",
+                              type: "time-picker",
+                              format: 'HH:mm',
+                              required: true,
+                              error: errors?.['startTime'] ? true : false, 
+                              helperText: errors?.['startTime'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                          <RenderInput
+                            item={{
+                              ampm: false,
+                              id: "endTime",
+                              title: "End Time",
+                              placeholder: "End Time",
+                              type: "time-picker",
+                              format: 'HH:mm',
+                              required: true,
+                              error: errors?.['endTime'] ? true : false, 
+                              helperText: errors?.['endTime'] || ''
+                            }}
+                            state={storeDetails}
+                            stateHandler={setStoreDetails}
+                          />
+                        </>
+                      )
+                    }
+                  </>
+                )
+              }
+              
+              {/* {
+                !areObjectsEqual(storeDetails, defaultStoreDetails) && ( */}
                   <div className="flex mt-16">
                     <Button
                       style={{ marginRight: 10 }}
@@ -501,8 +744,8 @@ const ProviderDetails = () => {
                       Update Store
                     </Button>
                   </div>
-                )
-              }
+                {/* )
+              } */}
             </div>
           </div>
         </div>

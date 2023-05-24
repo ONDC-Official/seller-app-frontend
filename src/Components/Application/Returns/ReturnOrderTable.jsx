@@ -28,6 +28,7 @@ const RETURN_ORDER_STATUS = {
   Return_Initiated: 'Return Initiated',
   Liquidated: 'Liquidated',
   Reject: 'Rejected',
+  Rejected: 'Rejected',
 }
 
 const StyledTableCell = styled(TableCell)({

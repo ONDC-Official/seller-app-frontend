@@ -37,6 +37,7 @@ export default [
       type: "input",
       maxLength: 10,
       required: true,
+      isUperCase: true
     },
     {
       id: "GSTN",

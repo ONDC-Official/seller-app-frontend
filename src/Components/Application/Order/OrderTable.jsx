@@ -127,7 +127,7 @@ export default function InventoryTable(props) {
       case "total_amt":
         return (
           <div>
-            <span>₹ {payment?.params?.amount}</span>
+            <span>₹ {payment?.params?.amount?parseFloat(payment?.params?.amount).toFixed(2):""}</span>
             <br />
           </div>
         );

@@ -9,7 +9,7 @@ export const getFulfillmentData = (fulfillments, type) => {
 export const getFullAddress = (location_details) => {
   const location_values = [location_details?.door,
                            location_details?.building,
-                           location_details?.street,
+                           location_details?.locality,
                            location_details?.city,
                            location_details?.state,
                            location_details?.area_code,
@@ -20,7 +20,7 @@ export const getFullAddress = (location_details) => {
 export const getShortAddress = (location_details) => {
   const location_values = [location_details?.door,
                            location_details?.building,
-                           location_details?.street,
+                           location_details?.locality,
                            location_details?.city,
                           ].filter(t => t);
   return location_values?.join(",");

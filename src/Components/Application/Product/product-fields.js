@@ -52,6 +52,7 @@ const productFields = [
       placeholder: "Please Select GST Percentage",
       type: "select",
       options: [
+        { key: "0", value: 0 },
         { key: "5", value: 5 },
         { key: "12", value: 12 },
         { key: "18", value: 18 },
@@ -167,8 +168,8 @@ const productFields = [
     },
     {
       id: "packQty",
-      title: "Pack Quantity",
-      placeholder: "Pack Quantity",
+      title: "Measurement Quantity",
+      placeholder: "Measurement Quantity",
       type: "number",
       required: true,
     },
@@ -248,6 +249,7 @@ const productFields = [
       placeholder: "Long Description",
       type: "input",
       required: true,
+      multiline: true
     },
     {
       id: "description",
@@ -255,14 +257,15 @@ const productFields = [
       placeholder: "Short Description",
       type: "input",
       required: true,
+      multiline: true,
     },
     {
       id: "isCancellable",
       title: "Cancellable",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -271,8 +274,8 @@ const productFields = [
       title: "Returnable",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -281,8 +284,8 @@ const productFields = [
       title: "Vegetarian",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
@@ -291,8 +294,8 @@ const productFields = [
       title: "Available On Cash On Delivery",
       type: "radio",
       options: [
-        { key: "Yes", value: true },
-        { key: "No", value: false },
+        { key: "Yes", value: "true" },
+        { key: "No", value: "false" },
       ],
       required: true,
     },
