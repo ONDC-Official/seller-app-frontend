@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { OrderData } from "../../../Constants/OrdersData";
 import { getCall } from "../../../Api/axios";
 import { useTheme } from '@mui/material/styles';
 import ComplaintTable from "./ComplaintTable";
@@ -71,7 +70,7 @@ const columns = [
 
 export default function Complaints() {
   const theme = useTheme();
-  const [orders, setOrders] = useState(OrderData);
+  const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
