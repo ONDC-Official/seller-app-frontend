@@ -70,7 +70,7 @@ const columns = [
 
 export default function Complaints() {
   const theme = useTheme();
-  const [orders, setOrders] = useState([]);
+  const [complaints, setComplaints] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -93,7 +93,7 @@ export default function Complaints() {
     const url = `/api/client/all-issue?limit=${rowsPerPage}&offset=${page}`;
     getCall(url)
       .then((resp) => {
-        setOrders(resp.issues);
+        setComplaints(resp.issues);
         setTotalRecords(resp.count);
       })
       .catch((error) => {
@@ -131,10 +131,10 @@ export default function Complaints() {
         <div className="mb-4 flex flex-row justify-between items-center">
           <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">Complaints</label>
         </div>
-        { orders.length > 0 ?
+        { complaints.length > 0 ?
          <ComplaintTable
           columns={columnList}
-          data={orders}
+          data={complaints}
           totalRecords={totalRecords}
           page={page}
           user={user}
