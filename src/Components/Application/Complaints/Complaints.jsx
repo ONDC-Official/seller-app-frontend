@@ -93,7 +93,7 @@ export default function Complaints() {
     const url = `/api/client/all-issue?limit=${rowsPerPage}&offset=${page}`;
     getCall(url)
       .then((resp) => {
-        setOrders(resp.data);
+        setOrders(resp.issues);
         setTotalRecords(resp.count);
       })
       .catch((error) => {
@@ -112,13 +112,27 @@ export default function Complaints() {
     }
   }, [user]);
 
+    // empty state ui
+    const empty_orders_state = (
+      <div
+          className={`d-flex align-items-center justify-content-center`}
+      >
+          <div className="text-center">
+              <div className="py-2">
+                  <p>No Complaints found!</p>
+              </div>
+          </div>
+      </div>
+  );
+  
   return (
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
           <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">Complaints</label>
         </div>
-        <ComplaintTable
+        { orders.length > 0 ?
+         <ComplaintTable
           columns={columnList}
           data={orders}
           totalRecords={totalRecords}
@@ -129,6 +143,9 @@ export default function Complaints() {
           handleRowsPerPageChange={(val) => setRowsPerPage(val)}
           onSuccess={() => getOrders()}
         />
+        :
+        empty_orders_state
+       }
       </div>
     </>
   );
