@@ -48,10 +48,10 @@ export default function ComplaintTable(props) {
   const user = props.user
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [resolved, setResolved] = useState(issue.status === "CLOSE");
+  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
 
     function handleMenuClick() {
-      setSupportActionDetails(issue)
+      setSupportActionDetails(row)
       handleClose()
       setToggleActionModal(true)
     }
@@ -84,7 +84,7 @@ export default function ComplaintTable(props) {
         }
       }
     }
-    postCall(`/api/client/issue_response`, {body})
+    postCall(`/api/client/issue_response`, body)
       .then((resp) => {
         setLoading(false)
         if(resp.success){
@@ -114,14 +114,15 @@ export default function ComplaintTable(props) {
           onClose={handleClose}
         >
           {
-          resolved ?
-          <MenuItem>
+          issue.status === "CLOSE" ?
+          <MenuItem disabled
+          >
           No Action Required
         </MenuItem>
         :
         <>
           <MenuItem
-            disabled={loading}
+            disabled={loading || resolved}
             onClick={() => {
               handleAction()
            }}
@@ -149,13 +150,13 @@ export default function ComplaintTable(props) {
             <span>{issue.id}</span>
           </>
         );
-      case "createdAt":
+      case "created_at":
         return (
           <>
             <span>{convertDateInStandardFormat(value.date)}</span>
           </>
         );
-      case "updatedAt":
+      case "updated_at":
         return (
           <>
             <span>{convertDateInStandardFormat(value.date)}</span>

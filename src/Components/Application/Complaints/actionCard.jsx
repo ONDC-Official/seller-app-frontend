@@ -102,21 +102,21 @@ export default function CustomerActionCard({
       "long_desc": longDescription,
       "updated_by": {
         "org": {
-          "name": user.organization
+          "name": user?.organization
         },
         "contact": {
-          "phone": user.mobile,
-          "email": user.email
+          "phone": user?.mobile,
+          "email": user?.email
         },
         "person": {
-          "name": user.name
+          "name": user?.name
         }
       }
     }
     if(selectedCancelType === ACTION_TYPES.refundIssue){
       body.refund_value = refundAmount
     }
-    postCall(`/api/client/issue_response`, { body })
+    postCall(`/api/client/issue_response`, body)
       .then((resp) => {
         setLoading(false)
         if (resp.success) {

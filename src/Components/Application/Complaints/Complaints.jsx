@@ -107,7 +107,11 @@ export default function Complaints() {
 
   useEffect(() => {
     if (user && user?.role?.name === "Organization Admin") {
-      const data = columns.filter((item) => item.id !== "provider_name" && item.id !== "action")
+      const data = columns.filter((item) => item.id !== "provider_name")
+      setColumnList(data);
+    }
+    if (user && user?.role?.name === "Super Admin") {
+      const data = columns.filter((item) => item.id !== "action")
       setColumnList(data);
     }
   }, [user]);

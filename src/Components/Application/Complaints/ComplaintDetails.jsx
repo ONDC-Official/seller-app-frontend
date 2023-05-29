@@ -22,7 +22,7 @@ const ComplaintDetails = () => {
   const navigate = useNavigate();
   const issue = complaint?.message?.issue
   const getComplaint = async () => {
-    const url = `/api/v1/orders/${params?.id}`;
+    const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
       if (resp.success) {
         setComplaint(resp.data);
@@ -164,7 +164,7 @@ function OppositeContentTimeline(data) {
               </div>
               <div className="flex items-center">
                 <p className="text-base font-semibold mr-2">Updated by:</p>
-                <p className="text-md font-normal">{`${x.updated_by?.person?.name}, ${x.updated_by?.org.name.split(':')[0]}`}</p>
+                <p className="text-md font-normal">{`${x.updated_by?.person?.name}, ${x.updated_by?.org.name.split('::')[0]}`}</p>
               </div>
               <div className="flex items-center">
                 <p className="text-base font-semibold mr-2">Updated at:</p>
