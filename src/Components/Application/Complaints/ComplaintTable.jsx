@@ -70,7 +70,7 @@ export default function ComplaintTable(props) {
     const body = {
       "transaction_id": context.transaction_id,
       "respondent_action": "PROCESSING",
-      "short_desc": "processing",
+      "short_desc": "We are investigating your concern.",
       "updated_by": {
         "org": {
           "name": user.organization

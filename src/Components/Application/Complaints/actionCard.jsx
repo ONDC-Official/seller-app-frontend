@@ -35,6 +35,7 @@ export default function CustomerActionCard({
     refundIssue: "REFUND_ISSUE",
     cascadeIssue: "CASCADE_ISSUE",
     noAction: "NO_ACTION",
+    cancelIssue: "CANCEL_ISSUE",
   };
 
   // STATES
@@ -85,10 +86,11 @@ export default function CustomerActionCard({
     
     function getAction() {
       switch (selectedCancelType) {
-        case ACTION_TYPES.replaceIssue: return "REPLACE"
+        case ACTION_TYPES.replaceIssue: return "REPLACEMENT"
         case ACTION_TYPES.refundIssue: return "REFUND"
         case ACTION_TYPES.noAction: return "NO-ACTION"
         case ACTION_TYPES.cascadeIssue: return "CASCADED"
+        case ACTION_TYPES.cancelIssue: return "CANCEL"
         default:
           break;
       }
@@ -97,7 +99,8 @@ export default function CustomerActionCard({
 
     const body = {
       "transaction_id": context.transaction_id,
-      "respondent_action": getAction(),
+      "respondent_action": selectedCancelType === ACTION_TYPES.cascadeIssue ? "CASCADED" : "RESOLVED",
+      "action_triggered" : getAction(),
       "short_desc": shortDescription,
       "long_desc": longDescription,
       "updated_by": {
@@ -164,6 +167,24 @@ export default function CustomerActionCard({
               <div className="px-3">
                 <p className={styles.address_name_and_phone}>
                   No Action
+                </p>
+              </div>
+            </CustomRadioButton>
+
+            <CustomRadioButton
+              disabled={loading}
+              checked={selectedCancelType === ACTION_TYPES.cancelIssue}
+              onClick={() => {
+                setSelectedCancelType(ACTION_TYPES.cancelIssue);
+                setInlineError((inlineError) => ({
+                  ...inlineError,
+                  remarks_error: "",
+                }));
+              }}
+            >
+              <div className="px-3">
+                <p className={styles.address_name_and_phone}>
+                  Cancel
                 </p>
               </div>
             </CustomRadioButton>
