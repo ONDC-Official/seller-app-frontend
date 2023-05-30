@@ -106,7 +106,7 @@ const ComplaintDetails = () => {
             <p className="text-lg font-semibold mb-2"> Actions Taken</p>
 
           </div>
-          {OppositeContentTimeline(issueActions)}
+          {issueActions.length > 0 && OppositeContentTimeline(issueActions)}
 
         </div>
         <div className="flex justify-between">

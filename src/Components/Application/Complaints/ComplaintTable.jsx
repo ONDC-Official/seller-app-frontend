@@ -114,7 +114,7 @@ export default function ComplaintTable(props) {
           onClose={handleClose}
         >
           {
-          issue.status === "CLOSE" ?
+          issue.status === "CLOSED" ?
           <MenuItem disabled
           >
           No Action Required

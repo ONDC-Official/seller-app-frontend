@@ -122,7 +122,7 @@ export default function CustomerActionCard({
     postCall(`/api/client/issue_response`, body)
       .then((resp) => {
         setLoading(false)
-        if (resp.success) {
+        if (resp.message?.ack?.status === "ACK") {
           onSuccess()
         } else {
           cogoToast.error(resp.message);
