@@ -1,0 +1,379 @@
+@import "../Assets/scss/variables.scss";
+
+.overlay {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba($primaryColor, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade 1s ease forwards;
+  z-index: 1;
+}
+
+.popup_card {
+  min-width: auto;
+  min-width: 40%;
+  background-color: $white;
+  border-radius: 10px;
+  max-height: 95%;
+  overflow: auto;
+  opacity: 1;
+  animation: slide 0.5s ease forwards;
+}
+
+.card_header {
+  padding: 20px 25px;
+  background-color: $white;
+  border-bottom: 1px solid rgba($secondaryColor, 0.15);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  align-items: center;
+
+  .card_header_title {
+    font-family: $firaSans;
+    font-size: $font-18;
+    font-weight: $medium;
+    text-align: left;
+    color: $primaryColor;
+    margin: 0;
+  }
+}
+
+.card_body {
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba($secondaryColor, 0.15);
+
+  .card_body_text {
+    font-size: $font-14;
+    text-align: left;
+    color: $secondaryColor;
+    margin: 0;
+  }
+}
+
+.card_footer {
+  padding: 20px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .card_body_text {
+    font-size: $font-14;
+    text-align: left;
+    color: $secondaryColor;
+    margin: 0;
+  }
+}
+
+.modal_input_wrappper {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid $secondaryColor;
+}
+
+.location_list_wrapper {
+  position: absolute;
+  z-index: 2;
+  top: 65px;
+  min-height: 100px;
+  max-height: 150px;
+  width: 85%;
+  overflow: auto;
+  background-color: $white;
+  box-shadow: 0 5px 10px 0 rgba($primaryColor, 0.15);
+  border-radius: 10px;
+}
+
+.location_list_wrapper_tag {
+  position: absolute;
+  z-index: 2;
+  top: 65px;
+  min-height: 100px;
+  // max-height: 150px;
+  width: 90%;
+  overflow: auto;
+  background-color: $white;
+  box-shadow: 0 5px 10px 0 rgba($primaryColor, 0.15);
+  border-radius: 10px;
+}
+
+.dropdown_link_wrapper {
+  padding: 15px;
+  cursor: pointer;
+}
+
+.dropdown_link {
+  font-size: $font-14;
+  color: $primaryColor;
+  margin: 0;
+}
+
+.dropdown_link_wrapper:hover {
+  background-color: rgba($accentColor, 0.15);
+
+  .dropdown_link {
+    color: $accentColor;
+    font-weight: $medium;
+    transition: all 0.3s;
+  }
+}
+
+.address_name_and_phone {
+    font-size: $font-16;
+    font-weight: $medium;
+    text-align: left;
+    color: $primaryColor;
+    margin: 0;
+  }
+
+.location_name {
+  font-size: $font-12;
+  width: 100%;
+  height: 50%;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: $medium;
+  color: $white;
+  margin: 0;
+  word-break: break-all;
+}
+
+.location_description {
+  width: 100%;
+  font-size: $font-10;
+  color: $white;
+  margin: 0;
+  word-break: break-all;
+  padding-top: 5px;
+}
+
+.empty_state_text {
+  font-size: $font-14;
+  text-align: center;
+  color: $secondaryColor;
+  margin: 0;
+}
+
+.formControl {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 5px 10px;
+  font-size: $font-14;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $primaryColor;
+  background-color: transparent;
+  border: 0;
+}
+
+.formControl:focus,
+.error:focus {
+  outline: none;
+}
+
+.error {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  font-size: $font-14;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $primaryColor;
+  background-color: transparent;
+  border: 1px solid $error;
+  border-radius: 10px;
+  border: 0;
+}
+
+.error::placeholder {
+  font-size: $font-12;
+  text-align: left;
+  color: $error;
+}
+
+.formControl::placeholder {
+  font-size: $font-12;
+  text-align: left;
+  color: $secondaryColor;
+}
+
+.address_form_wrapper {
+  // max-height: 450px;
+  overflow: auto;
+  max-width: 550px;
+}
+
+.search_type_wrapper {
+  padding: 10px 20px;
+  border-radius: 36px;
+  border: 1px solid $secondaryColor;
+  cursor: pointer;
+}
+
+.search_type_wrapper:hover {
+  background-color: $accentColor;
+  border: 1px solid $accentColor;
+  transition: all 0.3s;
+
+  .search_type_value {
+    color: $white;
+  }
+}
+
+.search_type_value {
+  margin: 0;
+  font-size: $font-14;
+  color: $secondaryColor;
+  text-align: center;
+}
+
+.active_search_type {
+  padding: 10px 20px;
+  border-radius: 36px;
+  background-color: $accentColor;
+  border: 1px solid $accentColor;
+
+  .search_type_value {
+    color: $white;
+  }
+}
+
+.category_drodpwon_wrapper {
+  background: $accentColor;
+  border-radius: 7px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.search_type_text {
+  font-size: $font-14;
+  color: $white;
+  margin: 0;
+}
+
+.cancel_dropdown_wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 10px 15px;
+  background-color: transparent;
+  border: 1px solid $secondaryColor;
+  border-radius: 10px;
+}
+
+.cancel_dropdown_label_text {
+  font-size: $font-14;
+  font-weight: $medium;
+  text-align: left;
+  color: $primaryColor;
+  margin: 5px;
+}
+
+.cancel_dropdown_text {
+  font-size: $font-14;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $primaryColor;
+  margin: 0;
+}
+
+
+.radio_button_wrapper {
+    border: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+  }
+  
+  .box_basis {
+    flex-basis: 5%;
+  }
+  
+  .name_basis {
+    flex-basis: 95%;
+  }
+  
+  .radio_button_wrapper:hover,
+  .edit_button:hover {
+    background-color: rgba($accentColor, $alpha: 0.15);
+    transition: background-color 0.3s;
+    border-radius: 10px;
+  }
+  
+  .radio_button_background {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: $white;
+    border: 1px solid $accentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px 0;
+  }
+  
+  .active {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: $accentColor;
+    border: 0;
+  }
+  
+  .non_active {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: $white;
+    border: 0;
+  }
+  
+  .edit_button {
+    font-size: $font-12;
+    color: $accentColor;
+    text-align: left;
+    margin: 0;
+    background-color: transparent;
+    border: 0;
+  }
+  
+  .parent_radio {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .parent_edit_button {
+    width: 30px !important
+  }
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide {
+  from {
+    margin-bottom: 50px;
+    opacity: 0;
+  }
+
+  to {
+    margin-bottom: 0;
+    opacity: 1;
+  }
+}

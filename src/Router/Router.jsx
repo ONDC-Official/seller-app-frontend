@@ -18,7 +18,8 @@ import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
 import BulkUpload from "../Components/Application/Product/BulkUpload";
 import StoreDetails from "../Components/Application/Store/StoreDetails.jsx";
 import { getUser } from "../utils/validateToken.js";
-
+import Complaints from "../Components/Application/Complaints/Complaints"
+import ComplaintDetails from "../Components/Application/Complaints/ComplaintDetails";
 export default function OndcRoutes() {
   return (
     <Router>
@@ -121,6 +122,23 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <ProviderDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/complaints"
+          element={
+            <PrivateRoute>
+              <Complaints />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/application/complaints/:id"
+          element={
+            <PrivateRoute>
+              <ComplaintDetails />
             </PrivateRoute>
           }
         />
