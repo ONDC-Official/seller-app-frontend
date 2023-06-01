@@ -16,7 +16,6 @@ import TimelineDot from '@mui/lab/TimelineDot';
 
 const ComplaintDetails = () => {
   const [complaint, setComplaint] = useState();
-  const [user, setUser] = React.useState();
   const [issueActions, setIssueActions] = React.useState([]);
   const params = useParams();
   const navigate = useNavigate();
@@ -25,8 +24,8 @@ const ComplaintDetails = () => {
     const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
       if (resp.success) {
-        setComplaint(resp.data);
-        mergeRespondantArrays(resp.data.message?.issue?.issue_actions)
+        setComplaint(resp.issue);
+        mergeRespondantArrays(resp.issue.message?.issue?.issue_actions)
       }
     });
   };
@@ -44,19 +43,6 @@ const ComplaintDetails = () => {
     mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     setIssueActions(mergedarray)
   }
-
-  const getUser = async (id) => {
-    const url = `/api/v1/users/${id}`;
-    const res = await getCall(url);
-    setUser(res[0]);
-    return res[0];
-  };
-
-  React.useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
-    getUser(user_id);
-  }, []);
-
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
 
@@ -128,7 +114,7 @@ const ComplaintDetails = () => {
               <div className="flex items-center">
                 <p className="text-lg font-semibold">Email : &nbsp;</p>
                 <p className="text-sm font-medium">
-                  {issue?.complainant_info?.person?.email}
+                  {issue?.complainant_info?.contact?.email}
                 </p>
               </div>
             </div>
