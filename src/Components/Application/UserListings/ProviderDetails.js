@@ -331,7 +331,7 @@ const ProviderDetails = ({isFromUserListing=false}) => {
         frequency: '',
         storeTimes: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times.length > 0 ? res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times:[''],
         radius: res?.providerDetail?.storeDetails?.radius?.value || '',
-        logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || ''
+        logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || '',
       };
 
       if(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency){
@@ -395,8 +395,9 @@ const ProviderDetails = ({isFromUserListing=false}) => {
       formErrors.frequency = storeDetails.StoreTimeType === "frequency"?storeDetails.frequency === '' ? 'Frequency is required' : !isNumberOnly(storeDetails?.frequency) ? 'Please enter only digit' : '':'';
       formErrors.storeTimes = storeDetails.storeTimes.length === 0 ? 'Al least One store time is required' : '';
     }else{}
-    formErrors.radius = storeDetails.radius !== '' ? !isNumberOnly(storeDetails?.radius) ? 'Please enter only digit' : '' : '';
-    formErrors.logisticsBppId = '';
+    formErrors.radius = storeDetails.radius.trim() === '' ? 'Serviceable Radius/Circle is required' : !isNumberOnly(storeDetails?.radius) ? 'Please enter only digit' : '';
+    formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === '' ? 'Logistics Bpp Id is required' : ''
+    
 
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
@@ -747,7 +748,8 @@ const ProviderDetails = ({isFromUserListing=false}) => {
                         placeholder: "Serviceable Radius/Circle (in Kilometer)",
                         type: "input",
                         error: errors?.['radius'] ? true : false, 
-                        helperText: errors?.['radius'] || ''
+                        helperText: errors?.['radius'] || '',
+                        required: true
                       }}
                       state={storeDetails}
                       stateHandler={setStoreDetails}
@@ -760,7 +762,7 @@ const ProviderDetails = ({isFromUserListing=false}) => {
                         type: "input",
                         error: errors?.['logisticsBppId'] ? true : false, 
                         helperText: errors?.['logisticsBppId'] || '',
-                        required: false
+                        required: true
                       }}
                       state={storeDetails}
                       stateHandler={setStoreDetails}

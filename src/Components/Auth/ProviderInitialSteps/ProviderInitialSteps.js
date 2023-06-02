@@ -233,14 +233,14 @@ const ProviderInitialSteps = () => {
     formErrors.email = form2Values.email.trim() === '' ? 'Support Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
     formErrors.mobile = form2Values.mobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
     
-    form1Errors.days = form2Values.days.length === 0 ? 'Days is required' : '';
-    form1Errors.holidays = '';
-    form1Errors.startTime = form2Values.startTime === '' ? 'Start time is required' : '';
-    form1Errors.endTime = form2Values.endTime === '' ? 'End time is required' : '';
-    form1Errors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
-    form1Errors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
-    form1Errors.radius = form2Values.radius !== '' ? !isNumberOnly(form2Values?.radius) ? 'Please enter only digit' : '' : '';
-    form1Errors.logisticsBppId = ""
+    formErrors.days = form2Values.days.length === 0 ? 'Days is required' : '';
+    formErrors.holidays = '';
+    formErrors.startTime = form2Values.startTime === '' ? 'Start time is required' : '';
+    formErrors.endTime = form2Values.endTime === '' ? 'End time is required' : '';
+    formErrors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
+    formErrors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
+    formErrors.radius = form2Values.radius.trim() === '' ? 'Serviceable Radius/Circle is required' : !isNumberOnly(form2Values?.radius) ? 'Please enter only digit' : '';
+    formErrors.logisticsBppId = form2Values.logisticsBppId.trim() === '' ? 'Logistics Bpp Id is required' : ''
     setForm2Errors({
       ...formErrors
     })
@@ -391,6 +391,7 @@ const ProviderInitialSteps = () => {
     delete data["endTime"];
     delete data["storeTimes"];
     delete data["StoreTimeType"];
+    delete data["tempURL"];
     
     console.log("DATA==========>", data);
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
@@ -672,7 +673,8 @@ const ProviderInitialSteps = () => {
                             placeholder: "Serviceable Radius/Circle (in Kilometer)",
                             type: "input",
                             error: form2Errors?.['radius'] ? true : false, 
-                            helperText: form2Errors?.['radius'] || ''
+                            helperText: form2Errors?.['radius'] || '',
+                            required: true
                           }}
                           state={form2Values}
                           stateHandler={setForm2Values}
@@ -685,7 +687,8 @@ const ProviderInitialSteps = () => {
                             placeholder: "Logistics Bpp Id",
                             type: "input",
                             error: form2Errors?.['logisticsBppId'] ? true : false, 
-                            helperText: form2Errors?.['logisticsBppId'] || ''
+                            helperText: form2Errors?.['logisticsBppId'] || '',
+                            required: true
                           }}
                           state={form2Values}
                           stateHandler={setForm2Values}

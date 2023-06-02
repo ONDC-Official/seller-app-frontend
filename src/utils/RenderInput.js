@@ -533,6 +533,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     };
 
     const renderUploadedUrls = () => {
+      console.log("state?.tempURL?.[item.id]=====>", state?.tempURL?.[item.id]);
       if(item?.multiple){
         if (state?.uploaded_urls) {
           return state?.uploaded_urls?.map((url) => {
@@ -542,9 +543,14 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           });
         }
       }else{
-        return (
-          <img src={state[item.id]} height={50} width={50} style={{ margin: "10px" }} />
-        );
+        if(state?.tempURL?.[item.id] || state[item.id]){
+          return (
+            <img src={state?.tempURL?.[item.id] || state[item.id] || ""} height={50} width={50} style={{ margin: "10px" }} />
+          );
+        }else{
+          return <></>
+        }
+        
       }
     };
 
@@ -652,7 +658,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                 formData.append("file", file);
                 getSignUrl(file).then((d) => {
                   const url = d.urls;
-
+                  console.log("url=====>", url);
                   axios(url, {
                     method: "PUT",
                     data: file,
@@ -672,11 +678,22 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                           return newState;
                         });
                       } else {
-                        stateHandler({
-                          ...state,
-                          [item.id]: d.path,
-                          uploaded_urls: [],
-                        });
+                        let reader = new FileReader();
+                        let tempUrl = '';
+                        reader.onload = function (e) {
+                          tempUrl = e.target.result;
+                          stateHandler({
+                            ...state,
+                            [item.id]: d.path,
+                            tempURL: {
+                              ...state.tempURL,
+                              [item.id]: tempUrl
+                            },
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                        
+                        
                       }
                       response.json();
                     })
