@@ -232,7 +232,7 @@ export default function AddProduct() {
     formErrors.barcode = !formValues?.barcode ? 'Please enter a valid Barcode' : !isNumberOnly(formValues?.barcode) ? 'Please enter only digit' : formValues?.barcode?.length > MAX_STRING_LENGTH_12 ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters` : ''
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty ? 'Please enter a valid Max. Allowed Quantity' : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10 ? `Cannot be more than ${MAX_STRING_LENGTH_10} characters` : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity) ? 'Cannot be more than quantity' : ''
     formErrors.UOM = formValues?.UOM?.trim() === '' ? 'UOM is required' : formValues?.UOM?.length > MAX_STRING_LENGTH ? `Cannot be more than ${MAX_STRING_LENGTH} characters` : '';
-    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Pack Quantity' : !isNumberOnly(formValues?.packQty) ? 'Please enter only digit' : '';
+    formErrors.packQty = !formValues?.packQty ? 'Please enter a valid Measurement Quantity' : !isNumberOnly(formValues?.packQty) ? 'Please enter only digit' : '';
     formErrors.length = formValues?.length?.trim() === '' ? 'Length is required' : formValues?.length.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
     formErrors.breadth = formValues?.breadth?.trim() === '' ? 'Breadth is required' : formValues?.breadth.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
     formErrors.height = formValues?.height?.trim() === '' ? 'Height is required' : formValues?.height.length > MAX_STRING_LENGTH_6 ? `Cannot be more than ${MAX_STRING_LENGTH_6} characters` : '';
