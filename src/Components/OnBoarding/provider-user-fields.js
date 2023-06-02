@@ -23,4 +23,12 @@ export default [
       type: "input",
       required: true,
     },
+    {
+      id: "password",
+      title: "Password",
+      placeholder: "Enter Password",
+      type: "input",
+      required: true,
+      password: true
+    },
 ];

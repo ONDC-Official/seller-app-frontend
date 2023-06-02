@@ -191,7 +191,8 @@ const ProviderInitialSteps = () => {
     endTime: "",
     frequency: "",
     storeTimes: [""],
-    radius: ""
+    radius: "",
+    logisticsBppId: ""
     
   };
 
@@ -239,7 +240,7 @@ const ProviderInitialSteps = () => {
     form1Errors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
     form1Errors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
     form1Errors.radius = form2Values.radius !== '' ? !isNumberOnly(form2Values?.radius) ? 'Please enter only digit' : '' : '';
-
+    form1Errors.logisticsBppId = ""
     setForm2Errors({
       ...formErrors
     })
@@ -367,7 +368,8 @@ const ProviderInitialSteps = () => {
     data.radius = {
       "unit": "km",
       "value": form2Values.radius || ""
-    }
+    };
+    data.logisticsBppId = form2Values.logisticsBppId;
 
     delete data["building"];
     delete data["address_city"];
@@ -671,6 +673,19 @@ const ProviderInitialSteps = () => {
                             type: "input",
                             error: form2Errors?.['radius'] ? true : false, 
                             helperText: form2Errors?.['radius'] || ''
+                          }}
+                          state={form2Values}
+                          stateHandler={setForm2Values}
+                        />
+
+                        <RenderInput
+                          item={{
+                            id: "logisticsBppId",
+                            title: "Logistics Bpp Id",
+                            placeholder: "Logistics Bpp Id",
+                            type: "input",
+                            error: form2Errors?.['logisticsBppId'] ? true : false, 
+                            helperText: form2Errors?.['logisticsBppId'] || ''
                           }}
                           state={form2Values}
                           stateHandler={setForm2Values}
