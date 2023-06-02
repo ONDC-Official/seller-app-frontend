@@ -14,6 +14,7 @@ import ProviderInitialSteps from "../Components/Auth/ProviderInitialSteps/Provid
 import ProviderDetails from "../Components/Application/UserListings/ProviderDetails";
 import InviteAdmin from "../Components/OnBoarding/InviteAdmin";
 import InviteProvider from "../Components/OnBoarding/inviteProvider";
+import AddProvider from "../Components/OnBoarding/addProvider";
 import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
 import BulkUpload from "../Components/Application/Product/BulkUpload";
 import StoreDetails from "../Components/Application/Store/StoreDetails.jsx";
@@ -114,6 +115,14 @@ export default function OndcRoutes() {
             <PrivateRoute>
               <InviteProvider />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/sign-up"
+          element={
+            // <PrivateRoute>
+              <AddProvider />
+            // </PrivateRoute>
           }
         />
         <Route

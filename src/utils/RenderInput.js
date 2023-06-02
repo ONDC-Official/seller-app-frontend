@@ -207,6 +207,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "select") {
+    console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -234,27 +235,27 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             ))}
           </Select>
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
-
+          
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
-            value={state[item.id] && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
+            value={state[item.id] !== "" && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
                 if(item.id === "productCategory"){
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue?.value || '',
+                    [item.id]: newValue.value || '',
                     "productSubcategory1": ""
                   };
                   return newState;
                 }else{
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue?.value || '',
+                    [item.id]: newValue.value,
                   };
                   return newState;
                 }

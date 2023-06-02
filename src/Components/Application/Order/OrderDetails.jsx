@@ -225,7 +225,7 @@ const OrderDetails = () => {
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard isSuperAdmin={user?.role?.name === "Super Admin" || false} orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard getOrder={getOrder} isSuperAdmin={user?.role?.name === "Super Admin" || false} orderItems={order?.items} order={order} />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
@@ -361,7 +361,8 @@ const OrderItemsSummaryCard = (props) => {
       ])
         .then((resp) => {
           cogoToast.success("Product cancelled successfully!");
-          //getOrder();
+          props.getOrder();
+          handleClose()
         })
         .catch((error) => {
           console.log(error);
@@ -482,13 +483,15 @@ const OrderItemsSummaryCard = (props) => {
                             <div>₹ {product?.MRP?.toFixed(2).toLocaleString()}</div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
-                              {isOrderCancellable(props?.order?.state) ? (
+                              {isOrderCancellable(props?.order?.state) && order_item?.state !== "Cancelled" ? (
                                 <ThreeDotsMenu
                                   order_id={props?.order?._id}
                                   row={order_item}
+                                  getOrder={props.getOrder}
                                 />
                               ) : (
-                                props?.order?.state
+                                // props?.order?.state
+                                <></>
                               )}
                             </div>
                           ) : col.id === "totalPrice" ? (
