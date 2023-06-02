@@ -482,13 +482,14 @@ const OrderItemsSummaryCard = (props) => {
                             <div>₹ {product?.MRP?.toFixed(2).toLocaleString()}</div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
-                              {isOrderCancellable(props?.order?.state) ? (
+                              {isOrderCancellable(props?.order?.state) && order_item?.state !== "Cancelled" ? (
                                 <ThreeDotsMenu
                                   order_id={props?.order?._id}
                                   row={order_item}
                                 />
                               ) : (
-                                props?.order?.state
+                                // props?.order?.state
+                                <></>
                               )}
                             </div>
                           ) : col.id === "totalPrice" ? (
