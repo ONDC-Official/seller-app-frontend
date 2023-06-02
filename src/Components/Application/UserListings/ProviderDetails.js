@@ -329,7 +329,8 @@ const ProviderDetails = ({isFromUserListing=false}) => {
         startTime: res?.providerDetail?.storeDetails?.storeTiming?.range?.start || '',
         endTime: res?.providerDetail?.storeDetails?.storeTiming?.range?.end || '',
         frequency: '',
-        storeTimes: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times.length > 0 ? res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times:['']
+        storeTimes: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times.length > 0 ? res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times:[''],
+        radius: ''
       };
 
       if(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency){
@@ -393,6 +394,8 @@ const ProviderDetails = ({isFromUserListing=false}) => {
       formErrors.frequency = storeDetails.StoreTimeType === "frequency"?storeDetails.frequency === '' ? 'Frequency is required' : !isNumberOnly(storeDetails?.frequency) ? 'Please enter only digit' : '':'';
       formErrors.storeTimes = storeDetails.storeTimes.length === 0 ? 'Al least One store time is required' : '';
     }else{}
+    formErrors.radius = storeDetails.radius !== '' ? !isNumberOnly(storeDetails?.radius) ? 'Please enter only digit' : '' : '';
+
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
     return !Object.values(formErrors).some(val => val !== '');
@@ -461,6 +464,10 @@ const ProviderDetails = ({isFromUserListing=false}) => {
             start: storeDetails.StoreTimeType === "time"?storeDetails.startTime:'',
             end: storeDetails.StoreTimeType === "time"?storeDetails.endTime:'',
           },
+        },
+        radius: {
+          "unit": "km",
+          "value": storeDetails.radius || ""
         }
       };
       if(location){
@@ -729,6 +736,20 @@ const ProviderDetails = ({isFromUserListing=false}) => {
                         </>
                       )
                     }
+
+                    <RenderInput
+                      item={{
+                        id: "radius",
+                        title: "Serviceable Radius/Circle (in Kilometer)",
+                        placeholder: "Serviceable Radius/Circle (in Kilometer)",
+                        type: "input",
+                        error: errors?.['radius'] ? true : false, 
+                        helperText: errors?.['radius'] || ''
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+
                   </>
                 )
               }

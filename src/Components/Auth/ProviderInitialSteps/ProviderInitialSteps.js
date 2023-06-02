@@ -190,7 +190,8 @@ const ProviderInitialSteps = () => {
     startTime: "",
     endTime: "",
     frequency: "",
-    storeTimes: [""]
+    storeTimes: [""],
+    radius: ""
     
   };
 
@@ -237,6 +238,8 @@ const ProviderInitialSteps = () => {
     form1Errors.endTime = form2Values.endTime === '' ? 'End time is required' : '';
     form1Errors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
     form1Errors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
+    form1Errors.radius = form2Values.radius !== '' ? !isNumberOnly(form2Values?.radius) ? 'Please enter only digit' : '' : '';
+
     setForm2Errors({
       ...formErrors
     })
@@ -361,6 +364,10 @@ const ProviderInitialSteps = () => {
         end: form2Values.endTime || '',
       },
     };
+    data.radius = {
+      "unit": "km",
+      "value": form2Values.radius || ""
+    }
 
     delete data["building"];
     delete data["address_city"];
@@ -540,7 +547,6 @@ const ProviderInitialSteps = () => {
                           state={form2Values}
                           stateHandler={setForm2Values}
                         />
-                        
                         {
                           form2Values.StoreTimeType === "frequency"
                           ?(
@@ -657,6 +663,18 @@ const ProviderInitialSteps = () => {
                           )
                         }
                         
+                        <RenderInput
+                          item={{
+                            id: "radius",
+                            title: "Serviceable Radius/Circle (in Kilometer)",
+                            placeholder: "Serviceable Radius/Circle (in Kilometer)",
+                            type: "input",
+                            error: form2Errors?.['radius'] ? true : false, 
+                            helperText: form2Errors?.['radius'] || ''
+                          }}
+                          state={form2Values}
+                          stateHandler={setForm2Values}
+                        />
                         
                       </>
                     )
