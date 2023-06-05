@@ -13,6 +13,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import { ISSUE_TYPES } from "../../../Constants/issue-types";
 
 const ComplaintDetails = () => {
   const [complaint, setComplaint] = useState();
@@ -20,6 +21,16 @@ const ComplaintDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
   const issue = complaint?.message?.issue
+
+  const AllCategory = ISSUE_TYPES.map((item) => {
+    return item.subCategory.map((subcategoryItem) => {
+        return {
+            ...subcategoryItem,
+            category: item.value,
+        };
+    });
+}).flat();
+
   const getComplaint = async () => {
     const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
@@ -72,7 +83,7 @@ const ComplaintDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Subcategory</p>
-            <p className="text-base font-normal">{issue?.sub_category}</p>
+            <p className="text-base font-normal">{AllCategory.find(x => x.enums === issue?.sub_category)?.value}</p>
           </div>
           <div className="flex justify-between mt-3 mb-3">
             <p className="text-base font-normal">Complaint Status</p>
