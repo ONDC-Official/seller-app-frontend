@@ -66,6 +66,7 @@ const InviteProvider = () => {
   }, [step]);
 
   const sendInvite = async () => {
+    setFormSubmited(true)
     try {
       const data = {
         user: {
@@ -96,6 +97,7 @@ const InviteProvider = () => {
       };
       const url = `/api/v1/organizations/signup`;
       const res = await postCall(url, data);
+      setFormSubmited(false);
       navigate("/");
       cogoToast.success("Provider created successfully and invitation sent on e-mail");
     } catch (error) {
@@ -179,7 +181,6 @@ const InviteProvider = () => {
   }
 
   const handleSubmit = () => {
-    setFormSubmited(true)
     if (validate()) {
       step == 4 ? sendInvite() : handleContinue();
     }
