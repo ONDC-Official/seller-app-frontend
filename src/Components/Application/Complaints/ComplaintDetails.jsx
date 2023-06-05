@@ -13,20 +13,30 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import { ISSUE_TYPES } from "../../../Constants/issue-types";
 
 const ComplaintDetails = () => {
   const [complaint, setComplaint] = useState();
-  const [user, setUser] = React.useState();
   const [issueActions, setIssueActions] = React.useState([]);
   const params = useParams();
   const navigate = useNavigate();
   const issue = complaint?.message?.issue
+
+  const AllCategory = ISSUE_TYPES.map((item) => {
+    return item.subCategory.map((subcategoryItem) => {
+        return {
+            ...subcategoryItem,
+            category: item.value,
+        };
+    });
+}).flat();
+
   const getComplaint = async () => {
     const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
       if (resp.success) {
-        setComplaint(resp.data);
-        mergeRespondantArrays(resp.data.message?.issue?.issue_actions)
+        setComplaint(resp.issue);
+        mergeRespondantArrays(resp.issue.message?.issue?.issue_actions)
       }
     });
   };
@@ -44,19 +54,6 @@ const ComplaintDetails = () => {
     mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     setIssueActions(mergedarray)
   }
-
-  const getUser = async (id) => {
-    const url = `/api/v1/users/${id}`;
-    const res = await getCall(url);
-    setUser(res[0]);
-    return res[0];
-  };
-
-  React.useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
-    getUser(user_id);
-  }, []);
-
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
 
@@ -86,7 +83,7 @@ const ComplaintDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Subcategory</p>
-            <p className="text-base font-normal">{issue?.sub_category}</p>
+            <p className="text-base font-normal">{AllCategory.find(x => x.enums === issue?.sub_category)?.value}</p>
           </div>
           <div className="flex justify-between mt-3 mb-3">
             <p className="text-base font-normal">Complaint Status</p>
@@ -128,7 +125,7 @@ const ComplaintDetails = () => {
               <div className="flex items-center">
                 <p className="text-lg font-semibold">Email : &nbsp;</p>
                 <p className="text-sm font-medium">
-                  {issue?.complainant_info?.person?.email}
+                  {issue?.complainant_info?.contact?.email}
                 </p>
               </div>
             </div>

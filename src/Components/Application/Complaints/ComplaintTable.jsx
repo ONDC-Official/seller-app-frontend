@@ -19,6 +19,7 @@ import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 import CustomerActionCard from "./actionCard.jsx";
 import cogoToast from "cogo-toast";
 import { postCall } from "../../../Api/axios.js";
+import { ISSUE_TYPES } from "../../../Constants/issue-types.js";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -32,6 +33,15 @@ export default function ComplaintTable(props) {
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const [supportActionDetails, setSupportActionDetails] = useState();
   const [data, setData] = useState(props.data)
+
+  const AllCategory = ISSUE_TYPES.map((item) => {
+    return item.subCategory.map((subcategoryItem) => {
+        return {
+            ...subcategoryItem,
+            category: item.value,
+        };
+    });
+}).flat();
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
@@ -153,13 +163,13 @@ export default function ComplaintTable(props) {
       case "created_at":
         return (
           <>
-            <span>{convertDateInStandardFormat(value.date)}</span>
+            <span>{convertDateInStandardFormat(value)}</span>
           </>
         );
       case "updated_at":
         return (
           <>
-            <span>{convertDateInStandardFormat(value.date)}</span>
+            <span>{convertDateInStandardFormat(value)}</span>
           </>
         );
       case "status":
@@ -171,7 +181,7 @@ export default function ComplaintTable(props) {
       case "provider_name":
         return (
           <div>
-            <span>{"Provide name"}</span>
+            <span>{issue.order_details.provider_name}</span>
             <br />
           </div>
         );
@@ -184,7 +194,7 @@ export default function ComplaintTable(props) {
           ); case "sub_category":
           return (
             <div>
-              <span>{value}</span>
+              <span>{AllCategory.find(x => x.enums === value)?.value}</span>
               <br />
             </div>
           );
