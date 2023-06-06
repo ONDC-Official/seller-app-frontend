@@ -70,6 +70,10 @@ const ComplaintDetails = () => {
             <p className="text-base font-normal">{issue?.id}</p>
           </div>
           <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Product Names</p>
+            <p className="text-base font-normal">{issue?.order_details.items.map(x=> x.product_name).toString()}</p>
+          </div>
+          <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Created On</p>
             <p className="text-base font-normal">{convertDateInStandardFormat(issue?.created_at)}</p>
           </div>
