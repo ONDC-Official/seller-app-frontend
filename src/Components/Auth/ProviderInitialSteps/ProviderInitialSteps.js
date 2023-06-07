@@ -132,8 +132,8 @@ let storeFields = [
     id: "defaultCancellable",
     title: "Default cancellable setting",
     options: [
-      { key: "Cancellable", value: true },
-      { key: "Non Cancellable", value: false },
+      { key: "Cancellable", value: "true" },
+      { key: "Non Cancellable", value: "false" },
     ],
     type: "radio",
     required: true,
@@ -142,8 +142,8 @@ let storeFields = [
     id: "defaultReturnable",
     title: "Default returnable setting",
     options: [
-      { key: "Returnable", value: true },
-      { key: "Non Returnable", value: false },
+      { key: "Returnable", value: "true" },
+      { key: "Non Returnable", value: "false" },
     ],
     type: "radio",
     required: true,
@@ -179,8 +179,8 @@ const ProviderInitialSteps = () => {
     locality: "",
     locationAvailability: "PAN INDIA",
     city: [],
-    defaultCancellable: false,
-    defaultReturnable: false,
+    defaultCancellable: "false",
+    defaultReturnable: "false",
     email: "",
     mobile: "",
     
@@ -327,7 +327,8 @@ const ProviderInitialSteps = () => {
 
   const handleStoreDetailsReq = async () => {
     const data = Object.assign({}, form2Values);
-
+    data.defaultCancellable = eval(data.defaultCancellable)
+    data.defaultReturnable = eval(data.defaultReturnable)
     data.address = {
       building: form2Values.building,
       city: form2Values.address_city,

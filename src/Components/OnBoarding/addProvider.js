@@ -99,7 +99,7 @@ const InviteProvider = () => {
       const res = await postCall(url, data);
       setFormSubmited(false);
       navigate("/");
-      cogoToast.success("Provider created successfully and invitation sent on e-mail");
+      cogoToast.success("Provider onboarded successfully");
     } catch (error) {
       console.log("error.response", error.response);
       cogoToast.error(error.response.data.error);
@@ -250,7 +250,7 @@ const InviteProvider = () => {
                   onClick={handleSubmit}
                   //  disabled={checkDisabled()}
                 >
-                  {step == 4 ? "Invite" : "Continue"}
+                  {step == 4 ? "SignUp" : "Continue"}
                 </Button>
               </div>
             </form>
