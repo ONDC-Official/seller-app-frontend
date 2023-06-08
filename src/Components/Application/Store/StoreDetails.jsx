@@ -49,8 +49,8 @@ let storeFields = [
     id: "location_availability",
     title: "Location availability",
     options: [
-      { key: "PAN India", value: true },
-      { key: "City", value: false },
+      { key: "PAN India", value: "true" },
+      { key: "City", value: "false" },
     ],
     type: "radio",
     required: false,
@@ -59,8 +59,8 @@ let storeFields = [
     id: "default_cancellable",
     title: "Default cancellable setting",
     options: [
-      { key: "Cancellable", value: true },
-      { key: "Non Cancellable", value: false },
+      { key: "Cancellable", value: "true" },
+      { key: "Non Cancellable", value: "false" },
     ],
     type: "radio",
     required: false,
@@ -69,8 +69,8 @@ let storeFields = [
     id: "default_returnable",
     title: "Default returnable setting",
     options: [
-      { key: "Returnable", value: true },
-      { key: "Non Returnable", value: false },
+      { key: "Returnable", value: "true" },
+      { key: "Non Returnable", value: "false" },
     ],
     type: "radio",
     required: false,
@@ -182,9 +182,9 @@ const StoreDetails = (props) => {
         setStoreDetails({
           ...store_details,
           ...store_details?.supportDetails,
-          location_availability: store_details?.locationAvailabilityPANIndia,
-          default_cancellable: store_details?.defaultCancellable,
-          default_returnable: store_details?.defaultReturnable,
+          location_availability: store_details?.locationAvailabilityPANIndia?"true":"false",
+          default_cancellable: store_details?.defaultCancellable?"true":"false",
+          default_returnable: store_details?.defaultReturnable?"true":"false",
           logo: store_details?.logo?.path,
           uploaded_urls: [store_details?.logo?.url],
         });

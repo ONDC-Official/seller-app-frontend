@@ -167,8 +167,8 @@ let storeFields = [
     id: "default_cancellable",
     title: "Default Cancellable Setting",
     options: [
-      { key: "Cancellable", value: true },
-      { key: "Non Cancellable", value: false },
+      { key: "Cancellable", value: "true" },
+      { key: "Non Cancellable", value: "false" },
     ],
     type: "radio",
     required: true,
@@ -177,8 +177,8 @@ let storeFields = [
     id: "default_returnable",
     title: "Default returnable Setting",
     options: [
-      { key: "Returnable", value: true },
-      { key: "Non Returnable", value: false },
+      { key: "Returnable", value: "true" },
+      { key: "Non Returnable", value: "false" },
     ],
     type: "radio",
     required: true,
@@ -312,8 +312,8 @@ const ProviderDetails = ({isFromUserListing=false}) => {
             ? "pan_india"
             : "city":'',
         cities: res?.providerDetail?.storeDetails?.city || [],
-        default_cancellable: false,
-        default_returnable: false,
+        default_cancellable: "false",
+        default_returnable: "false",
         country: res.providerDetail?.storeDetails?.address?.country || '',
         state: res.providerDetail?.storeDetails?.address?.state || '',
         city: res.providerDetail?.storeDetails?.address.city || '',
