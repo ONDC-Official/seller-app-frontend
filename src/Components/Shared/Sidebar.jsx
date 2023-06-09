@@ -138,6 +138,13 @@ export default function Sidebar(props) {
                 <ListItemText primary="Orders" />
               </ListItemButton>
             </NavLink>
+            <NavLink 
+            to="/application/complaints"
+            className="no-underline text-black">
+              <ListItemButton sx={{pl:4}}>
+               <ListItemText primary="Complaints"/>
+              </ListItemButton>
+            </NavLink>
             {user?.role?.name === "Super Admin" && (
               <NavLink
                 to="/application/user-listings"
