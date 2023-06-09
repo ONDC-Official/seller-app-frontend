@@ -111,6 +111,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "radio") {
+    // console.log("state[item.id]=====>", state[item.id]);
+    // console.log("item.options=====>", item.options);
     let isDisabled = false;
     if(item.id === "isVegetarian" && state["productCategory"] && state["productCategory"] !== "f_and_b"){
       isDisabled = true;
@@ -126,9 +128,11 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             aria-label={item.id}
             name={item.id}
             value={state[item.id]}
-            onChange={(e) =>
+            onChange={(e) => {
+              console.log("e.target.value=====>", e.target.value);
+              console.log("item.i=====>", item.id);
               stateHandler({ ...state, [item.id]: e.target.value })
-            }
+            }}
             disabled={isDisabled}
           >
             <div className="flex flex-row">
@@ -137,7 +141,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                   disabled={item?.isDisabled || isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
-                  control={<Radio size="small" checked={radioItem.value ===state[item.id]} />}
+                  control={<Radio size="small" checked={radioItem.value === state[item.id]} />}
                   label={
                     <div className="text-sm font-medium text-[#606161]">
                       {radioItem.key}
@@ -207,6 +211,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "select") {
+    console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -234,27 +239,27 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             ))}
           </Select>
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
-
+          
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
-            value={state[item.id] && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
+            value={state[item.id] !== "" && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
                 if(item.id === "productCategory"){
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue?.value || '',
+                    [item.id]: newValue.value || '',
                     "productSubcategory1": ""
                   };
                   return newState;
                 }else{
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue?.value || '',
+                    [item.id]: newValue.value,
                   };
                   return newState;
                 }
@@ -532,6 +537,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     };
 
     const renderUploadedUrls = () => {
+      console.log("state?.tempURL?.[item.id]=====>", state?.tempURL?.[item.id]);
       if(item?.multiple){
         if (state?.uploaded_urls) {
           return state?.uploaded_urls?.map((url) => {
@@ -541,9 +547,14 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           });
         }
       }else{
-        return (
-          <img src={state[item.id]} height={50} width={50} style={{ margin: "10px" }} />
-        );
+        if(state?.tempURL?.[item.id] || state[item.id]){
+          return (
+            <img src={state?.tempURL?.[item.id] || state[item.id] || ""} height={50} width={50} style={{ margin: "10px" }} />
+          );
+        }else{
+          return <></>
+        }
+        
       }
     };
 
@@ -651,7 +662,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                 formData.append("file", file);
                 getSignUrl(file).then((d) => {
                   const url = d.urls;
-
+                  console.log("url=====>", url);
                   axios(url, {
                     method: "PUT",
                     data: file,
@@ -671,11 +682,22 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                           return newState;
                         });
                       } else {
-                        stateHandler({
-                          ...state,
-                          [item.id]: d.path,
-                          uploaded_urls: [],
-                        });
+                        let reader = new FileReader();
+                        let tempUrl = '';
+                        reader.onload = function (e) {
+                          tempUrl = e.target.result;
+                          stateHandler({
+                            ...state,
+                            [item.id]: d.path,
+                            tempURL: {
+                              ...state.tempURL,
+                              [item.id]: tempUrl
+                            },
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                        
+                        
                       }
                       response.json();
                     })
