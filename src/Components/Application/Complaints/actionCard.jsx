@@ -117,7 +117,7 @@ export default function CustomerActionCard({
       }
     }
     if(selectedCancelType === ACTION_TYPES.refundIssue){
-      body.refund_value = refundAmount
+      body.refund_amount = refundAmount
     }
     postCall(`/api/client/issue_response`, body)
       .then((resp) => {
