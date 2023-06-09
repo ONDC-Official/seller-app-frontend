@@ -139,7 +139,9 @@ export default function ComplaintTable(props) {
           >
             Process
           </MenuItem>
-          <MenuItem onClick={() => handleMenuClick()}>
+          <MenuItem 
+          disabled={!issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
+          onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
           </>

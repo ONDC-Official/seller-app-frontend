@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Divider
+  Button,
+  Divider,
+  Menu,
+  MenuItem
 } from "@mui/material";
 import moment from "moment";
-import { getCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import Timeline from '@mui/lab/Timeline';
@@ -14,13 +17,22 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import { ISSUE_TYPES } from "../../../Constants/issue-types";
+import cogoToast from "cogo-toast";
+import CustomerActionCard from "./actionCard";
 
 const ComplaintDetails = () => {
   const [complaint, setComplaint] = useState();
-  const [issueActions, setIssueActions] = React.useState([]);
+  const [user, setUser] = useState();
+  const [issueActions, setIssueActions] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [supportActionDetails, setSupportActionDetails] = useState();
+  const [toggleActionModal, setToggleActionModal] = useState(false);
+  const issue = complaint?.message?.issue
+  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
+
   const params = useParams();
   const navigate = useNavigate();
-  const issue = complaint?.message?.issue
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
@@ -45,6 +57,17 @@ const ComplaintDetails = () => {
     if (params.id) getComplaint();
   }, [params]);
 
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    setUser(res[0]);
+    return res[0];
+  };
+
+  useEffect(() => {
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id);
+  }, []);
 
   const mergeRespondantArrays = (actions) => {
     let resActions = actions.respondent_actions,
@@ -56,18 +79,129 @@ const ComplaintDetails = () => {
   }
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
+  const renderActionButtons = (data) => {
+  function handleMenuClick() {
+    setSupportActionDetails(complaint)
+    handleClose()
+    setToggleActionModal(true)
+  }
+
+  const handleClick = (e) => {
+    console.log(e);
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+ const handleAction=()=> {
+  setLoading(true)
+  const body = {
+    "transaction_id": complaint.context.transaction_id,
+    "respondent_action": "PROCESSING",
+    "short_desc": "We are investigating your concern.",
+    "updated_by": {
+      "org": {
+        "name": user.organization
+      },
+      "contact": {
+        "phone": user.mobile,
+        "email": user.email
+      },
+      "person": {
+        "name": user.name
+      }
+    }
+  }
+  postCall(`/api/client/issue_response`, body)
+    .then((resp) => {
+      setLoading(false)
+      if(resp.success){
+      cogoToast.success("Action taken successfully");
+      setResolved(true)
+      }else{
+        cogoToast.error(resp.message);
+      }
+    })
+    .catch((error) => {
+      setLoading(false)
+      console.log(error);
+      cogoToast.error(error.response.data.error);
+    });
+ }
+
+      return (
+        <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
+       { (user?.role?.name !== "Super Admin") &&
+          <Button
+            variant="contained"
+            className="!capitalize"
+            onClick={(e) => handleClick(e)}
+            disabled={data.status === "CLOSED" }
+          >
+            Action
+          </Button>
+        }
+          <Menu
+          id="card-actions-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem
+            disabled={loading || resolved}
+            onClick={() => {
+              handleAction()
+           }}
+          >
+            Process
+          </MenuItem>
+          <MenuItem 
+          disabled={!data.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
+          onClick={() => handleMenuClick()}>
+            Resolve
+          </MenuItem>
+        </Menu>
+        <Button
+        className="!capitalize"
+        variant="contained"
+        onClick={() => navigate(`/application/orders/${data?.order_details?.orderDetailsId}`)}
+      >
+        Order Detail
+        </Button>
+        </div>
+      );
+  };
 
   return (
     <div className="container mx-auto my-8">
+          {toggleActionModal && (
+                <CustomerActionCard
+                    user={user}
+                    supportActionDetails={supportActionDetails}
+                    onClose={() => setToggleActionModal(false)}
+                    onSuccess={() => {
+                        cogoToast.success("Action taken successfully");
+                        setToggleActionModal(false);
+                    }}
+                />
+            )}
       <BackNavigationButton onClick={() => navigate("/application/complaints")} />
       <div className="flex flex-col">
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex justify-between">
             <p className="text-lg font-semibold mb-2">Complaints Summary</p>
+            {renderActionButtons(issue)}
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Complaint ID</p>
             <p className="text-base font-normal">{issue?.id}</p>
+          </div>
+          <div className="flex justify-between mt-3">
+            <p className="text-base font-normal">Issue Type</p>
+            <p className="text-base font-normal">{issue?.issue_type}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Product Names</p>
