@@ -29,7 +29,8 @@ const ComplaintDetails = () => {
   const [supportActionDetails, setSupportActionDetails] = useState();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const issue = complaint?.message?.issue
-  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
+  const isProcessed = issue?.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING")
+  const [resolved, setResolved] = useState(isProcessed);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const ComplaintDetails = () => {
   }
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
-  const renderActionButtons = (data) => {
+  const renderActionButtons = () => {
   function handleMenuClick() {
     setSupportActionDetails(complaint)
     handleClose()
@@ -117,7 +118,7 @@ const ComplaintDetails = () => {
   postCall(`/api/client/issue_response`, body)
     .then((resp) => {
       setLoading(false)
-      if(resp.success){
+      if(resp.message?.ack?.status === "ACK") {
       cogoToast.success("Action taken successfully");
       setResolved(true)
       }else{
@@ -138,7 +139,7 @@ const ComplaintDetails = () => {
             variant="contained"
             className="!capitalize"
             onClick={(e) => handleClick(e)}
-            disabled={data.status === "CLOSED" }
+            disabled={issue.status === "CLOSED" }
           >
             Action
           </Button>
@@ -153,13 +154,13 @@ const ComplaintDetails = () => {
           <MenuItem
             disabled={loading || resolved}
             onClick={() => {
-              handleAction()
+                handleAction()
            }}
           >
             Process
           </MenuItem>
           <MenuItem 
-          disabled={!data.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
+          disabled={!isProcessed && !resolved}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
@@ -167,7 +168,7 @@ const ComplaintDetails = () => {
         <Button
         className="!capitalize"
         variant="contained"
-        onClick={() => navigate(`/application/orders/${data?.order_details?.orderDetailsId}`)}
+        onClick={() => navigate(`/application/orders/${issue?.order_details?.orderDetailsId}`)}
       >
         Order Detail
         </Button>
@@ -193,7 +194,7 @@ const ComplaintDetails = () => {
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex justify-between">
             <p className="text-lg font-semibold mb-2">Complaints Summary</p>
-            {renderActionButtons(issue)}
+            {issue && renderActionButtons()}
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Complaint ID</p>

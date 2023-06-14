@@ -307,7 +307,7 @@ export default function CustomerActionCard({
                   maxLength: 6
                 }}
               />
-              {inlineError.remarks_error && (
+              {inlineError.refund_amount && (
                 <ErrorMessage>{inlineError.refund_amount}</ErrorMessage>
               )}
             </div>

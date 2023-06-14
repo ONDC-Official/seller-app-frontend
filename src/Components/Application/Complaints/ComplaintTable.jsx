@@ -56,9 +56,10 @@ export default function ComplaintTable(props) {
   const issue = row.message.issue
   const context = row.context
   const user = props.user
+  const isProcessed = issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING")
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
+  const [resolved, setResolved] = useState(isProcessed);
 
     function handleMenuClick() {
       setSupportActionDetails(row)
@@ -67,7 +68,6 @@ export default function ComplaintTable(props) {
     }
 
     const handleClick = (e) => {
-      console.log(e);
       setAnchorEl(e.currentTarget);
     };
 
@@ -97,7 +97,7 @@ export default function ComplaintTable(props) {
     postCall(`/api/client/issue_response`, body)
       .then((resp) => {
         setLoading(false)
-        if(resp.success){
+        if(resp.message?.ack?.status === "ACK") {
         cogoToast.success("Action taken successfully");
         setResolved(true)
         }else{
@@ -140,7 +140,7 @@ export default function ComplaintTable(props) {
             Process
           </MenuItem>
           <MenuItem 
-          disabled={!issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
+          disabled={!isProcessed && !resolved}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
