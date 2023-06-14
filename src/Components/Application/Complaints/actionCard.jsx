@@ -75,7 +75,7 @@ export default function CustomerActionCard({
   }
 
   async function contactSupport() {
-    if (selectedCancelType === ACTION_TYPES.refundIssue && !checkRefund()) {
+    if (selectedCancelType === ACTION_TYPES.refundIssue && !checkRefund() && !checkRemarks()) {
       return;
     }
     if (!checkRemarks()) {
