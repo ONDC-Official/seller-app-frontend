@@ -28,11 +28,10 @@ const StyledTableCell = styled(TableCell)({
 });
 
 export default function ComplaintTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange } = props
+  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, data } = props
   const navigate = useNavigate();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const [supportActionDetails, setSupportActionDetails] = useState();
-  const [data, setData] = useState(props.data)
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
@@ -56,11 +55,14 @@ export default function ComplaintTable(props) {
   const issue = row.message.issue
   const context = row.context
   const user = props.user
-  const isProcessed = issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING")
+  const resActions = issue?.issue_actions?.respondent_actions
+  const compActions = issue?.issue_actions?.complainant_actions
+  const isEscalate = compActions[compActions.length - 1]?.complainant_action === "ESCALATE"
+  const isProcessed = resActions[resActions.length - 1]?.respondent_action === "PROCESSING"
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resolved, setResolved] = useState(isProcessed);
-
+  
     function handleMenuClick() {
       setSupportActionDetails(row)
       handleClose()
@@ -140,7 +142,7 @@ export default function ComplaintTable(props) {
             Process
           </MenuItem>
           <MenuItem 
-          disabled={!isProcessed && !resolved}
+          disabled={(!isProcessed && !resolved) || !isEscalate}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>

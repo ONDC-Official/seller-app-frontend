@@ -161,6 +161,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -179,6 +180,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -197,6 +199,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -212,6 +215,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -231,6 +235,7 @@ export default function CustomerActionCard({
               setInlineError((inlineError) => ({
                 ...inlineError,
                 remarks_error: "",
+                refund_amount: ""
               }));
             }}
           >

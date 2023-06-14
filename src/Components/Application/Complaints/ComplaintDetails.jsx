@@ -29,7 +29,10 @@ const ComplaintDetails = () => {
   const [supportActionDetails, setSupportActionDetails] = useState();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const issue = complaint?.message?.issue
-  const isProcessed = issue?.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING")
+  const resActions = issue?.issue_actions?.respondent_actions
+  const compActions = issue?.issue_actions?.complainant_actions
+  const isEscalate = compActions[compActions.length - 1]?.complainant_action === "ESCALATE"
+  const isProcessed = resActions[resActions.length - 1]?.respondent_action === "PROCESSING"
   const [resolved, setResolved] = useState(isProcessed);
 
   const params = useParams();
@@ -160,7 +163,7 @@ const ComplaintDetails = () => {
             Process
           </MenuItem>
           <MenuItem 
-          disabled={!isProcessed && !resolved}
+          disabled={(!isProcessed && !resolved) || !isEscalate}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
