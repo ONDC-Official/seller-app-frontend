@@ -32,6 +32,7 @@ export default function ComplaintTable(props) {
   const navigate = useNavigate();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const [supportActionDetails, setSupportActionDetails] = useState();
+  const [expanded, setExpanded] = useState(null);
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
@@ -58,11 +59,14 @@ export default function ComplaintTable(props) {
   const resActions = issue?.issue_actions?.respondent_actions
   const compActions = issue?.issue_actions?.complainant_actions
   const isEscalate = compActions[compActions.length - 1]?.complainant_action === "ESCALATE"
+  const isCascaded = resActions[resActions.length - 1]?.respondent_action === "CASCADED"
   const isProcessed = resActions[resActions.length - 1]?.respondent_action === "PROCESSING"
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resolved, setResolved] = useState(isProcessed);
-  
+  const [cascaded, setCascaded] = useState(isCascaded)
+ 
+
     function handleMenuClick() {
       setSupportActionDetails(row)
       handleClose()
@@ -77,11 +81,11 @@ export default function ComplaintTable(props) {
       setAnchorEl(null);
     };
 
-   const handleAction=()=> {
+   const handleAction=(action)=> {
     setLoading(true)
     const body = {
       "transaction_id": context.transaction_id,
-      "respondent_action": "PROCESSING",
+      "respondent_action": action,
       "short_desc": "We are investigating your concern.",
       "updated_by": {
         "org": {
@@ -101,7 +105,7 @@ export default function ComplaintTable(props) {
         setLoading(false)
         if(resp.message?.ack?.status === "ACK") {
         cogoToast.success("Action taken successfully");
-        setResolved(true)
+        action === "PROCESSING" ? setResolved(true) : setCascaded(true)
         }else{
           cogoToast.error(resp.message);
         }
@@ -111,6 +115,32 @@ export default function ComplaintTable(props) {
         console.log(error);
         cogoToast.error(error.response.data.error);
       });
+   }
+
+  function checkProcessDisable() {
+    if(resolved || loading){
+      return true
+    }
+    if(cascaded){
+      return true
+    }
+
+    return  false
+  }
+
+   function checkResolveDisable(){
+    if(expanded === context.transaction_id){
+      return true
+    }
+    if(!resolved && !isEscalate){
+      return true
+    }
+  
+    if(cascaded){
+      return true
+    }
+
+    return false
    }
 
     return (
@@ -134,18 +164,23 @@ export default function ComplaintTable(props) {
         :
         <>
           <MenuItem
-            disabled={loading || resolved}
+            disabled={checkProcessDisable()}
             onClick={() => {
-              handleAction()
+              handleAction("PROCESSING")
            }}
           >
             Process
           </MenuItem>
-          <MenuItem 
-          disabled={(!isProcessed && !resolved) || !isEscalate}
+          <MenuItem
+          disabled={checkResolveDisable()}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
+          {/* <MenuItem
+          disabled={cascaded}
+          onClick={() => handleAction("CASCADED")}>
+            Cascade
+          </MenuItem> */}
           </>
           }
         </Menu>
@@ -218,6 +253,7 @@ export default function ComplaintTable(props) {
     }
   };
 
+
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
        {toggleActionModal && (
@@ -225,10 +261,11 @@ export default function ComplaintTable(props) {
                     user={props.user}
                     supportActionDetails={supportActionDetails}
                     onClose={() => setToggleActionModal(false)}
-                    onSuccess={() => {
+                    onSuccess={(id) => {
                         cogoToast.success("Action taken successfully");
                         setToggleActionModal(false);
-                        props.onSuccess()
+                        setExpanded(id)
+                        //props.onSuccess()
                     }}
                 />
             )}

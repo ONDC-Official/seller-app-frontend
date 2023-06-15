@@ -31,9 +31,12 @@ const ComplaintDetails = () => {
   const issue = complaint?.message?.issue
   const resActions = issue?.issue_actions?.respondent_actions
   const compActions = issue?.issue_actions?.complainant_actions
-  const isEscalate = compActions[compActions.length - 1]?.complainant_action === "ESCALATE"
-  const isProcessed = resActions[resActions.length - 1]?.respondent_action === "PROCESSING"
+  const isEscalate = (compActions && compActions.length > 0) ? compActions[compActions.length - 1]?.complainant_action === "ESCALATE" : false
+  const isCascaded = (resActions && resActions.length > 0) ? resActions[resActions.length - 1]?.respondent_action === "CASCADED" : false
+  const isProcessed = (resActions && resActions.length > 0)? resActions[resActions.length - 1]?.respondent_action === "PROCESSING" : false
   const [resolved, setResolved] = useState(isProcessed);
+  const [cascaded, setCascaded] = useState(isCascaded)
+  const [expanded, setExpanded] = useState(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -135,6 +138,32 @@ const ComplaintDetails = () => {
     });
  }
 
+ function checkProcessDisable() {
+  if(resolved || loading){
+    return true
+  }
+  if(cascaded){
+    return true
+  }
+
+  return  false
+}
+
+ function checkResolveDisable(){
+  if(expanded === supportActionDetails?.context.transaction_id){
+    return true
+  }
+  if(!resolved && !isEscalate){
+    return true
+  }
+
+  if(cascaded){
+    return true
+  }
+
+  return false
+ }
+
       return (
         <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
        { (user?.role?.name !== "Super Admin") &&
@@ -155,7 +184,7 @@ const ComplaintDetails = () => {
           onClose={handleClose}
         >
           <MenuItem
-            disabled={loading || resolved}
+            disabled={checkProcessDisable()}
             onClick={() => {
                 handleAction()
            }}
@@ -163,7 +192,7 @@ const ComplaintDetails = () => {
             Process
           </MenuItem>
           <MenuItem 
-          disabled={(!isProcessed && !resolved) || !isEscalate}
+          disabled={checkResolveDisable()}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
@@ -186,9 +215,10 @@ const ComplaintDetails = () => {
                     user={user}
                     supportActionDetails={supportActionDetails}
                     onClose={() => setToggleActionModal(false)}
-                    onSuccess={() => {
+                    onSuccess={(id) => {
                         cogoToast.success("Action taken successfully");
                         setToggleActionModal(false);
+                        setExpanded(id)
                     }}
                 />
             )}

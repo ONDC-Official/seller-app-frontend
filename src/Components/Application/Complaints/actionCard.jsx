@@ -74,7 +74,7 @@ export default function CustomerActionCard({
     return true;
   }
 
-  async function contactSupport() {
+  async function onSubmit() {
     if (selectedCancelType === ACTION_TYPES.refundIssue && !checkRefund() && !checkRemarks()) {
       return;
     }
@@ -123,7 +123,7 @@ export default function CustomerActionCard({
       .then((resp) => {
         setLoading(false)
         if (resp.message?.ack?.status === "ACK") {
-          onSuccess()
+          onSuccess(context.transaction_id)
         } else {
           cogoToast.error(resp.message);
         }
@@ -138,7 +138,7 @@ export default function CustomerActionCard({
   return (
     <div className={styles.overlay}>
       <div className={styles.popup_card}>
-        <div className={`${styles.card_header} display: flex`}>
+        <div className={`${styles.card_header} display: flex justify-content: space-between`}>
           <p className={styles.card_header_title}>Take Action</p>
           <div className="ms-auto">
             <CrossIcon
@@ -336,7 +336,7 @@ export default function CustomerActionCard({
             title="Submit"
             variant="contained"
             className="!ml-5"
-            onClick={() => contactSupport()}
+            onClick={() =>  onSubmit()}
           />
         </div>
       </div>
