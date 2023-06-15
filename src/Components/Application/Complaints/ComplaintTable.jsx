@@ -1,4 +1,4 @@
-import { useState, Fragment, useContext } from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,19 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
 import { styled } from "@mui/material/styles";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 import CustomerActionCard from "./actionCard.jsx";
 import cogoToast from "cogo-toast";
-import { postCall } from "../../../Api/axios.js";
 import { ISSUE_TYPES } from "../../../Constants/issue-types.js";
+import ThreeDotsMenu from "./actionMenu.jsx";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -50,142 +44,6 @@ export default function ComplaintTable(props) {
   const onRowsPerPageChange = (event) => {
     handleRowsPerPageChange(parseInt(event.target.value, 10))
     handlePageChange(0)
-  };
-
-  const ThreeDotsMenu = ({row}) => {
-  const issue = row.message.issue
-  const context = row.context
-  const user = props.user
-  const resActions = issue?.issue_actions?.respondent_actions
-  const compActions = issue?.issue_actions?.complainant_actions
-  const isEscalate = compActions[compActions.length - 1]?.complainant_action === "ESCALATE"
-  const isCascaded = resActions[resActions.length - 1]?.respondent_action === "CASCADED"
-  const isProcessed = resActions[resActions.length - 1]?.respondent_action === "PROCESSING"
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [resolved, setResolved] = useState(isProcessed);
-  const [cascaded, setCascaded] = useState(isCascaded)
- 
-
-    function handleMenuClick() {
-      setSupportActionDetails(row)
-      handleClose()
-      setToggleActionModal(true)
-    }
-
-    const handleClick = (e) => {
-      setAnchorEl(e.currentTarget);
-    };
-
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-   const handleAction=(action)=> {
-    setLoading(true)
-    const body = {
-      "transaction_id": context.transaction_id,
-      "respondent_action": action,
-      "short_desc": "We are investigating your concern.",
-      "updated_by": {
-        "org": {
-          "name": user.organization
-        },
-        "contact": {
-          "phone": user.mobile,
-          "email": user.email
-        },
-        "person": {
-          "name": user.name
-        }
-      }
-    }
-    postCall(`/api/client/issue_response`, body)
-      .then((resp) => {
-        setLoading(false)
-        if(resp.message?.ack?.status === "ACK") {
-        cogoToast.success("Action taken successfully");
-        action === "PROCESSING" ? setResolved(true) : setCascaded(true)
-        }else{
-          cogoToast.error(resp.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false)
-        console.log(error);
-        cogoToast.error(error.response.data.error);
-      });
-   }
-
-  function checkProcessDisable() {
-    if(resolved || loading){
-      return true
-    }
-    if(cascaded){
-      return true
-    }
-
-    return  false
-  }
-
-   function checkResolveDisable(){
-    if(expanded === context.transaction_id){
-      return true
-    }
-    if(!resolved && !isEscalate){
-      return true
-    }
-  
-    if(cascaded){
-      return true
-    }
-
-    return false
-   }
-
-    return (
-      <Fragment>
-        <Button onClick={(e) => handleClick(e)}>
-          <MoreVertIcon />
-        </Button>
-        <Menu
-          id="card-actions-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {
-          issue.status === "CLOSED" ?
-          <MenuItem disabled
-          >
-          No Action Required
-        </MenuItem>
-        :
-        <>
-          <MenuItem
-            disabled={checkProcessDisable()}
-            onClick={() => {
-              handleAction("PROCESSING")
-           }}
-          >
-            Process
-          </MenuItem>
-          <MenuItem
-          disabled={checkResolveDisable()}
-          onClick={() => handleMenuClick()}>
-            Resolve
-          </MenuItem>
-          {/* <MenuItem
-          disabled={cascaded}
-          onClick={() => handleAction("CASCADED")}>
-            Cascade
-          </MenuItem> */}
-          </>
-          }
-        </Menu>
-      </Fragment>
-    );
   };
 
   const renderColumn = (row, column) => {
@@ -246,7 +104,11 @@ export default function ComplaintTable(props) {
         );
         case "action":
           return (
-            <ThreeDotsMenu row={row} />
+            <ThreeDotsMenu expanded={expanded} row={row} user={props.user} handleMenuClick={()=> {
+              setSupportActionDetails(row)
+              setToggleActionModal(true)
+            }}
+            />
           );
       default:
         break;
@@ -269,6 +131,7 @@ export default function ComplaintTable(props) {
                     }}
                 />
             )}
+            
       <TableContainer>
         <Table aria-label="sticky table">
           <TableHead>

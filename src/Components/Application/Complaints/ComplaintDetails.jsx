@@ -31,9 +31,11 @@ const ComplaintDetails = () => {
   const issue = complaint?.message?.issue
   const resActions = issue?.issue_actions?.respondent_actions
   const compActions = issue?.issue_actions?.complainant_actions
-  const isEscalate = (compActions && compActions.length > 0) ? compActions[compActions.length - 1]?.complainant_action === "ESCALATE" : false
-  const isCascaded = (resActions && resActions.length > 0) ? resActions[resActions.length - 1]?.respondent_action === "CASCADED" : false
-  const isProcessed = (resActions && resActions.length > 0)? resActions[resActions.length - 1]?.respondent_action === "PROCESSING" : false
+  const isEscalate = (compActions && compActions?.length > 0) ? compActions[compActions.length - 1]?.complainant_action === "ESCALATE" : false
+  const isCascaded = (resActions && resActions?.length > 0) ? resActions[resActions.length - 1]?.respondent_action === "CASCADED" : false
+  const isProcessed = (resActions && resActions?.length > 0)? resActions.some(x=> x.respondent_action === "PROCESSING") : false
+  const isResolved =  (resActions && resActions?.length > 0)? resActions[resActions.length - 1]?.respondent_action === "RESOLVED" : false
+
   const [resolved, setResolved] = useState(isProcessed);
   const [cascaded, setCascaded] = useState(isCascaded)
   const [expanded, setExpanded] = useState(null);
@@ -151,6 +153,9 @@ const ComplaintDetails = () => {
 
  function checkResolveDisable(){
   if(expanded === supportActionDetails?.context.transaction_id){
+    return true
+  }
+  if(isResolved){
     return true
   }
   if(!resolved && !isEscalate){
