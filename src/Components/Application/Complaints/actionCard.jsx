@@ -23,6 +23,7 @@ const CssTextField = styled(TextField)({
     },
   },
 });
+
 export default function CustomerActionCard({
   supportActionDetails,
   onClose,
@@ -96,7 +97,6 @@ export default function CustomerActionCard({
       }
     }
     
-
     const body = {
       "transaction_id": context.transaction_id,
       "respondent_action": selectedCancelType === ACTION_TYPES.cascadeIssue ? "CASCADED" : "RESOLVED",
@@ -138,7 +138,7 @@ export default function CustomerActionCard({
   return (
     <div className={styles.overlay}>
       <div className={styles.popup_card}>
-        <div className={`${styles.card_header} display: flex justify-content: space-between`}>
+        <div className={`${styles.card_header} display: flex`} style={{justifyContent: 'space-between'}}>
           <p className={styles.card_header_title}>Take Action</p>
           <div className="ms-auto">
             <CrossIcon

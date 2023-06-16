@@ -29,17 +29,12 @@ const ComplaintDetails = () => {
   const [supportActionDetails, setSupportActionDetails] = useState();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const issue = complaint?.message?.issue
-  const resActions = issue?.issue_actions?.respondent_actions
-  const compActions = issue?.issue_actions?.complainant_actions
-  const isEscalate = (compActions && compActions?.length > 0) ? compActions[compActions.length - 1]?.complainant_action === "ESCALATE" : false
-  const isCascaded = (resActions && resActions?.length > 0) ? resActions[resActions.length - 1]?.respondent_action === "CASCADED" : false
-  const isProcessed = (resActions && resActions?.length > 0)? resActions.some(x=> x.respondent_action === "PROCESSING") : false
-  const isResolved =  (resActions && resActions?.length > 0)? resActions[resActions.length - 1]?.respondent_action === "RESOLVED" : false
+  const [isCascaded, setIsCascaded] = useState(false);
+  const [processed, setProcessed] = useState(false);
+  const [isResolved, setIsResolved] = useState(false)
+  const [isEscalate, setEscalate] = useState(false)
 
-  const [resolved, setResolved] = useState(isProcessed);
-  const [cascaded, setCascaded] = useState(isCascaded)
   const [expanded, setExpanded] = useState(null);
-
   const params = useParams();
   const navigate = useNavigate();
 
@@ -56,8 +51,9 @@ const ComplaintDetails = () => {
     const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
       if (resp.success) {
+        const issue_actions = resp.issue.message?.issue?.issue_actions
         setComplaint(resp.issue);
-        mergeRespondantArrays(resp.issue.message?.issue?.issue_actions)
+        mergeRespondantArrays(issue_actions)
       }
     });
   };
@@ -85,7 +81,17 @@ const ComplaintDetails = () => {
 
     mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     setIssueActions(mergedarray)
+
+    const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
+    const isCascaded = mergedarray[mergedarray.length - 2]?.respondent_action === "CASCADED"
+    const isEscalate = mergedarray[mergedarray.length - 1]?.respondent_action === "ESCALATE" 
+    const isResolved = mergedarray[mergedarray.length - 1]?.respondent_action === "RESOLVED"
+    setProcessed(isProcessed)
+    setIsCascaded(isCascaded)
+    setIsResolved(isResolved)
+    setEscalate(isEscalate)
   }
+
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
   const renderActionButtons = () => {
@@ -128,7 +134,7 @@ const ComplaintDetails = () => {
       setLoading(false)
       if(resp.message?.ack?.status === "ACK") {
       cogoToast.success("Action taken successfully");
-      setResolved(true)
+      setProcessed(true)
       }else{
         cogoToast.error(resp.message);
       }
@@ -141,10 +147,11 @@ const ComplaintDetails = () => {
  }
 
  function checkProcessDisable() {
-  if(resolved || loading){
+  
+  if(processed || loading){
     return true
   }
-  if(cascaded){
+  if(isCascaded){
     return true
   }
 
@@ -153,19 +160,29 @@ const ComplaintDetails = () => {
 
  function checkResolveDisable(){
   if(expanded === supportActionDetails?.context.transaction_id){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:399 ~ checkResolveDisable ~ expanded:", expanded)
     return true
   }
+
+  if(isCascaded && !isEscalate){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:414 ~ checkResolveDisable ~ isCascaded:", isCascaded)
+    return true
+  }
+
+  if(isEscalate && !isResolved && !isCascaded){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:457 ~ checkResolveDisable ~ isEscalate:", isEscalate, !isResolved)
+    return false
+  }
+   
   if(isResolved){
-    return true
-  }
-  if(!resolved && !isEscalate){
-    return true
-  }
-
-  if(cascaded){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:405 ~ checkResolveDisable ~ isResolved:", isResolved)
     return true
   }
 
+  if(!processed && !isEscalate){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:409 ~ checkResolveDisable ~ isEscalate:", isEscalate)
+    return true
+  }
   return false
  }
 

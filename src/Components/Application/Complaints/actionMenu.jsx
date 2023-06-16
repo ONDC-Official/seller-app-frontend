@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { postCall } from '../../../Api/axios';
 import cogoToast from 'cogo-toast';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -9,17 +9,34 @@ import Menu from "@mui/material/Menu";
 const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
     const issue = row?.message.issue
     const context = row?.context
-    const resActions = issue?.issue_actions?.respondent_actions
-    const compActions = issue?.issue_actions?.complainant_actions
-    const isEscalate = compActions[compActions?.length - 1]?.complainant_action === "ESCALATE"
-    const isCascaded = resActions[resActions?.length - 1]?.respondent_action === "CASCADED"
-    const isResolved = resActions[resActions?.length - 1]?.respondent_action === "RESOLVED"
-    const isProcessed = resActions.some(x=> x.respondent_action === "PROCESSING")
     const [anchorEl, setAnchorEl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [resolved, setResolved] = useState(isProcessed);
-    const [cascaded, setCascaded] = useState(isCascaded)
-   
+    const [processed, setProcessed] = useState(false);
+  const [isCascaded, setIsCascaded] = useState(false);
+  
+    const [isResolved, setIsResolved] = useState(false)
+  const [isEscalate, setEscalate] = useState(false)
+    useEffect(() => {
+        mergeRespondantArrays(issue?.issue_actions)
+    }, [])
+    
+
+    const mergeRespondantArrays = (actions) => {
+        let resActions = actions.respondent_actions,
+          comActions = actions.complainant_actions.map(item => { return ({ ...item, respondent_action: item.complainant_action }) }),
+          mergedarray = [...comActions, ...resActions]
+    
+        mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+        const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
+        const isCascaded = mergedarray[mergedarray.length - 2]?.respondent_action === "CASCADED"
+        const isEscalate = mergedarray[mergedarray.length - 1]?.respondent_action === "ESCALATE" 
+        const isResolved = mergedarray[mergedarray.length - 1]?.respondent_action === "RESOLVED"
+        setProcessed(isProcessed)
+        setIsCascaded(isCascaded)
+        setIsResolved(isResolved)
+        setEscalate(isEscalate)
+      }
+
       const handleClick = (e) => {
         setAnchorEl(e.currentTarget);
       };
@@ -28,11 +45,11 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
         setAnchorEl(null);
       };
   
-     const handleAction=(action)=> {
+     const handleAction=()=> {
       setLoading(true)
       const body = {
         "transaction_id": context.transaction_id,
-        "respondent_action": action,
+        "respondent_action": "PROCESSING",
         "short_desc": "We are investigating your concern.",
         "updated_by": {
           "org": {
@@ -52,7 +69,7 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
           setLoading(false)
           if(resp.message?.ack?.status === "ACK") {
           cogoToast.success("Action taken successfully");
-          action === "PROCESSING" ? setResolved(true) : setCascaded(true)
+          setProcessed(true)
           }else{
             cogoToast.error(resp.message);
           }
@@ -65,33 +82,43 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
      }
   
     function checkProcessDisable() {
-      if(resolved || loading){
+      if(processed || loading){
         return true
       }
-      if(cascaded){
+      if(isCascaded){
         return true
       }
   
       return  false
     }
   
-     function checkResolveDisable(){
-      if(expanded === context.transaction_id){
-        return true
-      }
-      if(isResolved){
-        return true
-      }
-      if(!resolved && !isEscalate){
-        return true
-      }
-    
-      if(cascaded){
-        return true
-      }
-  
-      return false
-     }
+    function checkResolveDisable(){
+  if(expanded === context.transaction_id){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:399 ~ checkResolveDisable ~ expanded:", expanded)
+    return true
+  }
+
+  if(isCascaded && !isEscalate){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:414 ~ checkResolveDisable ~ isCascaded:", isCascaded)
+    return true
+  }
+
+  if(isEscalate && !isResolved && !isCascaded){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:457 ~ checkResolveDisable ~ isEscalate:", isEscalate, !isResolved)
+    return false
+  }
+   
+  if(isResolved){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:405 ~ checkResolveDisable ~ isResolved:", isResolved)
+    return true
+  }
+
+  if(!processed && !isEscalate){
+    console.log("🚀 ~ file: ComplaintDetails.jsx:409 ~ checkResolveDisable ~ isEscalate:", isEscalate)
+    return true
+  }
+  return false
+ }
 
      function onResolve() {
         handleClose()
@@ -120,7 +147,7 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
           <>
             <MenuItem
               disabled={checkProcessDisable()}
-              onClick={() => {handleAction("PROCESSING")
+              onClick={() => {handleAction()
              }}
             >
               Process
@@ -131,11 +158,6 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
               onClick={() => onResolve()}>
               Resolve
             </MenuItem>
-            {/* <MenuItem
-            disabled={cascaded}
-            onClick={() => handleAction("CASCADED")}>
-              Cascade
-            </MenuItem> */}
             </>
             }
           </Menu>
