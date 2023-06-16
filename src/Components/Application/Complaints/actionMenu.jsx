@@ -94,27 +94,22 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
   
     function checkResolveDisable(){
   if(expanded === context.transaction_id){
-    console.log("🚀 ~ file: ComplaintDetails.jsx:399 ~ checkResolveDisable ~ expanded:", expanded)
     return true
   }
 
   if(isCascaded && !isEscalate){
-    console.log("🚀 ~ file: ComplaintDetails.jsx:414 ~ checkResolveDisable ~ isCascaded:", isCascaded)
     return true
   }
 
   if(isEscalate && !isResolved && !isCascaded){
-    console.log("🚀 ~ file: ComplaintDetails.jsx:457 ~ checkResolveDisable ~ isEscalate:", isEscalate, !isResolved)
     return false
   }
    
   if(isResolved){
-    console.log("🚀 ~ file: ComplaintDetails.jsx:405 ~ checkResolveDisable ~ isResolved:", isResolved)
     return true
   }
 
   if(!processed && !isEscalate){
-    console.log("🚀 ~ file: ComplaintDetails.jsx:409 ~ checkResolveDisable ~ isEscalate:", isEscalate)
     return true
   }
   return false
