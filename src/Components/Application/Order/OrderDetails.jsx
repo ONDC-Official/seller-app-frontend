@@ -15,7 +15,7 @@ import {
   MenuItem,
   Button,
   Menu,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -37,7 +37,7 @@ const OrderDetails = () => {
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
@@ -95,7 +95,7 @@ const OrderDetails = () => {
   }
 
   const handleCompleteOrderCancel = (order_id) => {
-    setLoading(true)
+    setLoading(true);
     postCall(`/api/v1/orders/${order_id}/cancel`, {
       cancellation_reason_id: "004",
     })
@@ -106,51 +106,65 @@ const OrderDetails = () => {
           let orderData = JSON.parse(JSON.stringify(order));
           orderData.state = resp.state;
           setOrder(orderData);
-          setLoading(false)
+          setLoading(false);
         }, 10000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
-        setInterval(function () {setLoading(false)}, 10000);
+        setInterval(function () {
+          setLoading(false);
+        }, 10000);
       });
   };
 
   const handleCompleteOrderAccept = (order_id) => {
-    setLoading(true)
+    setLoading(true);
     const url = `/api/v1/orders/${order_id}/status`;
     postCall(url, {
       status: "Accepted",
     })
       .then((resp) => {
         cogoToast.success("Order accepted successfully!");
-        
+
         setInterval(function () {
-            // getOrder();
+          // getOrder();
           let orderData = JSON.parse(JSON.stringify(order));
           orderData.state = resp.state;
           setOrder(orderData);
-          setLoading(false)
+          setLoading(false);
         }, 10000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
-        setInterval(function () {setLoading(false)}, 10000);
+        setInterval(function () {
+          setLoading(false);
+        }, 10000);
       });
   };
 
   const renderOrderStatus = (order_details) => {
-    if (order_details?.state == "Created" && user?.role?.name !== "Super Admin") {
+    if (
+      order_details?.state == "Created" &&
+      user?.role?.name !== "Super Admin"
+    ) {
       return (
-        <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
+        <div style={{ display: "flex", direction: "row", gap: "8px" }}>
           <Button
             className="!capitalize"
             variant="contained"
             onClick={() => handleCompleteOrderAccept(order_details?._id)}
             disabled={loading}
           >
-            {loading ? <>Accept Order&nbsp;&nbsp;<CircularProgress size={24} sx={{ color: 'white' }} /></>: <span>Accept Order</span>}
+            {loading ? (
+              <>
+                Accept Order&nbsp;&nbsp;
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              </>
+            ) : (
+              <span>Accept Order</span>
+            )}
           </Button>
           <Button
             variant="contained"
@@ -188,11 +202,15 @@ const OrderDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Created On</p>
-            <p className="text-base font-normal">{convertDateInStandardFormat(order?.createdAt)}</p>
+            <p className="text-base font-normal">
+              {convertDateInStandardFormat(order?.createdAt)}
+            </p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Modified On</p>
-            <p className="text-base font-normal">{convertDateInStandardFormat(order?.updatedAt)}</p>
+            <p className="text-base font-normal">
+              {convertDateInStandardFormat(order?.updatedAt)}
+            </p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Order Status</p>
@@ -209,7 +227,9 @@ const OrderDetails = () => {
           <Divider orientation="horizontal" />
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Base Price</p>
-            <p className="text-base font-normal">{parseFloat(total_base_cost).toFixed(2)}</p>
+            <p className="text-base font-normal">
+              {parseFloat(total_base_cost).toFixed(2)}
+            </p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Taxes</p>
@@ -217,15 +237,26 @@ const OrderDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Delivery Fee</p>
-            <p className="text-base font-normal">{parseFloat(delivery_charges).toFixed(2)}</p>
+            <p className="text-base font-normal">
+              {parseFloat(delivery_charges).toFixed(2)}
+            </p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Total Price</p>
-            <p className="text-base font-normal">{total_order_price ? parseFloat(total_order_price).toFixed(2) : "-"}</p>
+            <p className="text-base font-normal">
+              {total_order_price
+                ? parseFloat(total_order_price).toFixed(2)
+                : "-"}
+            </p>
           </div>
         </div>
         <div className={`${cardClass}`}>
-          <OrderItemsSummaryCard getOrder={getOrder} isSuperAdmin={user?.role?.name === "Super Admin" || false} orderItems={order?.items} order={order} />
+          <OrderItemsSummaryCard
+            getOrder={getOrder}
+            isSuperAdmin={user?.role?.name === "Super Admin" || false}
+            orderItems={order?.items}
+            order={order}
+          />
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
@@ -307,9 +338,15 @@ const OrderItemsSummaryCard = (props) => {
     { id: "totalPrice", align: "right", minWidth: "50", label: "Total Amount" },
   ];
 
-  if(!props.isSuperAdmin){
-    cols.push({ id: "action", align: "right", minWidth: "50", label: "Actions" })
-  }else{}
+  if (!props.isSuperAdmin) {
+    cols.push({
+      id: "action",
+      align: "right",
+      minWidth: "50",
+      label: "Actions",
+    });
+  } else {
+  }
 
   const rows = [
     {
@@ -362,7 +399,7 @@ const OrderItemsSummaryCard = (props) => {
         .then((resp) => {
           cogoToast.success("Product cancelled successfully!");
           props.getOrder();
-          handleClose()
+          handleClose();
         })
         .catch((error) => {
           console.log(error);
@@ -400,7 +437,10 @@ const OrderItemsSummaryCard = (props) => {
 
     return (
       <>
-        <TableRow {...otherProps} sx={{ "& > *": { borderBottom: "unset" } }}>
+        <TableRow
+          {...otherProps}
+          sx={{ "& > *": { borderBottom: "1px solid #E0E0E0" } }}
+        >
           <TableCell padding="checkbox">
             <IconButton onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -480,10 +520,13 @@ const OrderItemsSummaryCard = (props) => {
                           ) : col.id === "state" ? (
                             <div>{order_item?.state}</div>
                           ) : col.id === "price" ? (
-                            <div>₹ {product?.MRP?.toFixed(2).toLocaleString()}</div>
+                            <div>
+                              ₹ {product?.MRP?.toFixed(2).toLocaleString()}
+                            </div>
                           ) : col.id === "action" ? (
                             <div style={{ cursor: "pointer" }}>
-                              {isOrderCancellable(props?.order?.state) && order_item?.state !== "Cancelled" ? (
+                              {isOrderCancellable(props?.order?.state) &&
+                              order_item?.state !== "Cancelled" ? (
                                 <ThreeDotsMenu
                                   order_id={props?.order?._id}
                                   row={order_item}
@@ -497,9 +540,9 @@ const OrderItemsSummaryCard = (props) => {
                           ) : col.id === "totalPrice" ? (
                             <div>
                               ₹{" "}
-                              {(
-                                product?.MRP * order_item?.quantity?.count
-                              ).toFixed(2).toLocaleString()}
+                              {(product?.MRP * order_item?.quantity?.count)
+                                .toFixed(2)
+                                .toLocaleString()}
                             </div>
                           ) : col.id === "quantity" ? (
                             <span>{order_item[col.id]?.count}</span>
