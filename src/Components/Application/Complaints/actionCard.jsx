@@ -23,6 +23,7 @@ const CssTextField = styled(TextField)({
     },
   },
 });
+
 export default function CustomerActionCard({
   supportActionDetails,
   onClose,
@@ -74,8 +75,8 @@ export default function CustomerActionCard({
     return true;
   }
 
-  async function contactSupport() {
-    if (selectedCancelType === ACTION_TYPES.refundIssue && !checkRefund()) {
+  async function onSubmit() {
+    if (selectedCancelType === ACTION_TYPES.refundIssue && !checkRefund() && !checkRemarks()) {
       return;
     }
     if (!checkRemarks()) {
@@ -96,7 +97,6 @@ export default function CustomerActionCard({
       }
     }
     
-
     const body = {
       "transaction_id": context.transaction_id,
       "respondent_action": selectedCancelType === ACTION_TYPES.cascadeIssue ? "CASCADED" : "RESOLVED",
@@ -123,7 +123,7 @@ export default function CustomerActionCard({
       .then((resp) => {
         setLoading(false)
         if (resp.message?.ack?.status === "ACK") {
-          onSuccess()
+          onSuccess(context.transaction_id)
         } else {
           cogoToast.error(resp.message);
         }
@@ -138,7 +138,7 @@ export default function CustomerActionCard({
   return (
     <div className={styles.overlay}>
       <div className={styles.popup_card}>
-        <div className={`${styles.card_header} display: flex`}>
+        <div className={`${styles.card_header} display: flex`} style={{justifyContent: 'space-between'}}>
           <p className={styles.card_header_title}>Take Action</p>
           <div className="ms-auto">
             <CrossIcon
@@ -161,6 +161,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -179,6 +180,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -197,6 +199,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -212,6 +215,7 @@ export default function CustomerActionCard({
                 setInlineError((inlineError) => ({
                   ...inlineError,
                   remarks_error: "",
+                  refund_amount: ""
                 }));
               }}
             >
@@ -231,6 +235,7 @@ export default function CustomerActionCard({
               setInlineError((inlineError) => ({
                 ...inlineError,
                 remarks_error: "",
+                refund_amount: ""
               }));
             }}
           >
@@ -307,7 +312,7 @@ export default function CustomerActionCard({
                   maxLength: 6
                 }}
               />
-              {inlineError.remarks_error && (
+              {inlineError.refund_amount && (
                 <ErrorMessage>{inlineError.refund_amount}</ErrorMessage>
               )}
             </div>
@@ -331,7 +336,7 @@ export default function CustomerActionCard({
             title="Submit"
             variant="contained"
             className="!ml-5"
-            onClick={() => contactSupport()}
+            onClick={() =>  onSubmit()}
           />
         </div>
       </div>

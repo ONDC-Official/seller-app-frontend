@@ -29,8 +29,12 @@ const ComplaintDetails = () => {
   const [supportActionDetails, setSupportActionDetails] = useState();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const issue = complaint?.message?.issue
-  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
+  const [isCascaded, setIsCascaded] = useState(false);
+  const [processed, setProcessed] = useState(false);
+  const [isResolved, setIsResolved] = useState(false)
+  const [isEscalate, setEscalate] = useState(false)
 
+  const [expanded, setExpanded] = useState(null);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -47,8 +51,9 @@ const ComplaintDetails = () => {
     const url = `/api/client/getissue/${params?.id}`;
     getCall(url).then((resp) => {
       if (resp.success) {
+        const issue_actions = resp.issue.message?.issue?.issue_actions
         setComplaint(resp.issue);
-        mergeRespondantArrays(resp.issue.message?.issue?.issue_actions)
+        mergeRespondantArrays(issue_actions)
       }
     });
   };
@@ -76,10 +81,20 @@ const ComplaintDetails = () => {
 
     mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     setIssueActions(mergedarray)
+
+    const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
+    const isCascaded = mergedarray[mergedarray?.length - 2]?.respondent_action === "CASCADED"
+    const isEscalate = mergedarray[mergedarray?.length - 1]?.respondent_action === "ESCALATE" 
+    const isResolved = mergedarray[mergedarray?.length - 1]?.respondent_action === "RESOLVED"
+    setProcessed(isProcessed)
+    setIsCascaded(isCascaded)
+    setIsResolved(isResolved)
+    setEscalate(isEscalate)
   }
+
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
-  const renderActionButtons = (data) => {
+  const renderActionButtons = () => {
   function handleMenuClick() {
     setSupportActionDetails(complaint)
     handleClose()
@@ -117,9 +132,9 @@ const ComplaintDetails = () => {
   postCall(`/api/client/issue_response`, body)
     .then((resp) => {
       setLoading(false)
-      if(resp.success){
+      if(resp.message?.ack?.status === "ACK") {
       cogoToast.success("Action taken successfully");
-      setResolved(true)
+      setProcessed(true)
       }else{
         cogoToast.error(resp.message);
       }
@@ -131,6 +146,41 @@ const ComplaintDetails = () => {
     });
  }
 
+ function checkProcessDisable() {
+  
+  if(processed || loading){
+    return true
+  }
+  if(isCascaded){
+    return true
+  }
+
+  return  false
+}
+
+ function checkResolveDisable(){
+  if(expanded === supportActionDetails?.context.transaction_id){
+    return true
+  }
+
+  if(isCascaded && !isEscalate){
+    return true
+  }
+
+  if(isEscalate && !isResolved && !isCascaded){
+    return false
+  }
+   
+  if(isResolved){
+    return true
+  }
+
+  if(!processed && !isEscalate){
+    return true
+  }
+  return false
+ }
+
       return (
         <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
        { (user?.role?.name !== "Super Admin") &&
@@ -138,7 +188,7 @@ const ComplaintDetails = () => {
             variant="contained"
             className="!capitalize"
             onClick={(e) => handleClick(e)}
-            disabled={data.status === "CLOSED" }
+            disabled={issue.status === "CLOSED" }
           >
             Action
           </Button>
@@ -151,15 +201,15 @@ const ComplaintDetails = () => {
           onClose={handleClose}
         >
           <MenuItem
-            disabled={loading || resolved}
+            disabled={checkProcessDisable()}
             onClick={() => {
-              handleAction()
+                handleAction()
            }}
           >
             Process
           </MenuItem>
           <MenuItem 
-          disabled={!data.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
+          disabled={checkResolveDisable()}
           onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
@@ -167,7 +217,7 @@ const ComplaintDetails = () => {
         <Button
         className="!capitalize"
         variant="contained"
-        onClick={() => navigate(`/application/orders/${data?.order_details?.orderDetailsId}`)}
+        onClick={() => navigate(`/application/orders/${issue?.order_details?.orderDetailsId}`)}
       >
         Order Detail
         </Button>
@@ -182,9 +232,10 @@ const ComplaintDetails = () => {
                     user={user}
                     supportActionDetails={supportActionDetails}
                     onClose={() => setToggleActionModal(false)}
-                    onSuccess={() => {
+                    onSuccess={(id) => {
                         cogoToast.success("Action taken successfully");
                         setToggleActionModal(false);
+                        setExpanded(id)
                     }}
                 />
             )}
@@ -193,7 +244,7 @@ const ComplaintDetails = () => {
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex justify-between">
             <p className="text-lg font-semibold mb-2">Complaints Summary</p>
-            {renderActionButtons(issue)}
+            {issue && renderActionButtons()}
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Complaint ID</p>

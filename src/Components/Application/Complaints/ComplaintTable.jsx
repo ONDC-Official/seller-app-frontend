@@ -1,4 +1,4 @@
-import { useState, Fragment, useContext } from "react";
+import { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,19 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
 import { styled } from "@mui/material/styles";
-import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import { getFullAddress, getFulfillmentData } from "./../../../utils/orders.js";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 import CustomerActionCard from "./actionCard.jsx";
 import cogoToast from "cogo-toast";
-import { postCall } from "../../../Api/axios.js";
 import { ISSUE_TYPES } from "../../../Constants/issue-types.js";
+import ThreeDotsMenu from "./actionMenu.jsx";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -28,11 +22,11 @@ const StyledTableCell = styled(TableCell)({
 });
 
 export default function ComplaintTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange } = props
+  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, data } = props
   const navigate = useNavigate();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const [supportActionDetails, setSupportActionDetails] = useState();
-  const [data, setData] = useState(props.data)
+  const [expanded, setExpanded] = useState(null);
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
@@ -50,105 +44,6 @@ export default function ComplaintTable(props) {
   const onRowsPerPageChange = (event) => {
     handleRowsPerPageChange(parseInt(event.target.value, 10))
     handlePageChange(0)
-  };
-
-  const ThreeDotsMenu = ({row}) => {
-  const issue = row.message.issue
-  const context = row.context
-  const user = props.user
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [resolved, setResolved] = useState(issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING"));
-
-    function handleMenuClick() {
-      setSupportActionDetails(row)
-      handleClose()
-      setToggleActionModal(true)
-    }
-
-    const handleClick = (e) => {
-      console.log(e);
-      setAnchorEl(e.currentTarget);
-    };
-
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-   const handleAction=()=> {
-    setLoading(true)
-    const body = {
-      "transaction_id": context.transaction_id,
-      "respondent_action": "PROCESSING",
-      "short_desc": "We are investigating your concern.",
-      "updated_by": {
-        "org": {
-          "name": user.organization
-        },
-        "contact": {
-          "phone": user.mobile,
-          "email": user.email
-        },
-        "person": {
-          "name": user.name
-        }
-      }
-    }
-    postCall(`/api/client/issue_response`, body)
-      .then((resp) => {
-        setLoading(false)
-        if(resp.success){
-        cogoToast.success("Action taken successfully");
-        setResolved(true)
-        }else{
-          cogoToast.error(resp.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false)
-        console.log(error);
-        cogoToast.error(error.response.data.error);
-      });
-   }
-
-    return (
-      <Fragment>
-        <Button onClick={(e) => handleClick(e)}>
-          <MoreVertIcon />
-        </Button>
-        <Menu
-          id="card-actions-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {
-          issue.status === "CLOSED" ?
-          <MenuItem disabled
-          >
-          No Action Required
-        </MenuItem>
-        :
-        <>
-          <MenuItem
-            disabled={loading || resolved}
-            onClick={() => {
-              handleAction()
-           }}
-          >
-            Process
-          </MenuItem>
-          <MenuItem 
-          disabled={!issue.issue_actions?.respondent_actions?.some(x=> x.respondent_action === "PROCESSING") && !resolved}
-          onClick={() => handleMenuClick()}>
-            Resolve
-          </MenuItem>
-          </>
-          }
-        </Menu>
-      </Fragment>
-    );
   };
 
   const renderColumn = (row, column) => {
@@ -209,12 +104,17 @@ export default function ComplaintTable(props) {
         );
         case "action":
           return (
-            <ThreeDotsMenu row={row} />
+            <ThreeDotsMenu expanded={expanded} row={row} user={props.user} handleMenuClick={()=> {
+              setSupportActionDetails(row)
+              setToggleActionModal(true)
+            }}
+            />
           );
       default:
         break;
     }
   };
+
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -223,13 +123,15 @@ export default function ComplaintTable(props) {
                     user={props.user}
                     supportActionDetails={supportActionDetails}
                     onClose={() => setToggleActionModal(false)}
-                    onSuccess={() => {
+                    onSuccess={(id) => {
                         cogoToast.success("Action taken successfully");
                         setToggleActionModal(false);
-                        props.onSuccess()
+                        setExpanded(id)
+                        //props.onSuccess()
                     }}
                 />
             )}
+            
       <TableContainer>
         <Table aria-label="sticky table">
           <TableHead>
