@@ -37,7 +37,10 @@ const OrderDetails = () => {
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState({
+    accept_order_loading: false,
+    cancel_order_loading: false,
+  });
 
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
@@ -95,7 +98,7 @@ const OrderDetails = () => {
   }
 
   const handleCompleteOrderCancel = (order_id) => {
-    setLoading(true);
+    setloading({ ...loading, cancel_order_loading: true });
     postCall(`/api/v1/orders/${order_id}/cancel`, {
       cancellation_reason_id: "004",
     })
@@ -106,20 +109,20 @@ const OrderDetails = () => {
           let orderData = JSON.parse(JSON.stringify(order));
           orderData.state = resp.state;
           setOrder(orderData);
-          setLoading(false);
-        }, 10000);
+          setloading({ ...loading, cancel_order_loading: false });
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
         setInterval(function () {
-          setLoading(false);
-        }, 10000);
+          setloading({ ...loading, cancel_order_loading: false });
+        }, 3000);
       });
   };
 
   const handleCompleteOrderAccept = (order_id) => {
-    setLoading(true);
+    setloading({ ...loading, accept_order_loading: true });
     const url = `/api/v1/orders/${order_id}/status`;
     postCall(url, {
       status: "Accepted",
@@ -132,15 +135,15 @@ const OrderDetails = () => {
           let orderData = JSON.parse(JSON.stringify(order));
           orderData.state = resp.state;
           setOrder(orderData);
-          setLoading(false);
-        }, 10000);
+          setloading({ ...loading, accept_order_loading: false });
+        }, 3000);
       })
       .catch((error) => {
         console.log(error);
         cogoToast.error(error.response.data.error);
         setInterval(function () {
-          setLoading(false);
-        }, 10000);
+          setloading({ ...loading, accept_order_loading: false });
+        }, 3000);
       });
   };
 
@@ -155,12 +158,14 @@ const OrderDetails = () => {
             className="!capitalize"
             variant="contained"
             onClick={() => handleCompleteOrderAccept(order_details?._id)}
-            disabled={loading}
+            disabled={
+              loading.accept_order_loading || loading.cancel_order_loading
+            }
           >
-            {loading ? (
+            {loading.accept_order_loading ? (
               <>
                 Accept Order&nbsp;&nbsp;
-                <CircularProgress size={24} sx={{ color: "white" }} />
+                <CircularProgress size={18} sx={{ color: "white" }} />
               </>
             ) : (
               <span>Accept Order</span>
@@ -170,9 +175,18 @@ const OrderDetails = () => {
             variant="contained"
             className="!capitalize"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
-            disabled={loading}
+            disabled={
+              loading.cancel_order_loading || loading.accept_order_loading
+            }
           >
-            Cancel Order
+            {loading.cancel_order_loading ? (
+              <>
+                Cancel Order&nbsp;&nbsp;
+                <CircularProgress size={18} sx={{ color: "white" }} />
+              </>
+            ) : (
+              <span>Cancel Order</span>
+            )}
           </Button>
         </div>
       );
