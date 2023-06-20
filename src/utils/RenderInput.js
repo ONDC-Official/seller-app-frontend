@@ -179,8 +179,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "checkbox") {
-    console.log("state[item.id]=====>", state[item.id]);
-    console.log("item.options=====>", item.options);
+    //  console.log("state[item.id]=====>", state[item.id]);
+    //  console.log("item.options=====>", item.options);
     const onChange = (e) => {
       const val = e.target.name;
       const itemIndex = state[item.id].indexOf(val);
@@ -240,7 +240,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "select") {
-    console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
+    //  console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -348,7 +348,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                 country,
                 area_code,
                 locality,
-                city,
+                //  city,
               });
             }}
           />
@@ -415,8 +415,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       return newString;
     }
     const dateValue = moment(state[item.id], item.format || "hh:mm A");
-    console.log("item.format======>", item.format);
-    console.log("dateValue=====>", dateValue);
+    //  console.log("item.format======>", item.format);
+    //  console.log("dateValue=====>", dateValue);
     return (
       <div className="py-1 flex flex-col" style={{ position: "relative" }}>
         {item.title && (
@@ -593,7 +593,6 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     };
 
     const renderUploadedUrls = () => {
-      console.log("state?.tempURL?.[item.id]=====>", state?.tempURL?.[item.id]);
       if (item?.multiple) {
         if (state?.uploaded_urls) {
           return state?.uploaded_urls?.map((url) => {
