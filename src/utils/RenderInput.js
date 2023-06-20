@@ -19,22 +19,22 @@ import {
   Chip,
 } from "@mui/material";
 import { DeleteOutlined } from "@mui/icons-material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import moment from 'moment'
-import dayjs from 'dayjs';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import moment from "moment";
+import dayjs from "dayjs";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import Cookies from "js-cookie";
 import { isEmailValid, isPhoneNoValid } from "./validations";
 import { getCall, postCall } from "../Api/axios";
 import MyButton from "../Components/Shared/Button";
-import PlacePickerMap from '../Components/PlacePickerMap/PlacePickerMap'
+import PlacePickerMap from "../Components/PlacePickerMap/PlacePickerMap";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
-import DaysPicker from "react-multi-date-picker"
-import DatePanel from "react-multi-date-picker/plugins/date_panel"
+import DaysPicker from "react-multi-date-picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -51,7 +51,7 @@ const CssTextField = styled(TextField)({
 });
 
 const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
-  const uploadFileRef = useRef(null)
+  const uploadFileRef = useRef(null);
 
   if (item.type == "input") {
     return (
@@ -66,7 +66,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           required={item.required}
           size="small"
           multiline={item.multiline || false}
-          maxRows={item.multiline?5:1}
+          maxRows={item.multiline ? 5 : 1}
           autoComplete="off"
           placeholder={item.placeholder}
           error={item.error || false}
@@ -74,7 +74,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
-            stateHandler({ ...state, [item.id]: item.isUperCase?e.target.value.toUpperCase():e.target.value })
+            stateHandler({
+              ...state,
+              [item.id]: item.isUperCase
+                ? e.target.value.toUpperCase()
+                : e.target.value,
+            })
           }
           inputProps={{
             maxLength: item.maxLength || undefined,
@@ -95,17 +100,24 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           required={item.required}
           size="small"
-          InputProps={{ inputProps: { min: item.min || 0, max: item.max || 100000 } }}
+          InputProps={{
+            inputProps: { min: item.min || 0, max: item.max || 100000 },
+          }}
           placeholder={item.placeholder}
           error={item.error || false}
           disabled={item?.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) =>
-            stateHandler({ ...state, [item.id]: item.valueInDecimal?parseFloat(e.target.value).toFixed(2):e.target.value })
+            stateHandler({
+              ...state,
+              [item.id]: item.valueInDecimal
+                ? parseFloat(e.target.value).toFixed(2)
+                : e.target.value,
+            })
           }
           inputProps={{
-            step: "1"
+            step: "1",
           }}
         />
       </div>
@@ -114,9 +126,14 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     // console.log("state[item.id]=====>", state[item.id]);
     // console.log("item.options=====>", item.options);
     let isDisabled = false;
-    if(item.id === "isVegetarian" && state["productCategory"] && state["productCategory"] !== "f_and_b"){
+    if (
+      item.id === "isVegetarian" &&
+      state["productCategory"] &&
+      state["productCategory"] !== "f_and_b"
+    ) {
       isDisabled = true;
-    }else{}
+    } else {
+    }
     return (
       <div className="py-1 flex flex-col">
         <FormControl component="fieldset">
@@ -131,17 +148,24 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             onChange={(e) => {
               console.log("e.target.value=====>", e.target.value);
               console.log("item.i=====>", item.id);
-              stateHandler({ ...state, [item.id]: e.target.value })
+              stateHandler({ ...state, [item.id]: e.target.value });
             }}
             disabled={isDisabled}
           >
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
-                  disabled={item?.isDisabled || isDisabled || previewOnly || false}
+                  disabled={
+                    item?.isDisabled || isDisabled || previewOnly || false
+                  }
                   key={i}
                   value={radioItem.value}
-                  control={<Radio size="small" checked={radioItem.value === state[item.id]} />}
+                  control={
+                    <Radio
+                      size="small"
+                      checked={radioItem.value === state[item.id]}
+                    />
+                  }
                   label={
                     <div className="text-sm font-medium text-[#606161]">
                       {radioItem.key}
@@ -194,7 +218,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                   onChange={onChange}
                   name={checkboxItem.value}
                   size="small"
-                  checked={state[item.id] && state[item.id].find((day) => day === checkboxItem.value)?true:false}
+                  checked={
+                    state[item.id] &&
+                    state[item.id].find((day) => day === checkboxItem.value)
+                      ? true
+                      : false
+                  }
                 />
               }
               label={
@@ -239,37 +268,42 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             ))}
           </Select>
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
-          
+
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
             options={item.options}
             getOptionLabel={(option) => option.key}
-            value={state[item.id] !== "" && item.options && item.options.length>0?item.options.find((option) => option.value === state[item.id]):null}
+            value={
+              state[item.id] !== "" && item.options && item.options.length > 0
+                ? item.options.find((option) => option.value === state[item.id])
+                : null
+            }
             onChange={(event, newValue) => {
               stateHandler((prevState) => {
-                if(item.id === "productCategory"){
+                if (item.id === "productCategory") {
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue.value || '',
-                    "productSubcategory1": ""
+                    [item.id]: newValue.value || "",
+                    productSubcategory1: "",
                   };
                   return newState;
-                }else{
+                } else {
                   const newState = {
                     ...prevState,
                     [item.id]: newValue.value,
                   };
                   return newState;
                 }
-                
               });
             }}
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
+                placeholder={
+                  !previewOnly && !state[item.id] ? item.placeholder : ""
+                }
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -286,37 +320,54 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
-        <div style={{ width: '100%', height: '400px' }}>
-          <PlacePickerMap location={state[item.id] ? {lat: state[item.id].lat, lng: state[item.id].long} : {}} setLocation={(location) => {
-            const { city, state: stateVal, area: country, pincode: area_code, locality, lat, lng } = location;
-            stateHandler({
-              ...state,
-              [item.id]: {
-                lat: lat,
-                long: lng,
-              },
-              address_city: city,
-              state: stateVal,
-              country,
-              area_code,
-              locality,
-              // city
-            })
-          }} />
+        <div style={{ width: "100%", height: "400px" }}>
+          <PlacePickerMap
+            location={
+              state[item.id]
+                ? { lat: state[item.id].lat, lng: state[item.id].long }
+                : {}
+            }
+            setLocation={(location) => {
+              const {
+                city,
+                state: stateVal,
+                area: country,
+                pincode: area_code,
+                locality,
+                lat,
+                lng,
+              } = location;
+              stateHandler({
+                ...state,
+                [item.id]: {
+                  lat: lat,
+                  long: lng,
+                },
+                address_city: city,
+                state: stateVal,
+                country,
+                area_code,
+                locality,
+                city,
+              });
+            }}
+          />
         </div>
       </div>
     );
   } else if (item.type == "date-picker") {
     function reverseString(str) {
-
       // empty string
       let newString = "";
       for (let i = str.length - 1; i >= 0; i--) {
-          newString += str[i];
+        newString += str[i];
       }
       return newString;
     }
-    const dateValue = moment(state[item.id], item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD');
+    const dateValue = moment(
+      state[item.id],
+      item.format || "DD/MM/YYYY"
+    ).format(item.format ? reverseString(item.format) : "YYYY/MM/DD");
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -326,9 +377,11 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             format={item.format || "DD/MM/YYYY"}
-            views={item.views || ['year', 'month', 'day']}
+            views={item.views || ["year", "month", "day"]}
             onChange={(newValue) => {
-              const date = moment(new Date(newValue)).format(item.format || 'DD/MM/YYYY').toString();
+              const date = moment(new Date(newValue))
+                .format(item.format || "DD/MM/YYYY")
+                .toString();
               stateHandler((prevState) => {
                 const newState = {
                   ...prevState,
@@ -337,7 +390,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                 return newState;
               });
             }}
-            value={state[item.id]?dayjs(dateValue):""}
+            value={state[item.id] ? dayjs(dateValue) : ""}
             components={{
               TextField: (params) => (
                 <TextField
@@ -354,35 +407,34 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     );
   } else if (item.type == "time-picker") {
     function reverseString(str) {
-
       // empty string
       let newString = "";
       for (let i = str.length - 1; i >= 0; i--) {
-          newString += str[i];
+        newString += str[i];
       }
       return newString;
     }
-    const dateValue = moment(state[item.id], item.format || 'hh:mm A');
+    const dateValue = moment(state[item.id], item.format || "hh:mm A");
     console.log("item.format======>", item.format);
     console.log("dateValue=====>", dateValue);
     return (
-      <div className="py-1 flex flex-col" style={{position: 'relative'}}>
-        {
-          item.title && (
-            <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
-              {item.title}
-              {item.required && <span className="text-[#FF0000]"> *</span>}
-            </label>
-          )
-        }
+      <div className="py-1 flex flex-col" style={{ position: "relative" }}>
+        {item.title && (
+          <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+            {item.title}
+            {item.required && <span className="text-[#FF0000]"> *</span>}
+          </label>
+        )}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             closeOnSelect={false}
-            ampm={item.ampm !== undefined?item.ampm:true}
+            ampm={item.ampm !== undefined ? item.ampm : true}
             format={item.format || "hh:mm A"}
             onChange={(newValue) => {
-              if(stateHandler){
-                const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
+              if (stateHandler) {
+                const date = moment(new Date(newValue))
+                  .format(item.format || "hh:mm A")
+                  .toString();
                 stateHandler((prevState) => {
                   const newState = {
                     ...prevState,
@@ -390,12 +442,14 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                   };
                   return newState;
                 });
-              }else{
-                const date = moment(new Date(newValue)).format(item.format || 'hh:mm A').toString();
+              } else {
+                const date = moment(new Date(newValue))
+                  .format(item.format || "hh:mm A")
+                  .toString();
                 onChange(date);
               }
             }}
-            value={state[item.id]?dayjs(dateValue):""}
+            value={state[item.id] ? dayjs(dateValue) : ""}
             components={{
               TextField: (params) => (
                 <TextField
@@ -412,11 +466,10 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     );
   } else if (item.type == "days-picker") {
     function reverseString(str) {
-
       // empty string
       let newString = "";
       for (let i = str.length - 1; i >= 0; i--) {
-          newString += str[i];
+        newString += str[i];
       }
       return newString;
     }
@@ -434,15 +487,15 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           value={values || []}
           multiple
           format={item.format || "DD/MM/YYYY"}
-          plugins={[
-            <DatePanel />
-          ]}
+          plugins={[<DatePanel />]}
           onChange={(newValue) => {
             stateHandler((prevState) => {
               const newState = {
                 ...prevState,
                 [item.id]: newValue.map((itemDate) => {
-                  const date = moment(new Date(itemDate)).format(item.format || 'DD/MM/YYYY').toString();
+                  const date = moment(new Date(itemDate))
+                    .format(item.format || "DD/MM/YYYY")
+                    .toString();
                   console.log("date=====>", date);
                   return date;
                 }),
@@ -451,7 +504,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             });
           }}
           render={(value, openCalendar) => {
-            const valuesArray = value?value.split(','):"";
+            const valuesArray = value ? value.split(",") : "";
             return (
               <Autocomplete
                 multiple
@@ -461,22 +514,25 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                 getOptionLabel={(option) => option}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
-                    <Chip 
-                      label={option} 
+                    <Chip
+                      label={option}
                       {...getTagProps({ index })}
-                      onClick={() => {}}  
+                      onClick={() => {}}
                     />
                   ))
                 }
                 renderInput={(params) => (
-                  <TextField {...params} 
-                    placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
-                    onClick={openCalendar}
+                  <TextField
+                    {...params}
+                    placeholder={
+                      !previewOnly && !state[item.id] ? item.placeholder : ""
+                    }
+                    onFocus={openCalendar}
                   />
                 )}
                 value={valuesArray || []}
               />
-            )
+            );
           }}
         />
       </div>
@@ -484,14 +540,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
   } else if (item.type == "multi-select") {
     return (
       <div className="py-1 flex flex-col">
-        {
-          item.title && (
-            <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
-              {item.title}
-              {item.required && <span className="text-[#FF0000]"> *</span>}
-            </label>
-          )
-        }
+        {item.title && (
+          <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+            {item.title}
+            {item.required && <span className="text-[#FF0000]"> *</span>}
+          </label>
+        )}
         <FormControl>
           <Autocomplete
             disabled={item?.isDisabled || previewOnly || false}
@@ -513,7 +567,9 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={!previewOnly && !state[item.id]?item.placeholder:''}
+                placeholder={
+                  !previewOnly && !state[item.id] ? item.placeholder : ""
+                }
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -524,7 +580,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "upload") {
-    const allowedMaxSize = 2 * 1024 * 1024 // 2 MB in Bytes
+    const allowedMaxSize = 2 * 1024 * 1024; // 2 MB in Bytes
     const getSignUrl = async (file) => {
       const url = `/api/v1/upload/${item?.file_type}`;
       const file_type = file.type.split("/")[1];
@@ -538,23 +594,32 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
 
     const renderUploadedUrls = () => {
       console.log("state?.tempURL?.[item.id]=====>", state?.tempURL?.[item.id]);
-      if(item?.multiple){
+      if (item?.multiple) {
         if (state?.uploaded_urls) {
           return state?.uploaded_urls?.map((url) => {
             return (
-              <img src={url} height={50} width={50} style={{ margin: "10px" }} />
+              <img
+                src={url}
+                height={50}
+                width={50}
+                style={{ margin: "10px" }}
+              />
             );
           });
         }
-      }else{
-        if(state?.tempURL?.[item.id] || state[item.id]){
+      } else {
+        if (state?.tempURL?.[item.id] || state[item.id]) {
           return (
-            <img src={state?.tempURL?.[item.id] || state[item.id] || ""} height={50} width={50} style={{ margin: "10px" }} />
+            <img
+              src={state?.tempURL?.[item.id] || state[item.id] || ""}
+              height={50}
+              width={50}
+              style={{ margin: "10px" }}
+            />
           );
-        }else{
-          return <></>
+        } else {
+          return <></>;
         }
-        
       }
     };
 
@@ -591,7 +656,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     }
 
     const UploadedFile = ({ name }) => {
-      if (!name) return
+      if (!name) return;
       return (
         <Stack direction="row" spacing={2}>
           <IconButton
@@ -604,9 +669,9 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               stateHandler((prevState) => {
                 const newState = {
                   ...prevState,
-                  [item.id]: Array.isArray(prevState[item.id]) ? prevState[item.id].filter(
-                    (ele) => ele != name
-                  ) : '',
+                  [item.id]: Array.isArray(prevState[item.id])
+                    ? prevState[item.id].filter((ele) => ele != name)
+                    : "",
                   uploaded_urls: [],
                 };
                 return newState;
@@ -617,12 +682,15 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           </IconButton>
           <div>{name}</div>
         </Stack>
-      )
-    }
-  
+      );
+    };
+
     return (
       <div className="py-1 flex flex-col">
-        <label for="contained-button-file" className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+        <label
+          for="contained-button-file"
+          className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+        >
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
@@ -633,7 +701,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
         </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
         <FormControl error={item.error}>
-        {/* <label htmlFor="contained-button-file"> */}
+          {/* <label htmlFor="contained-button-file"> */}
           <input
             ref={uploadFileRef}
             id="contained-button-file"
@@ -647,16 +715,16 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               const token = Cookies.get("token");
               for (const file of e.target.files) {
                 if (!file.type.startsWith("image/")) {
-                  cogoToast.warn("Only image files are allowed")
-                  // reset file input 
-                  uploadFileRef.current.value = null
-                  return
+                  cogoToast.warn("Only image files are allowed");
+                  // reset file input
+                  uploadFileRef.current.value = null;
+                  return;
                 }
                 if (file.size > allowedMaxSize) {
                   cogoToast.warn("File size should be less than 2 MB");
                   // reset file input
-                  uploadFileRef.current.value = null
-                  return
+                  uploadFileRef.current.value = null;
+                  return;
                 }
                 const formData = new FormData();
                 formData.append("file", file);
@@ -683,7 +751,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                         });
                       } else {
                         let reader = new FileReader();
-                        let tempUrl = '';
+                        let tempUrl = "";
                         reader.onload = function (e) {
                           tempUrl = e.target.result;
                           stateHandler({
@@ -691,19 +759,17 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                             [item.id]: d.path,
                             tempURL: {
                               ...state.tempURL,
-                              [item.id]: tempUrl
+                              [item.id]: tempUrl,
                             },
                           });
                         };
                         reader.readAsDataURL(file);
-                        
-                        
                       }
                       response.json();
                     })
                     .then((json) => {});
                 });
-              };
+              }
             }}
           />
           {/* {item.multiple &&
@@ -738,14 +804,18 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               );
             })
           } */}
-          {item.multiple ? state[item.id]?.map((name) => <UploadedFile name={name} /> ) : <UploadedFile name={state[item.id]} />}
+          {item.multiple ? (
+            state[item.id]?.map((name) => <UploadedFile name={name} />)
+          ) : (
+            <UploadedFile name={state[item.id]} />
+          )}
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
-        {/* </label> */}
+          {/* </label> */}
         </FormControl>
       </div>
     );
-  }else if(item.type == "label"){
-    return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>
+  } else if (item.type == "label") {
+    return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>;
   }
 };
 
