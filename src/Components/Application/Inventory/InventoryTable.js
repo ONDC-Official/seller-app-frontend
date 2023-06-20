@@ -19,20 +19,27 @@ import cogoToast from "cogo-toast";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 });
 
 export default function InventoryTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props
+  const {
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+    onRefresh,
+  } = props;
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
   };
 
   const onRowsPerPageChange = (event) => {
-    handleRowsPerPageChange(parseInt(event.target.value, 10))
-    handlePageChange(0)
+    handleRowsPerPageChange(parseInt(event.target.value, 10));
+    handlePageChange(0);
   };
 
   const ThreeDotsMenu = (props) => {
@@ -110,33 +117,44 @@ export default function InventoryTable(props) {
                 <StyledTableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
                 >
                   {column.label}
                 </StyledTableCell>
               ))}
-              <StyledTableCell>Action</StyledTableCell>
+              <StyledTableCell
+                style={{
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                Action
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.data
-              .map((row, index) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                    {props.columns.map((column) => {
-                      const value = row[column.id] === undefined ? ' - ' : row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {renderCellContent(column, value)}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell component="th" scope="row">
-                      <ThreeDotsMenu row={row} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+            {props.data.map((row, index) => {
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  {props.columns.map((column) => {
+                    const value =
+                      row[column.id] === undefined ? " - " : row[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {renderCellContent(column, value)}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell component="th" scope="row">
+                    <ThreeDotsMenu row={row} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
