@@ -577,15 +577,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
       }
       console.log("payload=====>", payload);
-      // postCall(url, payload)
-      //   .then((resp) => {
-      //     cogoToast.success("Store details updated successfully");
-      //     getOrgDetails(provider_id);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     cogoToast.error(error.response.data.error);
-      //   });
+      postCall(url, payload)
+        .then((resp) => {
+          cogoToast.success("Store details updated successfully");
+          getOrgDetails(provider_id);
+        })
+        .catch((error) => {
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
     }
   };
 
