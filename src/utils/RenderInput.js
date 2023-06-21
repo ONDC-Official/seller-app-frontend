@@ -538,6 +538,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "multi-select") {
+    console.log("Multi - Select item", item);
+    console.log("Multi - Select state");
     return (
       <div className="py-1 flex flex-col">
         {item.title && (
@@ -568,7 +570,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               <TextField
                 {...params}
                 placeholder={
-                  !previewOnly && !state[item.id] ? item.placeholder : ""
+                  state[item.id].length === 0 ? item.placeholder : ""
                 }
                 variant="outlined"
                 error={item.error || false}
