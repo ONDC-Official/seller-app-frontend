@@ -30,6 +30,7 @@ import {
 import cogoToast from "cogo-toast";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
+import { Tooltip } from "@material-ui/core";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -423,9 +424,11 @@ const OrderItemsSummaryCard = (props) => {
 
     return (
       <>
-        <Button onClick={(e) => handleClick(e)}>
-          <MoreVert />
-        </Button>
+        <Tooltip title="Action">
+          <Button onClick={(e) => handleClick(e)}>
+            <MoreVert />
+          </Button>
+        </Tooltip>
         <Menu
           id="card-actions-menu"
           anchorEl={anchorEl}

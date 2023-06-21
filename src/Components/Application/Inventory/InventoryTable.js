@@ -16,6 +16,7 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -70,9 +71,11 @@ export default function InventoryTable(props) {
 
     return (
       <Fragment>
-        <Button onClick={handleClick}>
-          <MoreVertIcon />
-        </Button>
+        <Tooltip title="Action">
+          <Button onClick={handleClick}>
+            <MoreVertIcon />
+          </Button>
+        </Tooltip>
         <Menu
           id="card-actions-menu"
           anchorEl={anchorEl}
@@ -126,6 +129,7 @@ export default function InventoryTable(props) {
                   {column.label}
                 </StyledTableCell>
               ))}
+
               <StyledTableCell
                 style={{
                   backgroundColor: "#1976d2",
