@@ -412,6 +412,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
         </label>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
+            disableFuture
             format={item.format || "DD/MM/YYYY"}
             views={item.views || ["year", "month", "day"]}
             onChange={(newValue) => {
