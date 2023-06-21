@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -52,6 +52,42 @@ const CssTextField = styled(TextField)({
 
 const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
   const uploadFileRef = useRef(null);
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [fetchedImageSize, setFetchedImageSize] = useState(0);
+
+  const getSizeWithUnit = (size) => {
+    if (size >= 1024 * 1024) {
+      return (size / (1024 * 1024)).toFixed(2) + " MB";
+    } else if (size >= 1024) {
+      return (size / 1024).toFixed(2) + " KB";
+    } else {
+      return size + " bytes";
+    }
+  };
+
+  const getImageSizeFromUrl = async () => {
+    try {
+      const response = await fetch(state[item.id]);
+      const blob = await response.blob();
+      const sizeInBytes = blob.size;
+      const sizeInKilobytes = sizeInBytes / 1024;
+      setFetchedImageSize(sizeInKilobytes.toFixed(2) + " KB");
+    } catch (error) {
+      setFetchedImageSize("2 MB");
+    }
+  };
+
+  useEffect(() => {
+    if (item.type !== "upload") return;
+    if (isImageChanged === false && state[item.id] !== "") {
+      getImageSizeFromUrl();
+    } else {
+      const sizeInBytes = getSizeWithUnit(
+        uploadFileRef.current?.files[0]?.size
+      );
+      setFetchedImageSize(sizeInBytes);
+    }
+  }, [isImageChanged, state[item.id]]);
 
   if (item.type == "input") {
     return (
@@ -538,8 +574,6 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       </div>
     );
   } else if (item.type == "multi-select") {
-    console.log("Multi - Select item", item);
-    console.log("Multi - Select state");
     return (
       <div className="py-1 flex flex-col">
         {item.title && (
@@ -609,7 +643,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           });
         }
       } else {
-        if (state?.tempURL?.[item.id] || state[item.id]) {
+        if ((!isImageChanged && state?.tempURL?.[item.id]) || state[item.id]) {
           return (
             <img
               src={state?.tempURL?.[item.id] || state[item.id] || ""}
@@ -656,11 +690,35 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
       }
     }
 
-    const UploadedFile = ({ name }) => {
+    const UploadedFile = ({ name, size }) => {
       if (!name) return;
+
+      const getImageName = (path) => {
+        const splitPath = path.split("/");
+        const fileTypeIndex = splitPath.indexOf(item.file_type);
+
+        if (fileTypeIndex !== -1 && fileTypeIndex + 1 < splitPath.length) {
+          const nameUrl = splitPath[fileTypeIndex + 1];
+          return nameUrl;
+        } else {
+          return item.file_type;
+        }
+      };
+      const getImageType = (path) => {
+        const splitPath = path.split("/");
+        const fileType = splitPath[splitPath.length - 1].split(".").pop();
+        return fileType;
+      };
+
       return (
-        <Stack direction="row" spacing={2}>
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems={"center"}
+          style={{ marginBottom: 20 }}
+        >
           <IconButton
+            style={{ width: 35, height: 35 }}
             size="small"
             color="error"
             onClick={(e) => {
@@ -681,7 +739,34 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           >
             <DeleteOutlined fontSize="small" />
           </IconButton>
-          <div>{name}</div>
+          <div>
+            <div className="flex items-center">
+              <p className="text-xs text-neutral-900 max-w-sm">
+                File name: &nbsp;
+              </p>
+              <p className="text-xs text-neutral-600 max-w-sm">
+                {getImageName(name)}
+              </p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-xs text-neutral-900 max-w-sm">
+                File type: &nbsp;
+              </p>
+              <p className="text-xs text-neutral-600 max-w-sm">
+                {getImageType(name)}
+              </p>
+            </div>
+            {!item.multiple && (
+              <div className="flex items-center">
+                <p className="text-xs text-neutral-900 max-w-sm">
+                  File size: &nbsp;
+                </p>
+                <p className="text-xs text-neutral-600 max-w-sm">
+                  {fetchedImageSize}
+                </p>
+              </div>
+            )}
+          </div>
         </Stack>
       );
     };
@@ -707,7 +792,11 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             ref={uploadFileRef}
             id="contained-button-file"
             name="contained-button-file"
-            style={{ opacity: "none", marginBottom: 10 }}
+            style={{
+              opacity: "none",
+              color: item.fontColor ? item.fontColor : "#f0f0f0",
+              marginBottom: 10,
+            }}
             accept="image/*"
             type="file"
             multiple={item?.multiple || false}
@@ -741,6 +830,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
                     },
                   })
                     .then((response) => {
+                      setIsImageChanged(true);
                       if (item.multiple) {
                         stateHandler((prevState) => {
                           const newState = {
@@ -773,40 +863,11 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
               }
             }}
           />
-          {/* {item.multiple &&
-            state[item.id].map((name) => {
-              return (
-                <Stack direction="row" justifyContent="revert">
-                  <IconButton
-                    color="error"
-                    // aria-label="upload picture"
-                    size="small"
-                    // className="w-10 mr-2 !text-black"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // reset file input 
-                      uploadFileRef.current.value = null
-                      stateHandler((prevState) => {
-                        const newState = {
-                          ...prevState,
-                          [item.id]: prevState[item.id].filter(
-                            (ele) => ele != name
-                          ),
-                          uploaded_urls: [],
-                        };
-                        return newState;
-                      });
-                    }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                  <p className="text-sm mt-1 ml-2">{name}</p>
-                </Stack>
-              );
-            })
-          } */}
+
           {item.multiple ? (
-            state[item.id]?.map((name) => <UploadedFile name={name} />)
+            state[item.id]?.map((name) => {
+              return <UploadedFile name={name} />;
+            })
           ) : (
             <UploadedFile name={state[item.id]} />
           )}

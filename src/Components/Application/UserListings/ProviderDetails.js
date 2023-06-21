@@ -67,7 +67,9 @@ const kycFields = [
     id: "address_proof",
     title: "Address Proof",
     type: "upload",
+    file_type: "address_proof",
     required: true,
+    fontColor: "#ffffff",
   },
   {
     id: "gst_no",
@@ -79,7 +81,9 @@ const kycFields = [
     id: "gst_proof",
     title: "GSTIN Proof",
     type: "upload",
+    file_type: "gst",
     required: true,
+    fontColor: "#ffffff",
   },
   {
     id: "pan_no",
@@ -91,12 +95,16 @@ const kycFields = [
     id: "pan_proof",
     title: "PAN Card Proof",
     type: "upload",
+    fontColor: "#ffffff",
+    file_type: "pan",
     required: true,
   },
   {
     id: "id_proof",
     title: "ID Proof",
     type: "upload",
+    fontColor: "#ffffff",
+    file_type: "id_proof",
     required: true,
   },
 ];
@@ -116,6 +124,8 @@ const bankFields = [
     id: "cancelledCheque",
     title: "Cancelled Cheque",
     type: "upload",
+    fontColor: "#ffffff",
+    file_type: "cancelled_check",
     required: true,
   },
 ];
@@ -243,9 +253,11 @@ let storeFields = [
   },
   {
     id: "logo",
+    file_type: "logo",
     title: "Logo",
     type: "upload",
     required: true,
+    fontColor: "#ffffff",
   },
 ];
 
@@ -288,7 +300,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const url = `/api/v1/organizations/${id}`;
       const res = await getCall(url);
 
-      console.log("getOrgDetails=====>", res);
       setProviderDetails({
         email: res.user.email,
         mobile: res.user.mobile,
@@ -378,7 +389,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       //     return findFromList;
       //   })
       // }else{}
-      console.log("storeData=====>", storeData);
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(
         Object.assign({}, JSON.parse(JSON.stringify(storeData)))
