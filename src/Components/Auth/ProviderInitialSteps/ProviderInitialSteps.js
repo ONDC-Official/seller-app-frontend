@@ -162,6 +162,7 @@ let storeFields = [
     type: "upload",
     required: true,
     file_type: "logo",
+    fontColor: "#ffffff",
   },
 ];
 
@@ -492,6 +493,7 @@ const ProviderInitialSteps = () => {
     if (!form1Submitted) return;
     validateForm1();
   }, [form1Values]);
+  console.log(password);
 
   useEffect(() => {
     if (!form2Submitted) return;
@@ -499,7 +501,9 @@ const ProviderInitialSteps = () => {
   }, [form2Values]);
 
   const checkDisabled = () => {
-    if (
+    if (step == 1) {
+      return false;
+    } else if (
       (step === 2 &&
         (!form2Values.logo ||
           form2Values.categories.length === 0 ||
