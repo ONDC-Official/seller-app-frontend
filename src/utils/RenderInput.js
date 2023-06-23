@@ -277,6 +277,7 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
     );
   } else if (item.type == "select") {
     //  console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
+
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -284,28 +285,12 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <FormControl error={item.error || false}>
-          {/* <Select
-            disabled={item?.isDisabled || previewOnly || false}
-            size="small"
-            required={item.required}
-            placeholder={!previewOnly?item.placeholder:""}
-            value={state[item.id]}
-            onChange={(e) =>
-              stateHandler({ ...state, [item.id]: e.target.value })
-            }
-          >
-            <MenuItem value="none" disabled>
-              <p className="text-[#606161]">None</p>
-            </MenuItem>
-            {item.options.map((selectItem, i) => (
-              <MenuItem value={selectItem.value} key={i}>
-                {selectItem.key}
-              </MenuItem>
-            ))}
-          </Select>
-          {item.error && <FormHelperText>{item.helperText}</FormHelperText>} */}
-
           <Autocomplete
+            disableClearable={
+              item.disableClearable !== undefined
+                ? item.disableClearable
+                : false
+            }
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
