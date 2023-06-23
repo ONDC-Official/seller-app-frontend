@@ -642,6 +642,7 @@ const RenderInput = ({
         fileType: file_type,
       };
       const res = await postCall(url, data);
+      console.log("getSignUrl", res);
       return res;
     };
 

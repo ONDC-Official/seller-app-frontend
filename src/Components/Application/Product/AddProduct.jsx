@@ -190,7 +190,7 @@ export default function AddProduct() {
       let returnElement = true;
       if (formValues?.productSubcategory1) {
         const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-        const selectedSubCatObject = subCatList.find(
+        const selectedSubCatObject = subCatList?.find(
           (subitem) => subitem.value === formValues?.productSubcategory1
         );
         if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
