@@ -115,14 +115,16 @@ const productFields = [
     id: "importerFSSAILicenseNo",
     title: "Importer FSSAI License No",
     placeholder: "Importer FSSAI License No",
-    type: "input",
+    type: "number",
+    maxLength: 14,
     required: true,
   },
   {
     id: "brandOwnerFSSAILicenseNo",
     title: "Brand Owner FSSAI License No",
     placeholder: "Brand Owner FSSAI License No",
-    type: "input",
+    type: "number",
+    maxLength: 14,
     required: true,
   },
 
@@ -148,6 +150,7 @@ const productFields = [
     type: "number",
     required: true,
     min: 1,
+    maxLength: 10,
   },
   {
     id: "UOM",
@@ -160,7 +163,7 @@ const productFields = [
     id: "packQty",
     title: "Measurement Quantity",
     placeholder: "Measurement Quantity",
-    type: "number",
+    type: "input",
     required: true,
   },
   {
@@ -168,6 +171,7 @@ const productFields = [
     title: "Length",
     placeholder: "Length",
     type: "input",
+    maxLength: 6,
     required: true,
   },
   {
@@ -175,6 +179,7 @@ const productFields = [
     title: "Breadth",
     placeholder: "Breadth",
     type: "input",
+    maxLength: 6,
     required: true,
   },
   {
@@ -182,6 +187,7 @@ const productFields = [
     title: "Height",
     placeholder: "Height",
     type: "input",
+    maxLength: 6,
     required: true,
   },
   {
@@ -189,6 +195,7 @@ const productFields = [
     title: "Weight",
     placeholder: "Weight",
     type: "input",
+    maxLength: 3,
     required: true,
   },
   {
@@ -196,6 +203,7 @@ const productFields = [
     title: "Return Window (in hours)",
     placeholder: "Return Window (in hours)",
     type: "number",
+    maxLength: 3,
     required: true,
   },
   {
@@ -203,6 +211,7 @@ const productFields = [
     title: "Manufacturer Name",
     placeholder: "Manufacturer Name",
     type: "input",
+    maxLength: 50,
     required: true,
   },
   {

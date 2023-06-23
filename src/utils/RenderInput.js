@@ -50,10 +50,29 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
+const RenderInput = ({
+  item,
+  state,
+  stateHandler,
+  onChange,
+  previewOnly,
+  setFocusedField,
+}) => {
   const uploadFileRef = useRef(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fetchedImageSize, setFetchedImageSize] = useState(0);
+
+  const handleFocus = (fieldId) => {
+    if (setFocusedField) {
+      setFocusedField(fieldId);
+    }
+  };
+
+  const handleBlur = () => {
+    if (setFocusedField) {
+      setFocusedField(null);
+    }
+  };
 
   const getSizeWithUnit = (size) => {
     if (size >= 1024 * 1024) {
@@ -121,6 +140,8 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
             maxLength: item.maxLength || undefined,
             minLength: item.minLength || undefined,
           }}
+          onFocus={() => handleFocus(item.id)}
+          onBlur={handleBlur}
         />
       </div>
     );
@@ -144,17 +165,27 @@ const RenderInput = ({ item, state, stateHandler, onChange, previewOnly }) => {
           disabled={item?.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
-          onChange={(e) =>
+          onChange={(e) => {
+            const value = item.valueInDecimal
+              ? parseFloat(e.target.value).toFixed(2)
+              : e.target.value;
+
+            // Enforce maximum length
+            const maxLength = item.maxLength || undefined;
+            if (maxLength && value.length > maxLength) {
+              return;
+            }
+
             stateHandler({
               ...state,
-              [item.id]: item.valueInDecimal
-                ? parseFloat(e.target.value).toFixed(2)
-                : e.target.value,
-            })
-          }
+              [item.id]: value,
+            });
+          }}
           inputProps={{
             step: "1",
           }}
+          onFocus={() => handleFocus(item.id)}
+          onBlur={handleBlur}
         />
       </div>
     );

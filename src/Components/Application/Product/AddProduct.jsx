@@ -31,6 +31,7 @@ export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [fields, setFields] = useState(productFields);
+  const [focusedField, setFocusedField] = useState("");
 
   const { cancellablePromise } = useCancellablePromise();
 
@@ -219,6 +220,7 @@ export default function AddProduct() {
             }}
             state={formValues}
             stateHandler={setFormValues}
+            setFocusedField={setFocusedField}
           />
         );
       } else {
@@ -491,9 +493,41 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
-    if (!formSubmitted) return;
-    validate();
-  }, [formValues]);
+    if (!formSubmitted) {
+      let formErrors = {};
+
+      if (focusedField === "manufacturerOrPackerName") {
+        formErrors.manufacturerOrPackerName =
+          formValues?.manufacturerOrPackerName?.trim() === ""
+            ? "Manufacturer or packer name is required"
+            : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH_50
+            ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
+            : "";
+      } else if (focusedField === "manufacturerOrPackerAddress") {
+        formErrors.manufacturerOrPackerAddress =
+          formValues?.manufacturerOrPackerAddress?.trim() === ""
+            ? "Manufacturer or packer address is required"
+            : formValues?.manufacturerOrPackerAddress.length >
+              MAX_STRING_LENGTH_50
+            ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
+            : "";
+      } else if (focusedField === "commonOrGenericNameOfCommodity") {
+        formErrors.commonOrGenericNameOfCommodity =
+          formValues?.commonOrGenericNameOfCommodity?.trim() === ""
+            ? "Common or generic name of commodity is required"
+            : formValues?.commonOrGenericNameOfCommodity.length >
+              MAX_STRING_LENGTH_50
+            ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
+            : "";
+      }
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        ...formErrors,
+      }));
+    } else {
+      validate();
+    }
+  }, [formValues, focusedField]);
 
   return (
     <>
