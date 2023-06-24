@@ -481,8 +481,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     if (!isFromUserListing) {
       formErrors.days =
-        storeDetails.days.length === 0 ? "Days is required" : "";
-      formErrors.holidays = "";
+        storeDetails.days.length === 0 ? "Opening Days are required" : "";
+      formErrors.holidays =
+        storeDetails.holidays.length === 0 ? "Holidays are required" : "";
 
       formErrors.storeTimes =
         storeDetails.StoreTimeType === "frequency" &&
@@ -493,7 +494,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       if (storeDetails.storeTimes.length > 0) {
         const invalidTimeIndices = storeDetails.storeTimes.reduce(
           (invalidIndices, time, index) => {
-            if (time === "Invalid date") {
+            if (time === "Invalid date" || time === "") {
               invalidIndices.push(index);
             }
             return invalidIndices;
@@ -511,13 +512,16 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
 
       formErrors.startTime =
-        storeDetails.StoreTimeType === "time" && storeDetails.startTime === ""
-          ? "Start time is required"
+        storeDetails.StoreTimeType === "time" &&
+        (storeDetails.startTime === "" ||
+          storeDetails.startTime === "Invalid date")
+          ? "Opening time is required"
           : "";
 
       formErrors.endTime =
-        storeDetails.StoreTimeType === "time" && storeDetails.endTime === ""
-          ? "End time is required"
+        storeDetails.StoreTimeType === "time" &&
+        (storeDetails.endTime === "" || storeDetails.endTime === "Invalid date")
+          ? "Closing time is required"
           : "";
 
       formErrors.frequency =
@@ -572,8 +576,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         location,
         locality = "",
       } = storeDetails;
-
-      console.log("From update method", storeDetails);
 
       const locationAvailability =
         location_availability === "pan_india" ? true : false;
@@ -650,6 +652,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         .then((resp) => {
           cogoToast.success("Store details updated successfully");
           getOrgDetails(provider_id);
+          navigate("/application/inventory");
         })
         .catch((error) => {
           console.log(error);
@@ -747,7 +750,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   <RenderInput
                     item={{
                       id: "days",
-                      title: "Days",
+                      title: "Opening Days",
                       options: [
                         { key: "Monday", value: "1" },
                         { key: "Tuesday", value: "2" },
@@ -765,6 +768,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
+                  <p
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "0.75rem",
+                      marginLeft: 12,
+                    }}
+                  >
+                    {errors?.["days"] || ""}
+                  </p>
                   <RenderInput
                     item={{
                       id: "holidays",
@@ -779,6 +791,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
+                  <p
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "0.75rem",
+                      marginLeft: 12,
+                    }}
+                  >
+                    {errors?.["holidays"] || ""}
+                  </p>
                   <RenderInput
                     item={{
                       id: "StoreTimeType",
@@ -803,6 +824,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                           title: "Frequency (in hours)",
                           placeholder: "Frequency (in hours)",
                           type: "number",
+                          min: 1,
                           required: true,
                           error: errors?.["frequency"] ? true : false,
                           helperText: errors?.["frequency"] || "",
@@ -930,8 +952,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                         item={{
                           ampm: false,
                           id: "startTime",
-                          title: "Start Time",
-                          placeholder: "Start Time",
+                          title: "Opening Time",
+                          placeholder: "Opening Time",
                           type: "time-picker",
                           format: "HH:mm",
                           required: true,
@@ -945,8 +967,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                         item={{
                           ampm: false,
                           id: "endTime",
-                          title: "End Time",
-                          placeholder: "End Time",
+                          title: "Closing Time",
+                          placeholder: "Closing Time",
                           type: "time-picker",
                           format: "HH:mm",
                           required: true,
