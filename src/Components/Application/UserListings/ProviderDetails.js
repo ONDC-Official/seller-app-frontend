@@ -18,21 +18,21 @@ const providerFields = [
   {
     id: "name",
     title: "Name",
-    placeholder: "Enter your email address",
+    placeholder: "Enter your Name",
     type: "input",
     required: true,
   },
   {
     id: "email",
     title: "Email",
-    placeholder: "Enter your email address",
+    placeholder: "Enter your Email Address",
     type: "input",
     required: true,
   },
   {
     id: "mobile",
     title: "Mobile Number",
-    placeholder: "Enter your mobile number",
+    placeholder: "Enter your Mobile Number",
     type: "input",
     required: true,
   },
@@ -42,24 +42,28 @@ const kycFields = [
   {
     id: "contactEmail",
     title: "Contact Email",
+    placeholder: "Enter your Contact Email Address",
     type: "input",
     required: true,
   },
   {
     id: "contactMobile",
     title: "Contact Mobile",
+    placeholder: "Enter your Contact Mobile Number",
     type: "input",
     required: true,
   },
   {
     id: "fssai",
     title: "FSSAI Number",
+    placeholder: "FSSAI Number",
     type: "input",
     required: true,
   },
   {
     id: "address",
     title: "Registered Address",
+    placeholder: "Enter your Registered Address",
     type: "input",
     required: true,
   },
@@ -74,6 +78,7 @@ const kycFields = [
   {
     id: "gst_no",
     title: "GSTIN Certificate",
+    placeholder: "GSTIN Certificate",
     type: "input",
     required: true,
   },
@@ -88,6 +93,7 @@ const kycFields = [
   {
     id: "pan_no",
     title: "PAN",
+    placeholder: "Enter your PAN",
     type: "input",
     required: true,
   },
@@ -110,16 +116,41 @@ const kycFields = [
 ];
 
 const bankFields = [
-  { id: "bankName", title: "Bank Name", type: "input", required: true },
-  { id: "branchName", title: "Branch Name", type: "input", required: true },
-  { id: "IFSC", title: "IFSC Code", type: "input", required: true },
   {
-    id: "accHolderName",
-    title: "Account Holder Name",
+    id: "bankName",
+    title: "Bank Name",
+    placeholder: "Enter Bank Name",
     type: "input",
     required: true,
   },
-  { id: "accNumber", title: "Account Number", type: "input", required: true },
+  {
+    id: "branchName",
+    title: "Branch Name",
+    placeholder: "Enter Branch Name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "IFSC",
+    title: "IFSC Code",
+    placeholder: "Enter IFSC Code",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "accHolderName",
+    title: "Account Holder Name",
+    placeholder: "Enter Account Holder Name",
+    type: "input",
+    required: true,
+  },
+  {
+    id: "accNumber",
+    title: "Account Number",
+    placeholder: "Enter Account Number",
+    type: "input",
+    required: true,
+  },
   {
     id: "cancelledCheque",
     title: "Cancelled Cheque",
@@ -735,7 +766,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   <RenderInput
                     item={{
                       id: "StoreTimeType",
-                      title: "StoreTimeType",
+                      title: "Store Time Type",
                       options: [
                         { key: "Frequency", value: "frequency" },
                         { key: "Time", value: "time" },
@@ -803,7 +834,45 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                               </div>
                               <div
                                 style={{
-                                  width: "100px",
+                                  width:
+                                    storeDetails.storeTimes.length - 1 === idx
+                                      ? 0
+                                      : "100px",
+                                  margin: "auto",
+                                  paddingLeft: "20px",
+                                }}
+                              >
+                                {storeDetails.storeTimes.length - 1 !== idx && (
+                                  <Button
+                                    variant="contained"
+                                    onClick={() => {
+                                      console.log(
+                                        "storeDetails.storeTimes=====>",
+                                        storeDetails.storeTimes
+                                      );
+                                      let data = JSON.parse(
+                                        JSON.stringify(storeDetails.storeTimes)
+                                      );
+                                      data.push("");
+                                      setStoreDetails((prevState) => {
+                                        const newState = {
+                                          ...prevState,
+                                          storeTimes: data,
+                                        };
+                                        return newState;
+                                      });
+                                    }}
+                                  >
+                                    Remove
+                                  </Button>
+                                )}
+                              </div>
+                              <div
+                                style={{
+                                  width:
+                                    storeDetails.storeTimes.length - 1 !== idx
+                                      ? 0
+                                      : "100px",
                                   margin: "auto",
                                   paddingLeft: "20px",
                                 }}
