@@ -487,8 +487,28 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       formErrors.storeTimes =
         storeDetails.StoreTimeType === "frequency" &&
         storeDetails.storeTimes.length === 0
-          ? "Al least One store time is required"
+          ? "At least One store time is required"
           : "";
+
+      if (storeDetails.storeTimes.length > 0) {
+        const invalidTimeIndices = storeDetails.storeTimes.reduce(
+          (invalidIndices, time, index) => {
+            if (time === "Invalid date") {
+              invalidIndices.push(index);
+            }
+            return invalidIndices;
+          },
+          []
+        );
+
+        if (invalidTimeIndices.length > 0) {
+          formErrors.storeTimes = invalidTimeIndices;
+        } else {
+          delete formErrors.storeTimes; // Remove the error if all store times are valid
+        }
+      } else {
+        delete formErrors.storeTimes; // Remove the error if there are no store times
+      }
 
       formErrors.startTime =
         storeDetails.StoreTimeType === "time" && storeDetails.startTime === ""
@@ -527,11 +547,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   };
 
   const onUpdate = () => {
-    console.log(
-      "storeDetails, defaultStoreDetails",
-      storeDetails,
-      defaultStoreDetails
-    );
     console.log(
       "areObjectsEqual(storeDetails, defaultStoreDetails)",
       !areObjectsEqual(storeDetails, defaultStoreDetails)
@@ -802,6 +817,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       {storeDetails.storeTimes &&
                         storeDetails.storeTimes.length > 0 &&
                         storeDetails.storeTimes.map((itemTime, idx) => {
+                          const isError =
+                            errors?.storeTimes &&
+                            errors.storeTimes.includes(idx);
                           return (
                             <div style={{ display: "flex" }}>
                               <div style={{ flex: 1 }}>
@@ -814,8 +832,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                                     placeholder: "Frequency (in hours)",
                                     type: "time-picker",
                                     required: true,
-                                    error: errors?.["frequency"] ? true : false,
-                                    helperText: errors?.["frequency"] || "",
+                                    error: isError,
+                                    helperText: isError
+                                      ? "Please enter a valid store time"
+                                      : "",
                                   }}
                                   state={{ time: itemTime }}
                                   onChange={(value) => {
@@ -975,6 +995,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   style={{ marginRight: 10 }}
                   variant="contained"
                   onClick={onUpdate}
+                  disabled={areObjectsEqual(storeDetails, defaultStoreDetails)}
                 >
                   Update Store
                 </Button>
