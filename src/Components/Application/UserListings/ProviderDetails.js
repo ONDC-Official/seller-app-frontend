@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
 import {
@@ -13,6 +13,7 @@ import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
+import { AddOutlined, DeleteOutlined } from "@mui/icons-material";
 
 const providerFields = [
   {
@@ -834,37 +835,32 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                               </div>
                               <div
                                 style={{
-                                  width:
-                                    storeDetails.storeTimes.length - 1 === idx
-                                      ? 0
-                                      : "100px",
+                                  width: "100px",
                                   margin: "auto",
                                   paddingLeft: "20px",
+                                  display:
+                                    storeDetails.storeTimes.length - 1 === idx
+                                      ? "none"
+                                      : "flex",
                                 }}
                               >
                                 {storeDetails.storeTimes.length - 1 !== idx && (
-                                  <Button
-                                    variant="contained"
-                                    onClick={() => {
-                                      console.log(
-                                        "storeDetails.storeTimes=====>",
-                                        storeDetails.storeTimes
-                                      );
-                                      let data = JSON.parse(
-                                        JSON.stringify(storeDetails.storeTimes)
-                                      );
-                                      data.push("");
-                                      setStoreDetails((prevState) => {
-                                        const newState = {
-                                          ...prevState,
-                                          storeTimes: data,
-                                        };
-                                        return newState;
-                                      });
+                                  <IconButton
+                                    style={{ width: 35, height: 35 }}
+                                    size="small"
+                                    onClick={(e) => {
+                                      let updatedStoreTimes = [
+                                        ...storeDetails.storeTimes,
+                                      ];
+                                      updatedStoreTimes.splice(idx, 1);
+                                      setStoreDetails((prevState) => ({
+                                        ...prevState,
+                                        storeTimes: updatedStoreTimes,
+                                      }));
                                     }}
                                   >
-                                    Remove
-                                  </Button>
+                                    <DeleteOutlined fontSize="small" />
+                                  </IconButton>
                                 )}
                               </div>
                               <div
@@ -872,15 +868,17 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                                   width:
                                     storeDetails.storeTimes.length - 1 !== idx
                                       ? 0
-                                      : "100px",
+                                      : "120px",
                                   margin: "auto",
                                   paddingLeft: "20px",
+                                  marginLeft: -1,
                                 }}
                               >
                                 {storeDetails.storeTimes.length - 1 === idx && (
-                                  <Button
-                                    variant="contained"
-                                    onClick={() => {
+                                  <IconButton
+                                    style={{ width: 35, height: 35 }}
+                                    size="small"
+                                    onClick={(e) => {
                                       console.log(
                                         "storeDetails.storeTimes=====>",
                                         storeDetails.storeTimes
@@ -898,8 +896,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                                       });
                                     }}
                                   >
-                                    Add
-                                  </Button>
+                                    <AddOutlined fontSize="small" />
+                                  </IconButton>
                                 )}
                               </div>
                             </div>
