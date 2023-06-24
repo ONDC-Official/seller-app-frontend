@@ -183,13 +183,13 @@ const InviteProvider = () => {
           : "";
       formErrors.contactEmail =
         formValues.contactEmail.trim() === ""
-          ? "Support Email is required"
+          ? "Email is required"
           : !isEmailValid(formValues.contactEmail)
           ? "Please enter a valid email address"
           : "";
       formErrors.contactMobile =
         formValues.contactMobile.trim() === ""
-          ? "Support Mobile Number is required"
+          ? "Mobile Number is required"
           : !isPhoneNoValid(formValues.contactMobile)
           ? "Please enter a valid mobile number"
           : "";
@@ -201,7 +201,7 @@ const InviteProvider = () => {
           : "";
       formErrors.GSTN =
         formValues.GSTN.trim() === ""
-          ? "GSTIN Certificate is required"
+          ? "GSTIN is required"
           : !isValidGSTIN(formValues.GSTN)
           ? "GSTIN Certificate should be alphanumeric and 15 characters long"
           : "";
