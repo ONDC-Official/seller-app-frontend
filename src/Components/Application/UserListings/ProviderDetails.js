@@ -232,7 +232,7 @@ let storeFields = [
   },
   {
     id: "default_returnable",
-    title: "Default returnable Setting",
+    title: "Default Returnable Setting",
     options: [
       { key: "Returnable", value: "true" },
       { key: "Non-Returnable", value: "false" },
