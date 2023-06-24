@@ -301,7 +301,7 @@ const productFields = [
   {
     id: "images",
     title:
-      "Images (Multiple file selection allowed, maximum size of 2Mb for each file )",
+      "Images (Multiple file selection allowed, maximum size of 2Mb for each file)",
     type: "upload",
     multiple: true,
     file_type: "product_image",

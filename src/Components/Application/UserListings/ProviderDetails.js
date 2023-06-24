@@ -451,21 +451,30 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       formErrors.days =
         storeDetails.days.length === 0 ? "Days is required" : "";
       formErrors.holidays = "";
+
+      formErrors.storeTimes =
+        storeDetails.StoreTimeType === "frequency" &&
+        storeDetails.storeTimes.length === 0
+          ? "Al least One store time is required"
+          : "";
+
       formErrors.startTime =
-        storeDetails.startTime === "" ? "Start time is required" : "";
+        storeDetails.StoreTimeType === "time" && storeDetails.startTime === ""
+          ? "Start time is required"
+          : "";
+
       formErrors.endTime =
-        storeDetails.endTime === "" ? "End time is required" : "";
+        storeDetails.StoreTimeType === "time" && storeDetails.endTime === ""
+          ? "End time is required"
+          : "";
+
       formErrors.frequency =
         storeDetails.StoreTimeType === "frequency"
           ? storeDetails.frequency === ""
             ? "Frequency is required"
             : !isNumberOnly(storeDetails?.frequency)
-            ? "Please enter only digit"
+            ? "Please enter only digits"
             : ""
-          : "";
-      formErrors.storeTimes =
-        storeDetails.storeTimes.length === 0
-          ? "Al least One store time is required"
           : "";
     } else {
     }
@@ -510,17 +519,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
         building,
         state,
-        address_city,
+        city,
         country,
         area_code,
         location,
         locality = "",
       } = storeDetails;
+
+      console.log("From update method", storeDetails);
+
       const locationAvailability =
         location_availability === "pan_india" ? true : false;
       const addressDetails = {
         building: building,
-        city: address_city,
+        city: city,
         state: state,
         country: country,
         area_code: area_code,
