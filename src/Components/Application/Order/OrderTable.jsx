@@ -19,12 +19,18 @@ import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 });
 
 export default function InventoryTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange } = props
+  const {
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+  } = props;
   const navigate = useNavigate();
 
   const onPageChange = (event, newPage) => {
@@ -32,8 +38,8 @@ export default function InventoryTable(props) {
   };
 
   const onRowsPerPageChange = (event) => {
-    handleRowsPerPageChange(parseInt(event.target.value, 10))
-    handlePageChange(0)
+    handleRowsPerPageChange(parseInt(event.target.value, 10));
+    handlePageChange(0);
   };
 
   // const ThreeDotsMenu = (props) => {
@@ -127,7 +133,12 @@ export default function InventoryTable(props) {
       case "total_amt":
         return (
           <div>
-            <span>₹ {payment?.params?.amount?parseFloat(payment?.params?.amount).toFixed(2):""}</span>
+            <span>
+              ₹{" "}
+              {payment?.params?.amount
+                ? parseFloat(payment?.params?.amount).toFixed(2)
+                : ""}
+            </span>
             <br />
           </div>
         );
@@ -168,7 +179,11 @@ export default function InventoryTable(props) {
                 <StyledTableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
                   className="font-medium"
                 >
                   {column.label}
@@ -177,29 +192,28 @@ export default function InventoryTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.data
-              .map((row, index) => {
-                return (
-                  <TableRow
-                    style={{ cursor: "pointer" }}
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={index}
-                    onClick={() => {
-                      navigate(`/application/orders/${row?._id}`);
-                    }}
-                  >
-                    {props.columns.map((column, idx) => {
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {renderColumn(row, column)}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            {props.data.map((row, index) => {
+              return (
+                <TableRow
+                  style={{ cursor: "pointer" }}
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={index}
+                  onClick={() => {
+                    navigate(`/application/orders/${row?._id}`);
+                  }}
+                >
+                  {props.columns.map((column, idx) => {
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {renderColumn(row, column)}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

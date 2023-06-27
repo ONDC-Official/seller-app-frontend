@@ -13,41 +13,153 @@ import { convertDateInStandardFormat } from "../../../utils/formatting/date.js";
 import CustomerActionCard from "./actionCard.jsx";
 import cogoToast from "cogo-toast";
 import { ISSUE_TYPES } from "../../../Constants/issue-types.js";
-import ThreeDotsMenu from "./actionMenu.jsx";
+import { Tooltip } from "@material-ui/core";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 });
 
 export default function ComplaintTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, data } = props
+  const {
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+  } = props;
   const navigate = useNavigate();
   const [toggleActionModal, setToggleActionModal] = useState(false);
   const [supportActionDetails, setSupportActionDetails] = useState();
-  const [expanded, setExpanded] = useState(null);
+  const [data, setData] = useState(props.data);
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
-        return {
-            ...subcategoryItem,
-            category: item.value,
-        };
+      return {
+        ...subcategoryItem,
+        category: item.value,
+      };
     });
-}).flat();
+  }).flat();
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
   };
 
   const onRowsPerPageChange = (event) => {
-    handleRowsPerPageChange(parseInt(event.target.value, 10))
-    handlePageChange(0)
+    handleRowsPerPageChange(parseInt(event.target.value, 10));
+    handlePageChange(0);
+  };
+
+  const ThreeDotsMenu = ({ row }) => {
+    const issue = row.message.issue;
+    const context = row.context;
+    const user = props.user;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [resolved, setResolved] = useState(
+      issue.issue_actions?.respondent_actions?.some(
+        (x) => x.respondent_action === "PROCESSING"
+      )
+    );
+
+    function handleMenuClick() {
+      setSupportActionDetails(row);
+      handleClose();
+      setToggleActionModal(true);
+    }
+
+    const handleClick = (e) => {
+      console.log(e);
+      setAnchorEl(e.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleAction = () => {
+      setLoading(true);
+      const body = {
+        transaction_id: context.transaction_id,
+        respondent_action: "PROCESSING",
+        short_desc: "We are investigating your concern.",
+        updated_by: {
+          org: {
+            name: user.organization,
+          },
+          contact: {
+            phone: user.mobile,
+            email: user.email,
+          },
+          person: {
+            name: user.name,
+          },
+        },
+      };
+      postCall(`/api/client/issue_response`, body)
+        .then((resp) => {
+          setLoading(false);
+          if (resp.success) {
+            cogoToast.success("Action taken successfully");
+            setResolved(true);
+          } else {
+            cogoToast.error(resp.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
+    };
+
+    return (
+      <Fragment>
+        <Tooltip title="Action">
+          <Button onClick={handleClick}>
+            <MoreVertIcon />
+          </Button>
+        </Tooltip>
+        <Menu
+          id="card-actions-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          {issue.status === "CLOSED" ? (
+            <MenuItem disabled>No Action Required</MenuItem>
+          ) : (
+            <>
+              <MenuItem
+                disabled={loading || resolved}
+                onClick={() => {
+                  handleAction();
+                }}
+              >
+                Process
+              </MenuItem>
+              <MenuItem
+                disabled={
+                  !issue.issue_actions?.respondent_actions?.some(
+                    (x) => x.respondent_action === "PROCESSING"
+                  ) && !resolved
+                }
+                onClick={() => handleMenuClick()}
+              >
+                Resolve
+              </MenuItem>
+            </>
+          )}
+        </Menu>
+      </Fragment>
+    );
   };
 
   const renderColumn = (row, column) => {
-    const issue = row.message.issue
+    const issue = row.message.issue;
     const value = issue[column.id];
     const short_description = issue.description.short_desc;
     switch (column.id) {
@@ -82,56 +194,48 @@ export default function ComplaintTable(props) {
             <br />
           </div>
         );
-        case "category":
-          return (
-            <div>
-              <span>{value}</span>
-              <br />
-            </div>
-          ); case "sub_category":
-          return (
-            <div>
-              <span>{AllCategory.find(x => x.enums === value)?.value}</span>
-              <br />
-            </div>
-          );
+      case "category":
+        return (
+          <div>
+            <span>{value}</span>
+            <br />
+          </div>
+        );
+      case "sub_category":
+        return (
+          <div>
+            <span>{AllCategory.find((x) => x.enums === value)?.value}</span>
+            <br />
+          </div>
+        );
       case "short_description":
         return (
           <div>
-          <span>{short_description}</span>
-          <br />
-        </div>
+            <span>{short_description}</span>
+            <br />
+          </div>
         );
-        case "action":
-          return (
-            <ThreeDotsMenu expanded={expanded} row={row} user={props.user} handleMenuClick={()=> {
-              setSupportActionDetails(row)
-              setToggleActionModal(true)
-            }}
-            />
-          );
+      case "action":
+        return <ThreeDotsMenu row={row} />;
       default:
         break;
     }
   };
 
-
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-       {toggleActionModal && (
-                <CustomerActionCard
-                    user={props.user}
-                    supportActionDetails={supportActionDetails}
-                    onClose={() => setToggleActionModal(false)}
-                    onSuccess={(id) => {
-                        cogoToast.success("Action taken successfully");
-                        setToggleActionModal(false);
-                        setExpanded(id)
-                        //props.onSuccess()
-                    }}
-                />
-            )}
-            
+      {toggleActionModal && (
+        <CustomerActionCard
+          user={props.user}
+          supportActionDetails={supportActionDetails}
+          onClose={() => setToggleActionModal(false)}
+          onSuccess={() => {
+            cogoToast.success("Action taken successfully");
+            setToggleActionModal(false);
+            props.onSuccess();
+          }}
+        />
+      )}
       <TableContainer>
         <Table aria-label="sticky table">
           <TableHead>
@@ -149,30 +253,34 @@ export default function ComplaintTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data
-              .map((row, index) => {
-                return (
-                  <TableRow
-                    style={{ cursor: "pointer" }}
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={index}
-                  >
-                    {props.columns.map((column, idx) => {
-                      return (
-                        <TableCell
-                        onClick={() => { column.id !== "action" &&
-                      navigate(`/application/complaints/${row.message.issue?.id}`);
-                    }}
-                        key={column.id} align={column.align}>
-                          {renderColumn(row, column)}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            {data.map((row, index) => {
+              return (
+                <TableRow
+                  style={{ cursor: "pointer" }}
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={index}
+                >
+                  {props.columns.map((column, idx) => {
+                    return (
+                      <TableCell
+                        onClick={() => {
+                          column.id !== "action" &&
+                            navigate(
+                              `/application/complaints/${row.message.issue?.id}`
+                            );
+                        }}
+                        key={column.id}
+                        align={column.align}
+                      >
+                        {renderColumn(row, column)}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

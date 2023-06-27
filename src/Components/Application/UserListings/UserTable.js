@@ -10,17 +10,18 @@ import {
   Menu,
   MenuItem,
   Button,
-  Stack
+  Stack,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MoreVert, LockOutlined } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { putCall } from "../../../Api/axios";
+import { Tooltip } from "@material-ui/core";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 });
 
@@ -41,23 +42,23 @@ const ThreeDotsMenu = (props) => {
   const action = async (e, action) => {
     e.stopPropagation();
     try {
-      switch(action) {
-        case 'enable':
+      switch (action) {
+        case "enable":
           await putCall(`/api/v1/users/${row?._id}/enable`, { enabled: true });
           break;
-        case 'disable':
+        case "disable":
           await putCall(`/api/v1/users/${row?._id}/enable`, { enabled: false });
           break;
-        case 'unlock':
+        case "unlock":
           await putCall(`/api/v1/auth/grantAccess/${row?._id}`);
           break;
         default:
           break;
       }
       setAnchorEl(null);
-      if(view === "admin"){
+      if (view === "admin") {
         getAdmins();
-      }else{
+      } else {
         getProviders();
       }
     } catch (error) {
@@ -67,16 +68,18 @@ const ThreeDotsMenu = (props) => {
 
   return (
     <div>
-      <Button
-        id="user-action-menu-button"
-        aria-controls={Boolean(anchorEl) ? 'user-action-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-        onClick={openActionMenu}
-        sx={{ width: 30 }}
-      >
-        <MoreVert />
-      </Button>
+      <Tooltip title="Action">
+        <Button
+          id="user-action-menu-button"
+          aria-controls={Boolean(anchorEl) ? "user-action-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={Boolean(anchorEl) ? "true" : undefined}
+          onClick={openActionMenu}
+          sx={{ width: 30 }}
+        >
+          <MoreVert />
+        </Button>
+      </Tooltip>
       <Menu
         id="user-action-menu"
         anchorEl={anchorEl}
@@ -84,24 +87,26 @@ const ThreeDotsMenu = (props) => {
         onClose={handleClose}
         MenuListProps={{
           onMouseLeave: handleClose,
-          'aria-labelledby': 'user-action-menu-button',
+          "aria-labelledby": "user-action-menu-button",
         }}
       >
         {isProvider && (
-          <MenuItem onClick={() => navigate(`/user-listings/provider-details/${row?.organization?._id}`)}>
+          <MenuItem
+            onClick={() =>
+              navigate(
+                `/user-listings/provider-details/${row?.organization?._id}`
+              )
+            }
+          >
             View
           </MenuItem>
         )}
-        <MenuItem onClick={(e) => action(e, "enable")}>
-          Mark as Active
-        </MenuItem>
+        <MenuItem onClick={(e) => action(e, "enable")}>Mark as Active</MenuItem>
         <MenuItem onClick={(e) => action(e, "disable")}>
           Mark as Inactive
         </MenuItem>
         {row.bannedUser && (
-          <MenuItem onClick={(e) => action(e, "unlock")}>
-            Unlock user
-          </MenuItem>
+          <MenuItem onClick={(e) => action(e, "unlock")}>Unlock user</MenuItem>
         )}
       </Menu>
     </div>
@@ -110,7 +115,7 @@ const ThreeDotsMenu = (props) => {
 
 const UserTable = (props) => {
   const {
-    getProviders, 
+    getProviders,
     getAdmins,
     columns,
     data,
@@ -120,7 +125,7 @@ const UserTable = (props) => {
     totalRecords,
     handlePageChange,
     handleRowsPerPageChange,
-    view
+    view,
   } = props;
   const navigate = useNavigate();
 
@@ -129,8 +134,8 @@ const UserTable = (props) => {
   };
 
   const onRowsPerPageChange = (event) => {
-    handleRowsPerPageChange(parseInt(event.target.value, 10))
-    handlePageChange(0)
+    handleRowsPerPageChange(parseInt(event.target.value, 10));
+    handlePageChange(0);
   };
 
   return (
@@ -142,7 +147,11 @@ const UserTable = (props) => {
               <StyledTableCell
                 key={column.id}
                 align={column.align}
-                style={{ minWidth: column.minWidth, backgroundColor: '#1976d2', color: '#fff' }}
+                style={{
+                  minWidth: column.minWidth,
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
               >
                 {column.label}
               </StyledTableCell>
@@ -150,60 +159,73 @@ const UserTable = (props) => {
           </TableHead>
           <TableBody>
             {data.map((row, index) => {
-                return (
-                  <TableRow
-                    // style={{ cursor: isProvider ? "pointer" : "default" }}
-                    hover
-                    tabIndex={-1}
-                    key={index}
-                  >
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      if (column.id == "Action") {
-                        const user_id = localStorage.getItem("user_id");
-                        if(props.isProvider){
+              return (
+                <TableRow
+                  // style={{ cursor: isProvider ? "pointer" : "default" }}
+                  hover
+                  tabIndex={-1}
+                  key={index}
+                >
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    if (column.id == "Action") {
+                      const user_id = localStorage.getItem("user_id");
+                      if (props.isProvider) {
+                        return (
+                          <TableCell key={column.id} align={"left"}>
+                            <ThreeDotsMenu
+                              view={view}
+                              row={row}
+                              isProvider={isProvider}
+                              getAdmins={getAdmins}
+                              getProviders={getProviders}
+                            />
+                          </TableCell>
+                        );
+                      } else {
+                        if (user_id === row._id) {
+                          return <></>;
+                        } else {
                           return (
                             <TableCell key={column.id} align={"left"}>
-                              <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
+                              <ThreeDotsMenu
+                                view={view}
+                                row={row}
+                                isProvider={isProvider}
+                                getAdmins={getAdmins}
+                                getProviders={getProviders}
+                              />
                             </TableCell>
-                          );  
-                        }else{
-                          if(user_id === row._id){
-                            return <></>
-                          }else{
-                            return (
-                              <TableCell key={column.id} align={"left"}>
-                                <ThreeDotsMenu view={view} row={row} isProvider={isProvider} getAdmins={getAdmins} getProviders={getProviders} />
-                              </TableCell>
-                            );
-                          }
+                          );
                         }
-                        
-                      } else if  (column.id == "formatted_status") {
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            <Stack direction="row" spacing={2}>
-                              <span>{value}</span>
-                              {row.bannedUser && <LockOutlined sx={{ color: 'red' }} />}
-                            </Stack>
-                          </TableCell>
-                        );
-                      }else if(column.id == "providerName"){
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {row.organization.name}
-                          </TableCell>
-                        );
                       }
+                    } else if (column.id == "formatted_status") {
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {value}
+                          <Stack direction="row" spacing={2}>
+                            <span>{value}</span>
+                            {row.bannedUser && (
+                              <LockOutlined sx={{ color: "red" }} />
+                            )}
+                          </Stack>
                         </TableCell>
                       );
-                    })}
-                  </TableRow>
-                );
-              })}
+                    } else if (column.id == "providerName") {
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {row.organization.name}
+                        </TableCell>
+                      );
+                    }
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
