@@ -135,7 +135,7 @@ export default function Complaints() {
         <div className="mb-4 flex flex-row justify-between items-center">
           <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">Complaints</label>
         </div>
-        { complaints.length > 0 ?
+        { complaints?.length > 0 ?
          <ComplaintTable
           columns={columnList}
           data={complaints}
