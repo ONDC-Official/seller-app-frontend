@@ -491,7 +491,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           ? "At least One store time is required"
           : "";
 
-      if (storeDetails.storeTimes.length > 0) {
+      if (
+        storeDetails.StoreTimeType === "frequency" &&
+        storeDetails.storeTimes.length > 0
+      ) {
         const invalidTimeIndices = storeDetails.storeTimes.reduce(
           (invalidIndices, time, index) => {
             if (time === "Invalid date" || time === "") {
