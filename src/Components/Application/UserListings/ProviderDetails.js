@@ -49,7 +49,7 @@ const kycFields = [
   },
   {
     id: "contactMobile",
-    title: "Contact Mobile",
+    title: "Contact Mobile Number",
     placeholder: "Enter your Contact Mobile Number",
     type: "input",
     required: true,
