@@ -454,10 +454,7 @@ const OrderItemsSummaryCard = (props) => {
 
     return (
       <>
-        <TableRow
-          {...otherProps}
-          sx={{ "& > *": { borderBottom: "1px solid #E0E0E0" } }}
-        >
+        <TableRow {...otherProps}>
           <TableCell padding="checkbox">
             <IconButton onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -466,7 +463,7 @@ const OrderItemsSummaryCard = (props) => {
           {children}
         </TableRow>
         {isExpanded && (
-          <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+          <TableRow>
             <TableCell padding="checkbox" />
             {expandComponent}
           </TableRow>
@@ -481,7 +478,7 @@ const OrderItemsSummaryCard = (props) => {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+              <TableRow>
                 <TableCell></TableCell>
                 {cols.map((col) => (
                   <TableCell
@@ -503,7 +500,7 @@ const OrderItemsSummaryCard = (props) => {
                 let product = order_item?.details;
                 return (
                   <ExpandableTableRow
-                    sx={{ "& > *": { borderBottom: "1px solid #e0e0e0" } }}
+                    sx={{ "& > *": { borderBottom: "1px solid red" } }}
                     key={order_item.order_id}
                     expandComponent={
                       <TableCell colSpan="7">
@@ -516,15 +513,6 @@ const OrderItemsSummaryCard = (props) => {
                         <TableCell align={col.align}>
                           {col.id == "url name" ? (
                             <div className="flex items-center">
-                              {/* <img
-                                //   src={row[col.id.split(" ")[0]]}
-                                style={{
-                                  height: 45,
-                                  width: 45,
-                                  marginRight: 20,
-                                }}
-                              /> */}
-                              {/* <span>{row[col.id.split(" ")[1]]}</span> */}
                               <div className="flex flex-col">
                                 <span style={{ fontWeight: 600 }}>
                                   {product?.productName}
@@ -573,8 +561,9 @@ const OrderItemsSummaryCard = (props) => {
 
               <TableRow>
                 <TableCell
+                  sx={{ borderBottom: "unset" }}
                   style={{ paddingBottom: 0, paddingTop: 0 }}
-                  colSpan={6}
+                  colSpan={7}
                 >
                   <Collapse in={open} timeout="auto" unmountOnExit>
                     <Box sx={{ margin: 1 }}>
