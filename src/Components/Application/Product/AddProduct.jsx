@@ -521,12 +521,22 @@ export default function AddProduct() {
         formValues[focusedField]?.trim() !== "" &&
         focusedField === "commonOrGenericNameOfCommodity"
       ) {
-        formErrors.commonOrGenericNameOfCommodity =
-          formValues?.commonOrGenericNameOfCommodity?.trim() === ""
-            ? "Common or generic name of commodity is required"
+        formErrors.description =
+          formValues?.description?.trim() === ""
+            ? "Short description cannot be empty"
             : formValues?.commonOrGenericNameOfCommodity.length >
               MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
+            : "";
+      } else if (
+        formValues[focusedField]?.trim() !== "" &&
+        focusedField === "description"
+      ) {
+        formErrors.description =
+          formValues?.description?.trim() === ""
+            ? "Short description is required"
+            : formValues?.description?.length > MAX_STRING_LENGTH
+            ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
             : "";
       }
       setErrors((prevErrors) => ({
