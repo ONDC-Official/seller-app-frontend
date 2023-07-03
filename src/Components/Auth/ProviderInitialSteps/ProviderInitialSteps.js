@@ -284,9 +284,13 @@ const ProviderInitialSteps = () => {
     formErrors.days = form2Values.days.length === 0 ? "Days is required" : "";
     formErrors.holidays = "";
     formErrors.startTime =
-      form2Values.startTime === "" ? "Start time is required" : "";
+      form2Values.StoreTimeType === "time" && form2Values.startTime === ""
+        ? "Start time is required"
+        : "";
     formErrors.endTime =
-      form2Values.endTime === "" ? "End time is required" : "";
+      form2Values.StoreTimeType === "time" && form2Values.endTime === ""
+        ? "End time is required"
+        : "";
     formErrors.frequency =
       form2Values.StoreTimeType === "frequency"
         ? form2Values.frequency === ""
@@ -493,7 +497,6 @@ const ProviderInitialSteps = () => {
     if (!form1Submitted) return;
     validateForm1();
   }, [form1Values]);
-  console.log(password);
 
   useEffect(() => {
     if (!form2Submitted) return;

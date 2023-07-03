@@ -496,14 +496,20 @@ export default function AddProduct() {
     if (!formSubmitted) {
       let formErrors = {};
 
-      if (focusedField === "manufacturerOrPackerName") {
+      if (
+        formValues[focusedField]?.trim() !== "" &&
+        focusedField === "manufacturerOrPackerName"
+      ) {
         formErrors.manufacturerOrPackerName =
           formValues?.manufacturerOrPackerName?.trim() === ""
             ? "Manufacturer or packer name is required"
             : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
-      } else if (focusedField === "manufacturerOrPackerAddress") {
+      } else if (
+        formValues[focusedField]?.trim() !== "" &&
+        focusedField === "manufacturerOrPackerAddress"
+      ) {
         formErrors.manufacturerOrPackerAddress =
           formValues?.manufacturerOrPackerAddress?.trim() === ""
             ? "Manufacturer or packer address is required"
@@ -511,7 +517,10 @@ export default function AddProduct() {
               MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
-      } else if (focusedField === "commonOrGenericNameOfCommodity") {
+      } else if (
+        formValues[focusedField]?.trim() !== "" &&
+        focusedField === "commonOrGenericNameOfCommodity"
+      ) {
         formErrors.commonOrGenericNameOfCommodity =
           formValues?.commonOrGenericNameOfCommodity?.trim() === ""
             ? "Common or generic name of commodity is required"

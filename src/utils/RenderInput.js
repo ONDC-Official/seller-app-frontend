@@ -381,6 +381,7 @@ const RenderInput = ({
             }
             setLocation={(location) => {
               const {
+                district,
                 city,
                 state: stateVal,
                 area: country,
@@ -400,7 +401,7 @@ const RenderInput = ({
                 country,
                 area_code,
                 locality,
-                //  city,
+                city: city != "" ? city : district,
               });
             }}
           />
