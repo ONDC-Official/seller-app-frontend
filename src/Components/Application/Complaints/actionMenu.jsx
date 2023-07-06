@@ -28,7 +28,7 @@ const ThreeDotsMenu = ({row, user, handleMenuClick, expanded}) => {
     
         mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
         const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
-        const isCascaded = mergedarray[mergedarray.length - 2]?.respondent_action === "CASCADED"
+        const isCascaded = (mergedarray[mergedarray.length - 2]?.respondent_action === "CASCADED" || mergedarray[mergedarray.length - 1]?.respondent_action === "CASCADED")
         const isEscalate = mergedarray[mergedarray.length - 1]?.respondent_action === "ESCALATE" 
         const isResolved = mergedarray[mergedarray.length - 1]?.respondent_action === "RESOLVED"
         setProcessed(isProcessed)

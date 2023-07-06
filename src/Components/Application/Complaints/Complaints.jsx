@@ -6,7 +6,7 @@ import ComplaintTable from "./ComplaintTable";
 const columns = [
   {
     id: "issueId",
-    label: "Complaint Id",
+    label: "Issue Id",
     minWidth: 120,
     align: "center"
   },

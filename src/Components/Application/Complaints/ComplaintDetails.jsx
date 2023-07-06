@@ -83,7 +83,7 @@ const ComplaintDetails = () => {
     setIssueActions(mergedarray)
 
     const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
-    const isCascaded = mergedarray[mergedarray?.length - 2]?.respondent_action === "CASCADED"
+    const isCascaded = (mergedarray[mergedarray?.length - 2]?.respondent_action === "CASCADED" || mergedarray[mergedarray?.length - 1]?.respondent_action === "CASCADED")
     const isEscalate = mergedarray[mergedarray?.length - 1]?.respondent_action === "ESCALATE" 
     const isResolved = mergedarray[mergedarray?.length - 1]?.respondent_action === "RESOLVED"
     setProcessed(isProcessed)
@@ -135,6 +135,7 @@ const ComplaintDetails = () => {
       if(resp.message?.ack?.status === "ACK") {
       cogoToast.success("Action taken successfully");
       setProcessed(true)
+      getComplaint()
       }else{
         cogoToast.error(resp.message);
       }
@@ -236,6 +237,7 @@ const ComplaintDetails = () => {
                         cogoToast.success("Action taken successfully");
                         setToggleActionModal(false);
                         setExpanded(id)
+                        getComplaint()
                     }}
                 />
             )}
@@ -247,7 +249,7 @@ const ComplaintDetails = () => {
             {issue && renderActionButtons()}
           </div>
           <div className="flex justify-between mt-3">
-            <p className="text-base font-normal">Complaint ID</p>
+            <p className="text-base font-normal">Issue Id</p>
             <p className="text-base font-normal">{issue?.id}</p>
           </div>
           <div className="flex justify-between mt-3">
@@ -286,6 +288,20 @@ const ComplaintDetails = () => {
           <p className="text-md font-normal">{issue?.description?.short_desc}</p>
           <p className="text-base font-semibold mt-3">Long description</p>
           <p className="text-base font-normal">{issue?.description?.long_desc}</p>
+          {issue?.description?.images.length > 0 &&
+                          <div className="flex space-between mt-3 mb-3">
+{
+                        issue?.description?.images?.map((image) => {
+                            return (
+                                <div className="container mr-4" style={{ height: "10%", width: "5%" }}>
+                                    <a href={image} rel="noreferrer" target="_blank">
+                                        <img  src={image} />
+                                    </a>
+                                </div>
+                            );
+                        })
+                       } </div>
+                      }
         </div>
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">

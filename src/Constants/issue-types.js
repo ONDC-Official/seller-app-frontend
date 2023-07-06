@@ -43,6 +43,11 @@
             key: '04',
             value: 'Quality issue',
             enums: 'ITM04'
+        },
+        {
+          key: '05',
+          value: 'Expired item',
+          enums: 'ITM05'
         }
       ],
     },
