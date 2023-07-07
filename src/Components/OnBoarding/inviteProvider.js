@@ -260,7 +260,7 @@ const InviteProvider = () => {
 
   const handleSubmit = () => {
     setFormSubmited(true);
-    if (validate()) {
+    if (true) {
       step == 4 ? sendInvite() : handleContinue();
     }
   };
