@@ -445,7 +445,7 @@ const RenderInput = ({
               });
             }}
             value={state[item.id] ? dayjs(dateValue) : ""}
-            DatePicker={{
+            slots={{
               TextField: (params) => (
                 <TextField
                   {...params}
