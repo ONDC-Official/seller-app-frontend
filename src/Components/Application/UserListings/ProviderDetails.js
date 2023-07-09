@@ -376,6 +376,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         country: res.providerDetail?.storeDetails?.address?.country || "",
         state: res.providerDetail?.storeDetails?.address?.state || "",
         city: res.providerDetail?.storeDetails?.address.city || "",
+        address_city: res.providerDetail?.storeDetails?.address.city || "",
         building: res.providerDetail?.storeDetails?.address?.building || "",
         area_code: res.providerDetail?.storeDetails?.address?.area_code || "",
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
@@ -472,7 +473,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       storeDetails.country.trim() === "" ? "Country is required" : "";
     formErrors.state =
       storeDetails.state.trim() === "" ? "State is required" : "";
-    formErrors.city = storeDetails.city.trim() === "" ? "City is required" : "";
+    formErrors.address_city = storeDetails.address_city.trim() === "" ? "City is required" : "";
     formErrors.building =
       storeDetails.building.trim() === "" ? "Building is required" : "";
     formErrors.area_code =
@@ -573,7 +574,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
         building,
         state,
-        city,
+        address_city,
         country,
         area_code,
         location,
@@ -584,7 +585,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         location_availability === "pan_india" ? true : false;
       const addressDetails = {
         building: building,
-        city: city,
+        city: address_city,
         state: state,
         country: country,
         area_code: area_code,

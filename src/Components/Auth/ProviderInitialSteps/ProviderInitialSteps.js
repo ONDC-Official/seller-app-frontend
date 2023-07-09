@@ -504,6 +504,7 @@ const ProviderInitialSteps = () => {
   }, [form2Values]);
 
   const checkDisabled = () => {
+    console.log("form2Values=====>", form2Values);
     if (step == 1) {
       return false;
     } else if (
@@ -538,8 +539,8 @@ const ProviderInitialSteps = () => {
           form2Values.startTime === "Invalid date" ||
           form2Values.endTime === "Invalid date" ||
           form2Values.startTime === form2Values.endTime)) ||
-      form2Values.storeTimes[0] === "" ||
-      form2Values.storeTimes[0] === "Invalid date" ||
+      // form2Values.storeTimes[0] === "" ||
+      // form2Values.storeTimes[0] === "Invalid date" ||
       form2Values.logisticsBppId === "" ||
       form2Values.radius === ""
     ) {

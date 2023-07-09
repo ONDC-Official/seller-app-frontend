@@ -396,12 +396,12 @@ const RenderInput = ({
                   lat: lat,
                   long: lng,
                 },
-                address_city: city,
+                address_city: city != "" ? city : district,
                 state: stateVal,
                 country,
                 area_code,
                 locality,
-                city: city != "" ? city : district,
+                // city: city != "" ? city : district,
               });
             }}
           />
@@ -445,7 +445,7 @@ const RenderInput = ({
               });
             }}
             value={state[item.id] ? dayjs(dateValue) : ""}
-            components={{
+            slots={{
               TextField: (params) => (
                 <TextField
                   {...params}
@@ -504,7 +504,7 @@ const RenderInput = ({
               }
             }}
             value={state[item.id] ? dayjs(dateValue) : ""}
-            components={{
+            slots={{
               TextField: (params) => (
                 <TextField
                   {...params}
