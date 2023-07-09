@@ -249,7 +249,7 @@ export default function ComplaintTable(props) {
                 <StyledTableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth, backgroundColor: 'rgb(25, 118, 210)', color: '#FFF' }}
                   className="font-medium"
                 >
                   {column.label}
