@@ -8,8 +8,16 @@ import { getCall, patchCall, postCall } from "../../../Api/axios";
 import useForm from "../../../hooks/useForm";
 import { AddCookie, removeCookie } from "../../../utils/cookies";
 import RenderInput from "../../../utils/RenderInput";
-import { isEmailValid, isNumberOnly, isObjEmpty, isPhoneNoValid } from "../../../utils/validations";
-import { containsOnlyNumbers, validatePasswordComplexity } from '../../../utils/formatting/string'
+import {
+  isEmailValid,
+  isNumberOnly,
+  isObjEmpty,
+  isPhoneNoValid,
+} from "../../../utils/validations";
+import {
+  containsOnlyNumbers,
+  validatePasswordComplexity,
+} from "../../../utils/formatting/string";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 import moment from "moment";
 
@@ -113,7 +121,7 @@ let storeFields = [
     title: "Supported product categories",
     placeholder: "Supported product categories",
     options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
-      return { key: value, value: key}
+      return { key: value, value: key };
     }),
     type: "multi-select",
     required: true,
@@ -154,6 +162,7 @@ let storeFields = [
     type: "upload",
     required: true,
     file_type: "logo",
+    fontColor: "#ffffff",
   },
 ];
 
@@ -183,7 +192,7 @@ const ProviderInitialSteps = () => {
     defaultReturnable: "false",
     email: "",
     mobile: "",
-    
+
     days: [],
     holidays: [],
     StoreTimeType: "time",
@@ -192,60 +201,123 @@ const ProviderInitialSteps = () => {
     frequency: "",
     storeTimes: [""],
     radius: "",
-    logisticsBppId: ""
-    
+    logisticsBppId: "",
   };
 
-  const { formValues: form1Values, setFormValues: setForm1Values, errors: form1Errors, setErrors: setForm1Errors } = useForm({ ...password })
-  const { formValues: form2Values, setFormValues: setForm2Values, errors: form2Errors, setErrors: setForm2Errors } = useForm({ ...storeDetails })
-  const [form1Submitted, setForm1Submited] = useState(false)
-  const [form2Submitted, setForm2Submited] = useState(false)
+  const {
+    formValues: form1Values,
+    setFormValues: setForm1Values,
+    errors: form1Errors,
+    setErrors: setForm1Errors,
+  } = useForm({ ...password });
+  const {
+    formValues: form2Values,
+    setFormValues: setForm2Values,
+    errors: form2Errors,
+    setErrors: setForm2Errors,
+  } = useForm({ ...storeDetails });
+  const [form1Submitted, setForm1Submited] = useState(false);
+  const [form2Submitted, setForm2Submited] = useState(false);
 
   const validateForm1 = () => {
-    const formErrors = {}
-    formErrors.password_1 = form1Values.password_1 === '' ? 'Password is required': !validatePasswordComplexity(form1Values.password_1) ? `
+    const formErrors = {};
+    formErrors.password_1 =
+      form1Values.password_1 === ""
+        ? "Password is required"
+        : !validatePasswordComplexity(form1Values.password_1)
+        ? `
     Password should have minimum 8 characters,
      at least one upper case character,
      at least one lower case character,
      at least one special character
-     and at least one digit` : ''
-    formErrors.password_2 = form1Values.password_2 === '' ? 'Confirm Password is required' : form1Values.password_1 !== form1Values.password_2 ? 'Passwords don\'t match' : ''
+     and at least one digit`
+        : "";
+    formErrors.password_2 =
+      form1Values.password_2 === ""
+        ? "Confirm Password is required"
+        : form1Values.password_1 !== form1Values.password_2
+        ? "Passwords don't match"
+        : "";
     setForm1Errors({
-      ...formErrors
-    })
-    return !Object.values(formErrors).some(val => val !== '')
-  }
+      ...formErrors,
+    });
+    return !Object.values(formErrors).some((val) => val !== "");
+  };
 
   const validateForm2 = () => {
-    const formErrors = {}
-    formErrors.logo = form2Values.logo.trim() === '' ? 'Logo is required' : ''
-    formErrors.categories = form2Values.categories.length < 1 ? 'Supported Product Categories are required' : ''
-    formErrors.location = !form2Values.location ? 'Location is required' : ''
-    formErrors.building = form2Values.building.trim() === '' ? 'Building is required' : ''
-    formErrors.address_city = form2Values.address_city.trim() === '' ? 'City is required' : ''
-    formErrors.state = form2Values.state.trim() === '' ? 'State is required' : ''
-    formErrors.country = form2Values.country.trim() === '' ? 'Country is required' : ''
-    formErrors.area_code = !containsOnlyNumbers(form2Values.area_code) ? 'Please enter a valid PIN code' : ''
-    formErrors.locality = form2Values.locality.trim() === '' ? 'Locality is required' : ''
-    if (form2Values.locationAvailability === 'city') {
-      formErrors.city = form2Values.city.length < 1 ? 'City is required' : ''
+    const formErrors = {};
+    formErrors.logo = form2Values.logo.trim() === "" ? "Logo is required" : "";
+    formErrors.categories =
+      form2Values.categories.length < 1
+        ? "Supported Product Categories are required"
+        : "";
+    formErrors.location = !form2Values.location ? "Location is required" : "";
+    formErrors.building =
+      form2Values.building.trim() === "" ? "Building is required" : "";
+    formErrors.address_city =
+      form2Values.address_city.trim() === "" ? "City is required" : "";
+    formErrors.state =
+      form2Values.state.trim() === "" ? "State is required" : "";
+    formErrors.country =
+      form2Values.country.trim() === "" ? "Country is required" : "";
+    formErrors.area_code = !containsOnlyNumbers(form2Values.area_code)
+      ? "Please enter a valid PIN code"
+      : "";
+    formErrors.locality =
+      form2Values.locality.trim() === "" ? "Locality is required" : "";
+    if (form2Values.locationAvailability === "city") {
+      formErrors.city = form2Values.city.length < 1 ? "City is required" : "";
     }
-    formErrors.email = form2Values.email.trim() === '' ? 'Support Email is required' : !isEmailValid(form2Values.email) ? 'Please enter a valid email address' : ''
-    formErrors.mobile = form2Values.mobile.trim() === '' ? 'Support Mobile Number is required' : !isPhoneNoValid(form2Values.mobile) ? 'Please enter a valid mobile number' : ''
-    
-    formErrors.days = form2Values.days.length === 0 ? 'Days is required' : '';
-    formErrors.holidays = '';
-    formErrors.startTime = form2Values.startTime === '' ? 'Start time is required' : '';
-    formErrors.endTime = form2Values.endTime === '' ? 'End time is required' : '';
-    formErrors.frequency = form2Values.StoreTimeType === "frequency"?form2Values.frequency === '' ? 'Frequency is required' : !isNumberOnly(form2Values?.frequency) ? 'Please enter only digit' : '':'';
-    formErrors.storeTimes = form2Values.storeTimes.length === 0 ? 'Al least One store time is required' : '';
-    formErrors.radius = form2Values.radius.trim() === '' ? 'Serviceable Radius/Circle is required' : !isNumberOnly(form2Values?.radius) ? 'Please enter only digit' : '';
-    formErrors.logisticsBppId = form2Values.logisticsBppId.trim() === '' ? 'Logistics Bpp Id is required' : ''
+    formErrors.email =
+      form2Values.email.trim() === ""
+        ? "Support Email is required"
+        : !isEmailValid(form2Values.email)
+        ? "Please enter a valid email address"
+        : "";
+    formErrors.mobile =
+      form2Values.mobile.trim() === ""
+        ? "Support Mobile Number is required"
+        : !isPhoneNoValid(form2Values.mobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+    formErrors.days = form2Values.days.length === 0 ? "Days is required" : "";
+    formErrors.holidays = "";
+    formErrors.startTime =
+      form2Values.StoreTimeType === "time" && form2Values.startTime === ""
+        ? "Start time is required"
+        : "";
+    formErrors.endTime =
+      form2Values.StoreTimeType === "time" && form2Values.endTime === ""
+        ? "End time is required"
+        : "";
+    formErrors.frequency =
+      form2Values.StoreTimeType === "frequency"
+        ? form2Values.frequency === ""
+          ? "Frequency is required"
+          : !isNumberOnly(form2Values?.frequency)
+          ? "Please enter only digit"
+          : ""
+        : "";
+    formErrors.storeTimes =
+      form2Values.storeTimes.length === 0
+        ? "Al least One store time is required"
+        : "";
+    formErrors.radius =
+      form2Values.radius.trim() === ""
+        ? "Serviceable Radius/Circle is required"
+        : !isNumberOnly(form2Values?.radius)
+        ? "Please enter only digit"
+        : "";
+    formErrors.logisticsBppId =
+      form2Values.logisticsBppId.trim() === ""
+        ? "Logistics Bpp Id is required"
+        : "";
     setForm2Errors({
-      ...formErrors
-    })
-    return !Object.values(formErrors).some(val => val !== '')
-  }
+      ...formErrors,
+    });
+    return !Object.values(formErrors).some((val) => val !== "");
+  };
 
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
@@ -327,8 +399,8 @@ const ProviderInitialSteps = () => {
 
   const handleStoreDetailsReq = async () => {
     const data = Object.assign({}, form2Values);
-    data.defaultCancellable = eval(data.defaultCancellable)
-    data.defaultReturnable = eval(data.defaultReturnable)
+    data.defaultCancellable = eval(data.defaultCancellable);
+    data.defaultReturnable = eval(data.defaultReturnable);
     data.address = {
       building: form2Values.building,
       city: form2Values.address_city,
@@ -344,31 +416,35 @@ const ProviderInitialSteps = () => {
     };
 
     data["locationAvailabilityPANIndia"] =
-    form2Values.locationAvailability == "PAN INDIA" ? true : false;
+      form2Values.locationAvailability == "PAN INDIA" ? true : false;
 
-    let iso8601 = '';
-    if(form2Values.frequency){
+    let iso8601 = "";
+    if (form2Values.frequency) {
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(form2Values.frequency), 'hours');
+      const duration = moment.duration(
+        parseInt(form2Values.frequency),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       iso8601 = duration.toISOString();
-    }else{}
+    } else {
+    }
     data.storeTiming = {
       days: form2Values.days,
       schedule: {
         holidays: form2Values.holidays,
-        frequency: iso8601 || '',
+        frequency: iso8601 || "",
         times: form2Values.storeTimes || [],
       },
       range: {
-        start: form2Values.startTime || '',
-        end: form2Values.endTime || '',
+        start: form2Values.startTime || "",
+        end: form2Values.endTime || "",
       },
     };
     data.radius = {
-      "unit": "km",
-      "value": form2Values.radius || ""
+      unit: "km",
+      value: form2Values.radius || "",
     };
     data.logisticsBppId = form2Values.logisticsBppId;
 
@@ -393,7 +469,7 @@ const ProviderInitialSteps = () => {
     delete data["storeTimes"];
     delete data["StoreTimeType"];
     delete data["tempURL"];
-    
+
     console.log("DATA==========>", data);
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
@@ -407,45 +483,68 @@ const ProviderInitialSteps = () => {
 
   const handleSubmit = () => {
     if (step == 1) {
-      setForm1Submited(true)
+      setForm1Submited(true);
       if (validateForm1()) handleSetPasswordReq();
     } else if (step == 2) {
-      setForm2Submited(true)
-      if (validateForm2()) handleStoreDetailsReq();
+      setForm2Submited(true);
+      if (validateForm2()) {
+        handleStoreDetailsReq();
+      }
     }
   };
 
   useEffect(() => {
-    if (!form1Submitted) return
-    validateForm1()
-  }, [form1Values])
+    if (!form1Submitted) return;
+    validateForm1();
+  }, [form1Values]);
 
   useEffect(() => {
-    if (!form2Submitted) return
-    validateForm2()
-  }, [form2Values])
+    if (!form2Submitted) return;
+    validateForm2();
+  }, [form2Values]);
 
   const checkDisabled = () => {
-    if (step === 2 && (
-      !form2Values.logo ||
-      form2Values.categories.length === 0 ||
-      !form2Values.location ||
-      !form2Values.building ||
-      !form2Values.address_city ||
-      !form2Values.state ||
-      !form2Values.country ||
-      !form2Values.area_code ||
-      !form2Values.locality ||
-      (form2Values.locationAvailability === 'city' && form2Values.city.length === 0) ||
-      !form2Values.logo ||
-      !form2Values.email ||
-      !form2Values.mobile ||
-      form2Values.days.length === 0 ||
-      !form2Values.frequency && !form2Values.StoreTimeType === "frequency" ||
-      !form2Values.startTime && !form2Values.StoreTimeType === "time" ||
-      !form2Values.endTime && !form2Values.StoreTimeType === "time" ||
-      form2Values.storeTimes.length === 0 && !form2Values.StoreTimeType === "frequency")) {
-        return true
+    console.log("form2Values=====>", form2Values);
+    if (step == 1) {
+      return false;
+    } else if (
+      (step === 2 &&
+        (!form2Values.logo ||
+          form2Values.categories.length === 0 ||
+          !form2Values.location ||
+          !form2Values.building ||
+          !form2Values.address_city ||
+          !form2Values.state ||
+          !form2Values.country ||
+          !form2Values.area_code ||
+          !form2Values.locality ||
+          (form2Values.locationAvailability === "city" &&
+            form2Values.city.length === 0) ||
+          !form2Values.logo ||
+          !form2Values.email ||
+          !form2Values.mobile ||
+          form2Values.days.length === 0 ||
+          (!form2Values.frequency &&
+            !form2Values.StoreTimeType === "frequency") ||
+          (!form2Values.startTime && !form2Values.StoreTimeType === "time") ||
+          (!form2Values.endTime && !form2Values.StoreTimeType === "time") ||
+          (form2Values.storeTimes.length === 0 &&
+            !form2Values.StoreTimeType === "frequency") ||
+          form2Values.holidays.length === 0)) ||
+      (form2Values.StoreTimeType === "frequency" &&
+        (form2Values.frequency === "" || form2Values.frequency === "0")) ||
+      (form2Values.StoreTimeType === "time" &&
+        (form2Values.startTime === "" ||
+          form2Values.endTime === "" ||
+          form2Values.startTime === "Invalid date" ||
+          form2Values.endTime === "Invalid date" ||
+          form2Values.startTime === form2Values.endTime)) ||
+      // form2Values.storeTimes[0] === "" ||
+      // form2Values.storeTimes[0] === "Invalid date" ||
+      form2Values.logisticsBppId === "" ||
+      form2Values.radius === ""
+    ) {
+      return true;
     }
     return false;
   };
@@ -453,7 +552,11 @@ const ProviderInitialSteps = () => {
   const renderSetPasswordFields = () => {
     return passwordFields.map((item) => (
       <RenderInput
-        item={{ ...item, error: form1Errors?.[item.id] ? true : false, helperText: form1Errors?.[item.id] || '' }}
+        item={{
+          ...item,
+          error: form1Errors?.[item.id] ? true : false,
+          helperText: form1Errors?.[item.id] || "",
+        }}
         state={form1Values}
         stateHandler={setForm1Values}
       />
@@ -463,7 +566,11 @@ const ProviderInitialSteps = () => {
   const renderStoreDetailsFields = () => {
     return storeDetailFields.map((item) => (
       <RenderInput
-        item={{ ...item, error: form2Errors?.[item.id] ? true : false, helperText: form2Errors?.[item.id] || '' }}
+        item={{
+          ...item,
+          error: form2Errors?.[item.id] ? true : false,
+          helperText: form2Errors?.[item.id] || "",
+        }}
         state={form2Values}
         stateHandler={setForm2Values}
       />
@@ -495,210 +602,222 @@ const ProviderInitialSteps = () => {
                 </p>
                 <div>
                   {renderSteps()}
-                  {
-                    step == 2
-                    ?(
-                      <>
-                        <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
-                        <RenderInput
-                          item={{
-                            id: "days",
-                            title: "Days",
-                            options: [
-                              { key: "Monday", value: '1' },
-                              { key: "Tuesday", value: '2' },
-                              { key: "Wednesday", value: '3' },
-                              { key: "Thursday", value: '4' },
-                              { key: "Friday", value: '5' },
-                              { key: "Saturday", value: '6' },
-                              { key: "Sunday", value: '7' },
-                            ],
-                            type: "checkbox",
-                            required: true,
-                            error: form2Errors?.['days'] ? true : false, 
-                            helperText: form2Errors?.['days'] || ''
-                          }}
-                          state={form2Values}
-                          stateHandler={setForm2Values}
-                        />
-                        <RenderInput
-                          item={{
-                            id: "holidays",
-                            title: "Holidays",
-                            placeholder: "Holidays",
-                            type: "days-picker",
-                            format: "YYYY-MM-DD",
-                            required: true,
-                            error: form2Errors?.['holidays'] ? true : false, 
-                            helperText: form2Errors?.['holidays'] || ''
-                          }}
-                          state={form2Values}
-                          stateHandler={setForm2Values}
-                        />
-                        <RenderInput
-                          item={{
-                            id: "StoreTimeType",
-                            title: "StoreTimeType",
-                            options: [
-                              { key: "Frequency", value: 'frequency' },
-                              { key: "Time", value: 'time' },
-                            ],
-                            type: "radio",
-                            required: true,
-                            error: form2Errors?.['StoreTimeType'] ? true : false, 
-                            helperText: form2Errors?.['StoreTimeType'] || ''
-                          }}
-                          state={form2Values}
-                          stateHandler={setForm2Values}
-                        />
-                        {
-                          form2Values.StoreTimeType === "frequency"
-                          ?(
-                            <>
-                              <RenderInput
-                                item={{
-                                  id: "frequency",
-                                  title: "Frequency (in hours)",
-                                  placeholder: "Frequency (in hours)",
-                                  type: "number",
-                                  required: true,
-                                  error: form2Errors?.['frequency'] ? true : false, 
-                                  helperText: form2Errors?.['frequency'] || ''
-                                }}
-                                state={form2Values}
-                                stateHandler={setForm2Values}
-                              />
-                              <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
-                                Store Time
-                                <span className="text-[#FF0000]"> *</span>
-                              </label>
-                              {
-                                form2Values.storeTimes && form2Values.storeTimes.length > 0 && form2Values.storeTimes.map((itemTime, idx) => {
-                                  return (
-                                    <div style={{display: 'flex'}}>
-                                      <div style={{flex: 1}}>
-                                        <RenderInput
-                                          item={{
-                                            id: "time",
-                                            title: "",
-                                            format: 'HH:mm',
-                                            ampm: false,
-                                            placeholder: "Frequency (in hours)",
-                                            type: "time-picker",
-                                            required: true,
-                                            error: form2Errors?.['frequency'] ? true : false, 
-                                            helperText: form2Errors?.['frequency'] || ''
-                                          }}
-                                          state={{time: itemTime}}
-                                          onChange={(value) => {
-                                            let data = JSON.parse(JSON.stringify(form2Values.storeTimes));
-                                            data[idx] = value;
-                                            setForm2Values((prevState) => {
-                                              const newState = {
-                                                ...prevState,
-                                                storeTimes: data,
-                                              };
-                                              return newState;
-                                            })
-                                          }}
-                                        />
-                                      </div>
-                                      <div style={{width: '100px', margin: 'auto', paddingLeft: '20px'}}>
-                                        {
-                                          ((form2Values.storeTimes.length - 1) === idx) && (
-                                            <Button 
-                                              variant="contained"
-                                              onClick={() => {
-                                                console.log("form2Values.storeTimes=====>", form2Values.storeTimes);
-                                                let data = JSON.parse(JSON.stringify(form2Values.storeTimes));
-                                                data.push("");
-                                                setForm2Values((prevState) => {
-                                                  const newState = {
-                                                    ...prevState,
-                                                    storeTimes: data,
-                                                  };
-                                                  return newState;
-                                                })
-                                              }}
-                                            >
-                                              Add
-                                            </Button>
-                                          )
-                                        }
-                                      </div>
-                                    </div>
-                                  )
-                                })
-                              }
-                              
-                            </>
-                          )
-                          :(
-                            <>
-                              <RenderInput
-                                item={{
-                                  id: "startTime",
-                                  title: "Start Time",
-                                  placeholder: "Start Time",
-                                  type: "time-picker",
-                                  format: 'HH:mm',
-                                  required: true,
-                                  error: form2Errors?.['startTime'] ? true : false, 
-                                  helperText: form2Errors?.['startTime'] || ''
-                                }}
-                                state={form2Values}
-                                stateHandler={setForm2Values}
-                              />
-                              <RenderInput
-                                item={{
-                                  id: "endTime",
-                                  title: "End Time",
-                                  placeholder: "End Time",
-                                  type: "time-picker",
-                                  format: 'HH:mm',
-                                  required: true,
-                                  error: form2Errors?.['endTime'] ? true : false, 
-                                  helperText: form2Errors?.['endTime'] || ''
-                                }}
-                                state={form2Values}
-                                stateHandler={setForm2Values}
-                              />
-                            </>
-                          )
-                        }
-                        
-                        <RenderInput
-                          item={{
-                            id: "radius",
-                            title: "Serviceable Radius/Circle (in Kilometer)",
-                            placeholder: "Serviceable Radius/Circle (in Kilometer)",
-                            type: "input",
-                            error: form2Errors?.['radius'] ? true : false, 
-                            helperText: form2Errors?.['radius'] || '',
-                            required: true
-                          }}
-                          state={form2Values}
-                          stateHandler={setForm2Values}
-                        />
+                  {step == 2 ? (
+                    <>
+                      <p className="text-2xl font-semibold mb-4 mt-14">
+                        Store Timing
+                      </p>
+                      <RenderInput
+                        item={{
+                          id: "days",
+                          title: "Days",
+                          options: [
+                            { key: "Monday", value: "1" },
+                            { key: "Tuesday", value: "2" },
+                            { key: "Wednesday", value: "3" },
+                            { key: "Thursday", value: "4" },
+                            { key: "Friday", value: "5" },
+                            { key: "Saturday", value: "6" },
+                            { key: "Sunday", value: "7" },
+                          ],
+                          type: "checkbox",
+                          required: true,
+                          error: form2Errors?.["days"] ? true : false,
+                          helperText: form2Errors?.["days"] || "",
+                        }}
+                        state={form2Values}
+                        stateHandler={setForm2Values}
+                      />
+                      <RenderInput
+                        item={{
+                          id: "holidays",
+                          title: "Holidays",
+                          placeholder: "Holidays",
+                          type: "days-picker",
+                          format: "YYYY-MM-DD",
+                          required: true,
+                          error: form2Errors?.["holidays"] ? true : false,
+                          helperText: form2Errors?.["holidays"] || "",
+                        }}
+                        state={form2Values}
+                        stateHandler={setForm2Values}
+                      />
+                      <RenderInput
+                        item={{
+                          id: "StoreTimeType",
+                          title: "StoreTimeType",
+                          options: [
+                            { key: "Frequency", value: "frequency" },
+                            { key: "Time", value: "time" },
+                          ],
+                          type: "radio",
+                          required: true,
+                          error: form2Errors?.["StoreTimeType"] ? true : false,
+                          helperText: form2Errors?.["StoreTimeType"] || "",
+                        }}
+                        state={form2Values}
+                        stateHandler={setForm2Values}
+                      />
+                      {form2Values.StoreTimeType === "frequency" ? (
+                        <>
+                          <RenderInput
+                            item={{
+                              id: "frequency",
+                              title: "Frequency (in hours)",
+                              placeholder: "Frequency (in hours)",
+                              type: "number",
+                              required: true,
+                              error: form2Errors?.["frequency"] ? true : false,
+                              helperText: form2Errors?.["frequency"] || "",
+                            }}
+                            state={form2Values}
+                            stateHandler={setForm2Values}
+                          />
+                          <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
+                            Store Time
+                            <span className="text-[#FF0000]"> *</span>
+                          </label>
+                          {form2Values.storeTimes &&
+                            form2Values.storeTimes.length > 0 &&
+                            form2Values.storeTimes.map((itemTime, idx) => {
+                              return (
+                                <div style={{ display: "flex" }}>
+                                  <div style={{ flex: 1 }}>
+                                    <RenderInput
+                                      item={{
+                                        id: "time",
+                                        title: "",
+                                        format: "HH:mm",
+                                        ampm: false,
+                                        placeholder: "Frequency (in hours)",
+                                        type: "time-picker",
+                                        required: true,
+                                        error: form2Errors?.["frequency"]
+                                          ? true
+                                          : false,
+                                        helperText:
+                                          form2Errors?.["frequency"] || "",
+                                      }}
+                                      state={{ time: itemTime }}
+                                      onChange={(value) => {
+                                        let data = JSON.parse(
+                                          JSON.stringify(form2Values.storeTimes)
+                                        );
+                                        data[idx] = value;
+                                        setForm2Values((prevState) => {
+                                          const newState = {
+                                            ...prevState,
+                                            storeTimes: data,
+                                          };
+                                          return newState;
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: "100px",
+                                      margin: "auto",
+                                      paddingLeft: "20px",
+                                    }}
+                                  >
+                                    {form2Values.storeTimes.length - 1 ===
+                                      idx && (
+                                      <Button
+                                        variant="contained"
+                                        onClick={() => {
+                                          console.log(
+                                            "form2Values.storeTimes=====>",
+                                            form2Values.storeTimes
+                                          );
+                                          let data = JSON.parse(
+                                            JSON.stringify(
+                                              form2Values.storeTimes
+                                            )
+                                          );
+                                          data.push("");
+                                          setForm2Values((prevState) => {
+                                            const newState = {
+                                              ...prevState,
+                                              storeTimes: data,
+                                            };
+                                            return newState;
+                                          });
+                                        }}
+                                      >
+                                        Add
+                                      </Button>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                        </>
+                      ) : (
+                        <>
+                          <RenderInput
+                            item={{
+                              id: "startTime",
+                              title: "Start Time",
+                              placeholder: "Start Time",
+                              type: "time-picker",
+                              format: "HH:mm",
+                              required: true,
+                              error: form2Errors?.["startTime"] ? true : false,
+                              helperText: form2Errors?.["startTime"] || "",
+                            }}
+                            state={form2Values}
+                            stateHandler={setForm2Values}
+                          />
+                          <RenderInput
+                            item={{
+                              id: "endTime",
+                              title: "End Time",
+                              placeholder: "End Time",
+                              type: "time-picker",
+                              format: "HH:mm",
+                              required: true,
+                              error: form2Errors?.["endTime"] ? true : false,
+                              helperText: form2Errors?.["endTime"] || "",
+                            }}
+                            state={form2Values}
+                            stateHandler={setForm2Values}
+                          />
+                        </>
+                      )}
 
-                        <RenderInput
-                          item={{
-                            id: "logisticsBppId",
-                            title: "Logistics Bpp Id",
-                            placeholder: "Logistics Bpp Id",
-                            type: "input",
-                            error: form2Errors?.['logisticsBppId'] ? true : false, 
-                            helperText: form2Errors?.['logisticsBppId'] || '',
-                            required: true
-                          }}
-                          state={form2Values}
-                          stateHandler={setForm2Values}
-                        />
-                        
-                      </>
-                    )
-                    :<></>
-                  }
+                      <RenderInput
+                        item={{
+                          id: "radius",
+                          title: "Serviceable Radius/Circle (in Kilometer)",
+                          placeholder:
+                            "Serviceable Radius/Circle (in Kilometer)",
+                          type: "input",
+                          error: form2Errors?.["radius"] ? true : false,
+                          helperText: form2Errors?.["radius"] || "",
+                          required: true,
+                        }}
+                        state={form2Values}
+                        stateHandler={setForm2Values}
+                      />
+
+                      <RenderInput
+                        item={{
+                          id: "logisticsBppId",
+                          title: "Logistics Bpp Id",
+                          placeholder: "Logistics Bpp Id",
+                          type: "input",
+                          error: form2Errors?.["logisticsBppId"] ? true : false,
+                          helperText: form2Errors?.["logisticsBppId"] || "",
+                          required: true,
+                        }}
+                        state={form2Values}
+                        stateHandler={setForm2Values}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
                 <div className="flex mt-6">
                   <Button

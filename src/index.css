@@ -87,14 +87,32 @@ code {
   scrollbar-width: none;
 }
 
-.MuiAutocomplete-popper{
+.MuiAutocomplete-popper {
   z-index: 11111 !important;
 }
 
-.inputClass{
+.inputClass {
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.23) !important;
   padding: 16px 14px !important;
   border-radius: 10px;
   line-height: 24px !important;
+}
+
+#mmiPickerTop {
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+}
+
+#Dv_mmiSearch_map {
+  background-color: #fff !important;
+}
+
+#mmiSearch_map {
+  font-size: 14px;
+  border: 0px solid transparent !important;
+}
+
+.mmi_search_dv {
+  border-top: 0px solid transparent !important;
 }
