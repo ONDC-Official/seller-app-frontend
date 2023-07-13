@@ -28,13 +28,16 @@ import { isAmountValid, isNumberOnly } from "../../../utils/validations";
 import {
   allProductFieldDetails,
   categoryFields,
-  genericCategoryFields,
+  productDetailsFields,
+  variationCommonFields,
 } from "./product-fields";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import AddVariants from "./AddVariants";
+import AddVitalInfo from "./AddVitalInfo";
 
 const AddGenericProduct = ({
   state,
@@ -42,12 +45,17 @@ const AddGenericProduct = ({
   subCategory,
   categoryForm,
   selectedVariantNames,
+  variants,
 }) => {
   const navigate = useNavigate();
 
   const [fields, setFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
   const { cancellablePromise } = useCancellablePromise();
+  const [productInfoFields, setProductInfoFields] = useState([]);
+  const [variantForms, setVariantForms] = useState([]);
+  const [vitalForm, setVitalForm] = useState({});
+  const [vitalFields, setVitalFields] = useState([]);
 
   const initialValues = {
     productCode: "",
@@ -249,6 +257,19 @@ const AddGenericProduct = ({
     }
   }, [formValues]);
 
+  useEffect(() => {
+    let field_names =
+      selectedVariantNames.length > 0
+        ? productDetailsFields
+        : [...productDetailsFields, ...variationCommonFields];
+    setProductInfoFields(field_names);
+
+    let vital_fields = variants.filter(variant => !selectedVariantNames.includes(variant.name));
+
+    setVitalFields(vital_fields);
+
+  }, [selectedVariantNames]);
+
   const validate = () => {
     let formErrors = {};
     formErrors.productCode =
@@ -265,21 +286,6 @@ const AddGenericProduct = ({
         : formValues?.productName?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.MRP = !formValues?.MRP
-      ? "Please enter a valid number"
-      : !isAmountValid(formValues?.MRP)
-      ? "Please enter only digit"
-      : "";
-    formErrors.retailPrice = !formValues?.retailPrice
-      ? "Please enter a valid number"
-      : !isAmountValid(formValues?.retailPrice)
-      ? "Please enter only digit"
-      : "";
-    formErrors.purchasePrice = !formValues?.purchasePrice
-      ? "Please enter a valid number"
-      : !isAmountValid(formValues?.purchasePrice)
-      ? "Please enter only digit"
-      : "";
     formErrors.HSNCode =
       formValues?.HSNCode?.trim() === ""
         ? "HSN code is not allowed to be empty"
@@ -390,11 +396,6 @@ const AddGenericProduct = ({
         : formValues?.description?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.images =
-      formValues?.productCategory !== "f_and_b" && formValues?.images.length < 1
-        ? "At least one image is required"
-        : "";
-
     formErrors.manufacturerOrPackerName =
       formValues?.manufacturerOrPackerName?.trim() === ""
         ? "Manufacturer or packer name is required"
@@ -437,6 +438,28 @@ const AddGenericProduct = ({
         : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH_14
         ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
         : "";
+    if (selectedVariantNames.length == 0) {
+      formErrors.MRP = !formValues?.MRP
+        ? "Please enter a valid number"
+        : !isAmountValid(formValues?.MRP)
+        ? "Please enter only digit"
+        : "";
+      formErrors.retailPrice = !formValues?.retailPrice
+        ? "Please enter a valid number"
+        : !isAmountValid(formValues?.retailPrice)
+        ? "Please enter only digit"
+        : "";
+      formErrors.purchasePrice = !formValues?.purchasePrice
+        ? "Please enter a valid number"
+        : !isAmountValid(formValues?.purchasePrice)
+        ? "Please enter only digit"
+        : "";
+      formErrors.images =
+        formValues?.productCategory !== "f_and_b" &&
+        formValues?.images.length < 1
+          ? "At least one image is required"
+          : "";
+    }
 
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
@@ -459,7 +482,12 @@ const AddGenericProduct = ({
     setErrors({
       ...formErrors,
     });
-    return !Object.values(formErrors).some((val) => val !== "");
+
+    let any_errors = !Object.values(formErrors).some((val) => val !== "");
+
+    console.log("************", any_errors);
+
+    return any_errors;
   };
 
   const handleSubmit = () => {
@@ -469,8 +497,22 @@ const AddGenericProduct = ({
     }
   };
 
-  const renderVitalFields = () => {
-    return genericCategoryFields.map((category_id) => {
+  const renderVariationsFields = () => {
+    return (
+      <AddVariants
+        category={category}
+        subCategory={subCategory}
+        variants={variants}
+        selectedVariantNames={selectedVariantNames}
+        variantForms={variantForms}
+        setVariantForms={setVariantForms}
+        shouldValidate={formSubmitted}
+      />
+    );
+  };
+
+  const renderProductInfoFields = () => {
+    return productInfoFields.map((category_id) => {
       let item = getProductFieldDetails(category_id);
       let returnElement = true;
       if (formValues?.productSubcategory1) {
@@ -513,6 +555,14 @@ const AddGenericProduct = ({
       }
     });
   };
+
+  const renderProductVitalFields = () => {
+    return <AddVitalInfo
+      selectedVariantNames={selectedVariantNames}
+      vitalForm={vitalForm}
+      setVitalForm={setVitalForm}
+      vitalFields={vitalFields}/>
+  }
 
   useEffect(() => {
     if (!formSubmitted) {
@@ -569,26 +619,27 @@ const AddGenericProduct = ({
       validate();
     }
   }, [formValues, focusedField]);
-  console.log(selectedVariantNames);
+
   return (
     <form>
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList
-              onChange={handleTabChange}
-              aria-label="lab API tabs example"
-              centered
-            >
+            <TabList onChange={handleTabChange} centered>
               <Tab label="Product Info" value="1" />
               <Tab label="Vital Info" value="2" />
-              <Tab label="Variations" value="3" />
+              {selectedVariantNames.length > 0 && (
+                <Tab label="Variations" value="3" />
+              )}
             </TabList>
           </Box>
           <TabPanel value="1">
-            <div className="mt-2">{renderVitalFields()}</div>
+            <div className="mt-2">{renderProductInfoFields()}</div>
           </TabPanel>
-          <TabPanel value="2"></TabPanel>
+          <TabPanel value="2">
+            <div className="mt-2">{renderProductVitalFields()}</div>
+          </TabPanel>
+          <TabPanel value="3">{renderVariationsFields()}</TabPanel>
         </TabContext>
       </Box>
 

@@ -311,12 +311,9 @@ export const allProductFieldDetails = [
 
 export const categoryFields = ["productCategory", "productSubcategory1"];
 
-export const genericCategoryFields = [
+export const productDetailsFields = [
   "productCode",
   "productName",
-  "MRP",
-  "retailPrice",
-  "purchasePrice",
   "HSNCode",
   "GST_Percentage",
   "quantity",
@@ -340,7 +337,6 @@ export const genericCategoryFields = [
   "isVegetarian",
   "isCancellable",
   "availableOnCod",
-  "images",
   "manufacturerOrPackerName",
   "manufacturerOrPackerAddress",
   "commonOrGenericNameOfCommodity",
@@ -348,3 +344,10 @@ export const genericCategoryFields = [
   "importerFSSAILicenseNo",
   "brandOwnerFSSAILicenseNo",
 ];
+
+export const variationCommonFields = [
+  "MRP",
+  "retailPrice",
+  "purchasePrice",
+  "images",
+]
