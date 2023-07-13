@@ -35,7 +35,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import AddVariants from "./AddVariants";
+
 
 const AddGenericProduct = ({
   state,
@@ -515,10 +515,6 @@ const AddGenericProduct = ({
     });
   };
 
-  const renderVariationsFields = () => {
-    return <AddVariants category={category} subCategory={subCategory} />;
-  };
-
   useEffect(() => {
     if (!formSubmitted) {
       let formErrors = {};
@@ -593,7 +589,7 @@ const AddGenericProduct = ({
           <TabPanel value="1">
             <div className="mt-2">{renderVitalFields()}</div>
           </TabPanel>
-          <TabPanel value="2">{renderVariationsFields()}</TabPanel>
+          <TabPanel value="2"></TabPanel>
         </TabContext>
       </Box>
 

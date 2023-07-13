@@ -472,7 +472,7 @@ export const allProperties = {
             {'name':'Color','type':'text','example':'', 'variationAllowed':true},
         ],
     },
-    'beauty_and_personal_care':{
+    'Beauty & Personal Care':{
         'Bath & Body':[
             {'name':'Size','type':'text','example':'small', 'variationAllowed':true},
             {'name':'Scent','type':'text','example':'Musk', 'variationAllowed':true},
