@@ -9,15 +9,15 @@ export const MAX_STRING_LENGTH_8 = 8;
 export const MAX_STRING_LENGTH_13 = 13;
 
 export const PRODUCT_CATEGORY = {
-    "grocery": "Grocery",
-    "beauty_and_personal_care": "Beauty & Personal Care",
-    "fashion": "Fashion",
-    "home_and_decor": "Home and Decor",
-    "f_and_b": "F&B",
+    "Grocery": "Grocery",
+    "Beauty & Personal Care": "Beauty & Personal Care",
+    "Fashion": "Fashion",
+    "Home and Decor": "Home and Decor",
+    "F&B": "F&B",
 }
 
 export const PRODUCT_SUBCATEGORY = {
-    grocery: [
+    "Grocery": [
         {value: 'Fruits and Vegetables', key: 'Fruits and Vegetables', protocolKey: "@ondc/org/mandatory_reqs_veggies_fruits"},
         {value: 'Masala & Seasoning', key: 'Masala & Seasoning', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {value: 'Oil & Ghee', key: 'Oil & Ghee', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
@@ -34,7 +34,7 @@ export const PRODUCT_SUBCATEGORY = {
         {value: 'Pet Care', key: 'Pet Care', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {value: 'Stationery', key: 'Stationery', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
     ],
-    beauty_and_personal_care: [
+    "Beauty & Personal Care": [
         {value: "Bath & Body", key: "Bath & Body", protocolKey: ''},
         {value: "Feminine Care", key: "Feminine Care", protocolKey: ''},
         {value: "Fragrance", key: "Fragrance", protocolKey: ''},
@@ -49,7 +49,7 @@ export const PRODUCT_SUBCATEGORY = {
         {value: "Sexual Wellness & Sensuality", key: "Sexual Wellness & Sensuality", protocolKey: ''},
         {value: "Tools & Accessories", key: "Tools & Accessories", protocolKey: ''},
     ],
-    fashion: [
+    "Fashion": [
         {value: "Men's Fashion Accessories", key: "Men's Fashion Accessories", protocolKey: ''},
         {value: "Men's Footwear Accessories", key: "Men's Footwear Accessories", protocolKey: ''},
         {value: "Men's Topwear", key: "Men's Topwear", protocolKey: ''},
@@ -84,7 +84,7 @@ export const PRODUCT_SUBCATEGORY = {
         {value: "Kid's Eyewear", key: "Kid's Eyewear", protocolKey: ''},
         {value: "kids Kid's Bags & Luggage", key: "Kid's Bags & Luggage", protocolKey: ''},
     ],
-    home_and_decor: [
+    "Home and Decor": [
         {value: 'Home Decor', key: 'Home Decor', protocolKey: ''},
         {value: 'Home Furnishings', key: 'Home Furnishings', protocolKey: ''},
         {value: 'Furniture', key: 'Furniture', protocolKey: ''},
@@ -93,7 +93,7 @@ export const PRODUCT_SUBCATEGORY = {
         {value: 'Cookware and Dining', key: 'Cookware and Dining', protocolKey: ''},
         {value: 'torage and Organisation', key: 'Storage and Organisation', protocolKey: ''},
     ],
-    f_and_b: [
+    "F&B": [
         {value: 'Continental', key: 'Continental', protocolKey: ''},
         {value: 'Middle Eastern', key: 'Middle Eastern', protocolKey: ''},
         {value: 'North Indian', key: 'North Indian', protocolKey: ''},
