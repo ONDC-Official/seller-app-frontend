@@ -801,7 +801,7 @@ const RenderInput = ({
         </label>
         {/* <Button sx={{ textTransform: 'none' }} variant="contained">
           <label for="contained-button-file">
-            Choose file        
+            Choose file
           </label>
         </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>

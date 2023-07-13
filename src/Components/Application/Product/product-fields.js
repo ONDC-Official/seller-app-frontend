@@ -1,6 +1,6 @@
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
-const productFields = [
+export const allProductFieldDetails = [
   {
     id: "productCode",
     title: "Product Code",
@@ -309,4 +309,42 @@ const productFields = [
   },
 ];
 
-export default productFields;
+export const categoryFields = ["productCategory", "productSubcategory1"];
+
+export const genericCategoryFields = [
+  "productCode",
+  "productName",
+  "MRP",
+  "retailPrice",
+  "purchasePrice",
+  "HSNCode",
+  "GST_Percentage",
+  "quantity",
+  "barcode",
+  "maxAllowedQty",
+  "UOM",
+  "packQty",
+  "length",
+  "breadth",
+  "height",
+  "weight",
+  "returnWindow",
+  "manufacturerName",
+  "manufacturedDate",
+  "nutritionalInfo",
+  "additiveInfo",
+  "instructions",
+  "longDescription",
+  "description",
+  "isReturnable",
+  "isVegetarian",
+  "isCancellable",
+  "availableOnCod",
+  "images",
+  "manufacturerOrPackerName",
+  "manufacturerOrPackerAddress",
+  "commonOrGenericNameOfCommodity",
+  "monthYearOfManufacturePackingImport",
+  "importerFSSAILicenseNo",
+  "brandOwnerFSSAILicenseNo",
+];

@@ -25,14 +25,15 @@ import {
   MAX_STRING_LENGTH_12,
 } from "../../../utils/constants";
 import { isAmountValid, isNumberOnly } from "../../../utils/validations";
-import productFields from "./product-fields";
+import { allProductFieldDetails, categoryFields, genericCategoryFields } from "./product-fields";
 
 export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [fields, setFields] = useState(productFields);
+  const [fields, setFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
-
+  const [category, setCatergory] = useState(null);
+  const [subCategory, setSubCatergory] = useState(null);
   const { cancellablePromise } = useCancellablePromise();
 
   const initialValues = {
@@ -43,8 +44,6 @@ export default function AddProduct() {
     purchasePrice: "",
     HSNCode: "",
     GST_Percentage: "",
-    productCategory: "",
-    productSubcategory1: "",
     quantity: "",
     barcode: "",
     maxAllowedQty: "",
@@ -74,17 +73,28 @@ export default function AddProduct() {
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
   };
+
+  const categoryInitialValues = {
+    productCategory: "",
+    productSubcategory1: "",
+  };
+
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...initialValues,
   });
+
+
+  const categoryForm = useForm(categoryInitialValues);
+
   const [formSubmitted, setFormSubmited] = useState(false);
 
   const addProduct = async () => {
+
     try {
-      let data = Object.assign({}, formValues);
-      const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+      let data = Object.assign({}, formValues, categoryForm.formValues);
+      const subCatList = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
-        (subitem) => subitem.value === formValues?.productSubcategory1
+        (subitem) => subitem.value === categoryForm.formValues?.productSubcategory1
       );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
         const hiddenFields =
@@ -109,6 +119,7 @@ export default function AddProduct() {
       data.availableOnCod = data.availableOnCod === "true" ? true : false;
 
       delete data["uploaded_urls"];
+      console.log(data);
       await cancellablePromise(postCall(`/api/v1/products`, data));
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");
@@ -185,8 +196,33 @@ export default function AddProduct() {
     }
   };
 
+  const getProductFieldDetails = (category_id) => {
+    return fields.find((field) => field.id === category_id);
+  };
+
   const renderFields = () => {
-    return fields.map((item) => {
+    if (!categoryForm.formValues["productCategory"] || !categoryForm.formValues["productSubcategory1"]) {
+      return categoryFields.map((category_id) => {
+        let item = getProductFieldDetails(category_id);
+        return (
+          item && (
+            <RenderInput
+              item={{
+                ...item,
+                error: errors?.[item?.id] ? true : false,
+                helperText: errors?.[item.id] || "",
+              }}
+              state={categoryForm.formValues}
+              stateHandler={categoryForm.setFormValues}
+              setFocusedField={setFocusedField}
+            />
+          )
+        );
+      });
+    }
+
+    return genericCategoryFields.map((category_id) => {
+      let item = getProductFieldDetails(category_id);
       let returnElement = true;
       if (formValues?.productSubcategory1) {
         const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
@@ -266,6 +302,21 @@ export default function AddProduct() {
     }
   }, [formValues]);
 
+
+  useEffect(() => {
+    if (categoryForm.formValues?.productCategory) {
+      let data = [...fields]; // Create a copy of the fields array
+      const subCategoryIndex = data.findIndex(
+        (item) => item.id === "productSubcategory1"
+      );
+      data[subCategoryIndex].options =
+        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
+      setFields(data);
+      };
+
+
+  }, [categoryForm.formValues])
+
   const validate = () => {
     let formErrors = {};
     formErrors.productCode =
@@ -305,12 +356,6 @@ export default function AddProduct() {
         : "";
     formErrors.GST_Percentage =
       formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
-    formErrors.productCategory =
-      formValues?.productCategory === "" ? "Product category is required" : "";
-    formErrors.productSubcategory1 =
-      formValues?.productSubcategory1.length < 1
-        ? "Product SubCategory is required"
-        : "";
     formErrors.quantity = !formValues?.quantity
       ? "Please enter a valid Quantity"
       : !isNumberOnly(formValues?.quantity)
