@@ -90,7 +90,6 @@ export default function AddProduct() {
   };
 
   const handleVariantCheckboxChange = (event) => {
-    console.log("here....");
     setVariantsCheckboxState({
       ...variantsCheckboxState,
       [event.target.name]: event.target.checked,
@@ -129,6 +128,13 @@ export default function AddProduct() {
     );
   };
 
+  const getSelectedVariantNames = () => {
+    let variant_names = Object.keys(variantsCheckboxState);
+    return variant_names.filter(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
+  };
+
   const renderFields = () => {
     if (
       renderCategories
@@ -139,7 +145,7 @@ export default function AddProduct() {
       return (
         <div>
           {renderCategoryFields()}
-          {variants && renderVariants()}
+          {variants.length > 0 && renderVariants()}
         </div>
       );
     } else {
@@ -149,6 +155,9 @@ export default function AddProduct() {
           categoryForm={categoryForm}
           category={categoryForm.formValues?.productCategory}
           subCategory={categoryForm.formValues?.productSubcategory1}
+          properties={properties}
+          variants={variants}
+          selectedVariantNames={getSelectedVariantNames()}
         />
       );
     }

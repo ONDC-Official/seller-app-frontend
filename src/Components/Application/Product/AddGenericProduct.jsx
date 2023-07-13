@@ -25,10 +25,26 @@ import {
   MAX_STRING_LENGTH_12,
 } from "../../../utils/constants";
 import { isAmountValid, isNumberOnly } from "../../../utils/validations";
-import { allProductFieldDetails, categoryFields, genericCategoryFields } from "./product-fields";
+import {
+  allProductFieldDetails,
+  categoryFields,
+  genericCategoryFields,
+} from "./product-fields";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import AddVariants from "./AddVariants";
 
-const AddGenericProduct = ({state, categoryForm, }) => {
-    const navigate = useNavigate();
+const AddGenericProduct = ({
+  state,
+  category,
+  subCategory,
+  categoryForm,
+  selectedVariantNames,
+}) => {
+  const navigate = useNavigate();
 
   const [fields, setFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
@@ -77,6 +93,12 @@ const AddGenericProduct = ({state, categoryForm, }) => {
   });
 
   const [formSubmitted, setFormSubmited] = useState(false);
+
+  const [tabValue, setTabValue] = useState("1");
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   const addProduct = async () => {
     try {
@@ -227,18 +249,6 @@ const AddGenericProduct = ({state, categoryForm, }) => {
       setFields(data);
     }
   }, [formValues]);
-
-  useEffect(() => {
-    if (categoryForm.formValues?.productCategory) {
-      let data = [...fields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex(
-        (item) => item.id === "productSubcategory1"
-      );
-      data[subCategoryIndex].options =
-        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
-      setFields(data);
-    }
-  }, [categoryForm.formValues]);
 
   const validate = () => {
     let formErrors = {};
@@ -460,8 +470,7 @@ const AddGenericProduct = ({state, categoryForm, }) => {
     }
   };
 
-  const renderFields = () => {
-
+  const renderVitalFields = () => {
     return genericCategoryFields.map((category_id) => {
       let item = getProductFieldDetails(category_id);
       let returnElement = true;
@@ -504,6 +513,10 @@ const AddGenericProduct = ({state, categoryForm, }) => {
         return <></>;
       }
     });
+  };
+
+  const renderVariationsFields = () => {
+    return <AddVariants category={category} subCategory={subCategory} />;
   };
 
   useEffect(() => {
@@ -561,17 +574,30 @@ const AddGenericProduct = ({state, categoryForm, }) => {
       validate();
     }
   }, [formValues, focusedField]);
-
+  console.log(selectedVariantNames);
   return (
     <form>
-      <div className="mt-2">{renderFields()}</div>
+      <Box sx={{ width: "100%", typography: "body1" }}>
+        <TabContext value={tabValue}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <TabList
+              onChange={handleTabChange}
+              aria-label="lab API tabs example"
+              centered
+            >
+              <Tab label="Product Info" value="1" />
+              <Tab label="Vital Info" value="2" />
+              <Tab label="Variations" value="3" />
+            </TabList>
+          </Box>
+          <TabPanel value="1">
+            <div className="mt-2">{renderVitalFields()}</div>
+          </TabPanel>
+          <TabPanel value="2">{renderVariationsFields()}</TabPanel>
+        </TabContext>
+      </Box>
+
       <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-        <MyButton
-          type="button"
-          title="CANCEL"
-          className="text-black"
-          onClick={() => navigate("/application/inventory")}
-        />
         <MyButton
           type="button"
           title={state?.productId ? "Update Product" : "ADD PRODUCT"}
