@@ -9,6 +9,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { allProperties } from "./categoryProperties";
 import MyButton from "../../Shared/Button";
 import VarinatForm from "./VariantForm";
+import {v4 as uuidv4} from 'uuid';
+
 
 import {
   allProductFieldDetails,
@@ -49,21 +51,28 @@ const AddVariants = ({
     });
 }, [variantFormsErrors]);
 
+useEffect(() => {
+  if (variantForms.length == 0) {
+    addNewVariationForm();
+  }
+}, [variantForms])
+
   const addNewVariationForm = () => {
-    setVariantForms([...variantForms, variantInitialValues]);
+    setVariantForms([...variantForms, {...variantInitialValues, formKey: uuidv4()}]);
   };
 
   const handleOnVariantFormUpdate = (index, formValues) => {
     variantForms[index] = formValues;
-    setVariantForms(variantForms);
+    setVariantForms([...variantForms]);
   };
 
   const handleRemoveForm = (i) => {
+    console.log("%% removing at ", i);
     variantForms.splice(i, 1);
     console.log("%%" , variantForms);
-    setVariantForms(variantForms);
+    setVariantForms([...variantForms]);
     variantFormsErrors.splice(i, 1);
-    setVariantFormsErrors(variantFormsErrors)
+    setVariantFormsErrors([...variantFormsErrors])
   }
 
   const renderForms = () => {
@@ -71,6 +80,7 @@ const AddVariants = ({
     return variantForms.map((form, i) => {
       return (
         <VarinatForm
+          key={form.formKey}
           index={i}
           formData={form}
           fields={variantFields}

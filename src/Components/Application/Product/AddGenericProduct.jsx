@@ -294,7 +294,16 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
-    console.log("in useEffect");
+
+    if (selectedVariantNames.length === 0)
+    {
+      setTabErrors(prevState => {
+        prevState[2] = false;
+        return prevState;
+      })
+    }
+
+
     let product_info_field_names =
       selectedVariantNames.length > 0
         ? productDetailsFields
@@ -322,16 +331,12 @@ const AddGenericProduct = ({
       };
     });
     let all_variant_fields = [...formatted_variants, ...default_variant_fields];
-    let initial_values = all_variant_fields.reduce((acc, field) => {
+    let variant_initial_values = all_variant_fields.reduce((acc, field) => {
       acc[field.id] = field.id === "images" ? [] : "";
       return acc;
     }, {});
     setVariantFields(all_variant_fields);
-    setVariantInitialValues(initial_values);
-
-    if (variantForms.length == 0) {
-      setVariantForms([...variantForms, initial_values]);
-    }
+    setVariantInitialValues(variant_initial_values);
   }, [selectedVariantNames]);
 
   const validate = () => {
@@ -701,16 +706,36 @@ const AddGenericProduct = ({
     }
   }, [formValues, focusedField]);
 
+  let highlightedTabColor =  tabErrors.includes(true) ? "error" : "primary";
+
   return (
     <form>
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleTabChange} centered>
-              <Tab label="Product Info" value="1" />
-              <Tab label="Vital Info" value="2" />
+            <TabList
+              onChange={handleTabChange}
+              textColor={highlightedTabColor}
+              centered
+            >
+              <Tab
+                sx={{ color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                label="Product Info"
+                value="1"
+                // textColor={tabErrors[0] ? "error" : "none"}
+                // indicatorColor="secondary"
+              />
+              <Tab
+                sx={{ color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                label="Vital Info"
+                value="2"
+              />
               {selectedVariantNames.length > 0 && (
-                <Tab label="Variations" value="3" />
+                <Tab
+                  sx={{ color: tabErrors[2] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                  label="Variations"
+                  value="3"
+                />
               )}
             </TabList>
           </Box>
