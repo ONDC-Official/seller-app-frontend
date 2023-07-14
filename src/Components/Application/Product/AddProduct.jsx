@@ -38,6 +38,7 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
+    console.log("in useEffect");
     if (categoryForm.formValues?.productCategory) {
       let data = [...fields]; // Create a copy of the fields array
       const subCategoryIndex = data.findIndex(
@@ -50,6 +51,7 @@ export default function AddProduct() {
   }, [categoryForm.formValues]);
 
   useEffect(() => {
+    console.log("in useEffect");
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
     console.log(category);

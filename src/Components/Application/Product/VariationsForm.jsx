@@ -11,10 +11,12 @@ const VariationsForm = ({formData, fields, index, onFormUpdate, shouldValidate})
   console.log(formValues);
 
   useEffect(() => {
+    console.log("in useEffect");
     onFormUpdate(index, formValues);
   }, [formValues])
 
   useEffect(() => {
+    console.log("in useEffect");
     if(shouldValidate) {
         console.log("validating....");
     }

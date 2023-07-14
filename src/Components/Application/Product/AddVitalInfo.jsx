@@ -8,18 +8,29 @@ const AddVitalInfo = ({
   vitalFields,
   vitalForm,
   setVitalForm,
+  vitalFormErrors,
+  setVitalFormErrors,
+  tabErrors,
+  setTabErrors,
+  shouldValidate,
 }) => {
   const [fields, setFields] = useState([]);
 
-  useEffect(() => {
-    let vital_fields = vitalFields.map((variant) => {
+  const getFields = () => {
+    return vitalFields.map((variant) => {
       return {
         id: variant.name,
         title: variant.name,
         placeholder: "Example, " + variant.example,
         type: variant.type === "text" ? "input" : variant.type,
+        required: true
       };
     });
+  };
+
+  useEffect(() => {
+    console.log("in useEffect");
+    let vital_fields = getFields();
     setFields(vital_fields);
 
     if (Object.keys(vitalForm).length == 0) {
@@ -27,23 +38,32 @@ const AddVitalInfo = ({
         acc[field.id] = "";
         return acc;
       }, {});
-      console.log("********* resetting...");
+      console.log("********* resetting to ", initial_values);
 
       setVitalForm(initial_values);
     }
-  }, [selectedVariantNames]);
+  }, [vitalFields]);
 
   const handleFormUpdate = (data) => {
+    console.log("*** setting vitalForm, ", data);
     setVitalForm(data);
   };
 
-  return (
-    <VitalForm
-      fields={fields}
-      formData={vitalForm}
-      onFormUpdate={handleFormUpdate}
-    />
-  );
+  if (Object.keys(vitalForm).length > 0) {
+    return (
+      <VitalForm
+        fields={getFields()}
+        formData={vitalForm}
+        onFormUpdate={handleFormUpdate}
+        onFormErrorUpdate={setVitalFormErrors}
+        vitalFormErrors={vitalFormErrors}
+        setVitalFormErrors={setVitalFormErrors}
+        tabErrors={tabErrors}
+        setTabErrors={setTabErrors}
+        shouldValidate={shouldValidate}
+      />
+    );
+  }
 };
 
 export default AddVitalInfo;

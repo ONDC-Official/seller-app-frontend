@@ -55,7 +55,10 @@ const AddGenericProduct = ({
   const [productInfoFields, setProductInfoFields] = useState([]);
   const [variantForms, setVariantForms] = useState([]);
   const [vitalForm, setVitalForm] = useState({});
+  const [vitalFormErrors, setVitalFormErrors] = useState({});
   const [vitalFields, setVitalFields] = useState([]);
+  const [tabErrors, setTabErrors] = useState([true, true, true]);
+  const [formValidate, setFormValidate] = useState(false);
 
   const initialValues = {
     productCode: "",
@@ -99,7 +102,29 @@ const AddGenericProduct = ({
     ...initialValues,
   });
 
-  const [formSubmitted, setFormSubmited] = useState(false);
+  useEffect(() => {
+    //User is typing something, set form validation to false
+    console.log("in useEffect");
+    setFormValidate(false);
+  }, [formValues, variantForms, vitalForm]);
+
+  console.log("tab errors ", tabErrors);
+  console.log("** vital form errors in main ", vitalFormErrors);
+  useEffect(() => {
+    console.log("in useEffect");
+    console.log("tab errors ", tabErrors);
+    if (!tabErrors.includes(true)) {
+      // When there is no error in any tab
+      state?.productId ? updateProduct() : addProduct();
+    }
+  }, [tabErrors]);
+
+  useEffect(() => {
+    console.log("in useEffect");
+    if(formValidate){
+    validate();
+    }
+  }, [formValidate])
 
   const [tabValue, setTabValue] = useState("1");
 
@@ -258,16 +283,18 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
+    console.log("in useEffect");
     let field_names =
       selectedVariantNames.length > 0
         ? productDetailsFields
         : [...productDetailsFields, ...variationCommonFields];
     setProductInfoFields(field_names);
 
-    let vital_fields = variants.filter(variant => !selectedVariantNames.includes(variant.name));
+    let vital_fields = variants.filter(
+      (variant) => !selectedVariantNames.includes(variant.name)
+    );
 
     setVitalFields(vital_fields);
-
   }, [selectedVariantNames]);
 
   const validate = () => {
@@ -483,18 +510,19 @@ const AddGenericProduct = ({
       ...formErrors,
     });
 
-    let any_errors = !Object.values(formErrors).some((val) => val !== "");
+    let valid_form = !Object.values(formErrors).some((val) => val !== "");
 
-    console.log("************", any_errors);
-
-    return any_errors;
+    tabErrors[0] = !valid_form;
+    setTabErrors(tabErrors);
   };
+  console.log("$$$$$$ form_submitted", formValidate);
 
   const handleSubmit = () => {
-    setFormSubmited(true);
-    if (validate()) {
-      state?.productId ? updateProduct() : addProduct();
-    }
+    // console.log("$$$ setting to true");
+    setFormValidate(true);
+    // if (validate()) {
+    //   state?.productId ? updateProduct() : addProduct();
+    // }
   };
 
   const renderVariationsFields = () => {
@@ -506,7 +534,7 @@ const AddGenericProduct = ({
         selectedVariantNames={selectedVariantNames}
         variantForms={variantForms}
         setVariantForms={setVariantForms}
-        shouldValidate={formSubmitted}
+        shouldValidate={formValidate}
       />
     );
   };
@@ -557,15 +585,23 @@ const AddGenericProduct = ({
   };
 
   const renderProductVitalFields = () => {
-    return <AddVitalInfo
-      selectedVariantNames={selectedVariantNames}
-      vitalForm={vitalForm}
-      setVitalForm={setVitalForm}
-      vitalFields={vitalFields}/>
-  }
+    return (
+      <AddVitalInfo
+        selectedVariantNames={selectedVariantNames}
+        vitalForm={vitalForm}
+        setVitalForm={setVitalForm}
+        vitalFormErrors={vitalFormErrors}
+        setVitalFormErrors={setVitalFormErrors}
+        vitalFields={vitalFields}
+        shouldValidate={formValidate}
+        tabErrors={tabErrors}
+        setTabErrors={setTabErrors}
+      />
+    );
+  };
 
   useEffect(() => {
-    if (!formSubmitted) {
+    if (!formValidate) {
       let formErrors = {};
 
       if (
