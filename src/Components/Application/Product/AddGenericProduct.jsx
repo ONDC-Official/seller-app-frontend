@@ -118,6 +118,7 @@ const AddGenericProduct = ({
   }, [variantForms]);
 
   console.log("tab errors ", tabErrors);
+
   console.log("** vital form errors in main ", vitalFormErrors);
   useEffect(() => {
     console.log("in useEffect");
@@ -549,7 +550,10 @@ const AddGenericProduct = ({
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
 
     tabErrors[0] = !valid_form;
-    setTabErrors(tabErrors);
+    setTabErrors((prev_state) => {
+      prev_state[0] = !valid_form;
+      return prev_state;
+    });
   };
   console.log("$$$$$$ form_submitted", formValidate);
 

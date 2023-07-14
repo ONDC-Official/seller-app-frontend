@@ -8,7 +8,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { allProperties } from "./categoryProperties";
 import MyButton from "../../Shared/Button";
-import VariationsForm from "./VariationsForm";
+import VarinatForm from "./VariantForm";
 
 import {
   allProductFieldDetails,
@@ -37,10 +37,14 @@ const AddVariants = ({
 
 
   useEffect(() => {
+    console.log("%% variantFormserrorrs use effect...");
     let forms_errors = variantFormsErrors.map(form_errors => Object.values(form_errors).some((val) => val !== ""))
+    console.log("% ", forms_errors);
+    console.log("% ", forms_errors.some(val => val === true));
 
     setTabErrors((prevState) => {
-      prevState[2] = forms_errors.some(val => val === true)
+      prevState[2] = forms_errors.some(val => val === true);
+      console.log("% ", prevState);
       return prevState;
     });
 }, [variantFormsErrors]);
@@ -54,11 +58,19 @@ const AddVariants = ({
     setVariantForms(variantForms);
   };
 
+  const handleRemoveForm = (i) => {
+    variantForms.splice(i, 1);
+    console.log("%%" , variantForms);
+    setVariantForms(variantForms);
+    variantFormsErrors.splice(i, 1);
+    setVariantFormsErrors(variantFormsErrors)
+  }
+
   const renderForms = () => {
     console.log(2);
     return variantForms.map((form, i) => {
       return (
-        <VariationsForm
+        <VarinatForm
           index={i}
           formData={form}
           fields={variantFields}
@@ -66,6 +78,7 @@ const AddVariants = ({
           shouldValidate={shouldValidate}
           formsErrors={variantFormsErrors}
           setFormsErrors={setVariantFormsErrors}
+          removeForm={handleRemoveForm}
         />
       );
     });

@@ -4,7 +4,7 @@ import RenderInput from "../../../utils/RenderInput";
 import { Typography, Box } from "@mui/material";
 import { getFormErrors } from "./utils";
 
-const VariationsForm = ({
+const VarinatForm = ({
   formData,
   fields,
   index,
@@ -12,6 +12,7 @@ const VariationsForm = ({
   shouldValidate,
   formsErrors,
   setFormsErrors,
+  removeForm
 }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...formData,
@@ -59,10 +60,19 @@ const VariationsForm = ({
 
   return (
     <div className="mt-5">
+      <div className="flex" style={{justifyContent: "space-between"}}>
       <Typography sx={{ fontWeight: "bold" }}>
         {" "}
         {"Variation " + (index + 1)}
       </Typography>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        onClick={() => removeForm(index)}>
+        <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
       {fields.map((field) => {
         return (
           <RenderInput
@@ -81,4 +91,4 @@ const VariationsForm = ({
   );
 };
 
-export default VariationsForm;
+export default VarinatForm;
