@@ -3,6 +3,7 @@ import useForm from "../../../hooks/useForm";
 import RenderInput from "../../../utils/RenderInput";
 import { isAmountValid } from "../../../utils/validations";
 import { MAX_STRING_LENGTH_50 } from "../../../utils/constants";
+import { getFormErrors } from "./utils";
 
 const VitalForm = ({
   fields,
@@ -12,14 +13,14 @@ const VitalForm = ({
   tabErrors,
   setTabErrors,
   vitalFormErrors,
-  setVitalFormErrors
+  setVitalFormErrors,
 }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...formData,
   });
 
-  console.log("*** formvalues", formValues);  console.log("*** formdata", formData);
-
+  console.log("*** formvalues", formValues);
+  console.log("*** formdata", formData);
 
   useEffect(() => {
     console.log("in useEffect");
@@ -29,45 +30,20 @@ const VitalForm = ({
   useEffect(() => {
     console.log("in useEffect");
     //add to errors only initially
-    if(Object.keys(errors).length === 0) {
-        setErrors(vitalFormErrors);
+    if (Object.keys(errors).length === 0) {
+      setErrors(vitalFormErrors);
     }
-  }, [vitalFormErrors])
+  }, [vitalFormErrors]);
 
   useEffect(() => {
     console.log("** in should validate useEffect");
     if (shouldValidate) {
-        console.log("** here...", fields);
-      let form_error = {};
-      let error = "";
-      fields.forEach((field) => {
-        let id = field.id;
-        let field_value = formValues[id];
-        if (field.type === "number") {
-          error = !field_value
-            ? "Please enter a valid number"
-            : !isAmountValid(field_value)
-            ? "Please enter only digit"
-            : "";
-        } else if (field.type === "images") {
-          error =
-            field_value.length < 1 ? "At least one image is required" : "";
-        } else if (field.type === "input") {
-            console.log("*** field ", field);
-            console.log("*** formValues ", formValues);
-            console.log("*** field_value ", field_value);
-          error =
-            field_value?.trim() === ""
-              ? id + " is required"
-              : field_value?.length > MAX_STRING_LENGTH_50
-              ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
-              : "";
-        }
-        form_error[id] = error;
-      });
+      console.log("** here...", fields);
 
-      console.log("** ", form_error);
-      let valid_form = !Object.values(form_error).some((val) => val !== "");
+      let form_errors = getFormErrors(fields, formValues);
+
+      console.log("** ", form_errors);
+      let valid_form = !Object.values(form_errors).some((val) => val !== "");
 
       tabErrors[1] = !valid_form;
       console.log(tabErrors);
@@ -75,9 +51,9 @@ const VitalForm = ({
         prevState[1] = !valid_form;
         return prevState;
       });
-      setErrors(form_error);
-      console.log("** setting vital form errors to ", form_error);
-      setVitalFormErrors(form_error);
+      setErrors(form_errors);
+      console.log("** setting vital form errors to ", form_errors);
+      setVitalFormErrors(form_errors);
     }
   }, [shouldValidate]);
 

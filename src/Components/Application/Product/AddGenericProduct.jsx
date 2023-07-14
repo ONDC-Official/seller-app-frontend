@@ -53,7 +53,12 @@ const AddGenericProduct = ({
   const [focusedField, setFocusedField] = useState("");
   const { cancellablePromise } = useCancellablePromise();
   const [productInfoFields, setProductInfoFields] = useState([]);
+
+  const [variantFields, setVariantFields] = useState([]);
+  const [variantInitialValues, setVariantInitialValues] = useState({});
   const [variantForms, setVariantForms] = useState([]);
+  const [variantFormsErrors, setVariantFormsErrors] = useState([]);
+
   const [vitalForm, setVitalForm] = useState({});
   const [vitalFormErrors, setVitalFormErrors] = useState({});
   const [vitalFields, setVitalFields] = useState([]);
@@ -104,9 +109,13 @@ const AddGenericProduct = ({
 
   useEffect(() => {
     //User is typing something, set form validation to false
-    console.log("in useEffect");
+    console.log("in useEffect 1");
     setFormValidate(false);
   }, [formValues, variantForms, vitalForm]);
+
+  useEffect(() => {
+    console.log("form updated...");
+  }, [variantForms]);
 
   console.log("tab errors ", tabErrors);
   console.log("** vital form errors in main ", vitalFormErrors);
@@ -115,16 +124,17 @@ const AddGenericProduct = ({
     console.log("tab errors ", tabErrors);
     if (!tabErrors.includes(true)) {
       // When there is no error in any tab
+      console.log("no error.....");
       state?.productId ? updateProduct() : addProduct();
     }
   }, [tabErrors]);
 
   useEffect(() => {
     console.log("in useEffect");
-    if(formValidate){
-    validate();
+    if (formValidate) {
+      validate();
     }
-  }, [formValidate])
+  }, [formValidate]);
 
   const [tabValue, setTabValue] = useState("1");
 
@@ -284,17 +294,43 @@ const AddGenericProduct = ({
 
   useEffect(() => {
     console.log("in useEffect");
-    let field_names =
+    let product_info_field_names =
       selectedVariantNames.length > 0
         ? productDetailsFields
         : [...productDetailsFields, ...variationCommonFields];
-    setProductInfoFields(field_names);
+    setProductInfoFields(product_info_field_names);
 
     let vital_fields = variants.filter(
       (variant) => !selectedVariantNames.includes(variant.name)
     );
-
     setVitalFields(vital_fields);
+
+    let default_variant_fields = variationCommonFields.map((field_id) =>
+      getProductFieldDetails(field_id)
+    );
+    let selected_variants = variants.filter((variant) =>
+      selectedVariantNames.includes(variant.name)
+    );
+    let formatted_variants = selected_variants.map((variant) => {
+      return {
+        id: variant.name,
+        title: variant.name,
+        placeholder: "Example, " + variant.example,
+        type: "input" || variant.type,
+        required: true,
+      };
+    });
+    let all_variant_fields = [...formatted_variants, ...default_variant_fields];
+    let initial_values = all_variant_fields.reduce((acc, field) => {
+      acc[field.id] = field.id === "images" ? [] : "";
+      return acc;
+    }, {});
+    setVariantFields(all_variant_fields);
+    setVariantInitialValues(initial_values);
+
+    if (variantForms.length == 0) {
+      setVariantForms([...variantForms, initial_values]);
+    }
   }, [selectedVariantNames]);
 
   const validate = () => {
@@ -532,9 +568,14 @@ const AddGenericProduct = ({
         subCategory={subCategory}
         variants={variants}
         selectedVariantNames={selectedVariantNames}
+        variantFields={variantFields}
+        variantInitialValues={variantInitialValues}
         variantForms={variantForms}
         setVariantForms={setVariantForms}
+        variantFormsErrors={variantFormsErrors}
+        setVariantFormsErrors={setVariantFormsErrors}
         shouldValidate={formValidate}
+        setTabErrors={setTabErrors}
       />
     );
   };

@@ -22,50 +22,31 @@ const AddVariants = ({
   subCategory,
   variants,
   selectedVariantNames,
+  variantFields,
+  variantInitialValues,
   variantForms,
   setVariantForms,
-  shouldValidate
+  shouldValidate,
+  variantFormsErrors,
+  setVariantFormsErrors,
+  setTabErrors
 }) => {
-  const [fields, setFields] = useState([]);
-  const [initialValues, setInitialValues] = useState({});
-
   const getProductFieldDetails = (field_id) => {
     return allProductFieldDetails.find((field) => field.id === field_id);
   };
 
+
   useEffect(() => {
-    let default_fields = variationCommonFields.map((field_id) =>
-      getProductFieldDetails(field_id)
-    );
-    let selected_variants = variants.filter((variant) =>
-      selectedVariantNames.includes(variant.name)
-    );
-    let formatted_variants = selected_variants.map((variant) => {
-      return {
-        id: variant.name,
-        title: variant.name,
-        placeholder: "Example, " + variant.example,
-        type: "input" || variant.type,
-        required: true,
-      };
+    let forms_errors = variantFormsErrors.map(form_errors => Object.values(form_errors).some((val) => val !== ""))
+
+    setTabErrors((prevState) => {
+      prevState[2] = forms_errors.some(val => val === true)
+      return prevState;
     });
-    let all_fields = [...formatted_variants, ...default_fields];
-    let initial_values = all_fields.reduce((acc, field) => {
-      acc[field.id] = field.id === "images" ? [] : "";
-      return acc;
-    }, {});
-    setFields(all_fields);
-    setInitialValues(initial_values);
+}, [variantFormsErrors]);
 
-    console.log(variationCommonFields);
-    console.log(allProductFieldDetails);
-  }, [selectedVariantNames]);
-
-  console.log(fields);
-  console.log(initialValues);
-
-  const handleVariationButtonClick = () => {
-    setVariantForms([...variantForms, initialValues]);
+  const addNewVariationForm = () => {
+    setVariantForms([...variantForms, variantInitialValues]);
   };
 
   const handleOnVariantFormUpdate = (index, formValues) => {
@@ -80,9 +61,11 @@ const AddVariants = ({
         <VariationsForm
           index={i}
           formData={form}
-          fields={fields}
+          fields={variantFields}
           onFormUpdate={handleOnVariantFormUpdate}
           shouldValidate={shouldValidate}
+          formsErrors={variantFormsErrors}
+          setFormsErrors={setVariantFormsErrors}
         />
       );
     });
@@ -95,7 +78,7 @@ const AddVariants = ({
         type="button"
         title="Add Variation"
         className="text-black"
-        onClick={() => handleVariationButtonClick()}
+        onClick={() => addNewVariationForm()}
       />
     </>
   );
