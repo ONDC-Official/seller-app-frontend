@@ -13,6 +13,7 @@ const AddVitalInfo = ({
   tabErrors,
   setTabErrors,
   shouldValidate,
+  setFormValidate
 }) => {
   const [fields, setFields] = useState([]);
 
@@ -29,7 +30,6 @@ const AddVitalInfo = ({
   };
 
   useEffect(() => {
-    console.log("in useEffect");
     let vital_fields = getFields();
     setFields(vital_fields);
 
@@ -38,14 +38,11 @@ const AddVitalInfo = ({
         acc[field.id] = "";
         return acc;
       }, {});
-      console.log("********* resetting to ", initial_values);
-
       setVitalForm(initial_values);
     }
   }, [vitalFields]);
 
   const handleFormUpdate = (data) => {
-    console.log("*** setting vitalForm, ", data);
     setVitalForm(data);
   };
 
@@ -61,6 +58,7 @@ const AddVitalInfo = ({
         tabErrors={tabErrors}
         setTabErrors={setTabErrors}
         shouldValidate={shouldValidate}
+        setFormValidate={setFormValidate}
       />
     );
   }

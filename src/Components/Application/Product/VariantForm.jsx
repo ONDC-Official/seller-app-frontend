@@ -18,21 +18,10 @@ const VarinatForm = ({
     ...formData,
   });
 
-  console.log(formValues);
-
   useEffect(() => {
-    console.log("in useEffect");
     onFormUpdate(index, formValues);
   }, [formValues]);
 
-  useEffect(() => {
-    console.log("in useEffect");
-    if (shouldValidate) {
-      console.log("validating....");
-    }
-  }, [shouldValidate]);
-
-  console.log("formErrors" , formsErrors);
   useEffect(() => {
     if (Object.keys(errors).length === 0) {
       setErrors(formsErrors[index]);
@@ -40,21 +29,11 @@ const VarinatForm = ({
   }, [formsErrors[index]]);
 
   useEffect(() => {
-    console.log("** in should validate useEffect");
     if (shouldValidate) {
-      console.log("** here...", fields);
-      console.log("formValues..", formValues);
-
       let form_errors = getFormErrors(fields, formValues);
-
-      console.log("** ", form_errors);
-      let valid_form = !Object.values(form_errors).some((val) => val !== "");
-
       setErrors(form_errors);
-      console.log("** setting variant form errors to ", form_errors);
-
       formsErrors[index] = form_errors;
-      setFormsErrors(formsErrors);
+      setFormsErrors([...formsErrors]);
     }
   }, [shouldValidate]);
 

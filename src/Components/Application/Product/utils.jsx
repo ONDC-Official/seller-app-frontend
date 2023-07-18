@@ -2,7 +2,6 @@ import { isAmountValid } from "../../../utils/validations";
 import { MAX_STRING_LENGTH_50 } from "../../../utils/constants";
 
 export const getFormErrors = (fields, formValues) => {
-    console.log("$$",fields);
     let form_errors = {};
     let error = "";
     fields.forEach((field) => {
@@ -18,9 +17,6 @@ export const getFormErrors = (fields, formValues) => {
         error =
           field_value.length < 1 ? "At least one image is required" : "";
       } else if (field.type === "input") {
-          console.log("*** field ", field);
-          console.log("*** formValues ", formValues);
-          console.log("*** field_value ", field_value);
         error =
           field_value?.trim() === ""
             ? id + " is required"

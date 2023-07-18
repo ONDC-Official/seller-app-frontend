@@ -38,7 +38,6 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
-    console.log("in useEffect");
     if (categoryForm.formValues?.productCategory) {
       let data = [...fields]; // Create a copy of the fields array
       const subCategoryIndex = data.findIndex(
@@ -51,11 +50,8 @@ export default function AddProduct() {
   }, [categoryForm.formValues]);
 
   useEffect(() => {
-    console.log("in useEffect");
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
-    console.log(category);
-    console.log(sub_category);
     if (category && sub_category) {
       let properties = allProperties[category][sub_category];
       let variants = properties?.filter(
@@ -140,9 +136,6 @@ export default function AddProduct() {
   const renderFields = () => {
     if (
       renderCategories
-      // !state?.productId &&
-      // (!categoryForm.formValues["productCategory"] ||
-      //   !categoryForm.formValues["productSubcategory1"])
     ) {
       return (
         <div>
@@ -185,18 +178,22 @@ export default function AddProduct() {
                 className="text-black"
                 onClick={() => navigate("/application/inventory")}
               />
-              <MyButton
-                type="button"
-                title="NEXT"
-                className="text-black"
-                disabled={
-                  !(
-                    categoryForm.formValues["productCategory"] &&
-                    categoryForm.formValues["productSubcategory1"]
-                  )
-                }
-                onClick={() => setRenderCategories(false)}
-              />
+              {renderCategories
+              &&
+               (
+                <MyButton
+                  type="button"
+                  title="NEXT"
+                  className="text-black"
+                  disabled={
+                    !(
+                      categoryForm.formValues["productCategory"] &&
+                      categoryForm.formValues["productSubcategory1"]
+                    )
+                  }
+                  onClick={() => setRenderCategories(false)}
+                />
+              )}
             </div>
           </form>
         </div>

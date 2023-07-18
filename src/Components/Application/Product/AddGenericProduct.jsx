@@ -48,7 +48,7 @@ const AddGenericProduct = ({
   variants,
 }) => {
   const navigate = useNavigate();
-
+  const hasVariants = selectedVariantNames.length > 0;
   const [fields, setFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
   const { cancellablePromise } = useCancellablePromise();
@@ -64,6 +64,10 @@ const AddGenericProduct = ({
   const [vitalFields, setVitalFields] = useState([]);
   const [tabErrors, setTabErrors] = useState([true, true, true]);
   const [formValidate, setFormValidate] = useState(false);
+  const [submitClicked, setSubmitClicked] = useState(false);
+
+  const [tabValue, setTabValue] = useState("1");
+
 
   const initialValues = {
     productCode: "",
@@ -109,35 +113,26 @@ const AddGenericProduct = ({
 
   useEffect(() => {
     //User is typing something, set form validation to false
-    console.log("in useEffect 1");
     setFormValidate(false);
   }, [formValues, variantForms, vitalForm]);
 
   useEffect(() => {
-    console.log("form updated...");
-  }, [variantForms]);
-
-  console.log("tab errors ", tabErrors);
-
-  console.log("** vital form errors in main ", vitalFormErrors);
-  useEffect(() => {
-    console.log("in useEffect");
-    console.log("tab errors ", tabErrors);
     if (!tabErrors.includes(true)) {
       // When there is no error in any tab
-      console.log("no error.....");
       state?.productId ? updateProduct() : addProduct();
+    } else {
+      // if (Object.keys(errors).length > 0) {
+      //   cogoToast.error("Please enter details for all required fields!");
+      // }
     }
   }, [tabErrors]);
 
   useEffect(() => {
-    console.log("in useEffect");
     if (formValidate) {
       validate();
     }
   }, [formValidate]);
 
-  const [tabValue, setTabValue] = useState("1");
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -145,7 +140,13 @@ const AddGenericProduct = ({
 
   const addProduct = async () => {
     try {
-      let data = Object.assign({}, formValues, categoryForm.formValues);
+      let product_data = Object.assign({}, formValues, categoryForm.formValues);
+      let vital_data = Object.assign({}, vitalForm);
+      let variant_data = Object.assign({}, variantForms);
+      let api_url = hasVariants
+        ? "/api/v1/productWithVariant"
+        : "/api/v1/products";
+
       const subCatList =
         PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
@@ -158,30 +159,45 @@ const AddGenericProduct = ({
             selectedSubCatObject.protocolKey
           ];
         hiddenFields.forEach((field) => {
-          delete data[field];
+          delete product_data[field];
         });
       } else {
       }
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
-      data.returnWindow = iso8601;
-      data.isCancellable = data.isCancellable === "true" ? true : false;
-      data.isReturnable = data.isReturnable === "true" ? true : false;
-      data.isVegetarian = data.isVegetarian === "true" ? true : false;
-      data.availableOnCod = data.availableOnCod === "true" ? true : false;
+      product_data.returnWindow = iso8601;
+      product_data.isCancellable =
+        product_data.isCancellable === "true" ? true : false;
+      product_data.isReturnable =
+        product_data.isReturnable === "true" ? true : false;
+      product_data.isVegetarian =
+        product_data.isVegetarian === "true" ? true : false;
+      product_data.availableOnCod =
+        product_data.availableOnCod === "true" ? true : false;
 
-      delete data["uploaded_urls"];
-      console.log(data);
-      await cancellablePromise(postCall(`/api/v1/products`, data));
+      delete product_data["uploaded_urls"];
+
+      let data = {
+        commonDetails: product_data,
+        attributesValues: vital_data,
+      };
+
+      if (hasVariants) {
+        data["variantSpecificDetails"] = variant_data;
+      }
+
+      await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");
     } catch (error) {
       cogoToast.error(error.response.data.error);
-      console.log(error);
     }
   };
 
@@ -294,20 +310,16 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
-
-    if (selectedVariantNames.length === 0)
-    {
-      setTabErrors(prevState => {
+    if (!hasVariants) {
+      setTabErrors((prevState) => {
         prevState[2] = false;
         return prevState;
-      })
+      });
     }
 
-
-    let product_info_field_names =
-      selectedVariantNames.length > 0
-        ? productDetailsFields
-        : [...productDetailsFields, ...variationCommonFields];
+    let product_info_field_names = hasVariants
+      ? productDetailsFields
+      : [...productDetailsFields, ...variationCommonFields];
     setProductInfoFields(product_info_field_names);
 
     let vital_fields = variants.filter(
@@ -507,7 +519,7 @@ const AddGenericProduct = ({
         : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH_14
         ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
         : "";
-    if (selectedVariantNames.length == 0) {
+    if (!hasVariants) {
       formErrors.MRP = !formValues?.MRP
         ? "Please enter a valid number"
         : !isAmountValid(formValues?.MRP)
@@ -557,17 +569,16 @@ const AddGenericProduct = ({
     tabErrors[0] = !valid_form;
     setTabErrors((prev_state) => {
       prev_state[0] = !valid_form;
-      return prev_state;
+      return [...prev_state];
     });
+    if (!valid_form) {
+      setFormValidate(false);
+    }
   };
-  console.log("$$$$$$ form_submitted", formValidate);
 
   const handleSubmit = () => {
-    // console.log("$$$ setting to true");
     setFormValidate(true);
-    // if (validate()) {
-    //   state?.productId ? updateProduct() : addProduct();
-    // }
+    setSubmitClicked(true);
   };
 
   const renderVariationsFields = () => {
@@ -585,6 +596,7 @@ const AddGenericProduct = ({
         setVariantFormsErrors={setVariantFormsErrors}
         shouldValidate={formValidate}
         setTabErrors={setTabErrors}
+        setFormValidate={setFormValidate}
       />
     );
   };
@@ -644,6 +656,7 @@ const AddGenericProduct = ({
         setVitalFormErrors={setVitalFormErrors}
         vitalFields={vitalFields}
         shouldValidate={formValidate}
+        setFormValidate={setFormValidate}
         tabErrors={tabErrors}
         setTabErrors={setTabErrors}
       />
@@ -706,7 +719,7 @@ const AddGenericProduct = ({
     }
   }, [formValues, focusedField]);
 
-  let highlightedTabColor =  tabErrors.includes(true) ? "error" : "primary";
+  let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
 
   return (
     <form>
@@ -719,20 +732,35 @@ const AddGenericProduct = ({
               centered
             >
               <Tab
-                sx={{ color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                sx={{
+                  color:
+                    tabErrors[0] && Object.keys(errors).length > 0
+                      ? "red"
+                      : "none",
+                }}
                 label="Product Info"
                 value="1"
                 // textColor={tabErrors[0] ? "error" : "none"}
                 // indicatorColor="secondary"
               />
               <Tab
-                sx={{ color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                sx={{
+                  color:
+                    tabErrors[1] && Object.keys(errors).length > 0
+                      ? "red"
+                      : "none",
+                }}
                 label="Vital Info"
                 value="2"
               />
               {selectedVariantNames.length > 0 && (
                 <Tab
-                  sx={{ color: tabErrors[2] && Object.keys(errors).length > 0 ? "red" : "none" }}
+                  sx={{
+                    color:
+                      tabErrors[2] && Object.keys(errors).length > 0
+                        ? "red"
+                        : "none",
+                  }}
                   label="Variations"
                   value="3"
                 />

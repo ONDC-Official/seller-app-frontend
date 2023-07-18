@@ -31,7 +31,8 @@ const AddVariants = ({
   shouldValidate,
   variantFormsErrors,
   setVariantFormsErrors,
-  setTabErrors
+  setTabErrors,
+  setFormValidate
 }) => {
   const getProductFieldDetails = (field_id) => {
     return allProductFieldDetails.find((field) => field.id === field_id);
@@ -39,20 +40,18 @@ const AddVariants = ({
 
 
   useEffect(() => {
-    console.log("%% variantFormserrorrs use effect...");
     let forms_errors = variantFormsErrors.map(form_errors => Object.values(form_errors).some((val) => val !== ""))
-    console.log("% ", forms_errors);
-    console.log("% ", forms_errors.some(val => val === true));
-
+    let are_valid_forms = !forms_errors.some(val => val === true)
     setTabErrors((prevState) => {
-      prevState[2] = forms_errors.some(val => val === true);
-      console.log("% ", prevState);
-      return prevState;
+      prevState[2] = !are_valid_forms
+      return [...prevState];
     });
+    setFormValidate(false);
+
 }, [variantFormsErrors]);
 
 useEffect(() => {
-  if (variantForms.length == 0) {
+  if (variantForms.length === 0) {
     addNewVariationForm();
   }
 }, [variantForms])
@@ -67,16 +66,13 @@ useEffect(() => {
   };
 
   const handleRemoveForm = (i) => {
-    console.log("%% removing at ", i);
     variantForms.splice(i, 1);
-    console.log("%%" , variantForms);
     setVariantForms([...variantForms]);
     variantFormsErrors.splice(i, 1);
     setVariantFormsErrors([...variantFormsErrors])
   }
 
   const renderForms = () => {
-    console.log(2);
     return variantForms.map((form, i) => {
       return (
         <VarinatForm

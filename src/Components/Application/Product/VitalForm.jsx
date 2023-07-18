@@ -14,21 +14,17 @@ const VitalForm = ({
   setTabErrors,
   vitalFormErrors,
   setVitalFormErrors,
+  setFormValidate
 }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...formData,
   });
 
-  console.log("*** formvalues", formValues);
-  console.log("*** formdata", formData);
-
   useEffect(() => {
-    console.log("in useEffect");
     onFormUpdate(formValues);
   }, [formValues]);
 
   useEffect(() => {
-    console.log("in useEffect");
     //add to errors only initially
     if (Object.keys(errors).length === 0) {
       setErrors(vitalFormErrors);
@@ -36,33 +32,25 @@ const VitalForm = ({
   }, [vitalFormErrors]);
 
   useEffect(() => {
-    console.log("** in should validate useEffect");
     if (shouldValidate) {
-      console.log("** here...", fields);
-
       let form_errors = getFormErrors(fields, formValues);
-
-      console.log("** ", form_errors);
       let valid_form = !Object.values(form_errors).some((val) => val !== "");
-
       tabErrors[1] = !valid_form;
-      console.log(tabErrors);
       setTabErrors((prevState) => {
         prevState[1] = !valid_form;
-        return prevState;
+        return [...prevState];
       });
       setErrors(form_errors);
-      console.log("** setting vital form errors to ", form_errors);
       setVitalFormErrors(form_errors);
+      if(!valid_form){
+        setFormValidate(false);
+      }
     }
   }, [shouldValidate]);
-
-  console.log(formData);
 
   return (
     <div>
       {fields.map((field) => {
-        console.log(field);
         return (
           <RenderInput
             item={{
