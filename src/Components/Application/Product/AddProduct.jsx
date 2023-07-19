@@ -16,6 +16,81 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
+import { Input } from "@material-ui/core";
+
+const customization_groups = [
+  {
+    id: "CG1",
+    name: "Crust(Select any 1)",
+    inputType: "select",
+    minQuanity: 1,
+    maxQuantiy: 1,
+    seq: 1,
+  },
+  {
+    id: "CG2",
+    name: "Size(Select any 1)",
+    inputType: "select",
+    minQuanity: 1,
+    maxQuantiy: 1,
+    seq: 2,
+  },
+  {
+    id: "CG3",
+    name: "Size(Select any 1)",
+    inputType: "select",
+    minQuanity: 1,
+    maxQuantiy: 1,
+    seq: 2,
+  },
+];
+
+const Customizations = [
+  {
+    id: "C1",
+    name: "Hand tossed",
+    price: 0,
+    inStock: true,
+    parent: "CG1",
+    child: "CG2",
+  },
+  {
+    id: "C2",
+    name: "Thin crust",
+    price: 100,
+    inStock: true,
+    parent: "CG1",
+    child: "CG3",
+  },
+  {
+    id: "C3",
+    name: "Regular",
+    price: 50,
+    inStock: true,
+    parent: "CG2",
+  },
+  {
+    id: "C4",
+    name: "Large",
+    price: 100,
+    inStock: true,
+    parent: "CG2",
+  },
+  {
+    id: "C5",
+    name: "Small",
+    price: 30,
+    inStock: true,
+    parent: "CG3",
+  },
+  {
+    id: "C6",
+    name: "Large",
+    price: 120,
+    inStock: true,
+    parent: "CG3",
+  },
+];
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -52,8 +127,6 @@ export default function AddProduct() {
   useEffect(() => {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
-    console.log(category);
-    console.log(sub_category);
     if (category && sub_category) {
       let properties = allProperties[category][sub_category];
       let variants = properties?.filter(
@@ -163,6 +236,125 @@ export default function AddProduct() {
     }
   };
 
+  const [customizationGroups, setCustomizationGroups] =
+    useState(customization_groups);
+  const [customizations, setCustomizations] = useState(Customizations);
+
+  console.log(`Customization Group:`, customizationGroups);
+  console.log(`Customizations:`, customizations);
+
+  function renderCustomizations() {
+    const inputStyles = {
+      background: "transparent",
+      padding: "4px 16px",
+      marginBottom: 10,
+      border: "1px solid #00000099",
+      borderRadius: 5,
+    };
+    const handleGroupChange = (event, groupIndex) => {
+      const updatedGroups = [...customizationGroups];
+      updatedGroups[groupIndex].name = event.target.value;
+      setCustomizationGroups(updatedGroups);
+    };
+
+    const handleCustomizationChange = (event, customizationIndex) => {
+      const updatedCustomizations = [...customizations];
+      updatedCustomizations[customizationIndex].name = event.target.value;
+      setCustomizations(updatedCustomizations);
+    };
+
+    const renderedElements = [];
+
+    for (const group of customizationGroups) {
+      if (group.seq === 1) {
+        renderedElements.push(
+          <div key={group.id}>
+            <input
+              style={inputStyles}
+              value={group.name}
+              onChange={(event) =>
+                handleGroupChange(
+                  event,
+                  customizationGroups.findIndex((g) => g.id === group.id)
+                )
+              }
+            />
+          </div>
+        );
+
+        for (const customization of customizations) {
+          if (customization.parent === group.id) {
+            renderedElements.push(
+              <div key={customization.id} style={{ marginLeft: "20px" }}>
+                <input
+                  style={inputStyles}
+                  value={customization.name}
+                  onChange={(event) =>
+                    handleCustomizationChange(
+                      event,
+                      customizations.findIndex((c) => c.id === customization.id)
+                    )
+                  }
+                />
+              </div>
+            );
+
+            if (customization.child) {
+              const childGroup = customizationGroups.find(
+                (g) => g.id === customization.child
+              );
+
+              if (childGroup) {
+                renderedElements.push(
+                  <div key={childGroup.id} style={{ marginLeft: "40px" }}>
+                    <input
+                      style={inputStyles}
+                      value={childGroup.name}
+                      onChange={(event) =>
+                        handleGroupChange(
+                          event,
+                          customizationGroups.findIndex(
+                            (g) => g.id === childGroup.id
+                          )
+                        )
+                      }
+                    />
+                  </div>
+                );
+
+                for (const childCustomization of customizations) {
+                  if (childCustomization.parent === childGroup.id) {
+                    renderedElements.push(
+                      <div
+                        key={childCustomization.id}
+                        style={{ marginLeft: "60px" }}
+                      >
+                        <input
+                          style={inputStyles}
+                          value={childCustomization.name}
+                          onChange={(event) =>
+                            handleCustomizationChange(
+                              event,
+                              customizations.findIndex(
+                                (c) => c.id === childCustomization.id
+                              )
+                            )
+                          }
+                        />
+                      </div>
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return renderedElements;
+  }
+
   return (
     <>
       <div className="container mx-auto my-8">
@@ -197,6 +389,7 @@ export default function AddProduct() {
               />
             </div>
           </form>
+          {renderCustomizations()}
         </div>
       </div>
     </>
