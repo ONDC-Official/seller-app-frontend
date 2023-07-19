@@ -134,9 +134,7 @@ export default function AddProduct() {
   };
 
   const renderFields = () => {
-    if (
-      renderCategories
-    ) {
+    if (renderCategories && !state?.productId) {
       return (
         <div>
           {renderCategoryFields()}
@@ -178,9 +176,7 @@ export default function AddProduct() {
                 className="text-black"
                 onClick={() => navigate("/application/inventory")}
               />
-              {renderCategories
-              &&
-               (
+              {renderCategories && (
                 <MyButton
                   type="button"
                   title="NEXT"

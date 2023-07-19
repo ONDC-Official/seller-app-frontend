@@ -47,6 +47,9 @@ const AddGenericProduct = ({
   selectedVariantNames,
   variants,
 }) => {
+
+
+
   const navigate = useNavigate();
   const hasVariants = selectedVariantNames.length > 0;
   const [fields, setFields] = useState(allProductFieldDetails);
@@ -67,6 +70,7 @@ const AddGenericProduct = ({
   const [submitClicked, setSubmitClicked] = useState(false);
 
   const [tabValue, setTabValue] = useState("1");
+
 
   const initialValues = {
     productCode: "",
@@ -140,7 +144,6 @@ const AddGenericProduct = ({
     let variant_forms_data = [...variantForms];
 
     return variant_forms_data.map((variantData) => {
-      console.log(variantData);
       let varint_attrs = selectedVariantNames.reduce((acc, variant_name) => {
         acc[variant_name] = variantData[variant_name];
         delete variantData[variant_name];
@@ -163,6 +166,7 @@ const AddGenericProduct = ({
       let api_url = hasVariants
         ? "/api/v1/productWithVariant"
         : "/api/v1/products";
+
       const subCatList =
         PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
@@ -326,12 +330,6 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
-    if (!hasVariants) {
-      setTabErrors((prevState) => {
-        prevState[2] = false;
-        return prevState;
-      });
-    }
 
     let product_info_field_names = hasVariants
       ? productDetailsFields
@@ -365,6 +363,25 @@ const AddGenericProduct = ({
     }, {});
     setVariantFields(all_variant_fields);
     setVariantInitialValues(variant_initial_values);
+
+    let variant_tab_error = true;
+    let vital_tab_error = true;
+
+    if (!hasVariants) {
+      variant_tab_error = false;
+    }
+
+    if(Object.keys(vital_fields).length === 0) {
+      vital_tab_error = false;
+    }
+
+    setTabErrors((prevState) => {
+      prevState[1] = vital_tab_error;
+      prevState[2] = variant_tab_error;
+      return prevState;
+    });
+
+
   }, [selectedVariantNames]);
 
   const validate = () => {
@@ -560,7 +577,7 @@ const AddGenericProduct = ({
 
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-      const selectedSubCatObject = subCatList.find(
+      const selectedSubCatObject = subCatList?.find(
         (subitem) => subitem.value === formValues?.productSubcategory1
       );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
@@ -568,7 +585,7 @@ const AddGenericProduct = ({
           FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
             selectedSubCatObject.protocolKey
           ];
-        hiddenFields.forEach((field) => {
+        hiddenFields?.forEach((field) => {
           formErrors[field] = "";
         });
       } else {
@@ -682,9 +699,9 @@ const AddGenericProduct = ({
   useEffect(() => {
     if (!formValidate) {
       let formErrors = {};
-
+      let focusFieldValue = formValues[focusedField]?.toString().trim();
       if (
-        formValues[focusedField]?.trim() !== "" &&
+        focusFieldValue !== "" &&
         focusedField === "manufacturerOrPackerName"
       ) {
         formErrors.manufacturerOrPackerName =
@@ -694,7 +711,7 @@ const AddGenericProduct = ({
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
       } else if (
-        formValues[focusedField]?.trim() !== "" &&
+        focusFieldValue !== "" &&
         focusedField === "manufacturerOrPackerAddress"
       ) {
         formErrors.manufacturerOrPackerAddress =
@@ -705,7 +722,7 @@ const AddGenericProduct = ({
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
       } else if (
-        formValues[focusedField]?.trim() !== "" &&
+        focusFieldValue !== "" &&
         focusedField === "commonOrGenericNameOfCommodity"
       ) {
         formErrors.description =
@@ -716,7 +733,7 @@ const AddGenericProduct = ({
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
       } else if (
-        formValues[focusedField]?.trim() !== "" &&
+        focusFieldValue !== "" &&
         focusedField === "description"
       ) {
         formErrors.description =
@@ -759,7 +776,8 @@ const AddGenericProduct = ({
                 // textColor={tabErrors[0] ? "error" : "none"}
                 // indicatorColor="secondary"
               />
-              <Tab
+              {Object.keys(vitalFields).length > 0 &&
+                <Tab
                 sx={{
                   color:
                     tabErrors[1] && Object.keys(errors).length > 0
@@ -768,7 +786,7 @@ const AddGenericProduct = ({
                 }}
                 label="Vital Info"
                 value="2"
-              />
+              />}
               {selectedVariantNames.length > 0 && (
                 <Tab
                   sx={{

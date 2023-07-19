@@ -13,7 +13,7 @@ const AddVitalInfo = ({
   tabErrors,
   setTabErrors,
   shouldValidate,
-  setFormValidate
+  setFormValidate,
 }) => {
   const [fields, setFields] = useState([]);
 
@@ -24,7 +24,7 @@ const AddVitalInfo = ({
         title: variant.name,
         placeholder: "Example, " + variant.example,
         type: variant.type === "text" ? "input" : variant.type,
-        required: true
+        required: true,
       };
     });
   };
