@@ -284,9 +284,9 @@ const ComplaintDetails = () => {
 
           <Divider orientation="horizontal" />
 
-          <p className="text-base font-semibold mt-3">Short description</p>
+          <p className="text-base font-semibold mt-3">Short Description</p>
           <p className="text-md font-normal">{issue?.description?.short_desc}</p>
-          <p className="text-base font-semibold mt-3">Long description</p>
+          <p className="text-base font-semibold mt-3">Long Description</p>
           <p className="text-base font-normal">{issue?.description?.long_desc}</p>
           {issue?.description?.images.length > 0 &&
                           <div className="flex space-between mt-3 mb-3">
