@@ -21,7 +21,7 @@ export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [fields, setFields] = useState(allProductFieldDetails);
-  const [properties, setProperties] = useState([]);
+  const [attributes, setAttributes] = useState([]);
   const [variants, setVariants] = useState([]);
   const [variantsCheckboxState, setVariantsCheckboxState] = useState({});
   const [renderCategories, setRenderCategories] = useState(!state?.productId);
@@ -61,7 +61,7 @@ export default function AddProduct() {
         acc[variant.name] = false;
         return acc;
       }, {});
-      setProperties(properties);
+      setAttributes(properties);
       setVariants(variants);
       setVariantsCheckboxState(variants_checkbox_map);
     }
@@ -148,7 +148,7 @@ export default function AddProduct() {
           categoryForm={categoryForm}
           category={categoryForm.formValues?.productCategory}
           subCategory={categoryForm.formValues?.productSubcategory1}
-          properties={properties}
+          attributes={attributes}
           variants={variants}
           selectedVariantNames={getSelectedVariantNames()}
         />

@@ -46,9 +46,8 @@ const AddGenericProduct = ({
   categoryForm,
   selectedVariantNames,
   variants,
+  attributes,
 }) => {
-
-
 
   const navigate = useNavigate();
   const hasVariants = selectedVariantNames.length > 0;
@@ -336,7 +335,7 @@ const AddGenericProduct = ({
       : [...productDetailsFields, ...variationCommonFields];
     setProductInfoFields(product_info_field_names);
 
-    let vital_fields = variants.filter(
+    let vital_fields = attributes.filter(
       (variant) => !selectedVariantNames.includes(variant.name)
     );
     setVitalFields(vital_fields);

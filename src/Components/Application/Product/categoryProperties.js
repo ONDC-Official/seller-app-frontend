@@ -480,7 +480,7 @@ export const allProperties = {
             {'name':'Color','type':'text','example':'', 'variationAllowed':true},
             {'name':'Item Form','type':'text','example':'Cream', 'variationAllowed':true},
             {'name':'Item Weight','type':'text','example':'5','unit':unitWeight},
-            {'name':'Model','type':'text','example':'AB-12', 'variationAllowed':true},
+            {'name':'Model','type':'text','example':'AB-12', 'variationAllowed':false},
             {'name':'PPU Count','type':'text','example':'6', 'variationAllowed':true},
         ],
         'Feminine Care':[
