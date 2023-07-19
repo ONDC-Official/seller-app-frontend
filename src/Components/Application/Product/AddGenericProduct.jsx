@@ -68,7 +68,6 @@ const AddGenericProduct = ({
 
   const [tabValue, setTabValue] = useState("1");
 
-
   const initialValues = {
     productCode: "",
     productName: "",
@@ -133,20 +132,37 @@ const AddGenericProduct = ({
     }
   }, [formValidate]);
 
-
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const formattedVariantData = () => {
+    let variant_forms_data = [...variantForms];
+
+    return variant_forms_data.map((variantData) => {
+      console.log(variantData);
+      let varint_attrs = selectedVariantNames.reduce((acc, variant_name) => {
+        acc[variant_name] = variantData[variant_name];
+        delete variantData[variant_name];
+        return acc;
+      }, {});
+
+      //delete variantData["formKey"];
+
+      variantData["varientAttributes"] = varint_attrs;
+
+      return variantData;
+    });
   };
 
   const addProduct = async () => {
     try {
       let product_data = Object.assign({}, formValues, categoryForm.formValues);
       let vital_data = Object.assign({}, vitalForm);
-      let variant_data = Object.assign({}, variantForms);
+      let variant_data = formattedVariantData();
       let api_url = hasVariants
         ? "/api/v1/productWithVariant"
         : "/api/v1/products";
-
       const subCatList =
         PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
