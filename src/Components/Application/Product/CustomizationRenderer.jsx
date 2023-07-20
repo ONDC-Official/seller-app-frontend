@@ -1,5 +1,6 @@
 import React from "react";
 import CustomizationGroup from "./CustomizationGroup";
+import Customization from "./Customization";
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
@@ -36,31 +37,11 @@ const CustomizationRenderer = (props) => {
         for (const customization of customizations) {
           if (customization.parent === group.id) {
             renderedElements.push(
-              <div
-                key={customization.id}
-                style={{ marginLeft: "20px", borderWidth: 1 }}
-                className="border-stone-300 rounded-md px-4 py-2 my-2"
-              >
-                <div className="flex">
-                  <p className="font-medium">Variant Name: &nbsp;</p>
-                  <input
-                    style={{
-                      ...inputStyles,
-                    }}
-                    value={customization.name}
-                    onChange={(event) =>
-                      handleCustomizationChange(
-                        event,
-                        customizations.findIndex((c) => c.id === customization.id)
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex font-medium">
-                  <p>Price: &nbsp;</p>
-                  <p>{customization.price}</p>
-                </div>
-              </div>
+              <Customization
+                customization={customization}
+                customizations={customizations}
+                handleCustomizationChange={handleCustomizationChange}
+              />
             );
 
             if (customization.child) {
@@ -79,32 +60,11 @@ const CustomizationRenderer = (props) => {
                 for (const childCustomization of customizations) {
                   if (childCustomization.parent === childGroup.id) {
                     renderedElements.push(
-                      <div
-                        key={childCustomization.id}
-                        style={{
-                          marginLeft: "60px",
-                          borderWidth: 1,
-                        }}
-                        className="border-2 border-stone-300 rounded-md px-4 py-2 my-2"
-                      >
-                        <div className="flex">
-                          <p className="font-medium">Variant Name: &nbsp;</p>
-                          <input
-                            style={inputStyles}
-                            value={childCustomization.name}
-                            onChange={(event) =>
-                              handleCustomizationChange(
-                                event,
-                                customizations.findIndex((c) => c.id === childCustomization.id)
-                              )
-                            }
-                          />
-                        </div>
-                        <div className="flex font-medium">
-                          <p>Price: &nbsp;</p>
-                          <p>{childCustomization.price}</p>
-                        </div>
-                      </div>
+                      <Customization
+                        customization={childCustomization}
+                        customizations={customizations}
+                        handleCustomizationChange={handleCustomizationChange}
+                      />
                     );
                   }
                 }
