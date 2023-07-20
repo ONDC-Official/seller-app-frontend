@@ -17,6 +17,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
+import CustomizationRenderer from "./CustomizationRenderer";
 
 const customization_groups = [
   {
@@ -24,7 +25,7 @@ const customization_groups = [
     name: "Crust(Select any 1)",
     inputType: "select",
     minQuanity: 1,
-    maxQuantiy: 1,
+    maxQuantity: 1,
     seq: 1,
   },
   {
@@ -32,7 +33,7 @@ const customization_groups = [
     name: "Size(Select any 1)",
     inputType: "select",
     minQuanity: 1,
-    maxQuantiy: 1,
+    maxQuantity: 1,
     seq: 2,
   },
   {
@@ -40,7 +41,7 @@ const customization_groups = [
     name: "Size(Select any 1)",
     inputType: "select",
     minQuanity: 1,
-    maxQuantiy: 1,
+    maxQuantity: 1,
     seq: 2,
   },
 ];
@@ -49,7 +50,7 @@ const Customizations = [
   {
     id: "C1",
     name: "Hand tossed",
-    price: 0,
+    price: 299,
     inStock: true,
     parent: "CG1",
     child: "CG2",
@@ -57,7 +58,7 @@ const Customizations = [
   {
     id: "C2",
     name: "Thin crust",
-    price: 100,
+    price: 349,
     inStock: true,
     parent: "CG1",
     child: "CG3",
@@ -100,6 +101,8 @@ export default function AddProduct() {
   const [variants, setVariants] = useState([]);
   const [variantsCheckboxState, setVariantsCheckboxState] = useState({});
   const [renderCategories, setRenderCategories] = useState(!state?.productId);
+  const [customizationGroups, setCustomizationGroups] = useState(customization_groups);
+  const [customizations, setCustomizations] = useState(Customizations);
 
   const categoryInitialValues = {
     productCategory: "",
@@ -115,11 +118,8 @@ export default function AddProduct() {
   useEffect(() => {
     if (categoryForm.formValues?.productCategory) {
       let data = [...fields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex(
-        (item) => item.id === "productSubcategory1"
-      );
-      data[subCategoryIndex].options =
-        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
+      const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
+      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       setFields(data);
     }
   }, [categoryForm.formValues]);
@@ -129,9 +129,7 @@ export default function AddProduct() {
     let sub_category = categoryForm.formValues["productSubcategory1"];
     if (category && sub_category) {
       let properties = allProperties[category][sub_category];
-      let variants = properties?.filter(
-        (property) => property.variationAllowed
-      );
+      let variants = properties?.filter((property) => property.variationAllowed);
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
         acc[variant.name] = false;
         return acc;
@@ -176,11 +174,7 @@ export default function AddProduct() {
           Select Variants
         </label>
         <Box sx={{ display: "flex" }}>
-          <FormControl
-            sx={{ ml: 3, display: "flex" }}
-            component="fieldset"
-            variant="standard"
-          >
+          <FormControl sx={{ ml: 3, display: "flex" }} component="fieldset" variant="standard">
             <FormGroup sx={{ display: "flex" }}>
               {variants?.map(({ name }) => (
                 <FormControlLabel
@@ -203,9 +197,7 @@ export default function AddProduct() {
 
   const getSelectedVariantNames = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.filter(
-      (variant_name) => variantsCheckboxState[variant_name]
-    );
+    return variant_names.filter((variant_name) => variantsCheckboxState[variant_name]);
   };
 
   const renderFields = () => {
@@ -236,131 +228,13 @@ export default function AddProduct() {
     }
   };
 
-  const [customizationGroups, setCustomizationGroups] =
-    useState(customization_groups);
-  const [customizations, setCustomizations] = useState(Customizations);
-
   console.log(`Customization Group:`, customizationGroups);
   console.log(`Customizations:`, customizations);
-
-  function renderCustomizations() {
-    const inputStyles = {
-      background: "transparent",
-      padding: "4px 16px",
-      marginBottom: 10,
-      border: "1px solid #00000099",
-      borderRadius: 5,
-    };
-    const handleGroupChange = (event, groupIndex) => {
-      const updatedGroups = [...customizationGroups];
-      updatedGroups[groupIndex].name = event.target.value;
-      setCustomizationGroups(updatedGroups);
-    };
-
-    const handleCustomizationChange = (event, customizationIndex) => {
-      const updatedCustomizations = [...customizations];
-      updatedCustomizations[customizationIndex].name = event.target.value;
-      setCustomizations(updatedCustomizations);
-    };
-
-    const renderedElements = [];
-
-    for (const group of customizationGroups) {
-      if (group.seq === 1) {
-        renderedElements.push(
-          <div key={group.id}>
-            <input
-              style={inputStyles}
-              value={group.name}
-              onChange={(event) =>
-                handleGroupChange(
-                  event,
-                  customizationGroups.findIndex((g) => g.id === group.id)
-                )
-              }
-            />
-          </div>
-        );
-
-        for (const customization of customizations) {
-          if (customization.parent === group.id) {
-            renderedElements.push(
-              <div key={customization.id} style={{ marginLeft: "20px" }}>
-                <input
-                  style={inputStyles}
-                  value={customization.name}
-                  onChange={(event) =>
-                    handleCustomizationChange(
-                      event,
-                      customizations.findIndex((c) => c.id === customization.id)
-                    )
-                  }
-                />
-              </div>
-            );
-
-            if (customization.child) {
-              const childGroup = customizationGroups.find(
-                (g) => g.id === customization.child
-              );
-
-              if (childGroup) {
-                renderedElements.push(
-                  <div key={childGroup.id} style={{ marginLeft: "40px" }}>
-                    <input
-                      style={inputStyles}
-                      value={childGroup.name}
-                      onChange={(event) =>
-                        handleGroupChange(
-                          event,
-                          customizationGroups.findIndex(
-                            (g) => g.id === childGroup.id
-                          )
-                        )
-                      }
-                    />
-                  </div>
-                );
-
-                for (const childCustomization of customizations) {
-                  if (childCustomization.parent === childGroup.id) {
-                    renderedElements.push(
-                      <div
-                        key={childCustomization.id}
-                        style={{ marginLeft: "60px" }}
-                      >
-                        <input
-                          style={inputStyles}
-                          value={childCustomization.name}
-                          onChange={(event) =>
-                            handleCustomizationChange(
-                              event,
-                              customizations.findIndex(
-                                (c) => c.id === childCustomization.id
-                              )
-                            )
-                          }
-                        />
-                      </div>
-                    );
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return renderedElements;
-  }
 
   return (
     <>
       <div className="container mx-auto my-8">
-        <BackNavigationButton
-          onClick={() => navigate("/application/inventory")}
-        />
+        <BackNavigationButton onClick={() => navigate("/application/inventory")} />
         <div className="w-full !h-full">
           <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
             {state?.productId == undefined ? "Add Product" : "Update Product"}
@@ -380,16 +254,18 @@ export default function AddProduct() {
                 title="NEXT"
                 className="text-black"
                 disabled={
-                  !(
-                    categoryForm.formValues["productCategory"] &&
-                    categoryForm.formValues["productSubcategory1"]
-                  )
+                  !(categoryForm.formValues["productCategory"] && categoryForm.formValues["productSubcategory1"])
                 }
                 onClick={() => setRenderCategories(false)}
               />
             </div>
           </form>
-          {renderCustomizations()}
+          <CustomizationRenderer
+            customizationGroups={customizationGroups}
+            setCustomizationGroups={setCustomizationGroups}
+            customizations={customizations}
+            setCustomizations={setCustomizations}
+          />
         </div>
       </div>
     </>
