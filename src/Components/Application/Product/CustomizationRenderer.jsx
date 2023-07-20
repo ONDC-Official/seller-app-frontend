@@ -38,6 +38,7 @@ const CustomizationRenderer = (props) => {
           if (customization.parent === group.id) {
             renderedElements.push(
               <Customization
+                styles={{ marginLeft: 20 }}
                 customization={customization}
                 customizations={customizations}
                 handleCustomizationChange={handleCustomizationChange}
@@ -61,6 +62,7 @@ const CustomizationRenderer = (props) => {
                   if (childCustomization.parent === childGroup.id) {
                     renderedElements.push(
                       <Customization
+                        styles={{ marginLeft: 60 }}
                         customization={childCustomization}
                         customizations={customizations}
                         handleCustomizationChange={handleCustomizationChange}
