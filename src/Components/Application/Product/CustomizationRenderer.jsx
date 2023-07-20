@@ -1,17 +1,14 @@
 import React from "react";
+import CustomizationGroups from "./CustomizationGroups";
 
 const CustomizationRenderer = (props) => {
-  const {
-    customizationGroups,
-    setCustomizationGroups,
-    customizations,
-    setCustomizations,
-  } = props;
+  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
 
   function renderCustomizations() {
     const inputStyles = {
       background: "transparent",
     };
+
     const handleGroupChange = (event, groupIndex) => {
       const updatedGroups = [...customizationGroups];
       updatedGroups[groupIndex].name = event.target.value;
@@ -29,32 +26,11 @@ const CustomizationRenderer = (props) => {
     for (const group of customizationGroups) {
       if (group.seq === 1) {
         renderedElements.push(
-          <div
-            key={group.id}
-            className="border-2 border-stone-300 rounded-md px-4 py-2"
-          >
-            <div className="flex">
-              <p className="font-bold">Customization group: &nbsp;</p>
-              <input
-                style={inputStyles}
-                value={group.name}
-                onChange={(event) =>
-                  handleGroupChange(
-                    event,
-                    customizationGroups.findIndex((g) => g.id === group.id)
-                  )
-                }
-              />
-            </div>
-            <div className="flex font-medium">
-              <p>Minimum quantity: &nbsp;</p>
-              <p>{group.minQuanity}</p>
-            </div>
-            <div className="flex font-medium">
-              <p>Maximum quantity: &nbsp;</p>
-              <p>{group.maxQuantity}</p>
-            </div>
-          </div>
+          <CustomizationGroups
+            group={group}
+            customizationGroups={customizationGroups}
+            handleGroupChange={handleGroupChange}
+          />
         );
 
         for (const customization of customizations) {
@@ -75,9 +51,7 @@ const CustomizationRenderer = (props) => {
                     onChange={(event) =>
                       handleCustomizationChange(
                         event,
-                        customizations.findIndex(
-                          (c) => c.id === customization.id
-                        )
+                        customizations.findIndex((c) => c.id === customization.id)
                       )
                     }
                   />
@@ -90,41 +64,16 @@ const CustomizationRenderer = (props) => {
             );
 
             if (customization.child) {
-              const childGroup = customizationGroups.find(
-                (g) => g.id === customization.child
-              );
+              const childGroup = customizationGroups.find((g) => g.id === customization.child);
 
               if (childGroup) {
                 renderedElements.push(
-                  <div
-                    key={childGroup.id}
-                    style={{ marginLeft: "40px" }}
-                    className="border-2 border-stone-300 rounded-md px-4 py-2"
-                  >
-                    <div className="flex">
-                      <p className="font-bold">Customization group: &nbsp;</p>
-                      <input
-                        style={inputStyles}
-                        value={childGroup.name}
-                        onChange={(event) =>
-                          handleGroupChange(
-                            event,
-                            customizationGroups.findIndex(
-                              (g) => g.id === childGroup.id
-                            )
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="flex font-medium">
-                      <p>Minimum quantity: &nbsp;</p>
-                      <p>{childGroup.minQuanity}</p>
-                    </div>
-                    <div className="flex font-medium">
-                      <p>Maximum quantity: &nbsp;</p>
-                      <p>{childGroup.maxQuantity}</p>
-                    </div>
-                  </div>
+                  <CustomizationGroups
+                    styles={{ marginLeft: 40 }}
+                    group={childGroup}
+                    customizationGroups={customizationGroups}
+                    handleGroupChange={handleGroupChange}
+                  />
                 );
 
                 for (const childCustomization of customizations) {
@@ -146,9 +95,7 @@ const CustomizationRenderer = (props) => {
                             onChange={(event) =>
                               handleCustomizationChange(
                                 event,
-                                customizations.findIndex(
-                                  (c) => c.id === childCustomization.id
-                                )
+                                customizations.findIndex((c) => c.id === childCustomization.id)
                               )
                             }
                           />
