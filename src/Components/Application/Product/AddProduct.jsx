@@ -18,7 +18,6 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
 import CustomizationRenderer from "./CustomizationRenderer";
-
 const customization_groups = [
   {
     id: "CG1",
@@ -43,6 +42,14 @@ const customization_groups = [
     minQuanity: 1,
     maxQuantity: 1,
     seq: 2,
+  },
+  {
+    id: "CG4",
+    name: "Toppings(Select any 1)",
+    inputType: "select",
+    minQuanity: 1,
+    maxQuantity: 1,
+    seq: 3,
   },
 ];
 
@@ -69,6 +76,7 @@ const Customizations = [
     price: 50,
     inStock: true,
     parent: "CG2",
+    child: "CG4",
   },
   {
     id: "C4",
@@ -90,6 +98,13 @@ const Customizations = [
     price: 120,
     inStock: true,
     parent: "CG3",
+  },
+  {
+    id: "C7",
+    name: "Olives",
+    price: 120,
+    inStock: true,
+    parent: "CG4",
   },
 ];
 

@@ -5,81 +5,77 @@ import Customization from "./Customization";
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
 
-  function renderCustomizations() {
-    const inputStyles = {
-      background: "transparent",
-    };
+  const handleGroupChange = (event, groupId) => {
+    const updatedGroups = [...customizationGroups];
+    const groupIndex = updatedGroups.findIndex((group) => group.id === groupId);
+    updatedGroups[groupIndex].name = event.target.value;
+    setCustomizationGroups(updatedGroups);
+  };
 
-    const handleGroupChange = (event, groupIndex) => {
-      const updatedGroups = [...customizationGroups];
-      updatedGroups[groupIndex].name = event.target.value;
-      setCustomizationGroups(updatedGroups);
-    };
+  const handleCustomizationChange = (event, customizationId) => {
+    const updatedCustomizations = [...customizations];
+    const customizationIndex = updatedCustomizations.findIndex((customization) => customization.id === customizationId);
+    updatedCustomizations[customizationIndex].name = event.target.value;
+    setCustomizations(updatedCustomizations);
+  };
 
-    const handleCustomizationChange = (event, customizationIndex) => {
-      const updatedCustomizations = [...customizations];
-      updatedCustomizations[customizationIndex].name = event.target.value;
-      setCustomizations(updatedCustomizations);
-    };
-
+  const renderCustomizations = (groups) => {
     const renderedElements = [];
 
-    for (const group of customizationGroups) {
+    for (const group of groups) {
       if (group.seq === 1) {
         renderedElements.push(
-          <CustomizationGroup
-            group={group}
-            customizationGroups={customizationGroups}
-            handleGroupChange={handleGroupChange}
-          />
+          <React.Fragment key={group.id}>
+            <CustomizationGroup
+              group={group}
+              customizationGroups={customizationGroups}
+              handleGroupChange={(event) => handleGroupChange(event, group.id)}
+            />
+            {renderCustomizationElements(group.id)}
+          </React.Fragment>
         );
+      }
+    }
 
-        for (const customization of customizations) {
-          if (customization.parent === group.id) {
-            renderedElements.push(
-              <Customization
-                styles={{ marginLeft: 20 }}
-                customization={customization}
-                customizations={customizations}
-                handleCustomizationChange={handleCustomizationChange}
+    return renderedElements;
+  };
+
+  const renderCustomizationElements = (groupId) => {
+    const renderedElements = [];
+
+    const groupCustomizations = customizations.filter((customization) => customization.parent === groupId);
+    for (const customization of groupCustomizations) {
+      renderedElements.push(
+        <Customization
+          //  styles={{ marginLeft: 20 }}
+          customization={customization}
+          customizations={customizations}
+          handleCustomizationChange={(event) => handleCustomizationChange(event, customization.id)}
+        />
+      );
+
+      if (customization.child) {
+        const childGroup = customizationGroups.find((g) => g.id === customization.child);
+        if (childGroup) {
+          renderedElements.push(
+            <React.Fragment key={childGroup.id}>
+              <CustomizationGroup
+                //  styles={{ marginLeft: 20 }}
+                group={childGroup}
+                customizationGroups={customizationGroups}
+                handleGroupChange={(event) => handleGroupChange(event, childGroup.id)}
               />
-            );
-
-            if (customization.child) {
-              const childGroup = customizationGroups.find((g) => g.id === customization.child);
-
-              if (childGroup) {
-                renderedElements.push(
-                  <CustomizationGroup
-                    styles={{ marginLeft: 40 }}
-                    group={childGroup}
-                    customizationGroups={customizationGroups}
-                    handleGroupChange={handleGroupChange}
-                  />
-                );
-
-                for (const childCustomization of customizations) {
-                  if (childCustomization.parent === childGroup.id) {
-                    renderedElements.push(
-                      <Customization
-                        styles={{ marginLeft: 60 }}
-                        customization={childCustomization}
-                        customizations={customizations}
-                        handleCustomizationChange={handleCustomizationChange}
-                      />
-                    );
-                  }
-                }
-              }
-            }
-          }
+              {renderCustomizationElements(childGroup.id)}
+            </React.Fragment>
+          );
         }
       }
     }
 
     return renderedElements;
-  }
-  return <div>{renderCustomizations()}</div>;
+  };
+
+  return <div>{renderCustomizations(customizationGroups)}</div>;
 };
 
 export default CustomizationRenderer;

@@ -4,7 +4,11 @@ const CustomizationGroup = (props) => {
   const { group, customizationGroups, handleGroupChange } = props;
   return (
     <>
-      <div key={group.id} className="border-2 border-stone-300 rounded-md px-4 py-2" style={props.styles}>
+      <div
+        key={group.id}
+        className="border-2 border-black rounded-md px-4 py-2"
+        style={{ ...props.styles, backgroundColor: "lightgray" }}
+      >
         <div className="flex">
           <p className="font-bold">Customization group: &nbsp;</p>
           <input
