@@ -62,6 +62,7 @@ const VarinatForm = ({
             }}
             state={formValues}
             stateHandler={setFormValues}
+            key={field?.id}
           />
         );
       })}

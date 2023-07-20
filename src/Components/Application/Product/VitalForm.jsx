@@ -60,6 +60,7 @@ const VitalForm = ({
             }}
             state={formValues}
             stateHandler={setFormValues}
+            key={field?.id}
           />
         );
       })}

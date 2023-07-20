@@ -38,6 +38,8 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import AddVariants from "./AddVariants";
 import AddVitalInfo from "./AddVitalInfo";
+import { allProperties } from "./categoryProperties";
+import { GET_API_RESPONSE } from "./GetProductAPIResponse";
 
 const AddGenericProduct = ({
   state,
@@ -113,6 +115,8 @@ const AddGenericProduct = ({
     ...initialValues,
   });
 
+  //console.log("form errors", errors);
+
   useEffect(() => {
     //User is typing something, set form validation to false
     setFormValidate(false);
@@ -149,7 +153,8 @@ const AddGenericProduct = ({
         return acc;
       }, {});
 
-      //delete variantData["formKey"];
+      delete variantData["formKey"];
+      delete variantData["uploaded_urls"];
 
       variantData["varientAttributes"] = varint_attrs;
 
@@ -183,6 +188,12 @@ const AddGenericProduct = ({
       } else {
       }
 
+      if (hasVariants) {
+        variationCommonFields.forEach((field) => {
+          delete  product_data[field];
+        })
+      }
+
       // Create a duration object with the hours you want to convert
       const duration = moment.duration(
         parseInt(product_data.returnWindow),
@@ -205,7 +216,7 @@ const AddGenericProduct = ({
 
       let data = {
         commonDetails: product_data,
-        attributesValues: vital_data,
+        commonAttributesValues: vital_data,
       };
 
       if (hasVariants) {
@@ -223,21 +234,30 @@ const AddGenericProduct = ({
   const getProduct = () => {
     getCall(`/api/v1/products/${state.productId}`)
       .then((resp) => {
-        resp["uploaded_urls"] = resp?.images?.map((i) => i?.url) || [];
-        resp["images"] = resp?.images?.map((i) => i?.path) || [];
+        resp.commonDetails["uploaded_urls"] = resp?.commonDetails.images?.map((i) => i?.url) || [];
+        resp.commonDetails["images"] = resp?.commonDetails.images?.map((i) => i?.path) || [];
 
-        resp.isCancellable = resp.isCancellable ? "true" : "false";
-        resp.isReturnable = resp.isReturnable ? "true" : "false";
-        resp.isVegetarian = resp.isVegetarian ? "true" : "false";
-        resp.availableOnCod = resp.availableOnCod ? "true" : "false";
+        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable ? "true" : "false";
+        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
+        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
+        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
 
         // Create a duration object from the ISO 8601 string
         const duration = moment.duration(resp.returnWindow);
 
         // Get the number of hours from the duration object
         const hours = duration.asHours();
-        resp.returnWindow = String(hours);
-        setFormValues({ ...resp });
+        resp.commonDetails.returnWindow = String(hours);
+        // resp = GET_API_RESPONSE;
+        //console.log(resp);
+        setFormValues({ ...resp.commonDetails });
+        setVitalForm({ ...resp.commonAttributesValues });
+
+        let category = resp.commonDetails["productCategory"];
+        let sub_category = resp.commonDetails["productSubcategory1"];
+        let attributes = allProperties[category][sub_category];
+        setVitalFields(attributes);
+
       })
       .catch((error) => {
         cogoToast.error("Something went wrong!");
@@ -407,18 +427,6 @@ const AddGenericProduct = ({
         : "";
     formErrors.GST_Percentage =
       formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
-    formErrors.quantity = !formValues?.quantity
-      ? "Please enter a valid Quantity"
-      : !isNumberOnly(formValues?.quantity)
-      ? "Please enter only digit"
-      : "";
-    formErrors.barcode = !formValues?.barcode
-      ? "Please enter a valid Barcode"
-      : !isNumberOnly(formValues?.barcode)
-      ? "Please enter only digit"
-      : formValues?.barcode?.length > MAX_STRING_LENGTH_12
-      ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters`
-      : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"
       : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10
@@ -659,6 +667,7 @@ const AddGenericProduct = ({
       if (returnElement) {
         return (
           <RenderInput
+            key={item.id}
             previewOnly={
               state?.productId && item.id === "productCode" ? true : false
             }

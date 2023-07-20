@@ -316,7 +316,6 @@ export const productDetailsFields = [
   "productName",
   "HSNCode",
   "GST_Percentage",
-  "quantity",
   "maxAllowedQty",
   "UOM",
   "packQty",
@@ -348,6 +347,7 @@ export const variationCommonFields = [
   "MRP",
   "retailPrice",
   "purchasePrice",
+  "quantity",
   "barcode",
   "images",
 

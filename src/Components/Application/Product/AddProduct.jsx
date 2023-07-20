@@ -74,6 +74,7 @@ export default function AddProduct() {
       return (
         item && (
           <RenderInput
+            key={category_id}
             item={{
               ...item,
               error: categoryForm.errors?.[item?.id] ? true : false,
@@ -117,6 +118,7 @@ export default function AddProduct() {
                     />
                   }
                   label={name}
+                  key={name}
                 />
               ))}
             </FormGroup>
