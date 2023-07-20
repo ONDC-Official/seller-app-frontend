@@ -9,10 +9,7 @@ const CustomizationRenderer = (props) => {
     setCustomizationGroups(updatedGroups);
   };
 
-  const handleCustomizationChange = (event, customizationId) => {
-    const updatedCustomizations = [...customizations];
-    const customizationIndex = updatedCustomizations.findIndex((customization) => customization.id === customizationId);
-    updatedCustomizations[customizationIndex].name = event.target.value;
+  const handleCustomizationChange = (updatedCustomizations) => {
     setCustomizations(updatedCustomizations);
   };
 
@@ -47,7 +44,7 @@ const CustomizationRenderer = (props) => {
           //  styles={{ marginLeft: 20 }}
           customization={customization}
           customizations={customizations}
-          handleCustomizationChange={(event) => handleCustomizationChange(event, customization.id)}
+          handleCustomizationChange={handleCustomizationChange}
         />
       );
 

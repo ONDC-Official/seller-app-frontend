@@ -1,5 +1,4 @@
 import React from "react";
-import { Input } from "@material-ui/core";
 import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -14,6 +13,9 @@ const CssTextField = styled(TextField)({
     "&.Mui-focused fieldset": {
       borderColor: "#1c75bc",
     },
+  },
+  "& .MuiInputBase-input": {
+    fontSize: "14px",
   },
 });
 
