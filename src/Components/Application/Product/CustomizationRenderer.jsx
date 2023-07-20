@@ -1,5 +1,5 @@
 import React from "react";
-import CustomizationGroups from "./CustomizationGroups";
+import CustomizationGroup from "./CustomizationGroup";
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
@@ -26,7 +26,7 @@ const CustomizationRenderer = (props) => {
     for (const group of customizationGroups) {
       if (group.seq === 1) {
         renderedElements.push(
-          <CustomizationGroups
+          <CustomizationGroup
             group={group}
             customizationGroups={customizationGroups}
             handleGroupChange={handleGroupChange}
@@ -68,7 +68,7 @@ const CustomizationRenderer = (props) => {
 
               if (childGroup) {
                 renderedElements.push(
-                  <CustomizationGroups
+                  <CustomizationGroup
                     styles={{ marginLeft: 40 }}
                     group={childGroup}
                     customizationGroups={customizationGroups}

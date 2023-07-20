@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomizationGroups = (props) => {
+const CustomizationGroup = (props) => {
   const { group, customizationGroups, handleGroupChange } = props;
   return (
     <>
@@ -31,4 +31,4 @@ const CustomizationGroups = (props) => {
   );
 };
 
-export default CustomizationGroups;
+export default CustomizationGroup;
