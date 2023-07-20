@@ -6,7 +6,7 @@ const Customization = (props) => {
     <>
       <div
         key={customization.id}
-        style={{ ...props.styles, borderWidth: 1, background: "#d3d3d35c" }}
+        style={{ ...props.styles, backgroundColor: "#1876d221" }}
         className="border-black rounded-md px-4 py-2 my-2"
       >
         <div className="flex">

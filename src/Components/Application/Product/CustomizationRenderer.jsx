@@ -5,10 +5,7 @@ import Customization from "./Customization";
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
 
-  const handleGroupChange = (event, groupId) => {
-    const updatedGroups = [...customizationGroups];
-    const groupIndex = updatedGroups.findIndex((group) => group.id === groupId);
-    updatedGroups[groupIndex].name = event.target.value;
+  const handleGroupChange = (updatedGroups) => {
     setCustomizationGroups(updatedGroups);
   };
 
@@ -29,7 +26,7 @@ const CustomizationRenderer = (props) => {
             <CustomizationGroup
               group={group}
               customizationGroups={customizationGroups}
-              handleGroupChange={(event) => handleGroupChange(event, group.id)}
+              handleGroupChange={handleGroupChange}
             />
             {renderCustomizationElements(group.id)}
           </React.Fragment>
