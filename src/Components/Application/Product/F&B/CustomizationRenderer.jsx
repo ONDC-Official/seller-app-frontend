@@ -1,9 +1,25 @@
-import React from "react";
-import Customization from "./Customization";
+import React, { useState } from "react";
 import CustomizationGroup from "./CustomizationGroup";
+import Customization from "./Customization";
+import { Modal, Button } from "@material-ui/core";
+import { styled } from "@mui/material/styles";
+import AddCustomizationGroup from "./AddCustomizationGroup";
+
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
+  const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
+  const [newCustomizationGroupData, setNewCustomizationGroupData] = useState({
+    name: "",
+    price: 0,
+    minQuantity: "",
+    maxQuantity: "",
+  });
 
   const handleGroupChange = (updatedGroups) => {
     setCustomizationGroups(updatedGroups);
@@ -12,6 +28,8 @@ const CustomizationRenderer = (props) => {
   const handleCustomizationChange = (updatedCustomizations) => {
     setCustomizations(updatedCustomizations);
   };
+
+  const handleAddCustomizationGroup = () => {};
 
   const renderCustomizations = (groups) => {
     const renderedElements = [];
@@ -26,6 +44,9 @@ const CustomizationRenderer = (props) => {
               handleGroupChange={handleGroupChange}
             />
             {renderCustomizationElements(group.id)}
+            <Button variant="contained" color="primary" onClick={() => setShowCustomizationGroupModal(true)}>
+              Add Customization Group
+            </Button>
           </React.Fragment>
         );
       }
@@ -69,7 +90,19 @@ const CustomizationRenderer = (props) => {
     return renderedElements;
   };
 
-  return <div>{renderCustomizations(customizationGroups)}</div>;
+  return (
+    <div>
+      {renderCustomizations(customizationGroups)}
+      <AddCustomizationGroup
+        showModal={showCustomizationGroupModal}
+        handleCloseModal={() => setShowCustomizationGroupModal(false)}
+        newCustomizationGroupData={newCustomizationGroupData}
+        setNewCustomizationGroupData={setNewCustomizationGroupData}
+        customizationGroups={customizationGroups}
+        handleAddCustomizationGroup={handleAddCustomizationGroup}
+      />
+    </div>
+  );
 };
 
 export default CustomizationRenderer;

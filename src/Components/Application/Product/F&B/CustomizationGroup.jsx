@@ -69,8 +69,6 @@ const CustomizationGroup = (props) => {
             helperText={group.minQuantity <= 0 ? "Minimum quantity must be non-negative" : ""}
             value={group.minQuantity}
             onChange={(event) => handleInputChange(event, "minQuantity")}
-            onFocus={() => console.log("onFocus")}
-            onBlur={() => console.log("onBlur")}
           />
         </div>
         <div className="flex items-center">
