@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import CustomizationGroup from "./CustomizationGroup";
 import Customization from "./Customization";
-import { Modal, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Button } from "@mui/material";
 import AddCustomizationGroup from "./AddCustomizationGroup";
-
-const StyledModal = styled(Modal)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
@@ -21,6 +15,14 @@ const CustomizationRenderer = (props) => {
     maxQuantity: "",
   });
 
+  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
+  const [newCustomizationData, setNewCustomizationData] = useState({
+    name: "",
+    price: "",
+    inStock: true,
+    parent: "",
+  });
+
   const handleGroupChange = (updatedGroups) => {
     setCustomizationGroups(updatedGroups);
   };
@@ -30,6 +32,17 @@ const CustomizationRenderer = (props) => {
   };
 
   const handleAddCustomizationGroup = () => {};
+
+  const openCustomizationModal = () => {
+    setShowCustomizationModal(true);
+  };
+
+  const handleAddCustomization = () => {
+    let newCustomization = { ...newCustomizationData, id: `C${customizations.length + 1}`, inStock: true };
+    setCustomizations([...customizations, newCustomization]);
+    setNewCustomizationData({});
+    setShowCustomizationModal(false);
+  };
 
   const renderCustomizations = (groups) => {
     const renderedElements = [];
@@ -45,6 +58,8 @@ const CustomizationRenderer = (props) => {
               group={group}
               customizationGroups={customizationGroups}
               handleGroupChange={handleGroupChange}
+              openCustomizationModal={openCustomizationModal}
+              setNewCustomizationData={setNewCustomizationData}
             />
             {renderCustomizationElements(group.id)}
           </React.Fragment>
@@ -79,6 +94,8 @@ const CustomizationRenderer = (props) => {
                 customizationGroups={customizationGroups}
                 handleGroupChange={(event) => handleGroupChange(event, childGroup.id)}
                 styles={{ marginLeft: `${(level + 1) * 60}px` }}
+                openCustomizationModal={openCustomizationModal}
+                setNewCustomizationData={setNewCustomizationData}
               />
               {renderCustomizationElements(childGroup.id, level + 2)}
             </React.Fragment>
@@ -99,6 +116,13 @@ const CustomizationRenderer = (props) => {
         setNewCustomizationGroupData={setNewCustomizationGroupData}
         customizationGroups={customizationGroups}
         handleAddCustomizationGroup={handleAddCustomizationGroup}
+      />
+      <AddCustomization
+        showModal={showCustomizationModal}
+        handleCloseModal={() => setShowCustomizationModal(false)}
+        newCustomizationData={newCustomizationData}
+        setNewCustomizationData={setNewCustomizationData}
+        handleAddCustomization={handleAddCustomization}
       />
     </div>
   );

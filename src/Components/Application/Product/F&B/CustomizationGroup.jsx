@@ -43,7 +43,15 @@ const CustomizationGroup = (props) => {
       >
         <div className="flex items-center mb-2">
           <p className="text-[#181818] text-medium">Customization group: {group.id}</p>
-          <Button size="small" variant="outlined" sx={{ marginLeft: 2 }}>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{ marginLeft: 2 }}
+            onClick={() => {
+              props?.setNewCustomizationData({ parent: group.id });
+              props?.openCustomizationModal();
+            }}
+          >
             Add Customization
           </Button>
         </div>
