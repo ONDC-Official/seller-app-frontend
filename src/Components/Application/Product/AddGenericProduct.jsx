@@ -50,7 +50,6 @@ const AddGenericProduct = ({
   variants,
   attributes,
 }) => {
-
   const navigate = useNavigate();
   const hasVariants = selectedVariantNames.length > 0;
   const [fields, setFields] = useState(allProductFieldDetails);
@@ -71,7 +70,6 @@ const AddGenericProduct = ({
   const [submitClicked, setSubmitClicked] = useState(false);
 
   const [tabValue, setTabValue] = useState("1");
-
 
   const initialValues = {
     productCode: "",
@@ -190,8 +188,8 @@ const AddGenericProduct = ({
 
       if (hasVariants) {
         variationCommonFields.forEach((field) => {
-          delete  product_data[field];
-        })
+          delete product_data[field];
+        });
       }
 
       // Create a duration object with the hours you want to convert
@@ -234,13 +232,23 @@ const AddGenericProduct = ({
   const getProduct = () => {
     getCall(`/api/v1/products/${state.productId}`)
       .then((resp) => {
-        resp.commonDetails["uploaded_urls"] = resp?.commonDetails.images?.map((i) => i?.url) || [];
-        resp.commonDetails["images"] = resp?.commonDetails.images?.map((i) => i?.path) || [];
+        resp.commonDetails["uploaded_urls"] =
+          resp?.commonDetails.images?.map((i) => i?.url) || [];
+        resp.commonDetails["images"] =
+          resp?.commonDetails.images?.map((i) => i?.path) || [];
 
-        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable ? "true" : "false";
-        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
-        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
-        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
+        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable
+          ? "true"
+          : "false";
+        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable
+          ? "true"
+          : "false";
+        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian
+          ? "true"
+          : "false";
+        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod
+          ? "true"
+          : "false";
 
         // Create a duration object from the ISO 8601 string
         const duration = moment.duration(resp.returnWindow);
@@ -257,7 +265,6 @@ const AddGenericProduct = ({
         let sub_category = resp.commonDetails["productSubcategory1"];
         let attributes = allProperties[category][sub_category];
         setVitalFields(attributes);
-
       })
       .catch((error) => {
         cogoToast.error("Something went wrong!");
@@ -268,7 +275,8 @@ const AddGenericProduct = ({
   const updateProduct = async () => {
     // id will be dynamic after schema changes
     try {
-      let data = Object.assign({}, formValues);
+      let product_data = Object.assign({}, formValues);
+      let vital_data = Object.assign({}, vitalForm);
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
         (subitem) => subitem.value === formValues?.productSubcategory1
@@ -279,25 +287,42 @@ const AddGenericProduct = ({
             selectedSubCatObject.protocolKey
           ];
         hiddenFields.forEach((field) => {
-          delete data[field];
+          delete product_data[field];
         });
       } else {
       }
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
-      data.returnWindow = iso8601;
+      product_data.returnWindow = iso8601;
 
-      delete data["__v"];
-      delete data["_id"];
-      delete data["organization"];
-      delete data["createdAt"];
-      delete data["updatedAt"];
-      delete data["published"];
-      delete data["uploaded_urls"];
+      let fields_to_remove = [
+        "__v",
+        "organization",
+        "createdAt",
+        "updatedAt",
+        "published",
+        "uploaded_urls",
+        "createdBy",
+        "_id",
+        "variantGroup",
+      ];
+
+      fields_to_remove.forEach((field) => {
+        delete product_data[field];
+      });
+
+      let data = {
+        commonDetails: product_data,
+        commonAttributesValues: vital_data,
+      };
+
       await putCall(`/api/v1/products/${state.productId}`, data);
       cogoToast.success("Product updated successfully!");
       navigate("/application/inventory");
@@ -349,7 +374,6 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
-
     let product_info_field_names = hasVariants
       ? productDetailsFields
       : [...productDetailsFields, ...variationCommonFields];
@@ -390,7 +414,7 @@ const AddGenericProduct = ({
       variant_tab_error = false;
     }
 
-    if(Object.keys(vital_fields).length === 0) {
+    if (Object.keys(vital_fields).length === 0) {
       vital_tab_error = false;
     }
 
@@ -399,8 +423,6 @@ const AddGenericProduct = ({
       prevState[2] = variant_tab_error;
       return prevState;
     });
-
-
   }, [selectedVariantNames]);
 
   const validate = () => {
@@ -422,7 +444,7 @@ const AddGenericProduct = ({
     formErrors.HSNCode =
       formValues?.HSNCode?.trim() === ""
         ? "HSN code is not allowed to be empty"
-        : formValues?.HSNCode.length > MAX_STRING_LENGTH_8
+        : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
     formErrors.GST_Percentage =
@@ -574,6 +596,18 @@ const AddGenericProduct = ({
         ? "Please enter a valid number"
         : !isAmountValid(formValues?.purchasePrice)
         ? "Please enter only digit"
+        : "";
+      formErrors.quantity = !formValues?.quantity
+        ? "Please enter a valid Quantity"
+        : !isNumberOnly(formValues?.quantity)
+        ? "Please enter only digit"
+        : "";
+      formErrors.barcode = !formValues?.barcode
+        ? "Please enter a valid Barcode"
+        : !isNumberOnly(formValues?.barcode)
+        ? "Please enter only digit"
+        : formValues?.barcode?.length > MAX_STRING_LENGTH_12
+        ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters`
         : "";
       formErrors.images =
         formValues?.productCategory !== "f_and_b" &&
@@ -740,10 +774,7 @@ const AddGenericProduct = ({
               MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
-      } else if (
-        focusFieldValue !== "" &&
-        focusedField === "description"
-      ) {
+      } else if (focusFieldValue !== "" && focusedField === "description") {
         formErrors.description =
           formValues?.description?.trim() === ""
             ? "Short description is required"
@@ -784,17 +815,18 @@ const AddGenericProduct = ({
                 // textColor={tabErrors[0] ? "error" : "none"}
                 // indicatorColor="secondary"
               />
-              {Object.keys(vitalFields).length > 0 &&
+              {Object.keys(vitalFields).length > 0 && (
                 <Tab
-                sx={{
-                  color:
-                    tabErrors[1] && Object.keys(errors).length > 0
-                      ? "red"
-                      : "none",
-                }}
-                label="Vital Info"
-                value="2"
-              />}
+                  sx={{
+                    color:
+                      tabErrors[1] && Object.keys(errors).length > 0
+                        ? "red"
+                        : "none",
+                  }}
+                  label="Vital Info"
+                  value="2"
+                />
+              )}
               {selectedVariantNames.length > 0 && (
                 <Tab
                   sx={{
