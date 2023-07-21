@@ -1,57 +1,55 @@
 import { useEffect } from "react";
-import useForm from "../../../hooks/useForm";
-import RenderInput from "../../../utils/RenderInput";
-import { Typography, Box } from "@mui/material";
+import useForm from "../../../../hooks/useForm";
+import RenderInput from "../../../../utils/RenderInput";
+import { isAmountValid } from "../../../../utils/validations";
+import { MAX_STRING_LENGTH_50 } from "../../../../utils/constants";
 import { getFormErrors } from "./utils";
 
-const VarinatForm = ({
-  formData,
+const VitalForm = ({
   fields,
-  index,
+  formData,
   onFormUpdate,
   shouldValidate,
-  formsErrors,
-  setFormsErrors,
-  removeForm
+  tabErrors,
+  setTabErrors,
+  vitalFormErrors,
+  setVitalFormErrors,
+  setFormValidate
 }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...formData,
   });
 
   useEffect(() => {
-    onFormUpdate(index, formValues);
+    onFormUpdate(formValues);
   }, [formValues]);
 
   useEffect(() => {
+    //add to errors only initially
     if (Object.keys(errors).length === 0) {
-      setErrors(formsErrors[index]);
+      setErrors(vitalFormErrors);
     }
-  }, [formsErrors[index]]);
+  }, [vitalFormErrors]);
 
   useEffect(() => {
     if (shouldValidate) {
       let form_errors = getFormErrors(fields, formValues);
+      let valid_form = !Object.values(form_errors).some((val) => val !== "");
+      tabErrors[1] = !valid_form;
+      setTabErrors((prevState) => {
+        prevState[1] = !valid_form;
+        return [...prevState];
+      });
       setErrors(form_errors);
-      formsErrors[index] = form_errors;
-      setFormsErrors([...formsErrors]);
+      setVitalFormErrors(form_errors);
+      if(!valid_form){
+        setFormValidate(false);
+      }
     }
   }, [shouldValidate]);
 
   return (
-    <div className="mt-5">
-      <div className="flex" style={{justifyContent: "space-between"}}>
-      <Typography sx={{ fontWeight: "bold" }}>
-        {" "}
-        {"Variation " + (index + 1)}
-      </Typography>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        onClick={() => removeForm(index)}>
-        <span aria-hidden="true">&times;</span>
-      </button>
-      </div>
+    <div>
       {fields.map((field) => {
         return (
           <RenderInput
@@ -71,4 +69,4 @@ const VarinatForm = ({
   );
 };
 
-export default VarinatForm;
+export default VitalForm;

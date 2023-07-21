@@ -6,8 +6,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
-import { allProperties } from "./categoryProperties";
-import MyButton from "../../Shared/Button";
+import { allProperties } from "../categoryProperties";
+import MyButton from "../../../Shared/Button";
 import VarinatForm from "./VariantForm";
 import {v4 as uuidv4} from 'uuid';
 
@@ -15,8 +15,8 @@ import {v4 as uuidv4} from 'uuid';
 import {
   allProductFieldDetails,
   variationCommonFields,
-} from "./product-fields";
-import useForm from "../../../hooks/useForm";
+} from "../product-fields";
+import useForm from "../../../../hooks/useForm";
 import { IntegrationInstructions } from "@mui/icons-material";
 
 const AddVariants = ({

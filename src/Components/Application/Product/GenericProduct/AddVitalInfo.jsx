@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import RenderInput from "../../../utils/RenderInput";
-import useForm from "../../../hooks/useForm";
+import RenderInput from "../../../../utils/RenderInput";
+import useForm from "../../../../hooks/useForm";
 import VitalForm from "./VitalForm";
 
 const AddVitalInfo = ({
