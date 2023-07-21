@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Button, Modal, TextField } from "@mui/material";
 
@@ -21,6 +21,28 @@ const CssTextField = styled(TextField)({
 
 const AddCustomization = (props) => {
   const { showModal, handleCloseModal, newCustomizationData, setNewCustomizationData, handleAddCustomization } = props;
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const formErrors = {};
+    formErrors.name = newCustomizationData?.name?.trim() === "" ? "Name is not allowed to be empty" : "";
+    formErrors.price =
+      newCustomizationData?.price?.trim() === ""
+        ? "Price is not allowed to be empty"
+        : isNaN(newCustomizationData?.price)
+        ? `Please enter a valid price`
+        : "";
+
+    setErrors(formErrors);
+
+    return !Object.values(formErrors).some((val) => val !== "");
+  };
+
+  const handleAdd = () => {
+    if (validate()) {
+      handleAddCustomization();
+    }
+  };
 
   return (
     <div>
@@ -51,8 +73,8 @@ const AddCustomization = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Customisation Name"}
-              error={newCustomizationData?.name?.trim() === ""}
-              helperText={newCustomizationData?.name?.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!errors.name}
+              helperText={errors.name}
               value={newCustomizationData.name}
               onChange={(e) => setNewCustomizationData({ ...newCustomizationData, name: e.target.value })}
             />
@@ -70,12 +92,8 @@ const AddCustomization = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Customization Price"}
-              error={newCustomizationData.price.trim() === "" || isNaN(newCustomizationData.price)}
-              helperText={
-                newCustomizationData.price.trim() === "" || isNaN(newCustomizationData.price)
-                  ? "Please provide a valid Price"
-                  : ""
-              }
+              error={!!errors.price}
+              helperText={errors.price}
               value={newCustomizationData.price}
               onChange={(e) => setNewCustomizationData({ ...newCustomizationData, price: e.target.value })}
             />
@@ -98,7 +116,7 @@ const AddCustomization = (props) => {
           </div>
 
           <div className="flex justify-end mt-4">
-            <Button variant="outlined" color="primary" onClick={handleAddCustomization}>
+            <Button variant="outlined" color="primary" onClick={handleAdd}>
               Add Customization
             </Button>
             <Button sx={{ marginLeft: 2 }} color="primary" onClick={handleCloseModal}>
