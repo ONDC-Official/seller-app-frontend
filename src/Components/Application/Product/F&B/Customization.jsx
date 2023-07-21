@@ -33,11 +33,11 @@ const Customization = (props) => {
     <>
       <div
         key={customization.id}
-        style={{ ...props.styles, backgroundColor: "#1876d221" }}
+        style={{ ...props.styles, backgroundColor: "#1876d221", borderLeft: "2px solid #000000" }}
         className="border-black rounded-md px-8 py-2 my-2"
       >
         <div className="flex items-center">
-          <label className="w-56 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
             Variant Name: &nbsp;
           </label>
 
@@ -55,7 +55,7 @@ const Customization = (props) => {
           />
         </div>
         <div className="flex items-center">
-          <label className="w-56 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
             Price: &nbsp;
           </label>
           <CssTextField

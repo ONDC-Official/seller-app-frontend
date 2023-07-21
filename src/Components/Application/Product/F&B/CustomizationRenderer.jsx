@@ -55,14 +55,14 @@ const CustomizationRenderer = (props) => {
     return renderedElements;
   };
 
-  const renderCustomizationElements = (groupId) => {
+  const renderCustomizationElements = (groupId, level = 1) => {
     const renderedElements = [];
 
     const groupCustomizations = customizations.filter((customization) => customization.parent === groupId);
     for (const customization of groupCustomizations) {
       renderedElements.push(
         <Customization
-          //  styles={{ marginLeft: 20 }}
+          styles={{ marginLeft: `${level * 55}px` }}
           customization={customization}
           customizations={customizations}
           handleCustomizationChange={handleCustomizationChange}
@@ -75,18 +75,17 @@ const CustomizationRenderer = (props) => {
           renderedElements.push(
             <React.Fragment key={childGroup.id}>
               <CustomizationGroup
-                //  styles={{ marginLeft: 20 }}
                 group={childGroup}
                 customizationGroups={customizationGroups}
                 handleGroupChange={(event) => handleGroupChange(event, childGroup.id)}
+                styles={{ marginLeft: `${(level + 1) * 60}px` }}
               />
-              {renderCustomizationElements(childGroup.id)}
+              {renderCustomizationElements(childGroup.id, level + 2)}
             </React.Fragment>
           );
         }
       }
     }
-
     return renderedElements;
   };
 

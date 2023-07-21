@@ -33,12 +33,12 @@ const CustomizationGroup = (props) => {
     <>
       <div
         key={group.id}
-        className="border-black rounded-md px-8 py-6"
-        style={{ ...props.styles, backgroundColor: "#c7e0ff" }}
+        className="border-black rounded-md px-8 py-2"
+        style={{ ...props.styles, backgroundColor: "#c7e0ff", borderLeft: "2px solid #000000" }}
       >
-        <p className="text-[#181818] mb-2 text-lg">Customization group</p>
+        <p className="text-[#181818] my-2 text-lg">Customization group</p>
         <div className="flex items-center">
-          <label className="w-56 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
             Name: &nbsp;
           </label>
           <CssTextField
@@ -55,7 +55,7 @@ const CustomizationGroup = (props) => {
           />
         </div>
         <div className="flex items-center">
-          <label className="w-56 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
             Minimum quantity: &nbsp;
           </label>
           <CssTextField
@@ -72,7 +72,7 @@ const CustomizationGroup = (props) => {
           />
         </div>
         <div className="flex items-center">
-          <label className="w-56 my-4 text-sm py-2 ml-1 font-medium text-[#606161] inline-block">
+          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-[#606161] inline-block">
             Maximum quantity: &nbsp;
           </label>
           <CssTextField
