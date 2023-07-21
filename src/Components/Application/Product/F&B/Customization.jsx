@@ -33,43 +33,43 @@ const Customization = (props) => {
     <>
       <div
         key={customization.id}
-        style={{ ...props.styles, backgroundColor: "#1876d221", borderLeft: "2px solid #000000" }}
+        style={{ ...props.styles, backgroundColor: "#1876d221", border: "1px solid #000000" }}
         className="border-black rounded-md px-8 py-2 my-2"
       >
-        <div className="flex items-center">
-          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-            Variant Name: &nbsp;
-          </label>
+        <div className="flex">
+          <div className="flex flex-col mr-6">
+            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              Variant Name: &nbsp;
+            </p>
 
-          <CssTextField
-            required
-            type={"input"}
-            className="w-72 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-            size="small"
-            autoComplete="off"
-            placeholder={"Enter Variant Name"}
-            error={customization.name.trim() === ""}
-            helperText={customization.name.trim() === "" ? "Field cannot be empty" : ""}
-            value={customization.name}
-            onChange={(event) => handleInputChange(event, "name")}
-          />
-        </div>
-        <div className="flex items-center">
-          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-            Price: &nbsp;
-          </label>
-          <CssTextField
-            required
-            type={"number"}
-            className="w-72 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-            size="small"
-            autoComplete="off"
-            placeholder={"Enter Variant Price"}
-            error={customization.price <= 0}
-            helperText={customization.price <= 0 ? "Please enter a valid price value" : ""}
-            value={customization.price}
-            onChange={(event) => handleInputChange(event, "price")}
-          />
+            <CssTextField
+              required
+              type={"input"}
+              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              size="small"
+              autoComplete="off"
+              placeholder={"Enter Variant Name"}
+              error={customization.name.trim() === ""}
+              helperText={customization.name.trim() === "" ? "Field cannot be empty" : ""}
+              value={customization.name}
+              onChange={(event) => handleInputChange(event, "name")}
+            />
+          </div>
+          <div className="flex flex-col">
+            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">Price: &nbsp;</p>
+            <CssTextField
+              required
+              type={"number"}
+              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              size="small"
+              autoComplete="off"
+              placeholder={"Enter Variant Price"}
+              error={customization.price <= 0}
+              helperText={customization.price <= 0 ? "Please enter a valid price value" : ""}
+              value={customization.price}
+              onChange={(event) => handleInputChange(event, "price")}
+            />
+          </div>
         </div>
       </div>
     </>

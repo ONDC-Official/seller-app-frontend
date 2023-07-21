@@ -34,59 +34,59 @@ const CustomizationGroup = (props) => {
       <div
         key={group.id}
         className="border-black rounded-md px-8 py-2"
-        style={{ ...props.styles, backgroundColor: "#c7e0ff", borderLeft: "2px solid #000000" }}
+        style={{ ...props.styles, backgroundColor: "#c7e0ff", border: "2px solid #000000" }}
       >
-        <p className="text-[#181818] my-2 text-lg">Customization group</p>
+        <p className="text-[#181818] text-medium">Customization group: {group.id}</p>
         <div className="flex items-center">
-          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-            Name: &nbsp;
-          </label>
-          <CssTextField
-            required
-            type={"input"}
-            className="w-72 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-            size="small"
-            autoComplete="off"
-            placeholder={"Enter Customisation Name"}
-            error={group.name.trim() === ""}
-            helperText={group.name.trim() === "" ? "Field cannot be empty" : ""}
-            value={group.name}
-            onChange={(event) => handleInputChange(event, "name")}
-          />
-        </div>
-        <div className="flex items-center">
-          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-            Minimum quantity: &nbsp;
-          </label>
-          <CssTextField
-            required
-            type="number"
-            className="w-72 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-            size="small"
-            autoComplete="off"
-            placeholder="Enter Minimum Quantity"
-            error={group.minQuantity <= 0}
-            helperText={group.minQuantity <= 0 ? "Minimum quantity must be non-negative" : ""}
-            value={group.minQuantity}
-            onChange={(event) => handleInputChange(event, "minQuantity")}
-          />
-        </div>
-        <div className="flex items-center">
-          <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-[#606161] inline-block">
-            Maximum quantity: &nbsp;
-          </label>
-          <CssTextField
-            required
-            type="number"
-            className="w-72 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-            size="small"
-            autoComplete="off"
-            placeholder="Enter Maximum Quantity"
-            error={group.maxQuantity <= 0}
-            helperText={group.maxQuantity <= 0 ? "Maximum quantity must be non-negative" : ""}
-            value={group.maxQuantity}
-            onChange={(event) => handleInputChange(event, "maxQuantity")}
-          />
+          <div className="flex flex-col mr-6">
+            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">Name: &nbsp;</p>
+            <CssTextField
+              required
+              type={"input"}
+              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              size="small"
+              autoComplete="off"
+              placeholder={"Enter Customisation Name"}
+              error={group.name.trim() === ""}
+              helperText={group.name.trim() === "" ? "Field cannot be empty" : ""}
+              value={group.name}
+              onChange={(event) => handleInputChange(event, "name")}
+            />
+          </div>
+          <div className="flex flex-col mr-6">
+            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              Minimum quantity: &nbsp;
+            </p>
+            <CssTextField
+              required
+              type="number"
+              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              size="small"
+              autoComplete="off"
+              placeholder="Enter Minimum Quantity"
+              error={group.minQuantity <= 0}
+              helperText={group.minQuantity <= 0 ? "Minimum quantity must be non-negative" : ""}
+              value={group.minQuantity}
+              onChange={(event) => handleInputChange(event, "minQuantity")}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="w-40 text-sm py-2 ml-1 font-medium text-[#606161] inline-block">
+              Maximum quantity: &nbsp;
+            </label>
+            <CssTextField
+              required
+              type="number"
+              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              size="small"
+              autoComplete="off"
+              placeholder="Enter Maximum Quantity"
+              error={group.maxQuantity <= 0}
+              helperText={group.maxQuantity <= 0 ? "Maximum quantity must be non-negative" : ""}
+              value={group.maxQuantity}
+              onChange={(event) => handleInputChange(event, "maxQuantity")}
+            />
+          </div>
         </div>
       </div>
     </>

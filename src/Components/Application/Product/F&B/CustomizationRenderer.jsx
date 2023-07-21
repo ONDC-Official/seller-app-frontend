@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CustomizationGroup from "./CustomizationGroup";
 import Customization from "./Customization";
-import { Modal, Button } from "@material-ui/core";
+import { Modal, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AddCustomizationGroup from "./AddCustomizationGroup";
 
@@ -38,15 +38,15 @@ const CustomizationRenderer = (props) => {
       if (group.seq === 1) {
         renderedElements.push(
           <React.Fragment key={group.id}>
+            <Button variant="contained" onClick={() => setShowCustomizationGroupModal(true)} sx={{ marginBottom: 2 }}>
+              Add Customization Group
+            </Button>
             <CustomizationGroup
               group={group}
               customizationGroups={customizationGroups}
               handleGroupChange={handleGroupChange}
             />
             {renderCustomizationElements(group.id)}
-            <Button variant="contained" color="primary" onClick={() => setShowCustomizationGroupModal(true)}>
-              Add Customization Group
-            </Button>
           </React.Fragment>
         );
       }
