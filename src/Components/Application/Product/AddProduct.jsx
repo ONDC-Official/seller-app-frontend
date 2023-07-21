@@ -17,7 +17,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
-import CustomizationRenderer from "./CustomizationRenderer";
+import CustomizationRenderer from "./F&B/CustomizationRenderer";
+
 const customization_groups = [
   {
     id: "CG1",

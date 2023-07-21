@@ -1,6 +1,6 @@
 import React from "react";
-import CustomizationGroup from "./CustomizationGroup";
 import Customization from "./Customization";
+import CustomizationGroup from "./CustomizationGroup";
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
