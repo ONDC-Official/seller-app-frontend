@@ -40,6 +40,7 @@ import AddVariants from "./AddVariants";
 import AddVitalInfo from "./AddVitalInfo";
 import { allProperties } from "../categoryProperties";
 import { GET_API_RESPONSE } from "../GetProductAPIResponse";
+import AddProductInfo from "./AddProductInfo";
 
 const AddGenericProduct = ({
   state,
@@ -52,7 +53,7 @@ const AddGenericProduct = ({
 }) => {
   const navigate = useNavigate();
   const hasVariants = selectedVariantNames.length > 0;
-  const [fields, setFields] = useState(allProductFieldDetails);
+  const [allFields, setAllFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
   const { cancellablePromise } = useCancellablePromise();
   const [productInfoFields, setProductInfoFields] = useState([]);
@@ -109,9 +110,11 @@ const AddGenericProduct = ({
     brandOwnerFSSAILicenseNo: "",
   };
 
-  const { formValues, setFormValues, errors, setErrors } = useForm({
+  const productInfoForm = useForm({
     ...initialValues,
   });
+
+  const { formValues, setFormValues, errors, setErrors } = productInfoForm;
 
   //console.log("form errors", errors);
 
@@ -333,7 +336,7 @@ const AddGenericProduct = ({
   };
 
   const getProductFieldDetails = (category_id) => {
-    return fields.find((field) => field.id === category_id);
+    return allFields.find((field) => field.id === category_id);
   };
 
   useEffect(() => {
@@ -345,7 +348,7 @@ const AddGenericProduct = ({
 
   useEffect(() => {
     if (formValues?.productCategory) {
-      let data = [...fields]; // Create a copy of the fields array
+      let data = [...allFields]; // Create a copy of the fields array
       const subCategoryIndex = data.findIndex(
         (item) => item.id === "productSubcategory1"
       );
@@ -369,7 +372,7 @@ const AddGenericProduct = ({
         }
       }
 
-      setFields(data);
+      setAllFields(data);
     }
   }, [formValues]);
 
@@ -425,7 +428,7 @@ const AddGenericProduct = ({
     });
   }, [selectedVariantNames]);
 
-  const validate = () => {
+  const validateProductInfoForm = () => {
     let formErrors = {};
     formErrors.productCode =
       formValues?.productCode?.trim() === ""
@@ -650,6 +653,10 @@ const AddGenericProduct = ({
     }
   };
 
+  const validate = () => {
+    validateProductInfoForm();
+  };
+
   const handleSubmit = () => {
     setFormValidate(true);
     setSubmitClicked(true);
@@ -676,49 +683,17 @@ const AddGenericProduct = ({
   };
 
   const renderProductInfoFields = () => {
-    return productInfoFields.map((category_id) => {
-      let item = getProductFieldDetails(category_id);
-      let returnElement = true;
-      if (formValues?.productSubcategory1) {
-        const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-        const selectedSubCatObject = subCatList?.find(
-          (subitem) => subitem.value === formValues?.productSubcategory1
-        );
-        if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-          const hiddenFields =
-            FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
-              selectedSubCatObject.protocolKey
-            ];
-          const fielditemAvailableInHidden = hiddenFields.find(
-            (hiddenItem) => hiddenItem === item.id
-          );
-          if (fielditemAvailableInHidden) {
-            returnElement = false;
-          }
-        }
-      } else {
-      }
-      if (returnElement) {
-        return (
-          <RenderInput
-            key={item.id}
-            previewOnly={
-              state?.productId && item.id === "productCode" ? true : false
-            }
-            item={{
-              ...item,
-              error: errors?.[item.id] ? true : false,
-              helperText: errors?.[item.id] || "",
-            }}
-            state={formValues}
-            stateHandler={setFormValues}
-            setFocusedField={setFocusedField}
-          />
-        );
-      } else {
-        return <></>;
-      }
-    });
+    return (
+      <AddProductInfo
+        allFields={allFields}
+        fields={productInfoFields}
+        category={category}
+        subCategory={subCategory}
+        state={state}
+        form={productInfoForm}
+        setFocusedField={setFocusedField}
+      />
+    );
   };
 
   const renderProductVitalFields = () => {
