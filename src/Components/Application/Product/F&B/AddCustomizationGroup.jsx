@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
+import { Autocomplete, Button, FormControl, Modal, TextField } from "@mui/material";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -27,7 +27,14 @@ const AddCustomizationGroup = (props) => {
     setNewCustomizationGroupData,
     customizationGroups,
     handleAddCustomizationGroup,
+    selectedParentOption,
+    setSelectedParentOption,
   } = props;
+
+  const handleSubmit = () => {
+    handleAddCustomizationGroup(newCustomizationGroupData);
+  };
+
   return (
     <div>
       <Modal open={showModal} onClose={handleCloseModal}>
@@ -117,16 +124,16 @@ const AddCustomizationGroup = (props) => {
                 getOptionLabel={(option) => {
                   return `${option.id}: ${option.name}`;
                 }}
-                value={newCustomizationGroupData.parent}
-                onChange={(e) => setNewCustomizationGroupData({ ...newCustomizationGroupData, parent: e.target.value })}
+                value={selectedParentOption}
+                onChange={(event, newValue) => setSelectedParentOption(newValue)}
                 renderInput={(params) => <TextField {...params} placeholder={"Select a parent"} variant="outlined" />}
               />
             </FormControl>
           </div>
 
           <div className="flex justify-end mt-4">
-            <Button variant="outlined" color="primary" onClick={handleAddCustomizationGroup}>
-              Add Customization
+            <Button variant="outlined" color="primary" onClick={handleSubmit}>
+              Add
             </Button>
             <Button sx={{ marginLeft: 2 }} color="primary" onClick={handleCloseModal}>
               Cancel

@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const CssTextField = styled(TextField)({
@@ -36,6 +36,22 @@ const Customization = (props) => {
         style={{ ...props.styles, backgroundColor: "#1876d221", border: "2px solid #ffffff" }}
         className="border-black rounded-md px-8 py-2 my-2"
       >
+        <div className="flex items-end">
+          <p className="text-[#181818] text-medium">Customization: {customization.id}</p>
+          {!customization.child && (
+            <Button
+              size="small"
+              variant="outlined"
+              sx={{ marginLeft: 2 }}
+              onClick={() => {
+                props.setSelectedCustomization(customization);
+                props.setShowCustomizationGroupModal(true);
+              }}
+            >
+              Add Customization Group
+            </Button>
+          )}
+        </div>
         <div className="flex">
           <div className="flex flex-col mr-6">
             <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">

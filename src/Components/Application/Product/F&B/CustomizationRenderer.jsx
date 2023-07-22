@@ -7,14 +7,19 @@ import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
   const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
+
+  // states for holding info regarding addition of customization-group
   const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
   const [newCustomizationGroupData, setNewCustomizationGroupData] = useState({
     name: "",
-    price: 0,
     minQuantity: "",
     maxQuantity: "",
+    seq: "",
   });
+  const [selectedParentOption, setSelectedParentOption] = useState(null);
+  const [selectedCustomization, setSelectedCustomization] = useState(null);
 
+  // states for holding info regarding addition of customization
   const [showCustomizationModal, setShowCustomizationModal] = useState(false);
   const [newCustomizationData, setNewCustomizationData] = useState({
     name: "",
@@ -23,20 +28,46 @@ const CustomizationRenderer = (props) => {
     parent: "",
   });
 
+  // handles change in customizations group data
   const handleGroupChange = (updatedGroups) => {
     setCustomizationGroups(updatedGroups);
   };
 
+  // handles change in customizations data
   const handleCustomizationChange = (updatedCustomizations) => {
     setCustomizations(updatedCustomizations);
   };
 
-  const handleAddCustomizationGroup = () => {};
+  // adds new customization group
+  const handleAddCustomizationGroup = (data) => {
+    let newCustomizationGroup = {
+      ...data,
+      id: `CG${customizationGroups.length + 1}`,
+      seq: `${selectedParentOption?.seq + 1}`,
+    };
+
+    console.log("newCustomizationGroup", newCustomizationGroup);
+    console.log("selected options", selectedParentOption, selectedCustomization.id);
+
+    const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
+    const updatedCustomizations = [...customizations];
+    updatedCustomizations[selectedCustomizationIndex] = {
+      ...updatedCustomizations[selectedCustomizationIndex],
+      child: selectedParentOption.id,
+    };
+
+    console.log("updatedCustomizations", updatedCustomizations);
+    setCustomizations(updatedCustomizations);
+    setCustomizationGroups([...customizationGroups, newCustomizationGroup]);
+    setNewCustomizationData({});
+    setShowCustomizationGroupModal(false);
+  };
 
   const openCustomizationModal = () => {
     setShowCustomizationModal(true);
   };
 
+  // adds new customization
   const handleAddCustomization = () => {
     let newCustomization = { ...newCustomizationData, id: `C${customizations.length + 1}`, inStock: true };
     setCustomizations([...customizations, newCustomization]);
@@ -51,7 +82,13 @@ const CustomizationRenderer = (props) => {
       if (group.seq === 1) {
         renderedElements.push(
           <React.Fragment key={group.id}>
-            <Button variant="contained" onClick={() => setShowCustomizationGroupModal(true)} sx={{ marginBottom: 2 }}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setShowCustomizationGroupModal(true);
+              }}
+              sx={{ marginBottom: 2 }}
+            >
               Add Customization Group
             </Button>
             <CustomizationGroup
@@ -81,6 +118,8 @@ const CustomizationRenderer = (props) => {
           customization={customization}
           customizations={customizations}
           handleCustomizationChange={handleCustomizationChange}
+          setShowCustomizationGroupModal={setShowCustomizationGroupModal}
+          setSelectedCustomization={setSelectedCustomization}
         />
       );
 
@@ -116,6 +155,8 @@ const CustomizationRenderer = (props) => {
         setNewCustomizationGroupData={setNewCustomizationGroupData}
         customizationGroups={customizationGroups}
         handleAddCustomizationGroup={handleAddCustomizationGroup}
+        selectedParentOption={selectedParentOption}
+        setSelectedParentOption={setSelectedParentOption}
       />
       <AddCustomization
         showModal={showCustomizationModal}
