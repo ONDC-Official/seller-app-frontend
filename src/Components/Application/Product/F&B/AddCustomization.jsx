@@ -40,13 +40,20 @@ const AddCustomization = (props) => {
 
   const handleAdd = () => {
     if (validate()) {
+      setErrors({});
       handleAddCustomization();
     }
   };
 
   return (
     <div>
-      <Modal open={showModal} onClose={handleCloseModal}>
+      <Modal
+        open={showModal}
+        onClose={() => {
+          setErrors({});
+          handleCloseModal();
+        }}
+      >
         <div
           style={{
             position: "absolute",
@@ -119,7 +126,14 @@ const AddCustomization = (props) => {
             <Button variant="outlined" color="primary" onClick={handleAdd}>
               Add Customization
             </Button>
-            <Button sx={{ marginLeft: 2 }} color="primary" onClick={handleCloseModal}>
+            <Button
+              sx={{ marginLeft: 2 }}
+              color="primary"
+              onClick={() => {
+                setErrors({});
+                handleCloseModal();
+              }}
+            >
               Cancel
             </Button>
           </div>
