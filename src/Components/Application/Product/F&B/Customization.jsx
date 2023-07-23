@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, TextField } from "@mui/material";
+import React, { useState } from "react";
+import { Button, TextField, Menu, MenuItem, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const CssTextField = styled(TextField)({
@@ -20,7 +20,41 @@ const CssTextField = styled(TextField)({
 });
 
 const Customization = (props) => {
-  const { customization, customizations, handleCustomizationChange } = props;
+  const { customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } = props;
+
+  const [showExistingGroups, setShowExistingGroups] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setShowExistingGroups(false);
+  };
+
+  const handleAddNewGroup = () => {
+    props.setSelectedCustomization(customization);
+    props.setShowCustomizationGroupModal(true);
+    handleMenuClose();
+  };
+
+  const handleChooseExistingGroup = () => {
+    setShowExistingGroups(true);
+  };
+
+  const handleChooseGroup = (groupId) => {
+    const selectedCustomizationIndex = customizations.findIndex((c) => c.id === customization.id);
+    const updatedCustomizations = [...customizations];
+    updatedCustomizations[selectedCustomizationIndex] = {
+      ...updatedCustomizations[selectedCustomizationIndex],
+      child: groupId,
+    };
+
+    setCustomizations(updatedCustomizations);
+    handleMenuClose();
+  };
 
   const handleInputChange = (event, property) => {
     const updatedGroups = customizations.map((g) =>
@@ -39,17 +73,29 @@ const Customization = (props) => {
         <div className="flex items-end">
           <p className="text-[#181818] text-medium">Customization: {customization.id}</p>
           {!customization.child && (
-            <Button
-              size="small"
-              variant="outlined"
-              sx={{ marginLeft: 2 }}
-              onClick={() => {
-                props.setSelectedCustomization(customization);
-                props.setShowCustomizationGroupModal(true);
-              }}
-            >
-              Add Customization Group
-            </Button>
+            <div>
+              <Button size="small" variant="outlined" sx={{ marginLeft: 2 }} onClick={handleMenuOpen}>
+                Add Customization Group
+              </Button>
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                {showExistingGroups ? (
+                  customizationGroups.map((group) => (
+                    <MenuItem key={group.id} onClick={() => handleChooseGroup(group.id)}>
+                      <ListItemText primary={`Group ${group.id} - ${group.name}`} />
+                    </MenuItem>
+                  ))
+                ) : (
+                  <div>
+                    <MenuItem onClick={handleAddNewGroup}>
+                      <ListItemText primary="Add New Group" />
+                    </MenuItem>
+                    <MenuItem onClick={handleChooseExistingGroup}>
+                      <ListItemText primary="Choose Existing Group" />
+                    </MenuItem>
+                  </div>
+                )}
+              </Menu>
+            </div>
           )}
         </div>
         <div className="flex">

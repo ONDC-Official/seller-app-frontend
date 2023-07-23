@@ -43,20 +43,15 @@ const CustomizationRenderer = (props) => {
     let newCustomizationGroup = {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
-      seq: `${selectedParentOption?.seq + 1}`,
     };
-
-    console.log("newCustomizationGroup", newCustomizationGroup);
-    console.log("selected options", selectedParentOption, selectedCustomization.id);
 
     const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
     const updatedCustomizations = [...customizations];
     updatedCustomizations[selectedCustomizationIndex] = {
       ...updatedCustomizations[selectedCustomizationIndex],
-      child: selectedParentOption.id,
+      child: newCustomizationGroup.id,
     };
 
-    console.log("updatedCustomizations", updatedCustomizations);
     setCustomizations(updatedCustomizations);
     setCustomizationGroups([...customizationGroups, newCustomizationGroup]);
     setNewCustomizationData({});
@@ -117,6 +112,8 @@ const CustomizationRenderer = (props) => {
           styles={{ marginLeft: `${level * 55}px` }}
           customization={customization}
           customizations={customizations}
+          setCustomizations={setCustomizations}
+          customizationGroups={customizationGroups}
           handleCustomizationChange={handleCustomizationChange}
           setShowCustomizationGroupModal={setShowCustomizationGroupModal}
           setSelectedCustomization={setSelectedCustomization}

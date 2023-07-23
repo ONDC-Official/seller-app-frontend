@@ -25,10 +25,7 @@ const AddCustomizationGroup = (props) => {
     handleCloseModal,
     newCustomizationGroupData,
     setNewCustomizationGroupData,
-    customizationGroups,
     handleAddCustomizationGroup,
-    selectedParentOption,
-    setSelectedParentOption,
   } = props;
 
   const handleSubmit = () => {
@@ -110,25 +107,6 @@ const AddCustomizationGroup = (props) => {
                 setNewCustomizationGroupData({ ...newCustomizationGroupData, maxQuantity: e.target.value })
               }
             />
-          </div>
-          <div className="flex items-center">
-            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Parent
-            </label>
-
-            <FormControl>
-              <Autocomplete
-                sx={{ width: 320 }}
-                size="small"
-                options={customizationGroups}
-                getOptionLabel={(option) => {
-                  return `${option.id}: ${option.name}`;
-                }}
-                value={selectedParentOption}
-                onChange={(event, newValue) => setSelectedParentOption(newValue)}
-                renderInput={(params) => <TextField {...params} placeholder={"Select a parent"} variant="outlined" />}
-              />
-            </FormControl>
           </div>
 
           <div className="flex justify-end mt-4">
