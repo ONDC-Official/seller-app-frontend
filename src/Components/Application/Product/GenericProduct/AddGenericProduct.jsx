@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
 import moment from "moment";
-import Navbar from "../../../Shared/Navbar";
 import MyButton from "../../../Shared/Button";
-import RenderInput from "../../../../utils/RenderInput";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useLocation, useNavigate } from "react-router-dom";
 import useCancellablePromise from "../../../../Api/cancelRequest";
 import { getCall, postCall, putCall } from "../../../../Api/axios";
 import useForm from "../../../../hooks/useForm";
-import { containsOnlyNumbers } from "../../../../utils/formatting/string";
-import BackNavigationButton from "../../../Shared/BackNavigationButton";
 import {
   PRODUCT_SUBCATEGORY,
   FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY,
@@ -37,10 +32,11 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import AddVariants from "./AddVariants";
-import AddVitalInfo from "./AddVitalInfo";
 import { allProperties } from "../categoryProperties";
-import { GET_API_RESPONSE } from "../GetProductAPIResponse";
 import AddProductInfo from "./AddProductInfo";
+import { getFormErrors } from "./utils";
+import VitalForm from "./VitalForm";
+import { v4 as uuidv4 } from "uuid";
 
 const AddGenericProduct = ({
   state,
@@ -116,35 +112,23 @@ const AddGenericProduct = ({
 
   const { formValues, setFormValues, errors, setErrors } = productInfoForm;
 
-  //console.log("form errors", errors);
-
-  useEffect(() => {
-    //User is typing something, set form validation to false
-    setFormValidate(false);
-  }, [formValues, variantForms, vitalForm]);
-
-  useEffect(() => {
-    if (!tabErrors.includes(true)) {
-      // When there is no error in any tab
-      state?.productId ? updateProduct() : addProduct();
-    } else {
-      // if (Object.keys(errors).length > 0) {
-      //   cogoToast.error("Please enter details for all required fields!");
-      // }
-    }
-  }, [tabErrors]);
-
-  useEffect(() => {
-    if (formValidate) {
-      validate();
-    }
-  }, [formValidate]);
-
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const formattedVariantData = () => {
+  const formatAttributesToFieldsDataFormat = (variants) => {
+    return variants.map((variant) => {
+      return {
+        id: variant.name,
+        title: variant.name,
+        placeholder: "Example, " + variant.example,
+        type: "input" || variant.type,
+        required: true,
+      };
+    });
+  };
+
+  const formattedVariantDataForAddProduct = () => {
     let variant_forms_data = [...variantForms];
 
     return variant_forms_data.map((variantData) => {
@@ -167,7 +151,7 @@ const AddGenericProduct = ({
     try {
       let product_data = Object.assign({}, formValues, categoryForm.formValues);
       let vital_data = Object.assign({}, vitalForm);
-      let variant_data = formattedVariantData();
+      let variant_data = formattedVariantDataForAddProduct();
       let api_url = hasVariants
         ? "/api/v1/productWithVariant"
         : "/api/v1/products";
@@ -259,15 +243,13 @@ const AddGenericProduct = ({
         // Get the number of hours from the duration object
         const hours = duration.asHours();
         resp.commonDetails.returnWindow = String(hours);
-        // resp = GET_API_RESPONSE;
-        //console.log(resp);
         setFormValues({ ...resp.commonDetails });
         setVitalForm({ ...resp.commonAttributesValues });
 
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
         let attributes = allProperties[category][sub_category];
-        setVitalFields(attributes);
+        setVitalFields(formatAttributesToFieldsDataFormat(attributes));
       })
       .catch((error) => {
         cogoToast.error("Something went wrong!");
@@ -382,26 +364,35 @@ const AddGenericProduct = ({
       : [...productDetailsFields, ...variationCommonFields];
     setProductInfoFields(product_info_field_names);
 
+    // Set vital form data
     let vital_fields = attributes.filter(
       (variant) => !selectedVariantNames.includes(variant.name)
     );
+    vital_fields = vital_fields.map((field) => {
+      return {
+        id: field.name,
+        title: field.name,
+        placeholder: "Example, " + field.example,
+        type: field.type === "text" ? "input" : field.type,
+        required: true,
+      };
+    });
     setVitalFields(vital_fields);
+    let initial_values = vital_fields.reduce((acc, field) => {
+      acc[field.id] = "";
+      return acc;
+    }, {});
+    setVitalForm(initial_values);
 
+    // Set variant form data
     let default_variant_fields = variationCommonFields.map((field_id) =>
       getProductFieldDetails(field_id)
     );
     let selected_variants = variants.filter((variant) =>
       selectedVariantNames.includes(variant.name)
     );
-    let formatted_variants = selected_variants.map((variant) => {
-      return {
-        id: variant.name,
-        title: variant.name,
-        placeholder: "Example, " + variant.example,
-        type: "input" || variant.type,
-        required: true,
-      };
-    });
+    let formatted_variants =
+      formatAttributesToFieldsDataFormat(selected_variants);
     let all_variant_fields = [...formatted_variants, ...default_variant_fields];
     let variant_initial_values = all_variant_fields.reduce((acc, field) => {
       acc[field.id] = field.id === "images" ? [] : "";
@@ -409,7 +400,9 @@ const AddGenericProduct = ({
     }, {});
     setVariantFields(all_variant_fields);
     setVariantInitialValues(variant_initial_values);
+    setVariantForms([{ ...variant_initial_values, formKey: uuidv4() }]);
 
+    // Set initial values for vital and variant tab
     let variant_tab_error = true;
     let vital_tab_error = true;
 
@@ -643,41 +636,71 @@ const AddGenericProduct = ({
 
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
 
-    tabErrors[0] = !valid_form;
-    setTabErrors((prev_state) => {
-      prev_state[0] = !valid_form;
-      return [...prev_state];
-    });
-    if (!valid_form) {
-      setFormValidate(false);
+    return valid_form;
+  };
+
+  const validateVitalInfoForm = () => {
+    if (Object.keys(vitalFields).length === 0) {
+      return true;
+    } else {
+      let form_errors = getFormErrors(vitalFields, vitalForm);
+      let is_valid_form = form_errors
+        ? !Object.values(form_errors).some((val) => val !== "")
+        : true;
+      setVitalFormErrors(form_errors);
+      return is_valid_form;
+    }
+  };
+
+  const validateVariantsForms = () => {
+    if (!hasVariants) {
+      return true;
+    } else {
+      let forms_errors = variantForms.map((variant_form) =>
+        getFormErrors(variantFields, variant_form)
+      );
+      let has_forms_errors = forms_errors.map((form_errors) =>
+        Object.values(form_errors).some((val) => val !== "")
+      );
+      let are_valid_forms = !has_forms_errors.some((val) => val === true);
+      setVariantFormsErrors(forms_errors);
+      return are_valid_forms;
     }
   };
 
   const validate = () => {
-    validateProductInfoForm();
+    let product_info_form_validity = validateProductInfoForm();
+    let vital_info_form_validity = validateVitalInfoForm();
+    let variants_forms_validity = validateVariantsForms();
+
+    setTabErrors((prev_state) => {
+      prev_state[0] = !product_info_form_validity;
+      prev_state[1] = !vital_info_form_validity;
+      prev_state[2] = !variants_forms_validity;
+      return [...prev_state];
+    });
+
+    return (
+      product_info_form_validity &&
+      vital_info_form_validity &&
+      variants_forms_validity
+    );
   };
 
   const handleSubmit = () => {
-    setFormValidate(true);
-    setSubmitClicked(true);
+    if (validate()) {
+      state?.productId ? updateProduct() : addProduct();
+    }
   };
 
   const renderVariationsFields = () => {
     return (
       <AddVariants
-        category={category}
-        subCategory={subCategory}
-        variants={variants}
-        selectedVariantNames={selectedVariantNames}
         variantFields={variantFields}
         variantInitialValues={variantInitialValues}
         variantForms={variantForms}
         setVariantForms={setVariantForms}
         variantFormsErrors={variantFormsErrors}
-        setVariantFormsErrors={setVariantFormsErrors}
-        shouldValidate={formValidate}
-        setTabErrors={setTabErrors}
-        setFormValidate={setFormValidate}
       />
     );
   };
@@ -698,17 +721,11 @@ const AddGenericProduct = ({
 
   const renderProductVitalFields = () => {
     return (
-      <AddVitalInfo
-        selectedVariantNames={selectedVariantNames}
-        vitalForm={vitalForm}
-        setVitalForm={setVitalForm}
+      <VitalForm
+        fields={vitalFields}
+        formData={vitalForm}
+        onFormUpdate={setVitalForm}
         vitalFormErrors={vitalFormErrors}
-        setVitalFormErrors={setVitalFormErrors}
-        vitalFields={vitalFields}
-        shouldValidate={formValidate}
-        setFormValidate={setFormValidate}
-        tabErrors={tabErrors}
-        setTabErrors={setTabErrors}
       />
     );
   };
