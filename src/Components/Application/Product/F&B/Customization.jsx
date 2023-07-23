@@ -51,7 +51,6 @@ const Customization = (props) => {
       ...updatedCustomizations[selectedCustomizationIndex],
       child: groupId,
     };
-
     setCustomizations(updatedCustomizations);
     handleMenuClose();
   };
@@ -61,6 +60,26 @@ const Customization = (props) => {
       g.id === customization.id ? { ...g, [property]: event.target.value } : g
     );
     handleCustomizationChange(updatedGroups);
+  };
+
+  const renderValidGroupOptions = () => {
+    const parentIndex = customizationGroups.findIndex((g) => g.id === customization.parent);
+    const parentSeq = parseInt(customizationGroups[parentIndex].seq);
+    const validGroups = customizationGroups.filter((group) => parseInt(group.seq) > parentSeq);
+
+    if (validGroups.length === 0) {
+      return (
+        <MenuItem key="no-valid-group">
+          <ListItemText primary="No valid groups available" />
+        </MenuItem>
+      );
+    }
+
+    return validGroups.map((group) => (
+      <MenuItem key={group.id} onClick={() => handleChooseGroup(group.id)}>
+        <ListItemText primary={`Group ${group.id} - ${group.name}`} />
+      </MenuItem>
+    ));
   };
 
   return (
@@ -79,11 +98,7 @@ const Customization = (props) => {
               </Button>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 {showExistingGroups ? (
-                  customizationGroups.map((group) => (
-                    <MenuItem key={group.id} onClick={() => handleChooseGroup(group.id)}>
-                      <ListItemText primary={`Group ${group.id} - ${group.name}`} />
-                    </MenuItem>
-                  ))
+                  renderValidGroupOptions()
                 ) : (
                   <div>
                     <MenuItem onClick={handleAddNewGroup}>
