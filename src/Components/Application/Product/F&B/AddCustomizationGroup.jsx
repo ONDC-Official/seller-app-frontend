@@ -28,13 +28,46 @@ const AddCustomizationGroup = (props) => {
     handleAddCustomizationGroup,
   } = props;
 
+  const [errors, setErrors] = useState({});
+  console.log(errors);
+
+  const validate = () => {
+    const formErrors = {};
+    formErrors.name = newCustomizationGroupData?.name?.trim() === "" ? "Name is not allowed to be empty" : "";
+    formErrors.minQuantity =
+      newCustomizationGroupData?.minQuantity === ""
+        ? "Min Quantity is not allowed to be empty"
+        : newCustomizationGroupData?.minQuantity <= 0
+        ? `Please enter a valid quantity`
+        : "";
+    formErrors.maxQuantity =
+      newCustomizationGroupData?.maxQuantity === ""
+        ? "Max Quantity is not allowed to be empty"
+        : newCustomizationGroupData?.maxQuantity <= 0
+        ? `Please enter a valid quantity`
+        : "";
+
+    setErrors(formErrors);
+
+    return !Object.values(formErrors).some((val) => val !== "");
+  };
+
   const handleSubmit = () => {
-    handleAddCustomizationGroup(newCustomizationGroupData);
+    if (validate() === true) {
+      setErrors({});
+      handleAddCustomizationGroup(newCustomizationGroupData);
+    }
   };
 
   return (
     <div>
-      <Modal open={showModal} onClose={handleCloseModal}>
+      <Modal
+        open={showModal}
+        onClose={() => {
+          setErrors({});
+          handleCloseModal();
+        }}
+      >
         <div
           style={{
             position: "absolute",
@@ -61,8 +94,8 @@ const AddCustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Customisation Group Name"}
-              //   error={newCustomizationGroupData.name.trim() === ""}
-              //   helperText={newCustomizationGroupData.name.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!errors.name}
+              helperText={errors.name}
               value={newCustomizationGroupData.name}
               onChange={(e) => setNewCustomizationGroupData({ ...newCustomizationGroupData, name: e.target.value })}
             />
@@ -80,8 +113,8 @@ const AddCustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Minimum Quantity"}
-              //   error={newCustomizationGroupData.price.trim() === ""}
-              //   helperText={newCustomizationGroupData.price.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!errors.minQuantity}
+              helperText={errors.minQuantity}
               value={newCustomizationGroupData.minQuantity}
               onChange={(e) =>
                 setNewCustomizationGroupData({ ...newCustomizationGroupData, minQuantity: e.target.value })
@@ -100,8 +133,8 @@ const AddCustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Maximum Quantity"}
-              //   error={newCustomizationGroupData.price.trim() === ""}
-              //   helperText={newCustomizationGroupData.price.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!errors.maxQuantity}
+              helperText={errors.maxQuantity}
               value={newCustomizationGroupData.maxQuantity}
               onChange={(e) =>
                 setNewCustomizationGroupData({ ...newCustomizationGroupData, maxQuantity: e.target.value })
@@ -113,7 +146,14 @@ const AddCustomizationGroup = (props) => {
             <Button variant="outlined" color="primary" onClick={handleSubmit}>
               Add
             </Button>
-            <Button sx={{ marginLeft: 2 }} color="primary" onClick={handleCloseModal}>
+            <Button
+              sx={{ marginLeft: 2 }}
+              color="primary"
+              onClick={() => {
+                handleCloseModal();
+                setErrors({});
+              }}
+            >
               Cancel
             </Button>
           </div>

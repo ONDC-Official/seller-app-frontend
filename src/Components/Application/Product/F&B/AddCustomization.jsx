@@ -25,7 +25,10 @@ const AddCustomization = (props) => {
 
   const validate = () => {
     const formErrors = {};
-    formErrors.name = newCustomizationData?.name?.trim() === "" ? "Name is not allowed to be empty" : "";
+    formErrors.name =
+      newCustomizationData?.name?.trim() == undefined || newCustomizationData?.name?.trim() === ""
+        ? "Name is not allowed to be empty"
+        : "";
     formErrors.price =
       newCustomizationData?.price?.trim() === ""
         ? "Price is not allowed to be empty"

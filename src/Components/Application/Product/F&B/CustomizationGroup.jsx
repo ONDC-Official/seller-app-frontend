@@ -65,8 +65,8 @@ const CustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Customisation Name"}
-              error={group.name.trim() === ""}
-              helperText={group.name.trim() === "" ? "Field cannot be empty" : ""}
+              error={group?.name?.trim() === ""}
+              helperText={group?.name?.trim() === "" ? "Field cannot be empty" : ""}
               value={group.name}
               onChange={(event) => handleInputChange(event, "name")}
             />
