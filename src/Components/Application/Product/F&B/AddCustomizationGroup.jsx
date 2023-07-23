@@ -29,19 +29,21 @@ const AddCustomizationGroup = (props) => {
   } = props;
 
   const [errors, setErrors] = useState({});
-  console.log(errors);
 
   const validate = () => {
     const formErrors = {};
-    formErrors.name = newCustomizationGroupData?.name?.trim() === "" ? "Name is not allowed to be empty" : "";
+    formErrors.name =
+      newCustomizationGroupData?.name == undefined || newCustomizationGroupData?.name?.trim() === ""
+        ? "Name is not allowed to be empty"
+        : "";
     formErrors.minQuantity =
-      newCustomizationGroupData?.minQuantity === ""
+      newCustomizationGroupData?.minQuantity == undefined || newCustomizationGroupData?.minQuantity === ""
         ? "Min Quantity is not allowed to be empty"
         : newCustomizationGroupData?.minQuantity <= 0
         ? `Please enter a valid quantity`
         : "";
     formErrors.maxQuantity =
-      newCustomizationGroupData?.maxQuantity === ""
+      newCustomizationGroupData?.maxQuantity == undefined || newCustomizationGroupData?.maxQuantity === ""
         ? "Max Quantity is not allowed to be empty"
         : newCustomizationGroupData?.maxQuantity <= 0
         ? `Please enter a valid quantity`
@@ -66,6 +68,7 @@ const AddCustomizationGroup = (props) => {
         onClose={() => {
           setErrors({});
           handleCloseModal();
+          setNewCustomizationGroupData({});
         }}
       >
         <div
@@ -80,7 +83,7 @@ const AddCustomizationGroup = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            Add New Customization
+            Add New Customization Group
           </p>
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -152,6 +155,7 @@ const AddCustomizationGroup = (props) => {
               onClick={() => {
                 handleCloseModal();
                 setErrors({});
+                setNewCustomizationGroupData({});
               }}
             >
               Cancel

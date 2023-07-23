@@ -40,9 +40,11 @@ const CustomizationRenderer = (props) => {
 
   // adds new customization group
   const handleAddCustomizationGroup = (data) => {
+    const parentGroupIndex = customizationGroups.findIndex((c) => c.id === selectedCustomization.parent);
     let newCustomizationGroup = {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
+      seq: customizationGroups[parentGroupIndex].seq + 1,
     };
 
     const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
@@ -54,8 +56,8 @@ const CustomizationRenderer = (props) => {
 
     setCustomizations(updatedCustomizations);
     setCustomizationGroups([...customizationGroups, newCustomizationGroup]);
-    setNewCustomizationData({});
     setShowCustomizationGroupModal(false);
+    setNewCustomizationGroupData({});
   };
 
   const openCustomizationModal = () => {
