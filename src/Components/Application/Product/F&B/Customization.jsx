@@ -82,6 +82,9 @@ const Customization = (props) => {
     ));
   };
 
+  const parentGroup = customizationGroups.find((group) => group.id === customization.parent);
+  const shouldShowButton = !customization.child && parentGroup && parentGroup.seq < 3;
+
   return (
     <>
       <div
@@ -91,7 +94,7 @@ const Customization = (props) => {
       >
         <div className="flex items-end">
           <p className="text-[#181818] text-medium">Customization: {customization.id}</p>
-          {!customization.child && (
+          {shouldShowButton && (
             <div>
               <Button size="small" variant="outlined" sx={{ marginLeft: 2 }} onClick={handleMenuOpen}>
                 Add Customization Group
@@ -141,7 +144,7 @@ const Customization = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Variant Price"}
-              error={customization.price <= 0}
+              error={customization.price < 0}
               helperText={customization.price < 0 ? "Please enter a valid price value" : ""}
               value={customization.price}
               onChange={(event) => handleInputChange(event, "price")}
