@@ -143,7 +143,7 @@ export default function AddProduct() {
   useEffect(() => {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
-    if (category && sub_category) {
+    if (category && category !== "F&B" && sub_category) {
       let properties = allProperties[category][sub_category];
       let variants = properties?.filter((property) => property.variationAllowed);
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
@@ -227,17 +227,29 @@ export default function AddProduct() {
         </div>
       );
     } else {
-      return (
-        <AddGenericProduct
-          state={state}
-          categoryForm={categoryForm}
-          category={categoryForm.formValues?.productCategory}
-          subCategory={categoryForm.formValues?.productSubcategory1}
-          attributes={attributes}
-          variants={variants}
-          selectedVariantNames={getSelectedVariantNames()}
-        />
-      );
+      const selectedCategory = categoryForm.formValues?.productCategory;
+      if (selectedCategory === "F&B") {
+        return (
+          <CustomizationRenderer
+            customizationGroups={customizationGroups}
+            setCustomizationGroups={setCustomizationGroups}
+            customizations={customizations}
+            setCustomizations={setCustomizations}
+          />
+        );
+      } else {
+        return (
+          <AddGenericProduct
+            state={state}
+            categoryForm={categoryForm}
+            category={selectedCategory}
+            subCategory={categoryForm.formValues?.productSubcategory1}
+            attributes={attributes}
+            variants={variants}
+            selectedVariantNames={getSelectedVariantNames()}
+          />
+        );
+      }
     }
   };
 
@@ -270,17 +282,13 @@ export default function AddProduct() {
                   disabled={
                     !(categoryForm.formValues["productCategory"] && categoryForm.formValues["productSubcategory1"])
                   }
-                  onClick={() => setRenderCategories(false)}
+                  onClick={() => {
+                    setRenderCategories(false);
+                  }}
                 />
               )}
             </div>
           </form>
-          <CustomizationRenderer
-            customizationGroups={customizationGroups}
-            setCustomizationGroups={setCustomizationGroups}
-            customizations={customizations}
-            setCustomizations={setCustomizations}
-          />
         </div>
       </div>
     </>
