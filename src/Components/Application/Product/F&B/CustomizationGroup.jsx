@@ -61,7 +61,7 @@ const CustomizationGroup = (props) => {
             <CssTextField
               required
               type={"input"}
-              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              className="w-52 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
               autoComplete="off"
               placeholder={"Enter Customisation Name"}
@@ -78,7 +78,7 @@ const CustomizationGroup = (props) => {
             <CssTextField
               required
               type="number"
-              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
               autoComplete="off"
               placeholder="Enter Minimum Quantity"
@@ -95,7 +95,7 @@ const CustomizationGroup = (props) => {
             <CssTextField
               required
               type="number"
-              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
               autoComplete="off"
               placeholder="Enter Maximum Quantity"

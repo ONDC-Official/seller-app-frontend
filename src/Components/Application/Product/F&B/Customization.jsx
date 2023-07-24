@@ -122,7 +122,7 @@ const Customization = (props) => {
             <CssTextField
               required
               type={"input"}
-              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              className="w-48 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
               autoComplete="off"
               placeholder={"Enter Variant Name"}
@@ -137,7 +137,7 @@ const Customization = (props) => {
             <CssTextField
               required
               type={"number"}
-              className="w-40 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
               autoComplete="off"
               placeholder={"Enter Variant Price"}
