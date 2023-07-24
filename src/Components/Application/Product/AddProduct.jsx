@@ -57,7 +57,7 @@ export default function AddProduct() {
   useEffect(() => {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
-    if (category && sub_category) {
+    if (category && category !== "F&B" && sub_category) {
       let properties = allProperties[category][sub_category];
       let variants = properties?.filter(
         (property) => property.variationAllowed
@@ -102,7 +102,7 @@ export default function AddProduct() {
 
   const renderVariantsList = () => {
     if (variants.length === 0) {
-      return <div>No attributes available for Variations!</div>
+      return <div>No attributes available for Variations!</div>;
     }
     return (
       <div>
@@ -146,14 +146,15 @@ export default function AddProduct() {
   const renderVariants = () => {
     return (
       <FormControl>
-        <div
-        className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">Variation On</div>
+        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">
+          Variation On
+        </div>
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
           value={variationOn}
           onChange={(val) => setVariationOn(val.target.value)}
-          sx={{paddingLeft: "22px"}}
+          sx={{ paddingLeft: "22px" }}
         >
           <FormControlLabel value="none" control={<Radio />} label="None" />
           <FormControlLabel
