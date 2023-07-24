@@ -44,17 +44,19 @@ const CustomizationRenderer = (props) => {
     let newCustomizationGroup = {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
-      seq: customizationGroups[parentGroupIndex].seq + 1,
+      seq: customizationGroups.length === 0 ? 1 : customizationGroups[parentGroupIndex].seq + 1,
     };
 
-    const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
-    const updatedCustomizations = [...customizations];
-    updatedCustomizations[selectedCustomizationIndex] = {
-      ...updatedCustomizations[selectedCustomizationIndex],
-      child: newCustomizationGroup.id,
-    };
+    if (customizationGroups.length > 0) {
+      const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
+      const updatedCustomizations = [...customizations];
+      updatedCustomizations[selectedCustomizationIndex] = {
+        ...updatedCustomizations[selectedCustomizationIndex],
+        child: newCustomizationGroup.id,
+      };
 
-    setCustomizations(updatedCustomizations);
+      setCustomizations(updatedCustomizations);
+    }
     setCustomizationGroups([...customizationGroups, newCustomizationGroup]);
     setShowCustomizationGroupModal(false);
     setNewCustomizationGroupData({});
@@ -79,15 +81,6 @@ const CustomizationRenderer = (props) => {
       if (group.seq === 1) {
         renderedElements.push(
           <React.Fragment key={group.id}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setShowCustomizationGroupModal(true);
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              Add Customization Group
-            </Button>
             <CustomizationGroup
               group={group}
               customizationGroups={customizationGroups}
@@ -146,6 +139,16 @@ const CustomizationRenderer = (props) => {
 
   return (
     <div>
+      <Button
+        sx={{ marginBottom: 2 }}
+        variant="contained"
+        onClick={() => {
+          setShowCustomizationGroupModal(true);
+        }}
+        disabled={!!customizationGroups.length}
+      >
+        Add Customization Group
+      </Button>
       {renderCustomizations(customizationGroups)}
       <AddCustomizationGroup
         showModal={showCustomizationGroupModal}
