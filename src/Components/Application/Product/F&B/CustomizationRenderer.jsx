@@ -24,7 +24,7 @@ const CustomizationRenderer = (props) => {
   const [showCustomizationModal, setShowCustomizationModal] = useState(false);
   const [newCustomizationData, setNewCustomizationData] = useState({
     name: "",
-    price: "",
+    price: 0,
     inStock: true,
     parent: "",
   });
@@ -88,6 +88,7 @@ const CustomizationRenderer = (props) => {
               customizationGroups={customizationGroups}
               handleGroupChange={handleGroupChange}
               openCustomizationModal={openCustomizationModal}
+              newCustomizationData={newCustomizationData}
               setNewCustomizationData={setNewCustomizationData}
             />
             {renderCustomizationElements(group.id)}
@@ -128,6 +129,7 @@ const CustomizationRenderer = (props) => {
                 handleGroupChange={(event) => handleGroupChange(event, childGroup.id)}
                 styles={{ marginLeft: `${(level + 1) * 60}px` }}
                 openCustomizationModal={openCustomizationModal}
+                newCustomizationData={newCustomizationData}
                 setNewCustomizationData={setNewCustomizationData}
               />
               {renderCustomizationElements(childGroup.id, level + 2)}

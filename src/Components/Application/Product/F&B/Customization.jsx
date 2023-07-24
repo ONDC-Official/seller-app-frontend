@@ -142,7 +142,7 @@ const Customization = (props) => {
               autoComplete="off"
               placeholder={"Enter Variant Price"}
               error={customization.price <= 0}
-              helperText={customization.price <= 0 ? "Please enter a valid price value" : ""}
+              helperText={customization.price < 0 ? "Please enter a valid price value" : ""}
               value={customization.price}
               onChange={(event) => handleInputChange(event, "price")}
             />

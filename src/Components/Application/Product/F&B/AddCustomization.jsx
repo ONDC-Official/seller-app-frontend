@@ -29,12 +29,7 @@ const AddCustomization = (props) => {
       newCustomizationData?.name?.trim() == undefined || newCustomizationData?.name?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
-    formErrors.price =
-      newCustomizationData?.price?.trim() === ""
-        ? "Price is not allowed to be empty"
-        : isNaN(newCustomizationData?.price)
-        ? `Please enter a valid price`
-        : "";
+    formErrors.price = newCustomizationData?.price < 0 ? `Please enter a valid price` : "";
 
     setErrors(formErrors);
 
