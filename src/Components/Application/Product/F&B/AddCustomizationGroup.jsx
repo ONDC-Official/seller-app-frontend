@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Autocomplete, Button, FormControl, Modal, TextField } from "@mui/material";
+import { Button, FormControl, MenuItem, Modal, Select, TextField } from "@mui/material";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -29,6 +29,7 @@ const AddCustomizationGroup = (props) => {
   } = props;
 
   const [errors, setErrors] = useState({});
+  const [inputType, setInputType] = useState("Select");
 
   const validate = () => {
     const formErrors = {};
@@ -57,9 +58,19 @@ const AddCustomizationGroup = (props) => {
   const handleSubmit = () => {
     if (validate() === true) {
       setErrors({});
+      setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType });
       handleAddCustomizationGroup(newCustomizationGroupData);
     }
   };
+
+  const handleChange = (e) => {
+    setInputType(e.target.value);
+    setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType: e.target.value });
+  };
+
+  useEffect(() => {
+    setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType });
+  }, []);
 
   return (
     <div>
@@ -143,6 +154,30 @@ const AddCustomizationGroup = (props) => {
                 setNewCustomizationGroupData({ ...newCustomizationGroupData, maxQuantity: e.target.value })
               }
             />
+          </div>
+          <div className="flex items-center">
+            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              Input Type:
+            </label>
+
+            <FormControl>
+              <Select
+                sx={{ width: 320 }}
+                size="small"
+                displayEmpty
+                value={inputType}
+                onChange={handleChange}
+                renderValue={(value) => {
+                  if (!value) {
+                    return <p>Select Input Type</p>;
+                  }
+                  return value;
+                }}
+              >
+                <MenuItem value="Input">Input</MenuItem>
+                <MenuItem value="Select">Select</MenuItem>
+              </Select>
+            </FormControl>
           </div>
 
           <div className="flex justify-end mt-4">

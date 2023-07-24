@@ -15,6 +15,7 @@ const CustomizationRenderer = (props) => {
     minQuantity: "",
     maxQuantity: "",
     seq: "",
+    inputType: "",
   });
   const [selectedParentOption, setSelectedParentOption] = useState(null);
   const [selectedCustomization, setSelectedCustomization] = useState(null);
@@ -45,6 +46,7 @@ const CustomizationRenderer = (props) => {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
       seq: customizationGroups.length === 0 ? 1 : customizationGroups[parentGroupIndex].seq + 1,
+      inputType: data.inputType.toLowerCase(),
     };
 
     if (customizationGroups.length > 0) {
