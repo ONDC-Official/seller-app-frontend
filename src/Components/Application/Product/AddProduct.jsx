@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { allProductFieldDetails, categoryFields } from "./product-fields";
-import AddGenericProduct from "./AddGenericProduct";
+import AddGenericProduct from "./GenericProduct/AddGenericProduct";
 import { PRODUCT_SUBCATEGORY } from "../../../utils/constants";
 import { allProperties } from "./categoryProperties";
 import Box from "@mui/material/Box";
@@ -113,7 +113,7 @@ export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [fields, setFields] = useState(allProductFieldDetails);
-  const [properties, setProperties] = useState([]);
+  const [attributes, setAttributes] = useState([]);
   const [variants, setVariants] = useState([]);
   const [variantsCheckboxState, setVariantsCheckboxState] = useState({});
   const [renderCategories, setRenderCategories] = useState(!state?.productId);
@@ -150,7 +150,7 @@ export default function AddProduct() {
         acc[variant.name] = false;
         return acc;
       }, {});
-      setProperties(properties);
+      setAttributes(properties);
       setVariants(variants);
       setVariantsCheckboxState(variants_checkbox_map);
     }
@@ -163,6 +163,7 @@ export default function AddProduct() {
       return (
         item && (
           <RenderInput
+            key={category_id}
             item={{
               ...item,
               error: categoryForm.errors?.[item?.id] ? true : false,
@@ -202,6 +203,7 @@ export default function AddProduct() {
                     />
                   }
                   label={name}
+                  key={name}
                 />
               ))}
             </FormGroup>
@@ -217,12 +219,7 @@ export default function AddProduct() {
   };
 
   const renderFields = () => {
-    if (
-      renderCategories
-      // !state?.productId &&
-      // (!categoryForm.formValues["productCategory"] ||
-      //   !categoryForm.formValues["productSubcategory1"])
-    ) {
+    if (renderCategories && !state?.productId) {
       return (
         <div>
           {renderCategoryFields()}
@@ -236,7 +233,7 @@ export default function AddProduct() {
           categoryForm={categoryForm}
           category={categoryForm.formValues?.productCategory}
           subCategory={categoryForm.formValues?.productSubcategory1}
-          properties={properties}
+          attributes={attributes}
           variants={variants}
           selectedVariantNames={getSelectedVariantNames()}
         />
@@ -265,15 +262,17 @@ export default function AddProduct() {
                 className="text-black"
                 onClick={() => navigate("/application/inventory")}
               />
-              <MyButton
-                type="button"
-                title="NEXT"
-                className="text-black"
-                disabled={
-                  !(categoryForm.formValues["productCategory"] && categoryForm.formValues["productSubcategory1"])
-                }
-                onClick={() => setRenderCategories(false)}
-              />
+              {renderCategories && (
+                <MyButton
+                  type="button"
+                  title="NEXT"
+                  className="text-black"
+                  disabled={
+                    !(categoryForm.formValues["productCategory"] && categoryForm.formValues["productSubcategory1"])
+                  }
+                  onClick={() => setRenderCategories(false)}
+                />
+              )}
             </div>
           </form>
           <CustomizationRenderer
