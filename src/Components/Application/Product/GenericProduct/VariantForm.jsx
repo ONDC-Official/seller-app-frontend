@@ -36,7 +36,7 @@ const VarinatForm = ({
         </Typography>
         <button
           type="button"
-          class="close"
+          className="close"
           aria-label="Close"
           onClick={() => removeForm(index)}
         >

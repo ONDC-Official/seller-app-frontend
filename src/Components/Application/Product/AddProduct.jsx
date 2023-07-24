@@ -170,6 +170,7 @@ export default function AddProduct() {
           </label>
           <form>
             <div className="mt-2">{renderFields()}</div>
+          </form>
             {}
             <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
               <MyButton
@@ -193,7 +194,7 @@ export default function AddProduct() {
                 />
               )}
             </div>
-          </form>
+
         </div>
       </div>
     </>
