@@ -25,6 +25,7 @@ import {
   categoryFields,
   productDetailsFields,
   variationCommonFields,
+  UOMVariationFields,
 } from "../product-fields";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -46,6 +47,7 @@ const AddGenericProduct = ({
   selectedVariantNames,
   variants,
   attributes,
+  variationOn,
 }) => {
   const navigate = useNavigate();
   const hasVariants = selectedVariantNames.length > 0;
@@ -132,16 +134,17 @@ const AddGenericProduct = ({
     let variant_forms_data = [...variantForms];
 
     return variant_forms_data.map((variantData) => {
-      let varint_attrs = selectedVariantNames.reduce((acc, variant_name) => {
-        acc[variant_name] = variantData[variant_name];
-        delete variantData[variant_name];
-        return acc;
-      }, {});
+      if (variationOn === "attributes") {
+        let variant_attrs = selectedVariantNames.reduce((acc, variant_name) => {
+          acc[variant_name] = variantData[variant_name];
+          delete variantData[variant_name];
+          return acc;
+        }, {});
 
+        variantData["varientAttributes"] = variant_attrs;
+      }
       delete variantData["formKey"];
       delete variantData["uploaded_urls"];
-
-      variantData["varientAttributes"] = varint_attrs;
 
       return variantData;
     });
@@ -173,7 +176,7 @@ const AddGenericProduct = ({
       } else {
       }
 
-      if (hasVariants) {
+      if (variationOn !== "none") {
         variationCommonFields.forEach((field) => {
           delete product_data[field];
         });
@@ -204,8 +207,9 @@ const AddGenericProduct = ({
         commonAttributesValues: vital_data,
       };
 
-      if (hasVariants) {
+      if (variationOn !== "none") {
         data["variantSpecificDetails"] = variant_data;
+        data["variationOn"] = variationOn.toUpperCase();
       }
 
       await cancellablePromise(postCall(api_url, data));
@@ -359,10 +363,7 @@ const AddGenericProduct = ({
   }, [formValues]);
 
   useEffect(() => {
-    let product_info_field_names = hasVariants
-      ? productDetailsFields
-      : [...productDetailsFields, ...variationCommonFields];
-    setProductInfoFields(product_info_field_names);
+    setProductInfoFields(getProductInfoFields());
 
     // Set vital form data
     let vital_fields = attributes.filter(
@@ -388,25 +389,28 @@ const AddGenericProduct = ({
     let default_variant_fields = variationCommonFields.map((field_id) =>
       getProductFieldDetails(field_id)
     );
-    let selected_variants = variants.filter((variant) =>
-      selectedVariantNames.includes(variant.name)
-    );
-    let formatted_variants =
-      formatAttributesToFieldsDataFormat(selected_variants);
-    let all_variant_fields = [...formatted_variants, ...default_variant_fields];
-    let variant_initial_values = all_variant_fields.reduce((acc, field) => {
-      acc[field.id] = field.id === "images" ? [] : "";
-      return acc;
-    }, {});
-    setVariantFields(all_variant_fields);
-    setVariantInitialValues(variant_initial_values);
-    setVariantForms([{ ...variant_initial_values, formKey: uuidv4() }]);
 
+    if (variationOn !== "none") {
+      let variants_fields = getVariantsFields();
+      // let selected_variants = variants.filter((variant) =>
+      //   selectedVariantNames.includes(variant.name)
+      // );
+      // let formatted_variants =
+      //   formatAttributesToFieldsDataFormat(selected_variants);
+      let all_variant_fields = [...variants_fields, ...default_variant_fields];
+      let variant_initial_values = all_variant_fields.reduce((acc, field) => {
+        acc[field.id] = field.id === "images" ? [] : "";
+        return acc;
+      }, {});
+      setVariantFields(all_variant_fields);
+      setVariantInitialValues(variant_initial_values);
+      setVariantForms([{ ...variant_initial_values, formKey: uuidv4() }]);
+    }
     // Set initial values for vital and variant tab
     let variant_tab_error = true;
     let vital_tab_error = true;
 
-    if (!hasVariants) {
+    if (variationOn === "none") {
       variant_tab_error = false;
     }
 
@@ -419,7 +423,37 @@ const AddGenericProduct = ({
       prevState[2] = variant_tab_error;
       return prevState;
     });
-  }, [selectedVariantNames]);
+  }, [variationOn]);
+  console.log(errors);
+
+  const getProductInfoFields = () => {
+    if (!variationOn || variationOn === "none") {
+      return [
+        ...productDetailsFields,
+        ...UOMVariationFields,
+        ...variationCommonFields,
+      ];
+    } else if (variationOn === "attributes") {
+      return [...productDetailsFields, ...UOMVariationFields];
+    } else {
+      return productDetailsFields;
+    }
+  };
+
+  const getVariantsFields = () => {
+    if (!variationOn || variationOn === "none") {
+      return [];
+    } else if (variationOn === "attributes") {
+      let selected_variants = variants.filter((variant) =>
+        selectedVariantNames.includes(variant.name)
+      );
+      return formatAttributesToFieldsDataFormat(selected_variants);
+    } else if (variationOn === "uom") {
+      return UOMVariationFields.map((field_id) =>
+        getProductFieldDetails(field_id)
+      );
+    }
+  };
 
   const validateProductInfoForm = () => {
     let formErrors = {};
@@ -452,12 +486,13 @@ const AddGenericProduct = ({
       : parseInt(formValues?.maxAllowedQty) > parseInt(formValues?.quantity)
       ? "Cannot be more than quantity"
       : "";
-    formErrors.UOM =
-      formValues?.UOM?.trim() === ""
-        ? "UOM is required"
-        : formValues?.UOM?.length > MAX_STRING_LENGTH
-        ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
-        : "";
+    formErrors.UOM = formValues?.UOM === "" ? "UOM unit is required" : "";
+    // formErrors.UOM =
+    //   formValues?.UOM?.trim() === ""
+    //     ? "UOM is required"
+    //     : formValues?.UOM?.length > MAX_STRING_LENGTH
+    //     ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
+    //     : "";
     formErrors.packQty = !formValues?.packQty
       ? "Please enter a valid Measurement Quantity"
       : !isNumberOnly(formValues?.packQty)
@@ -577,7 +612,7 @@ const AddGenericProduct = ({
         : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH_14
         ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
         : "";
-    if (!hasVariants) {
+    if (variationOn === "none") {
       formErrors.MRP = !formValues?.MRP
         ? "Please enter a valid number"
         : !isAmountValid(formValues?.MRP)
@@ -653,7 +688,7 @@ const AddGenericProduct = ({
   };
 
   const validateVariantsForms = () => {
-    if (!hasVariants) {
+    if (variationOn === "none") {
       return true;
     } else {
       let forms_errors = variantForms.map((variant_form) =>
@@ -819,7 +854,7 @@ const AddGenericProduct = ({
                   value="2"
                 />
               )}
-              {selectedVariantNames.length > 0 && (
+              {variationOn !== "none" && (
                 <Tab
                   sx={{
                     color:

@@ -51,6 +51,7 @@ export default function AddProduct() {
       data[subCategoryIndex].options =
         PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       setFields(data);
+      setVariationOn("none");
     }
   }, [categoryForm.formValues]);
 
@@ -143,6 +144,13 @@ export default function AddProduct() {
     );
   };
 
+  const anyVariantSelected = () => {
+    let variant_names = Object.keys(variantsCheckboxState);
+    return variant_names.some(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
+  };
+
   const renderVariants = () => {
     return (
       <FormControl>
@@ -222,7 +230,10 @@ export default function AddProduct() {
                 disabled={
                   !(
                     categoryForm.formValues["productCategory"] &&
-                    categoryForm.formValues["productSubcategory1"]
+                    categoryForm.formValues["productSubcategory1"] &&
+                    (variationOn === "none" ||
+                      variationOn === "uom" ||
+                      anyVariantSelected())
                   )
                 }
                 onClick={() => setRenderCategories(false)}
