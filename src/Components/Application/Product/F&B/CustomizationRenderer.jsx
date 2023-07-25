@@ -12,6 +12,7 @@ const CustomizationRenderer = (props) => {
     customizations,
     setCustomizations,
     setHasErrorCustomizationGroup,
+    setHasErrorCustomization,
   } = props;
 
   // states for holding info regarding addition of customization-group
@@ -122,6 +123,7 @@ const CustomizationRenderer = (props) => {
           handleCustomizationChange={handleCustomizationChange}
           setShowCustomizationGroupModal={setShowCustomizationGroupModal}
           setSelectedCustomization={setSelectedCustomization}
+          setHasErrorCustomization={setHasErrorCustomization}
         />
       );
 

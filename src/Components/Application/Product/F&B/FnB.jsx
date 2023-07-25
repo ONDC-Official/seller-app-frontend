@@ -37,6 +37,9 @@ const FnB = (props) => {
   const [customizationGroups, setCustomizationGroups] = useState([]);
   const [customizations, setCustomizations] = useState([]);
   const [hasErrorCustomizationGroup, setHasErrorCustomizationGroup] = useState(false);
+  const [hasErrorCustomization, setHasErrorCustomization] = useState(false);
+
+  console.log("hasErrorCustomization", hasErrorCustomization);
 
   const [tabValue, setTabValue] = useState("1");
   const [tabErrors, setTabErrors] = useState([true]);
@@ -401,6 +404,7 @@ const FnB = (props) => {
             customizations={customizations}
             setCustomizations={setCustomizations}
             setHasErrorCustomizationGroup={setHasErrorCustomizationGroup}
+            setHasErrorCustomization={setHasErrorCustomization}
           />
         </TabPanel>
       </TabContext>
@@ -411,7 +415,7 @@ const FnB = (props) => {
           title={"ADD PRODUCT"}
           variant="contained"
           onClick={handleSubmit}
-          disabled={hasErrorCustomizationGroup}
+          disabled={hasErrorCustomizationGroup || hasErrorCustomization}
         />
       </div>
     </Box>

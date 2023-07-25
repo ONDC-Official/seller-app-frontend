@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField, Menu, MenuItem, ListItemText } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -20,10 +20,19 @@ const CssTextField = styled(TextField)({
 });
 
 const Customization = (props) => {
-  const { customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } = props;
+  const {
+    customization,
+    customizations,
+    handleCustomizationChange,
+    customizationGroups,
+    setCustomizations,
+    setHasErrorCustomization,
+  } = props;
 
   const [showExistingGroups, setShowExistingGroups] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [errors, setErrors] = useState({});
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,6 +91,25 @@ const Customization = (props) => {
     ));
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (customization.name.trim() === "") {
+      newErrors.name = "Field cannot be empty";
+    }
+
+    if (customization.price < 0) {
+      newErrors.price = "Please enter a valid price value";
+    }
+
+    setHasErrorCustomization(Object.keys(newErrors).length > 0);
+    setErrors(newErrors);
+  };
+
+  useEffect(() => {
+    validate();
+  }, [customizations]);
+
   const parentGroup = customizationGroups.find((group) => group.id === customization.parent);
   const shouldShowButton = !customization.child && parentGroup && parentGroup.seq < 3;
 
@@ -129,8 +157,8 @@ const Customization = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Variant Name"}
-              error={customization.name.trim() === ""}
-              helperText={customization.name.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!errors.name}
+              helperText={errors.name}
               value={customization.name}
               onChange={(event) => handleInputChange(event, "name")}
             />
@@ -144,8 +172,8 @@ const Customization = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Variant Price"}
-              error={customization.price < 0}
-              helperText={customization.price < 0 ? "Please enter a valid price value" : ""}
+              error={!!errors.price}
+              helperText={errors.price}
               value={customization.price}
               onChange={(event) => handleInputChange(event, "price")}
             />
