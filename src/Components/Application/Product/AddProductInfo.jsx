@@ -1,9 +1,9 @@
 import {
   PRODUCT_SUBCATEGORY,
   FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY,
-} from "../../../../utils/constants";
-import RenderInput from "../../../../utils/RenderInput";
-import { allProductFieldDetails } from "../product-fields";
+} from "../../../utils/constants";
+import RenderInput from "../../../utils/RenderInput";
+import { allProductFieldDetails } from "./product-fields";
 import { useState } from "react";
 
 const AddProductInfo = ({

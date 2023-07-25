@@ -156,6 +156,22 @@ export const allProductFieldDetails = [
     id: "UOM",
     title: "UOM",
     placeholder: "UOM",
+    type: "select",
+    required: true,
+    options: [
+      { key: "unit", value: "unit" },
+      { key: "dozen", value: "dozen" },
+      { key: "gram", value: "gram" },
+      { key: "kilogram", value: "kilogram" },
+      { key: "tonne", value: "tonne" },
+      { key: "litre", value: "litre" },
+      { key: "millilitre", value: "millilitre" },
+    ],
+  },
+  {
+    id: "UOMValue",
+    title: "UOM value",
+    placeholder: "UOM value",
     type: "input",
     required: true,
   },
@@ -317,7 +333,6 @@ export const productDetailsFields = [
   "HSNCode",
   "GST_Percentage",
   "maxAllowedQty",
-  "UOM",
   "packQty",
   "length",
   "breadth",
@@ -340,7 +355,8 @@ export const productDetailsFields = [
   "commonOrGenericNameOfCommodity",
   "monthYearOfManufacturePackingImport",
   "importerFSSAILicenseNo",
-  "brandOwnerFSSAILicenseNo"
+  "brandOwnerFSSAILicenseNo",
+  "UOM",
 ];
 
 export const variationCommonFields = [
@@ -350,5 +366,8 @@ export const variationCommonFields = [
   "quantity",
   "barcode",
   "images",
+]
 
+export const UOMVariationFields = [
+  "UOMValue"
 ]
