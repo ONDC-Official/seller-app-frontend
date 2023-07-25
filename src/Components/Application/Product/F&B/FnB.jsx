@@ -39,48 +39,46 @@ const FnB = (props) => {
   const [hasErrorCustomizationGroup, setHasErrorCustomizationGroup] = useState(false);
   const [hasErrorCustomization, setHasErrorCustomization] = useState(false);
 
-  console.log("hasErrorCustomization", hasErrorCustomization);
-
   const [tabValue, setTabValue] = useState("1");
   const [tabErrors, setTabErrors] = useState([true]);
   const { cancellablePromise } = useCancellablePromise();
 
   const initialValues = {
-    productCode: "",
-    productName: "",
-    MRP: "",
-    retailPrice: "",
-    purchasePrice: "",
-    HSNCode: "",
-    GST_Percentage: "",
-    quantity: "",
+    productCode: "4357",
+    productName: "name",
+    MRP: "1234",
+    retailPrice: "1200",
+    purchasePrice: "123",
+    HSNCode: "H123edf",
+    GST_Percentage: "5",
+    quantity: "2",
     barcode: "",
-    maxAllowedQty: "",
+    maxAllowedQty: "1",
     UOM: "",
-    packQty: "",
-    length: "",
-    breadth: "",
-    height: "",
-    weight: "",
-    returnWindow: "",
-    manufacturerName: "",
+    packQty: "1",
+    length: "100",
+    breadth: "100",
+    height: "100",
+    weight: "100",
+    returnWindow: "1",
+    manufacturerName: "name",
     manufacturedDate: "",
-    nutritionalInfo: "",
-    additiveInfo: "",
-    instructions: "",
-    longDescription: "",
-    description: "",
+    nutritionalInfo: "info",
+    additiveInfo: "info",
+    instructions: "instruct",
+    longDescription: "l d",
+    description: "just d",
     isReturnable: "false",
     isVegetarian: "false",
     isCancellable: "false",
     availableOnCod: "false",
     images: [],
-    manufacturerOrPackerName: "",
-    manufacturerOrPackerAddress: "",
-    commonOrGenericNameOfCommodity: "",
+    manufacturerOrPackerName: "namre",
+    manufacturerOrPackerAddress: "add",
+    commonOrGenericNameOfCommodity: "addad",
     monthYearOfManufacturePackingImport: "",
-    importerFSSAILicenseNo: "",
-    brandOwnerFSSAILicenseNo: "",
+    importerFSSAILicenseNo: "12",
+    brandOwnerFSSAILicenseNo: "21",
   };
 
   const productInfoForm = useForm({
@@ -327,7 +325,6 @@ const FnB = (props) => {
       let api_url = "/api/v1/products";
 
       product_data.productCategory = category;
-      product_data.sub_category = subCategory;
 
       // Create a duration object with the hours you want to convert
       const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
@@ -352,9 +349,9 @@ const FnB = (props) => {
 
       console.log(data);
 
-      // await cancellablePromise(postCall(api_url, data));
-      // cogoToast.success("Product added successfully!");
-      // navigate("/application/inventory");
+      await cancellablePromise(postCall(api_url, data));
+      cogoToast.success("Product added successfully!");
+      navigate("/application/inventory");
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -370,7 +367,7 @@ const FnB = (props) => {
     return (
       <AddProductInfo
         allFields={allFields}
-        fields={productDetailsFields}
+        fields={[...productDetailsFields, "quantity", "barcode", "images"]}
         category={category}
         subCategory={subCategory}
         state={state}
