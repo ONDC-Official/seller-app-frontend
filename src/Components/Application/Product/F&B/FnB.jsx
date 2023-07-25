@@ -391,10 +391,19 @@ const FnB = (props) => {
               label="Product Info"
               value="1"
             />
+            <Tab
+              sx={{
+                color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none",
+              }}
+              label="Customizations"
+              value="2"
+            />
           </TabList>
         </Box>
         <TabPanel value="1">
           <div className="mt-2 mb-4">{renderProductInfoFields()}</div>
+        </TabPanel>
+        <TabPanel value="2">
           <CustomizationRenderer
             customizationGroups={customizationGroups}
             setCustomizationGroups={setCustomizationGroups}
