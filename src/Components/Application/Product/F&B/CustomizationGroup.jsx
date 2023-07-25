@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -20,7 +20,9 @@ const CssTextField = styled(TextField)({
 });
 
 const CustomizationGroup = (props) => {
-  const { group, customizationGroups, handleGroupChange } = props;
+  const { group, customizationGroups, handleGroupChange, setHasErrorCustomizationGroup } = props;
+
+  const [error, setError] = useState({});
 
   const handleInputChange = (event, property) => {
     const updatedGroups = customizationGroups.map((g) =>
@@ -28,6 +30,32 @@ const CustomizationGroup = (props) => {
     );
     handleGroupChange(updatedGroups);
   };
+
+  const validate = () => {
+    const newError = {};
+
+    // Validation check for name
+    if (!group.name.trim()) {
+      newError.name = "Field cannot be empty";
+    }
+
+    // Validation check for minimum quantity
+    if (group.minQuantity <= 0) {
+      newError.minQuantity = "Minimum quantity must be non-negative";
+    }
+
+    // Validation check for maximum quantity
+    if (group.maxQuantity <= 0) {
+      newError.maxQuantity = "Maximum quantity must be non-negative";
+    }
+
+    setHasErrorCustomizationGroup(Object.keys(newError).length > 0);
+    setError(newError);
+  };
+
+  useEffect(() => {
+    validate();
+  }, [group]);
 
   return (
     <>
@@ -65,8 +93,8 @@ const CustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder={"Enter Customisation Name"}
-              error={group?.name?.trim() === ""}
-              helperText={group?.name?.trim() === "" ? "Field cannot be empty" : ""}
+              error={!!error.name}
+              helperText={error.name || ""}
               value={group.name}
               onChange={(event) => handleInputChange(event, "name")}
             />
@@ -82,8 +110,8 @@ const CustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder="Enter Minimum Quantity"
-              error={group.minQuantity <= 0}
-              helperText={group.minQuantity <= 0 ? "Minimum quantity must be non-negative" : ""}
+              error={!!error.minQuantity}
+              helperText={error.minQuantity || ""}
               value={group.minQuantity}
               onChange={(event) => handleInputChange(event, "minQuantity")}
             />
@@ -99,8 +127,8 @@ const CustomizationGroup = (props) => {
               size="small"
               autoComplete="off"
               placeholder="Enter Maximum Quantity"
-              error={group.maxQuantity <= 0}
-              helperText={group.maxQuantity <= 0 ? "Maximum quantity must be non-negative" : ""}
+              error={!!error.maxQuantity}
+              helperText={error.maxQuantity || ""}
               value={group.maxQuantity}
               onChange={(event) => handleInputChange(event, "maxQuantity")}
             />

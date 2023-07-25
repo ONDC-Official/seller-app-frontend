@@ -36,6 +36,7 @@ const FnB = (props) => {
 
   const [customizationGroups, setCustomizationGroups] = useState([]);
   const [customizations, setCustomizations] = useState([]);
+  const [hasErrorCustomizationGroup, setHasErrorCustomizationGroup] = useState(false);
 
   const [tabValue, setTabValue] = useState("1");
   const [tabErrors, setTabErrors] = useState([true]);
@@ -399,12 +400,19 @@ const FnB = (props) => {
             setCustomizationGroups={setCustomizationGroups}
             customizations={customizations}
             setCustomizations={setCustomizations}
+            setHasErrorCustomizationGroup={setHasErrorCustomizationGroup}
           />
         </TabPanel>
       </TabContext>
 
       <div className="flex flex-row justify-center sm:pt-5 md:!mt-10">
-        <MyButton type="button" title={"ADD PRODUCT"} variant="contained" onClick={handleSubmit} />
+        <MyButton
+          type="button"
+          title={"ADD PRODUCT"}
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={hasErrorCustomizationGroup}
+        />
       </div>
     </Box>
   );
