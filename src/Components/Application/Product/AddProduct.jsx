@@ -17,7 +17,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
-import CustomizationRenderer from "./F&B/CustomizationRenderer";
+import FnB from "./F&B/FnB";
 
 const customization_groups = [
   {
@@ -230,7 +230,7 @@ export default function AddProduct() {
       const selectedCategory = categoryForm.formValues?.productCategory;
       if (selectedCategory === "F&B") {
         return (
-          <CustomizationRenderer
+          <FnB
             customizationGroups={customizationGroups}
             setCustomizationGroups={setCustomizationGroups}
             customizations={customizations}
@@ -253,9 +253,6 @@ export default function AddProduct() {
     }
   };
 
-  console.log(`Customization Group:`, customizationGroups);
-  console.log(`Customizations:`, customizations);
-
   return (
     <>
       <div className="container mx-auto my-8">
@@ -268,12 +265,14 @@ export default function AddProduct() {
             <div className="mt-2">{renderFields()}</div>
             {}
             <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-              <MyButton
-                type="button"
-                title="CANCEL"
-                className="text-black"
-                onClick={() => navigate("/application/inventory")}
-              />
+              {
+                <MyButton
+                  type="button"
+                  title="CANCEL"
+                  className="text-black"
+                  onClick={() => navigate("/application/inventory")}
+                />
+              }
               {renderCategories && (
                 <MyButton
                   type="button"
