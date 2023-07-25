@@ -21,6 +21,10 @@ import {
   MAX_STRING_LENGTH_8,
   MAX_STRING_LENGTH_12,
 } from "../../../../utils/constants";
+import moment from "moment";
+import cogoToast from "cogo-toast";
+import { postCall } from "../../../../Api/axios";
+import useCancellablePromise from "../../../../Api/cancelRequest";
 
 const FnB = (props) => {
   const { category, subCategory } = props;
@@ -35,6 +39,51 @@ const FnB = (props) => {
 
   const [tabValue, setTabValue] = useState("1");
   const [tabErrors, setTabErrors] = useState([true]);
+  const { cancellablePromise } = useCancellablePromise();
+
+  const initialValues = {
+    productCode: "",
+    productName: "",
+    MRP: "",
+    retailPrice: "",
+    purchasePrice: "",
+    HSNCode: "",
+    GST_Percentage: "",
+    quantity: "",
+    barcode: "",
+    maxAllowedQty: "",
+    UOM: "",
+    packQty: "",
+    length: "",
+    breadth: "",
+    height: "",
+    weight: "",
+    returnWindow: "",
+    manufacturerName: "",
+    manufacturedDate: "",
+    nutritionalInfo: "",
+    additiveInfo: "",
+    instructions: "",
+    longDescription: "",
+    description: "",
+    isReturnable: "false",
+    isVegetarian: "false",
+    isCancellable: "false",
+    availableOnCod: "false",
+    images: [],
+    manufacturerOrPackerName: "",
+    manufacturerOrPackerAddress: "",
+    commonOrGenericNameOfCommodity: "",
+    monthYearOfManufacturePackingImport: "",
+    importerFSSAILicenseNo: "",
+    brandOwnerFSSAILicenseNo: "",
+  };
+
+  const productInfoForm = useForm({
+    ...initialValues,
+  });
+
+  const { formValues, setFormValues, errors, setErrors } = productInfoForm;
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -225,56 +274,50 @@ const FnB = (props) => {
     return product_info_form_validity;
   };
 
-  const handleSubmit = () => {
-    console.log("handle submit", validate());
-    if (validate()) {
-      // Your logic for handling form submission
+  const addProduct = async () => {
+    try {
+      let product_data = Object.assign({}, formValues, productInfoForm.formValues);
+      let api_url = "/api/v1/products";
+
+      product_data.productCategory = category;
+      product_data.sub_category = subCategory;
+
+      // Create a duration object with the hours you want to convert
+      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+
+      // Format the duration in ISO 8601 format
+      const iso8601 = duration.toISOString();
+      product_data.returnWindow = iso8601;
+      product_data.isCancellable = product_data.isCancellable === "true" ? true : false;
+      product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
+      product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
+      product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
+
+      delete product_data["uploaded_urls"];
+
+      let data = {
+        commonDetails: product_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
+      };
+
+      console.log(data);
+
+      // await cancellablePromise(postCall(api_url, data));
+      // cogoToast.success("Product added successfully!");
+      // navigate("/application/inventory");
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
     }
   };
 
-  const initialValues = {
-    productCode: "",
-    productName: "",
-    MRP: "",
-    retailPrice: "",
-    purchasePrice: "",
-    HSNCode: "",
-    GST_Percentage: "",
-    quantity: "",
-    barcode: "",
-    maxAllowedQty: "",
-    UOM: "",
-    packQty: "",
-    length: "",
-    breadth: "",
-    height: "",
-    weight: "",
-    returnWindow: "",
-    manufacturerName: "",
-    manufacturedDate: "",
-    nutritionalInfo: "",
-    additiveInfo: "",
-    instructions: "",
-    longDescription: "",
-    description: "",
-    isReturnable: "false",
-    isVegetarian: "false",
-    isCancellable: "false",
-    availableOnCod: "false",
-    images: [],
-    manufacturerOrPackerName: "",
-    manufacturerOrPackerAddress: "",
-    commonOrGenericNameOfCommodity: "",
-    monthYearOfManufacturePackingImport: "",
-    importerFSSAILicenseNo: "",
-    brandOwnerFSSAILicenseNo: "",
+  const handleSubmit = () => {
+    if (validate()) {
+      addProduct();
+    }
   };
-
-  const productInfoForm = useForm({
-    ...initialValues,
-  });
-
-  const { formValues, setFormValues, errors, setErrors } = productInfoForm;
 
   const renderProductInfoFields = () => {
     return (
