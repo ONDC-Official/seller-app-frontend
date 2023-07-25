@@ -34,7 +34,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import AddVariants from "./AddVariants";
 import { allProperties } from "../categoryProperties";
-import AddProductInfo from "./AddProductInfo";
+import AddProductInfo from "../AddProductInfo";
 import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
