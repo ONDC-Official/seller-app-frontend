@@ -119,8 +119,7 @@ export default function AddProduct() {
   const [variants, setVariants] = useState([]);
   const [variantsCheckboxState, setVariantsCheckboxState] = useState({});
   const [renderCategories, setRenderCategories] = useState(!state?.productId);
-  const [customizationGroups, setCustomizationGroups] = useState(customization_groups);
-  const [customizations, setCustomizations] = useState(Customizations);
+
   const [variationOn, setVariationOn] = useState("none");
 
   const categoryInitialValues = {
@@ -263,14 +262,7 @@ export default function AddProduct() {
     } else {
       const selectedCategory = categoryForm.formValues?.productCategory;
       if (selectedCategory === "F&B") {
-        return (
-          <FnB
-            customizationGroups={customizationGroups}
-            setCustomizationGroups={setCustomizationGroups}
-            customizations={customizations}
-            setCustomizations={setCustomizations}
-          />
-        );
+        return <FnB category={selectedCategory} subCategory={categoryForm.formValues?.productSubcategory1} />;
       } else {
         return (
           <AddGenericProduct
