@@ -89,7 +89,50 @@ const FnB = (props) => {
     setTabValue(newValue);
   };
 
+  const getCustomizationGroupName = (groupId) => {
+    const group = customizationGroups.find((group) => group.id === groupId);
+    return group ? group.name : "";
+  };
+
+  const getCustomizationName = (customizationId) => {
+    const customization = customizations.find((customization) => customization.id === customizationId);
+    return customization ? customization.name : "";
+  };
+
   const validateProductInfoForm = () => {
+    const selectedCustomizations = customizations.filter((customization) => customization.parent);
+
+    if (customizationGroups.length > 0) {
+      // Validation check: If customization groups are present, check that all groups have at least one customization.
+      const groupIdsWithCustomizations = new Set(selectedCustomizations.map((customization) => customization.parent));
+      const groupIds = new Set(customizationGroups.map((group) => group.id));
+
+      if (groupIdsWithCustomizations.size < groupIds.size) {
+        const missingGroups = [...groupIds].filter((groupId) => !groupIdsWithCustomizations.has(groupId));
+        const missingGroupNames = missingGroups.map((groupId) => getCustomizationGroupName(groupId));
+        cogoToast.error(`Please add at least one customization for groups: ${missingGroupNames.join(", ")}.`);
+        return;
+      }
+    }
+
+    // Validation check: If any customization has no child property, it must have a price value greater than 0.
+    const invalidCustomizations = selectedCustomizations.filter(
+      (customization) => !customization.child && (!customization.price || customization.price <= 0)
+    );
+
+    if (invalidCustomizations.length > 0) {
+      const errorMessages = invalidCustomizations.map((customization) => {
+        const groupName = getCustomizationGroupName(customization.parent);
+        const customizationName = getCustomizationName(customization.id);
+        return `${groupName} [${customizationName}]`;
+      });
+
+      cogoToast.error(
+        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(", ")}.`
+      );
+      return;
+    }
+
     let formErrors = {};
     formErrors.productCode =
       formValues?.productCode?.trim() === ""

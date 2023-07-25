@@ -72,7 +72,7 @@ const CustomizationRenderer = (props) => {
   const handleAddCustomization = () => {
     let newCustomization = { ...newCustomizationData, id: `C${customizations.length + 1}`, inStock: true };
     setCustomizations([...customizations, newCustomization]);
-    setNewCustomizationData({});
+    setNewCustomizationData({ price: 0 });
     setShowCustomizationModal(false);
   };
 
