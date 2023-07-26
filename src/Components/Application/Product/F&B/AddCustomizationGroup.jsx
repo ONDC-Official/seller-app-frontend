@@ -29,7 +29,7 @@ const AddCustomizationGroup = (props) => {
   } = props;
 
   const [errors, setErrors] = useState({});
-  const [inputType, setInputType] = useState("Select");
+  const [inputType, setInputType] = useState(null);
 
   const validate = () => {
     const formErrors = {};
@@ -58,19 +58,22 @@ const AddCustomizationGroup = (props) => {
   const handleSubmit = () => {
     if (validate() === true) {
       setErrors({});
-      setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType });
-      handleAddCustomizationGroup(newCustomizationGroupData);
+      handleAddCustomizationGroup(newCustomizationGroupData, inputType);
     }
   };
 
   const handleChange = (e) => {
-    setInputType(e.target.value);
-    setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType: e.target.value });
+    const selectedValue = e.target.value;
+    setInputType(selectedValue);
   };
 
   useEffect(() => {
-    setNewCustomizationGroupData({ ...newCustomizationGroupData, inputType });
-  }, []);
+    if (props.mode === "edit" && Object.keys(newCustomizationGroupData).length > 0) {
+      setInputType(newCustomizationGroupData.inputType);
+    } else {
+      setInputType("select");
+    }
+  }, [newCustomizationGroupData]);
 
   return (
     <div>
@@ -94,7 +97,7 @@ const AddCustomizationGroup = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            Add New Customization Group
+            {props.mode === "edit" ? "Edit Customization Group" : "Add New Customization Group"}
           </p>
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -174,15 +177,15 @@ const AddCustomizationGroup = (props) => {
                   return value;
                 }}
               >
-                <MenuItem value="Input">Input</MenuItem>
-                <MenuItem value="Select">Select</MenuItem>
+                <MenuItem value="input">input</MenuItem>
+                <MenuItem value="select">select</MenuItem>
               </Select>
             </FormControl>
           </div>
 
           <div className="flex justify-end mt-4">
             <Button variant="outlined" color="primary" onClick={handleSubmit}>
-              Add
+              {props.mode === "edit" ? "Edit" : "Add"}
             </Button>
             <Button
               sx={{ marginLeft: 2 }}

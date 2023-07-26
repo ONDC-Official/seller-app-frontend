@@ -22,9 +22,8 @@ const CustomizationRenderer = (props) => {
     minQuantity: "",
     maxQuantity: "",
     seq: "",
-    inputType: "",
+    inputType: null,
   });
-  const [selectedParentOption, setSelectedParentOption] = useState(null);
   const [selectedCustomization, setSelectedCustomization] = useState(null);
 
   // states for holding info regarding addition of customization
@@ -47,13 +46,13 @@ const CustomizationRenderer = (props) => {
   };
 
   // adds new customization group
-  const handleAddCustomizationGroup = (data) => {
+  const handleAddCustomizationGroup = (data, inputType) => {
     const parentGroupIndex = customizationGroups.findIndex((c) => c.id === selectedCustomization.parent);
     let newCustomizationGroup = {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
       seq: customizationGroups.length === 0 ? 1 : customizationGroups[parentGroupIndex].seq + 1,
-      inputType: data.inputType.toLowerCase(),
+      inputType: inputType.toLowerCase(),
     };
 
     if (customizationGroups.length > 0) {
@@ -171,8 +170,6 @@ const CustomizationRenderer = (props) => {
         setNewCustomizationGroupData={setNewCustomizationGroupData}
         customizationGroups={customizationGroups}
         handleAddCustomizationGroup={handleAddCustomizationGroup}
-        selectedParentOption={selectedParentOption}
-        setSelectedParentOption={setSelectedParentOption}
       />
       <AddCustomization
         showModal={showCustomizationModal}

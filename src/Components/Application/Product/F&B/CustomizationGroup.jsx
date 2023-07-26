@@ -1,61 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-const CssTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "black",
-    },
-    "&:hover fieldset": {
-      borderColor: "#1c75bc",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#1c75bc",
-    },
-  },
-  "& .MuiInputBase-input": {
-    fontSize: "14px",
-  },
-});
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import { Edit } from "@mui/icons-material";
+import AddCustomizationGroup from "./AddCustomizationGroup";
 
 const CustomizationGroup = (props) => {
-  const { group, customizationGroups, handleGroupChange, setHasErrorCustomizationGroup } = props;
+  const { group, customizationGroups, handleGroupChange } = props;
 
-  const [error, setError] = useState({});
+  const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
+  const [groupData, setGroupData] = useState({});
 
-  const handleInputChange = (event, property) => {
-    const updatedGroups = customizationGroups.map((g) =>
-      g.id === group.id ? { ...g, [property]: event.target.value } : g
-    );
-    handleGroupChange(updatedGroups);
+  const updateCustomizationGroup = (updatedGroupData) => {
+    const groupIndex = customizationGroups.findIndex((g) => g.id === updatedGroupData.id);
+    if (groupIndex !== -1) {
+      const updatedGroups = [...customizationGroups];
+      updatedGroups[groupIndex] = updatedGroupData;
+      handleGroupChange(updatedGroups);
+      setShowCustomizationGroupModal(false);
+    }
   };
-
-  const validate = () => {
-    const newError = {};
-
-    // Validation check for name
-    if (!group.name.trim()) {
-      newError.name = "Field cannot be empty";
-    }
-
-    // Validation check for minimum quantity
-    if (group.minQuantity <= 0) {
-      newError.minQuantity = "Minimum quantity must be non-negative";
-    }
-
-    // Validation check for maximum quantity
-    if (group.maxQuantity <= 0) {
-      newError.maxQuantity = "Maximum quantity must be non-negative";
-    }
-
-    setHasErrorCustomizationGroup(Object.keys(newError).length > 0);
-    setError(newError);
-  };
-
-  useEffect(() => {
-    validate();
-  }, [group]);
 
   return (
     <>
@@ -65,17 +27,32 @@ const CustomizationGroup = (props) => {
         style={{
           ...props.styles,
           backgroundColor: "#c7e0ff",
-          border: "2px solid rgb(193 188 188 / 72%)",
-          height: 150,
+          border: "1px solid rgb(81 81 81 / 72%)",
+          height: 50,
         }}
       >
-        <div className="flex items-center mb-2">
-          <p className="text-[#181818] text-medium">Customization group: {group.id}</p>
+        <div className="flex items-center">
+          <span className="flex">
+            <p className="text-[#181818] text-medium">{group.id}- &nbsp;</p>
+            <p className="text-[#000000] text-medium">{group.name}</p>
+          </span>
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{ marginLeft: 2, fontSize: 12 }}
+            onClick={() => {
+              setGroupData(group);
+              setShowCustomizationGroupModal(true);
+            }}
+          >
+            <Edit />
+          </Button>
           <Button
             size="small"
             variant="outlined"
             sx={{ marginLeft: 2 }}
             onClick={() => {
+              console.log(group);
               props?.setNewCustomizationData({ ...props.newCustomizationData, parent: group.id });
               props?.openCustomizationModal();
             }}
@@ -83,58 +60,16 @@ const CustomizationGroup = (props) => {
             Add Customization
           </Button>
         </div>
-        <div className="flex items-center">
-          <div className="flex flex-col mr-6">
-            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">Name: &nbsp;</p>
-            <CssTextField
-              required
-              type={"input"}
-              className="w-52 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Customisation Name"}
-              error={!!error.name}
-              helperText={error.name || ""}
-              value={group.name}
-              onChange={(event) => handleInputChange(event, "name")}
-            />
-          </div>
-          <div className="flex flex-col mr-6">
-            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Minimum quantity: &nbsp;
-            </p>
-            <CssTextField
-              required
-              type="number"
-              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder="Enter Minimum Quantity"
-              error={!!error.minQuantity}
-              helperText={error.minQuantity || ""}
-              value={group.minQuantity}
-              onChange={(event) => handleInputChange(event, "minQuantity")}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="w-40 text-sm py-2 ml-1 font-medium text-[#606161] inline-block">
-              Maximum quantity: &nbsp;
-            </label>
-            <CssTextField
-              required
-              type="number"
-              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder="Enter Maximum Quantity"
-              error={!!error.maxQuantity}
-              helperText={error.maxQuantity || ""}
-              value={group.maxQuantity}
-              onChange={(event) => handleInputChange(event, "maxQuantity")}
-            />
-          </div>
-        </div>
       </div>
+      <AddCustomizationGroup
+        mode="edit"
+        showModal={showCustomizationGroupModal}
+        handleCloseModal={() => setShowCustomizationGroupModal(false)}
+        newCustomizationGroupData={groupData}
+        setNewCustomizationGroupData={setGroupData}
+        customizationGroups={customizationGroups}
+        handleAddCustomizationGroup={updateCustomizationGroup}
+      />
     </>
   );
 };
