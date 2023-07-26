@@ -155,9 +155,9 @@ const AddGenericProduct = ({
       let product_data = Object.assign({}, formValues, categoryForm.formValues);
       let vital_data = Object.assign({}, vitalForm);
       let variant_data = formattedVariantDataForAddProduct();
-      let api_url = hasVariants
-        ? "/api/v1/productWithVariant"
-        : "/api/v1/products";
+      let api_url = variationOn === "none"
+        ? "/api/v1/products"
+        : "/api/v1/productWithVariant";
 
       const subCatList =
         PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
