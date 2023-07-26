@@ -260,7 +260,9 @@ export default function AddProduct() {
         </div>
       );
     } else {
-      const selectedCategory = categoryForm.formValues?.productCategory;
+      let selectedCategory = categoryForm.formValues?.productCategory;
+
+      if (!selectedCategory) selectedCategory = state?.productCategory;
       if (selectedCategory === "F&B") {
         return <FnB category={selectedCategory} subCategory={categoryForm.formValues?.productSubcategory1} />;
       } else {

@@ -350,8 +350,8 @@ const FnB = (props) => {
         let attributes = allProperties[category][sub_category];
       })
       .catch((error) => {
-        cogoToast.error("Something went wrong!");
-        console.log(error.response);
+        //   cogoToast.error("Something went wrong!");
+        //   console.log(error.response);
       });
   };
 
