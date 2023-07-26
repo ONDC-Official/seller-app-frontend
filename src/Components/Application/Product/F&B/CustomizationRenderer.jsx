@@ -26,6 +26,10 @@ const CustomizationRenderer = (props) => {
     price: 0,
     inStock: true,
     parent: "",
+    UOM: "",
+    UOMValue: "",
+    available: "",
+    maximum: "",
   });
 
   // handles change in customizations group data

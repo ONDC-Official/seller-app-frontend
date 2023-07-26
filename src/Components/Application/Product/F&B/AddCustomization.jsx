@@ -1,23 +1,56 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Button, Modal, TextField } from "@mui/material";
+import RenderInput from "../../../../utils/RenderInput";
 
-const CssTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "black",
-    },
-    "&:hover fieldset": {
-      borderColor: "#1c75bc",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#1c75bc",
-    },
+const containerClasses = "flex items-center";
+const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
+const labelClasses = "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
+
+const fields = [
+  {
+    id: "name",
+    title: "Name",
+    placeholder: "Enter Customization Name",
+    type: "input",
   },
-  "& .MuiInputBase-input": {
-    fontSize: "14px",
+  {
+    id: "price",
+    title: "Price",
+    placeholder: "Enter Customization Price",
+    type: "number",
   },
-});
+  {
+    id: "UOM",
+    title: "UOM",
+    placeholder: "Enter Unit Of Measurement Name",
+    type: "input",
+  },
+  {
+    id: "UOMValue",
+    title: "Name",
+    placeholder: "Enter Value of Measurement",
+    type: "input",
+  },
+  {
+    id: "available",
+    title: "Available",
+    placeholder: "Enter Available Quantity",
+    type: "number",
+  },
+  {
+    id: "maximum",
+    title: "Maximum",
+    placeholder: "Enter Maximum Quantity",
+    type: "number",
+  },
+  {
+    id: "parent",
+    title: "Parent",
+    placeholder: "Enter Customization Name",
+    type: "input",
+  },
+];
 
 const AddCustomization = (props) => {
   const { showModal, handleCloseModal, newCustomizationData, setNewCustomizationData, handleAddCustomization } = props;
@@ -67,58 +100,25 @@ const AddCustomization = (props) => {
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
             {props.mode === "edit" ? "Edit Customization" : "Add New Customization"}
           </p>
-          <div className="flex items-center">
-            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Name:
-            </label>
 
-            <CssTextField
-              required
-              type={"input"}
-              className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Customisation Name"}
-              error={!!errors.name}
-              helperText={errors.name}
-              value={newCustomizationData.name}
-              onChange={(e) => setNewCustomizationData({ ...newCustomizationData, name: e.target.value })}
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Price:
-            </label>
-
-            <CssTextField
-              required
-              type="input"
-              className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Customization Price"}
-              error={!!errors.price}
-              helperText={errors.price}
-              value={newCustomizationData.price}
-              onChange={(e) => setNewCustomizationData({ ...newCustomizationData, price: e.target.value })}
-            />
-          </div>
-          <div className="flex items-center">
-            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Parent:
-            </label>
-
-            <CssTextField
-              required
-              disabled
-              type="input"
-              className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Maximum Quantity"}
-              value={newCustomizationData?.parent}
-            />
+          <div className="w-auto">
+            {fields.map((field) => {
+              return (
+                <RenderInput
+                  item={{
+                    ...field,
+                    error: errors?.[field?.id] ? true : false,
+                    helperText: errors?.[field.id] || "",
+                  }}
+                  state={newCustomizationData}
+                  stateHandler={setNewCustomizationData}
+                  key={field?.id}
+                  containerClasses={containerClasses}
+                  labelClasses={labelClasses}
+                  inputClasses={inputClasses}
+                />
+              );
+            })}
           </div>
 
           <div className="flex justify-end mt-4">
