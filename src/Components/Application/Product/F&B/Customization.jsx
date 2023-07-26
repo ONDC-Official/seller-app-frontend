@@ -1,36 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField, Menu, MenuItem, ListItemText } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-const CssTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "black",
-    },
-    "&:hover fieldset": {
-      borderColor: "#1c75bc",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#1c75bc",
-    },
-  },
-  "& .MuiInputBase-input": {
-    fontSize: "14px",
-  },
-});
+import { Edit } from "@mui/icons-material";
+import AddCustomization from "./AddCustomization";
+import { Button, Menu, MenuItem, ListItemText } from "@mui/material";
 
 const Customization = (props) => {
-  const {
-    customization,
-    customizations,
-    handleCustomizationChange,
-    customizationGroups,
-    setCustomizations,
-    setHasErrorCustomization,
-  } = props;
+  const { customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } = props;
 
   const [showExistingGroups, setShowExistingGroups] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
+  const [customizationDetails, setCustomizationDetails] = useState({});
 
   const [errors, setErrors] = useState({});
 
@@ -41,6 +20,18 @@ const Customization = (props) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setShowExistingGroups(false);
+  };
+
+  const updateCustomizationDetail = () => {
+    const updatedCustomization = customizations.find((c) => c.id === customizationDetails.id);
+    if (updatedCustomization) {
+      const updatedCustomizationCopy = { ...updatedCustomization, ...customizationDetails };
+      const updatedCustomizations = customizations.map((c) =>
+        c.id === customizationDetails.id ? updatedCustomizationCopy : c
+      );
+      handleCustomizationChange(updatedCustomizations);
+      setShowCustomizationModal(false);
+    }
   };
 
   const handleAddNewGroup = () => {
@@ -102,7 +93,6 @@ const Customization = (props) => {
       newErrors.price = "Please enter a valid price value";
     }
 
-    setHasErrorCustomization(Object.keys(newErrors).length > 0);
     setErrors(newErrors);
   };
 
@@ -120,8 +110,24 @@ const Customization = (props) => {
         style={{ ...props.styles, backgroundColor: "#1876d221", border: "2px solid #ffffff" }}
         className="border-black rounded-md px-8 py-2 my-2"
       >
-        <div className="flex items-end">
-          <p className="text-[#181818] text-medium">Customization: {customization.id}</p>
+        <div className="flex">
+          <span className="flex items-center">
+            <p className="text-[#181818] text-medium">{customization.id}- &nbsp;</p>
+            <p className="text-[#000000] text-medium">{customization.name}</p>
+          </span>
+          <div className="flex align-center">
+            <Button
+              size="small"
+              variant="outlined"
+              sx={{ marginLeft: 2, fontSize: 12 }}
+              onClick={() => {
+                setCustomizationDetails(customization);
+                setShowCustomizationModal(true);
+              }}
+            >
+              <Edit />
+            </Button>
+          </div>
           {shouldShowButton && (
             <div>
               <Button size="small" variant="outlined" sx={{ marginLeft: 2 }} onClick={handleMenuOpen}>
@@ -144,41 +150,14 @@ const Customization = (props) => {
             </div>
           )}
         </div>
-        <div className="flex">
-          <div className="flex flex-col mr-6">
-            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              Variant Name: &nbsp;
-            </p>
-
-            <CssTextField
-              required
-              type={"input"}
-              className="w-48 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Variant Name"}
-              error={!!errors.name}
-              helperText={errors.name}
-              value={customization.name}
-              onChange={(event) => handleInputChange(event, "name")}
-            />
-          </div>
-          <div className="flex flex-col">
-            <p className="w-40 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">Price: &nbsp;</p>
-            <CssTextField
-              required
-              type={"number"}
-              className="w-54 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
-              size="small"
-              autoComplete="off"
-              placeholder={"Enter Variant Price"}
-              error={!!errors.price}
-              helperText={errors.price}
-              value={customization.price}
-              onChange={(event) => handleInputChange(event, "price")}
-            />
-          </div>
-        </div>
+        <AddCustomization
+          mode="edit"
+          showModal={showCustomizationModal}
+          handleCloseModal={() => setShowCustomizationModal(false)}
+          newCustomizationData={customizationDetails}
+          setNewCustomizationData={setCustomizationDetails}
+          handleAddCustomization={updateCustomizationDetail}
+        />
       </div>
     </>
   );

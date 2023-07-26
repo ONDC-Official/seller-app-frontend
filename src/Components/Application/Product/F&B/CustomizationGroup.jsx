@@ -52,7 +52,6 @@ const CustomizationGroup = (props) => {
             variant="outlined"
             sx={{ marginLeft: 2 }}
             onClick={() => {
-              console.log(group);
               props?.setNewCustomizationData({ ...props.newCustomizationData, parent: group.id });
               props?.openCustomizationModal();
             }}

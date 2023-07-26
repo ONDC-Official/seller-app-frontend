@@ -49,6 +49,7 @@ const AddCustomization = (props) => {
         open={showModal}
         onClose={() => {
           setErrors({});
+          setNewCustomizationData({ price: 0 });
           handleCloseModal();
         }}
       >
@@ -64,7 +65,7 @@ const AddCustomization = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            Add New Customization
+            {props.mode === "edit" ? "Edit Customization" : "Add New Customization"}
           </p>
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -122,13 +123,14 @@ const AddCustomization = (props) => {
 
           <div className="flex justify-end mt-4">
             <Button variant="outlined" color="primary" onClick={handleAdd}>
-              Add
+              {props.mode === "edit" ? "Edit" : "Add"}
             </Button>
             <Button
               sx={{ marginLeft: 2 }}
               color="primary"
               onClick={() => {
                 setErrors({});
+                setNewCustomizationData({ price: 0 });
                 handleCloseModal();
               }}
             >

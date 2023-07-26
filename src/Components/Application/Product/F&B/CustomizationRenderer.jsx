@@ -6,8 +6,7 @@ import AddCustomizationGroup from "./AddCustomizationGroup";
 import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
-  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations, setHasErrorCustomization } =
-    props;
+  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
 
   // states for holding info regarding addition of customization-group
   const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
@@ -115,7 +114,6 @@ const CustomizationRenderer = (props) => {
           handleCustomizationChange={handleCustomizationChange}
           setShowCustomizationGroupModal={setShowCustomizationGroupModal}
           setSelectedCustomization={setSelectedCustomization}
-          setHasErrorCustomization={setHasErrorCustomization}
         />
       );
 
