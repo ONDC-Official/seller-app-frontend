@@ -6,14 +6,8 @@ import AddCustomizationGroup from "./AddCustomizationGroup";
 import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
-  const {
-    customizationGroups,
-    setCustomizationGroups,
-    customizations,
-    setCustomizations,
-    setHasErrorCustomizationGroup,
-    setHasErrorCustomization,
-  } = props;
+  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations, setHasErrorCustomization } =
+    props;
 
   // states for holding info regarding addition of customization-group
   const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
@@ -96,7 +90,6 @@ const CustomizationRenderer = (props) => {
               openCustomizationModal={openCustomizationModal}
               newCustomizationData={newCustomizationData}
               setNewCustomizationData={setNewCustomizationData}
-              setHasErrorCustomizationGroup={setHasErrorCustomizationGroup}
             />
             {renderCustomizationElements(group.id)}
           </React.Fragment>
@@ -139,7 +132,6 @@ const CustomizationRenderer = (props) => {
                 openCustomizationModal={openCustomizationModal}
                 newCustomizationData={newCustomizationData}
                 setNewCustomizationData={setNewCustomizationData}
-                setHasErrorCustomizationGroup={setHasErrorCustomizationGroup}
               />
               {renderCustomizationElements(childGroup.id, level + 2)}
             </React.Fragment>
