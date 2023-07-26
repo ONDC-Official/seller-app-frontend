@@ -5,7 +5,12 @@ import CustomizationRenderer from "./CustomizationRenderer";
 import { isAmountValid, isNumberOnly } from "../../../../utils/validations";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddProductInfo from "../AddProductInfo";
-import { allProductFieldDetails, productDetailsFields } from "../product-fields";
+import {
+  UOMVariationFields,
+  allProductFieldDetails,
+  productDetailsFields,
+  variationCommonFields,
+} from "../product-fields";
 import { Box, Tab } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
@@ -23,8 +28,9 @@ import {
 } from "../../../../utils/constants";
 import moment from "moment";
 import cogoToast from "cogo-toast";
-import { postCall } from "../../../../Api/axios";
+import { getCall, postCall, putCall } from "../../../../Api/axios";
 import useCancellablePromise from "../../../../Api/cancelRequest";
+import { allProperties } from "../categoryProperties";
 
 const FnB = (props) => {
   const { category, subCategory } = props;
@@ -42,41 +48,41 @@ const FnB = (props) => {
   const { cancellablePromise } = useCancellablePromise();
 
   const initialValues = {
-    productCode: "4357",
-    productName: "name",
-    MRP: "1234",
-    retailPrice: "1200",
-    purchasePrice: "123",
-    HSNCode: "H123edf",
-    GST_Percentage: "5",
-    quantity: "2",
+    productCode: "",
+    productName: "",
+    MRP: "",
+    retailPrice: "",
+    purchasePrice: "",
+    HSNCode: "",
+    GST_Percentage: "",
+    quantity: "",
     barcode: "",
-    maxAllowedQty: "1",
+    maxAllowedQty: "",
     UOM: "",
-    packQty: "1",
-    length: "100",
-    breadth: "100",
-    height: "100",
-    weight: "100",
-    returnWindow: "1",
-    manufacturerName: "name",
+    packQty: "",
+    length: "",
+    breadth: "",
+    height: "",
+    weight: "",
+    returnWindow: "",
+    manufacturerName: "",
     manufacturedDate: "",
-    nutritionalInfo: "info",
-    additiveInfo: "info",
-    instructions: "instruct",
-    longDescription: "l d",
-    description: "just d",
-    isReturnable: "false",
-    isVegetarian: "false",
-    isCancellable: "false",
-    availableOnCod: "false",
+    nutritionalInfo: "",
+    additiveInfo: "",
+    instructions: "",
+    longDescription: "",
+    description: "",
+    isReturnable: "",
+    isVegetarian: "",
+    isCancellable: "",
+    availableOnCod: "",
     images: [],
-    manufacturerOrPackerName: "namre",
-    manufacturerOrPackerAddress: "add",
-    commonOrGenericNameOfCommodity: "addad",
+    manufacturerOrPackerName: "",
+    manufacturerOrPackerAddress: "",
+    commonOrGenericNameOfCommodity: "",
     monthYearOfManufacturePackingImport: "",
-    importerFSSAILicenseNo: "12",
-    brandOwnerFSSAILicenseNo: "21",
+    importerFSSAILicenseNo: "",
+    brandOwnerFSSAILicenseNo: "",
   };
 
   const productInfoForm = useForm({
@@ -317,6 +323,38 @@ const FnB = (props) => {
     return product_info_form_validity;
   };
 
+  const getProduct = () => {
+    getCall(`/api/v1/products/${state?.productId}`)
+      .then((resp) => {
+        resp.commonDetails["uploaded_urls"] = resp?.commonDetails.images?.map((i) => i?.url) || [];
+        resp.commonDetails["images"] = resp?.commonDetails.images?.map((i) => i?.path) || [];
+
+        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable ? "true" : "false";
+        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
+        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
+        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
+
+        // Create a duration object from the ISO 8601 string
+        const duration = moment.duration(resp.returnWindow);
+
+        // Get the number of hours from the duration object
+        const hours = duration.asHours();
+        resp.commonDetails.returnWindow = String(hours);
+
+        setFormValues({ ...resp.commonDetails });
+        setCustomizationGroups(resp.customizationDetails.customizationGroups);
+        setCustomizations(resp.customizationDetails.customizations);
+
+        let category = resp.commonDetails["productCategory"];
+        let sub_category = resp.commonDetails["productSubcategory1"];
+        let attributes = allProperties[category][sub_category];
+      })
+      .catch((error) => {
+        cogoToast.error("Something went wrong!");
+        console.log(error.response);
+      });
+  };
+
   const addProduct = async () => {
     try {
       let product_data = Object.assign({}, formValues, productInfoForm.formValues);
@@ -355,17 +393,75 @@ const FnB = (props) => {
     }
   };
 
-  const handleSubmit = () => {
-    if (validate()) {
-      addProduct();
+  const updateProduct = async () => {
+    // id will be dynamic after schema changes
+    try {
+      let product_data = Object.assign({}, formValues);
+      const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
+        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        hiddenFields.forEach((field) => {
+          delete product_data[field];
+        });
+      } else {
+      }
+
+      // Create a duration object with the hours you want to convert
+      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+
+      // Format the duration in ISO 8601 format
+      const iso8601 = duration.toISOString();
+      product_data.returnWindow = iso8601;
+
+      let fields_to_remove = [
+        "__v",
+        "organization",
+        "createdAt",
+        "updatedAt",
+        "published",
+        "uploaded_urls",
+        "createdBy",
+        "_id",
+        "variantGroup",
+      ];
+
+      fields_to_remove.forEach((field) => {
+        delete product_data[field];
+      });
+
+      let data = {
+        commonDetails: product_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
+      };
+
+      await putCall(`/api/v1/products/${state?.productId}`, data);
+      cogoToast.success("Product updated successfully!");
+      navigate("/application/inventory");
+    } catch (error) {
+      cogoToast.error("Something went wrong!");
+      console.log(error);
     }
   };
+
+  const handleSubmit = () => {
+    if (validate()) {
+      state?.productId ? updateProduct() : addProduct();
+    }
+  };
+
+  useEffect(() => {
+    if (state?.productId) getProduct();
+  }, []);
 
   const renderProductInfoFields = () => {
     return (
       <AddProductInfo
         allFields={allFields}
-        fields={[...productDetailsFields, "quantity", "barcode", "images"]}
+        fields={[...productDetailsFields, ...UOMVariationFields, ...variationCommonFields]}
         category={category}
         subCategory={subCategory}
         state={state}
@@ -412,7 +508,12 @@ const FnB = (props) => {
       </TabContext>
 
       <div className="flex flex-row justify-center sm:pt-5 md:!mt-10">
-        <MyButton type="button" title={"ADD PRODUCT"} variant="contained" onClick={handleSubmit} />
+        <MyButton
+          type="button"
+          title={state?.productId ? "UPDATE PRODUCT" : "ADD PRODUCT"}
+          variant="contained"
+          onClick={handleSubmit}
+        />
       </div>
     </Box>
   );
