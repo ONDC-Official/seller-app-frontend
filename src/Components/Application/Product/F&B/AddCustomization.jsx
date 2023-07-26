@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
-import { Button, Modal, TextField } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import RenderInput from "../../../../utils/RenderInput";
 
 const containerClasses = "flex items-center";
@@ -23,24 +22,37 @@ const fields = [
   {
     id: "UOM",
     title: "UOM",
-    placeholder: "Enter Unit Of Measurement Name",
-    type: "input",
+    placeholder: "Select Unit Of Measurement",
+    options: [
+      { key: "unit", value: "unit" },
+      { key: "dozen", value: "dozen" },
+      { key: "gram", value: "gram" },
+      { key: "kilogram", value: "kilogram" },
+      { key: "tonne", value: "tonne" },
+      { key: "litre", value: "litre" },
+      { key: "millilitre", value: "millilitre" },
+    ],
+    type: "select",
+    inputStyles: {
+      width: 320,
+    },
+    disableClearable: true,
   },
   {
     id: "UOMValue",
-    title: "Name",
-    placeholder: "Enter Value of Measurement",
+    title: "UOMValue",
+    placeholder: "Enter UOM Value",
     type: "input",
   },
   {
     id: "available",
-    title: "Available",
+    title: "Available Quantity",
     placeholder: "Enter Available Quantity",
     type: "number",
   },
   {
     id: "maximum",
-    title: "Maximum",
+    title: "Maximum Quantity",
     placeholder: "Enter Maximum Quantity",
     type: "number",
   },
@@ -49,6 +61,7 @@ const fields = [
     title: "Parent",
     placeholder: "Enter Customization Name",
     type: "input",
+    isDisabled: true,
   },
 ];
 
@@ -62,7 +75,34 @@ const AddCustomization = (props) => {
       newCustomizationData?.name?.trim() == undefined || newCustomizationData?.name?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
+
     formErrors.price = newCustomizationData?.price < 0 ? `Please enter a valid price` : "";
+
+    formErrors.UOM =
+      newCustomizationData?.UOM == undefined || newCustomizationData?.UOM === ""
+        ? "UOM is not allowed to be empty"
+        : "";
+
+    formErrors.UOMValue =
+      newCustomizationData?.UOMValue == undefined || newCustomizationData?.UOMValue === ""
+        ? "UOM Value is not allowed to be empty"
+        : newCustomizationData.UOMValue <= 0
+        ? "Please Enter a Valid Value"
+        : "";
+
+    formErrors.available =
+      newCustomizationData?.available == undefined || newCustomizationData?.available === ""
+        ? "Available Quantity is not allowed to be empty"
+        : newCustomizationData.available <= 0
+        ? "Please Enter a Valid Value"
+        : "";
+
+    formErrors.maximum =
+      newCustomizationData?.maximum == undefined || newCustomizationData?.maximum === ""
+        ? "Maximum Quantity is not allowed to be empty"
+        : newCustomizationData.maximum <= 0
+        ? "Please Enter a Valid Value"
+        : "";
 
     setErrors(formErrors);
 
@@ -72,6 +112,7 @@ const AddCustomization = (props) => {
   const handleAdd = () => {
     if (validate()) {
       setErrors({});
+      console.log(newCustomizationData);
       handleAddCustomization();
     }
   };
@@ -116,6 +157,7 @@ const AddCustomization = (props) => {
                   containerClasses={containerClasses}
                   labelClasses={labelClasses}
                   inputClasses={inputClasses}
+                  inputStyles={field?.inputStyles}
                 />
               );
             })}

@@ -308,6 +308,7 @@ const RenderInput = (props) => {
         </label>
         <FormControl error={item.error || false}>
           <Autocomplete
+            sx={props.inputStyles && props.inputStyles}
             disableClearable={item.disableClearable !== undefined ? item.disableClearable : false}
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
