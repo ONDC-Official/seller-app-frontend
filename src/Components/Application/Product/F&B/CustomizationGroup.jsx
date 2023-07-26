@@ -27,7 +27,7 @@ const CustomizationGroup = (props) => {
         style={{
           ...props.styles,
           backgroundColor: "#c7e0ff",
-          border: "1px solid rgb(81 81 81 / 72%)",
+          border: "2px solid rgba(81, 81, 81, 0.2)",
           height: 50,
         }}
       >
