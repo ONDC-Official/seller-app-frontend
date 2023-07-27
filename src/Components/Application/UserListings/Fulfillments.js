@@ -8,7 +8,7 @@ import {
 } from "./fields";
 
 const Fulfillments = (props) => {
-  const { supportedFulfillments, setSupportedFulfillments, fulfillmentDetails, setFulfillmentDetails } = props;
+  const { supportedFulfillments, setSupportedFulfillments, fulfillmentDetails, setFulfillmentDetails, errors } = props;
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -45,8 +45,8 @@ const Fulfillments = (props) => {
         <RenderInput
           item={{
             ...field,
-            // error: errors?.[field?.id] ? true : false,
-            // helperText: errors?.[field.id] || "",
+            error: errors?.[field?.id] ? true : false,
+            helperText: errors?.[field.id] || "",
             args: { name: "deliveryDetails" },
           }}
           state={fulfillmentDetails["deliveryDetails"]}
@@ -64,8 +64,8 @@ const Fulfillments = (props) => {
         <RenderInput
           item={{
             ...field,
-            // error: errors?.[field?.id] ? true : false,
-            // helperText: errors?.[field.id] || "",
+            error: errors?.[field?.id] ? true : false,
+            helperText: errors?.[field.id] || "",
             args: { name: "selfPickupDetails" },
           }}
           state={fulfillmentDetails}
@@ -83,7 +83,7 @@ const Fulfillments = (props) => {
         <RenderInput
           item={{
             ...field,
-            // error: errors?.[field?.id] ? true : false,
+            // error: errors?.[field?.id]["deliveryAndSelfPickupDetails"] ? true : false,
             // helperText: errors?.[field.id] || "",
             args: { name: "deliveryAndSelfPickupDetails" },
           }}

@@ -308,9 +308,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     deliveryAndSelfPickup: false,
   });
   const [fulfillmentDetails, setFulfillmentDetails] = useState({
-    deliveryDetails: {},
-    selfPickupDetails: {},
-    deliveryAndSelfPickupDetails: {},
+    deliveryDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+    },
+    selfPickupDetails: {
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
+    deliveryAndSelfPickupDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
   });
 
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
@@ -487,6 +498,41 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter only digit"
         : "";
     formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+
+    formErrors.deliveryEmail =
+      fulfillmentDetails.deliveryDetails.deliveryEmail.trim() === ""
+        ? "Delivery Email is required"
+        : !isEmailValid(fulfillmentDetails.deliveryDetails.deliveryEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+    formErrors.deliveryMobile =
+      fulfillmentDetails.deliveryDetails.deliveryMobile?.trim() === ""
+        ? "Support Mobile Number is required"
+        : !isPhoneNoValid(fulfillmentDetails.deliveryDetails.deliveryMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+    formErrors.selfPickupEmail =
+      fulfillmentDetails.selfPickupDetails.selfPickupEmail.trim() === ""
+        ? "Delivery Email is required"
+        : !isEmailValid(fulfillmentDetails.selfPickupDetails.selfPickupEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+    formErrors.selfPickupMobile =
+      fulfillmentDetails.selfPickupDetails.selfPickupMobile?.trim() === ""
+        ? "Support Mobile Number is required"
+        : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails.selfPickupMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+    //  formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
+    //    fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
+    //      ? "Delivery Email is required"
+    //      : !isEmailValid(fulfillmentDetails.selfPickupDetails.selfPickupEmail)
+    //      ? "Please enter a valid email address"
+    //      : "";
 
     console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
@@ -687,6 +733,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   />
 
                   <Fulfillments
+                    errors={errors}
                     supportedFulfillments={supportedFulfillments}
                     setSupportedFulfillments={setSupportedFulfillments}
                     fulfillmentDetails={fulfillmentDetails}
