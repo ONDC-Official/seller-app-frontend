@@ -51,7 +51,7 @@ const CssTextField = styled(TextField)({
 });
 
 const RenderInput = (props) => {
-  const { item, state, stateHandler, onChange, previewOnly, setFocusedField } = props;
+  const { item, state, stateHandler, onChange, previewOnly, setFocusedField, handleChange = undefined, args } = props;
   const uploadFileRef = useRef(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fetchedImageSize, setFetchedImageSize] = useState(0);
@@ -130,12 +130,16 @@ const RenderInput = (props) => {
           disabled={item?.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
-          onChange={(e) =>
-            stateHandler({
-              ...state,
-              [item.id]: item.isUperCase ? e.target.value.toUpperCase() : e.target.value,
-            })
-          }
+          onChange={(e) => {
+            if (handleChange) {
+              handleChange(e, item, item.args);
+            } else {
+              stateHandler({
+                ...state,
+                [item.id]: item.isUperCase ? e.target.value.toUpperCase() : e.target.value,
+              });
+            }
+          }}
           inputProps={{
             maxLength: item.maxLength || undefined,
             minLength: item.minLength || undefined,
