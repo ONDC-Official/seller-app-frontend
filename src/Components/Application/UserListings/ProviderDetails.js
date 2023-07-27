@@ -307,7 +307,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     selfPickup: false,
     deliveryAndSelfPickup: false,
   });
-  const [fulfillmentDetails, setFulfillmentDetails] = useState({});
+  const [fulfillmentDetails, setFulfillmentDetails] = useState({
+    deliveryDetails: {},
+    selfPickupDetails: {},
+    deliveryAndSelfPickupDetails: {},
+  });
 
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
   const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);

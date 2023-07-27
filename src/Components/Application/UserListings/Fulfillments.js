@@ -1,71 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import RenderInput from "../../../utils/RenderInput";
-
-const deliveryFulfillmentFields = [
-  {
-    id: "deliveryEmail",
-    title: "Delivery Email",
-    placeholder: "Enter Delivery Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "deliveryMobile",
-    title: "Delivery Contact Number",
-    placeholder: "Enter Delivery Contact Number",
-    type: "input",
-    required: true,
-  },
-];
-
-const selfPickupFulfillmentFields = [
-  {
-    id: "selfPickupEmail",
-    title: "Self Pickup Email",
-    placeholder: "Enter Self Pickup Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "selfPickupMobile",
-    title: "Self Pickup Contact Number",
-    placeholder: "Enter Self Pickup Contact Number",
-    type: "input",
-    required: true,
-  },
-];
-
-const deliveryAndSelfPickupFulfillmentFields = [
-  {
-    id: "deliveryEmail",
-    title: "Delivery Email",
-    placeholder: "Enter Delivery Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "deliveryMobile",
-    title: "Delivery Contact Number",
-    placeholder: "Enter Delivery Contact Number",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "selfPickupEmail",
-    title: "SelfPickup Email",
-    placeholder: "Enter SelfPickup Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "selfPickupMobile",
-    title: "SelfPickup Contact Number",
-    placeholder: "Enter SelfPickup Contact Number",
-    type: "input",
-    required: true,
-  },
-];
+import {
+  deliveryFulfillmentFields,
+  selfPickupFulfillmentFields,
+  deliveryAndSelfPickupFulfillmentFields,
+} from "./fields";
 
 const Fulfillments = (props) => {
   const { supportedFulfillments, setSupportedFulfillments, fulfillmentDetails, setFulfillmentDetails } = props;
@@ -117,8 +57,6 @@ const Fulfillments = (props) => {
       );
     });
   };
-
-  console.log(fulfillmentDetails);
 
   const renderSelfPickupForm = () => {
     return selfPickupFulfillmentFields.map((field) => {
