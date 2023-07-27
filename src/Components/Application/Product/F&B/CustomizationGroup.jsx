@@ -23,11 +23,11 @@ const CustomizationGroup = (props) => {
     <>
       <div
         key={group.id}
-        className="border-black rounded-md px-8 py-2 flex flex-col justify-center"
+        className="border-black rounded-md px-8 py-7 flex flex-col justify-center"
         style={{
           ...props.styles,
           backgroundColor: "#c7e0ff",
-          border: "2px solid rgba(81, 81, 81, 0.2)",
+          border: "2px solid #7CA6D9",
           height: 50,
         }}
       >
