@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { Edit, ExpandMore } from "@mui/icons-material";
 import AddCustomization from "./AddCustomization";
 import { Button, Menu, MenuItem, ListItemText, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import { customizationFields } from "./fields";
-import RenderInput from "../../../../utils/RenderInput";
 
-const containerClasses = "flex items-center";
-const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
-const labelClasses = "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
+const containerClasses = "flex items-center mb-0.5";
+const labelClasses = "w-28 text-md ml-1 text-md text-[#606161]";
+const inputClasses = "w-80 h-full text-md text-[#606161]";
 
 const Customization = (props) => {
   const { customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } = props;
@@ -104,7 +102,7 @@ const Customization = (props) => {
           <div key={customization.id}>
             <div className="flex">
               <span className="flex items-center">
-                <p className="text-[#181818] text-medium">{customization.id}- &nbsp;</p>
+                <p className="text-[#181818] text-medium">{customization.id}: &nbsp;</p>
                 <p className="text-[#000000] text-medium">{customization.name}, &nbsp;</p>
                 <p className="text-[#000000] text-medium">Price- &nbsp;</p>
                 <p className="text-[#000000] text-medium">{customization.price} Rupees</p>
@@ -162,24 +160,19 @@ const Customization = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <div className="w-auto">
-            {customizationFields.map((field) => {
-              const modifiedField = {
-                ...field,
-                isDisabled: true,
-              };
+            {Object.keys(customizationDetails).map((f) => {
+              const fieldsToRender = ["id", "name", "price", "UOM", "UOMValue", "available", "maximum", "parent"];
 
-              return (
-                <RenderInput
-                  item={modifiedField}
-                  state={customizationDetails}
-                  stateHandler={setCustomizationDetails}
-                  key={field?.id}
-                  containerClasses={containerClasses}
-                  labelClasses={labelClasses}
-                  inputClasses={inputClasses}
-                  inputStyles={field?.inputStyles}
-                />
-              );
+              if (fieldsToRender.includes(f)) {
+                return (
+                  <div className={containerClasses}>
+                    <p className={labelClasses}>{f}: &nbsp;</p>
+                    <p className={inputClasses}>{customizationDetails[f]}</p>
+                  </div>
+                );
+              }
+
+              return null;
             })}
           </div>
         </AccordionDetails>
