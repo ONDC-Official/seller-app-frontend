@@ -316,12 +316,20 @@ export const allProductFieldDetails = [
   },
   {
     id: "images",
-    title:
-      "Images (Multiple file selection allowed, maximum size of 2Mb for each file)",
+    title: "Images (Multiple file selection allowed, maximum size of 2Mb for each file)",
     type: "upload",
     multiple: true,
     file_type: "product_image",
     required: true,
+  },
+  {
+    id: "fulfillmentOption",
+    title: "Fulfilment Option",
+    placeholder: "Available Fulfillment Options",
+    type: "select",
+    required: true,
+    options: [],
+    disableClearable: true,
   },
 ];
 
@@ -357,17 +365,9 @@ export const productDetailsFields = [
   "importerFSSAILicenseNo",
   "brandOwnerFSSAILicenseNo",
   "UOM",
+  "fulfillmentOption",
 ];
 
-export const variationCommonFields = [
-  "MRP",
-  "retailPrice",
-  "purchasePrice",
-  "quantity",
-  "barcode",
-  "images",
-]
+export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
 
-export const UOMVariationFields = [
-  "UOMValue"
-]
+export const UOMVariationFields = ["UOMValue"];

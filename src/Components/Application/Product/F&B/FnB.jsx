@@ -83,6 +83,7 @@ const FnB = (props) => {
     monthYearOfManufacturePackingImport: "",
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
+    fulfillmentOption: "",
   };
 
   const productInfoForm = useForm({
@@ -90,6 +91,22 @@ const FnB = (props) => {
   });
 
   const { formValues, setFormValues, errors, setErrors } = productInfoForm;
+
+  // TODO: get the actual option from store details api
+  const availableFulfillments = [
+    { key: "Delivery", value: "delivery" },
+    { key: "Self Pickup", value: "selfPickup" },
+    { key: "Delivery And Self Pickup", value: "deliveryAndSelfPickup" },
+  ];
+
+  useEffect(() => {
+    let updatedFields = [...allFields];
+    const fulfillmentOptionIndex = allFields.findIndex((field) => field.id === "fulfillmentOption");
+    if (fulfillmentOptionIndex !== -1) {
+      updatedFields[fulfillmentOptionIndex].options = availableFulfillments;
+      setAllFields(updatedFields);
+    }
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -175,6 +192,7 @@ const FnB = (props) => {
         : formValues?.UOM?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
+    formErrors.fulfillmentOption = formValues?.fulfillmentOption === "" ? "Fulfillment Option is required" : "";
     formErrors.packQty = !formValues?.packQty
       ? "Please enter a valid Measurement Quantity"
       : !isNumberOnly(formValues?.packQty)
