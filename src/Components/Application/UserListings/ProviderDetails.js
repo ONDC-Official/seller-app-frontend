@@ -527,7 +527,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter a valid mobile number"
         : "";
 
-    //   TODO: add validations for deliveryAndSelfPickupDetails
+    //  TODO: add validations for deliveryAndSelfPickupDetails
     //  formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
     //    fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
     //      ? "Delivery Email is required"
@@ -535,7 +535,18 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     //      ? "Please enter a valid email address"
     //      : "";
 
-    console.log("formErrors=====>", formErrors);
+    if (storeStatus === "closed") {
+      if (temporaryClosedTimings.from === temporaryClosedTimings.to && temporaryClosedTimings.from !== "Invalid Date") {
+        formErrors.temporaryClosedTimings = "Opening and closing times cannot be the same";
+      } else if (temporaryClosedTimings.from === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid opening time";
+      } else if (temporaryClosedTimings.to === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid closing time";
+      } else {
+        formErrors.temporaryClosedTimings = "";
+      }
+    }
+
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
       cogoToast.error("Please fill in all required data!");
@@ -797,6 +808,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   </div>
 
                   <StoreTimingsRenderer
+                    errors={errors}
                     storeStatus={storeStatus}
                     storeTimings={storeTimings}
                     setStoreTimings={setStoreTimings}

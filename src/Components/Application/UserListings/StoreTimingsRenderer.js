@@ -7,7 +7,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 const StoreTimingsRenderer = (props) => {
-  const { storeStatus, storeTimings, setStoreTimings, temporaryClosedTimings, setTemporaryClosedTimings } = props;
+  const { errors, storeStatus, storeTimings, setStoreTimings, temporaryClosedTimings, setTemporaryClosedTimings } =
+    props;
 
   const handleStoreTiming = (data, index) => {
     storeTimings[index] = data;
@@ -50,31 +51,38 @@ const StoreTimingsRenderer = (props) => {
     return dayjs(moment(time, "HH:mm"));
   };
 
+  console.log(errors, temporaryClosedTimings);
+
   const renderTimePicker = (key) => {
     return (
-      <div className="mr-4 my-4">
-        <TimePicker
-          sx={{ minWidth: 120 }}
-          clearable
-          ampm={false}
-          label={key}
-          format={"HH:mm"}
-          value={getTime(temporaryClosedTimings[key])}
-          onChange={(val) => handleTimeChange(val, key)}
-        />
-      </div>
+      <>
+        <div className="mr-4 my-4">
+          <TimePicker
+            sx={{ minWidth: 120 }}
+            clearable
+            ampm={false}
+            label={key}
+            format={"HH:mm"}
+            value={getTime(temporaryClosedTimings[key])}
+            onChange={(val) => handleTimeChange(val, key)}
+          />
+        </div>
+      </>
     );
   };
 
   const renderTemporaryClosedTimings = () => {
     return (
       <>
-        <div style={{ marginBottom: "7px", display: "flex" }}>
+        <div style={{ display: "flex" }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {renderTimePicker("from")}
             {renderTimePicker("to")}
           </LocalizationProvider>
         </div>
+        <p style={{ marginBottom: 20, marginTop: -10, marginLeft: 12, color: "rgb(211, 47, 47)", fontSize: "0.75rem" }}>
+          {errors?.temporaryClosedTimings}
+        </p>
       </>
     );
   };
