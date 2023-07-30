@@ -221,8 +221,6 @@ const RenderInput = (props) => {
             name={item.id}
             value={state[item.id]}
             onChange={(e) => {
-              console.log("e.target.value=====>", e.target.value);
-              console.log("item.i=====>", item.id);
               stateHandler({ ...state, [item.id]: e.target.value });
             }}
             disabled={isDisabled}

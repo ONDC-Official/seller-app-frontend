@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
 import { areObjectsEqual, isEmailValid, isNumberOnly, isPhoneNoValid } from "../../../utils/validations";
@@ -8,8 +8,6 @@ import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
-import { AddOutlined, DeleteOutlined } from "@mui/icons-material";
-import StoreTimings from "./StoreTimings";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
 
@@ -325,6 +323,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   });
 
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
+  const [storeStatus, setStoreStatus] = useState("enabled");
+  const [temporaryClosedTimings, setTemporaryClosedTimings] = useState({ from: "00:00", to: "00:00" });
   const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
   const [originalStoreTimings, setOriginalStoreTimings] = useState([...defaultStoreTimings]);
   const [providerDetails, setProviderDetails] = useState({});
@@ -527,6 +527,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter a valid mobile number"
         : "";
 
+    //   TODO: add validations for deliveryAndSelfPickupDetails
     //  formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
     //    fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
     //      ? "Delivery Email is required"
@@ -765,7 +766,43 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     {errors?.["holidays"] || ""}
                   </p>
 
-                  <StoreTimingsRenderer storeTimings={storeTimings} setStoreTimings={setStoreTimings} />
+                  <div className="py-1 flex flex-col">
+                    <FormControl component="fieldset">
+                      <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+                        Store Status
+                        <span className="text-[#FF0000]"> *</span>
+                      </label>
+                      <RadioGroup
+                        value={storeStatus}
+                        onChange={(e) => {
+                          setStoreStatus(e.target.value);
+                        }}
+                      >
+                        <div className="flex flex-row">
+                          {[
+                            { key: "Enabled", value: "enabled" },
+                            { key: "Temporarily Closed", value: "closed" },
+                            { key: "Disabled", value: "disabled" },
+                          ].map((radioItem, i) => (
+                            <FormControlLabel
+                              key={i}
+                              value={radioItem.value}
+                              control={<Radio size="small" checked={radioItem.value === storeStatus} />}
+                              label={<div className="text-sm font-medium text-[#606161]">{radioItem.key}</div>}
+                            />
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+
+                  <StoreTimingsRenderer
+                    storeStatus={storeStatus}
+                    storeTimings={storeTimings}
+                    setStoreTimings={setStoreTimings}
+                    temporaryClosedTimings={temporaryClosedTimings}
+                    setTemporaryClosedTimings={setTemporaryClosedTimings}
+                  />
                 </>
               )}
 
