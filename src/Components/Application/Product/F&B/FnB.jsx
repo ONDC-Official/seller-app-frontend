@@ -383,8 +383,6 @@ const FnB = (props) => {
         },
       };
 
-      console.log(data);
-
       await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");

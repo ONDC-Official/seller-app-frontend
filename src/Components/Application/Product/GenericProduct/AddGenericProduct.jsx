@@ -118,14 +118,14 @@ const AddGenericProduct = ({
     setTabValue(newValue);
   };
 
-  const formatAttributesToFieldsDataFormat = (variants) => {
+  const formatAttributesToFieldsDataFormat = (variants, required= false) => {
     return variants.map((variant) => {
       return {
         id: variant.name,
         title: variant.name,
         placeholder: "Example, " + variant.example,
         type: variant.type || "input",
-        required: true,
+        required: required,
         options: variant.type === "select" ? variant.options : null,
       };
     });
@@ -466,7 +466,7 @@ const AddGenericProduct = ({
       let selected_variants = variants.filter((variant) =>
         selectedVariantNames.includes(variant.name)
       );
-      return formatAttributesToFieldsDataFormat(selected_variants);
+      return formatAttributesToFieldsDataFormat(selected_variants, true);
     } else if (variationOn === "uom") {
       return UOMVariationFields.map((field_id) =>
         getProductFieldDetails(field_id)
