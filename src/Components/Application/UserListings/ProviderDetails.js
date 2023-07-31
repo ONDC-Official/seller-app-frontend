@@ -508,7 +508,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Logistics Bpp Id is required"
         : "";
 
-    console.log("formErrors=====>", formErrors);
     setErrors(formErrors);
     if(Object.values(formErrors).some((val) => val !== "")) {
       cogoToast.error("Please fill in all required data!");
