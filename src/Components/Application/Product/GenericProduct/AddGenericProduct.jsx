@@ -125,8 +125,9 @@ const AddGenericProduct = ({
         id: variant.name,
         title: variant.name,
         placeholder: "Example, " + variant.example,
-        type: "input" || variant.type,
+        type: variant.type || "input",
         required: true,
+        options: variant.type === "select" ? variant.options : null,
       };
     });
   };
@@ -229,7 +230,7 @@ const AddGenericProduct = ({
 
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
-        let attributes = allProperties[category][sub_category];
+        let attributes = allProperties[category][sub_category] || allProperties[category]["default"];
         setVitalFields(formatAttributesToFieldsDataFormat(attributes));
       })
       .catch((error) => {
@@ -331,15 +332,16 @@ const AddGenericProduct = ({
 
     // Set vital form data
     let vital_fields = attributes.filter((variant) => !selectedVariantNames.includes(variant.name));
-    vital_fields = vital_fields.map((field) => {
-      return {
-        id: field.name,
-        title: field.name,
-        placeholder: "Example, " + field.example,
-        type: field.type === "text" ? "input" : field.type,
-        required: true,
-      };
-    });
+    vital_fields = formatAttributesToFieldsDataFormat(vital_fields);
+    //vital_fields.map((field) => {
+    //   return {
+    //     id: field.name,
+    //     title: field.name,
+    //     placeholder: "Example, " + field.example,
+    //     type: field.type,
+    //     required: true,
+    //   };
+    // });
     setVitalFields(vital_fields);
     let initial_values = vital_fields.reduce((acc, field) => {
       acc[field.id] = "";
@@ -404,13 +406,12 @@ const AddGenericProduct = ({
   const getProductInfoFields = () => {
     let product_info_fields = [...productDetailsFields];
 
-    let protocolKey = PRODUCT_SUBCATEGORY[category].filter((sub_category) => sub_category.value === subCategory)[0]
+    let protocolKey = PRODUCT_SUBCATEGORY[category]?.filter((sub_category) => sub_category.value === subCategory)[0]
       .protocolKey;
 
-    if (protocolKey !== "") {
+    if (protocolKey && protocolKey !== "") {
       let fields_to_remove = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
       product_info_fields = product_info_fields.filter((field) => !fields_to_remove.includes(field));
-      console.log("remioving ", fields_to_remove);
     }
 
     if (!variationOn || variationOn === "none") {

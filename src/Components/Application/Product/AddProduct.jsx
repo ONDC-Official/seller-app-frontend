@@ -149,9 +149,11 @@ export default function AddProduct() {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
     if (category && category !== "F&B" && sub_category) {
-      let category_data = allProperties[category];
-      let properties = category_data?.hasOwnProperty(sub_category) ? category_data[sub_category] : [];
-      let variants = properties?.filter((property) => property.variationAllowed);
+      let category_data =  allProperties[category]
+      let properties = category_data?.hasOwnProperty(sub_category) ? category_data[sub_category] : (category_data["default"] || []);
+      let variants = properties?.filter(
+        (property) => property.variationAllowed
+      );
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
         acc[variant.name] = false;
         return acc;
