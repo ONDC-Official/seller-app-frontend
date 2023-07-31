@@ -197,13 +197,14 @@ const AddGenericProduct = ({
 
       if (variationOn !== "none") {
         data["variantSpecificDetails"] = variant_data;
-        data["variationOn"] = variationOn.toUpperCase();
+        data["variationOn"] = variationOn?.toUpperCase();
       }
 
       await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");
     } catch (error) {
+      console.log(error);
       cogoToast.error(error.response.data.error);
     }
   };
@@ -465,7 +466,10 @@ const AddGenericProduct = ({
       ? "Cannot be more than quantity"
       : "";
     formErrors.UOM = formValues?.UOM === "" ? "UOM unit is required" : "";
-    formErrors.fulfillmentOption = formValues?.fulfillmentOption === "" ? "Fulfillment Option is required" : "";
+    formErrors.fulfillmentOption =
+      formValues?.fulfillmentOption === undefined || formValues?.fulfillmentOption === ""
+        ? "Fulfillment Option is required"
+        : "";
     // formErrors.UOM =
     //   formValues?.UOM?.trim() === ""
     //     ? "UOM is required"
