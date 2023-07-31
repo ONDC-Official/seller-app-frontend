@@ -50,14 +50,8 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const RenderInput = ({
-  item,
-  state,
-  stateHandler,
-  onChange,
-  previewOnly,
-  setFocusedField,
-}) => {
+const RenderInput = (props) => {
+  const { item, state, stateHandler, onChange, previewOnly, setFocusedField } = props;
   const uploadFileRef = useRef(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fetchedImageSize, setFetchedImageSize] = useState(0);
@@ -101,23 +95,31 @@ const RenderInput = ({
     if (isImageChanged === false && state[item.id] !== "") {
       getImageSizeFromUrl();
     } else {
-      const sizeInBytes = getSizeWithUnit(
-        uploadFileRef.current?.files[0]?.size
-      );
+      const sizeInBytes = getSizeWithUnit(uploadFileRef.current?.files[0]?.size);
       setFetchedImageSize(sizeInBytes);
     }
   }, [isImageChanged, state[item.id]]);
 
   if (item.type == "input") {
     return (
-      <div className="py-1 flex flex-col">
-        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+      <div className={props.containerClasses != undefined ? `${props.containerClasses}` : "py-1 flex flex-col"}>
+        <label
+          className={
+            props.labelClasses
+              ? props.labelClasses
+              : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+          }
+        >
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
           type={item.password ? "password" : "input"}
-          className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          className={
+            props.inputClasses
+              ? props.inputClasses
+              : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          }
           required={item.required}
           size="small"
           multiline={item.multiline || false}
@@ -131,9 +133,7 @@ const RenderInput = ({
           onChange={(e) =>
             stateHandler({
               ...state,
-              [item.id]: item.isUperCase
-                ? e.target.value.toUpperCase()
-                : e.target.value,
+              [item.id]: item.isUperCase ? e.target.value.toUpperCase() : e.target.value,
             })
           }
           inputProps={{
@@ -147,14 +147,24 @@ const RenderInput = ({
     );
   } else if (item.type == "number") {
     return (
-      <div className="py-1 flex flex-col">
-        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+      <div className={props.containerClasses ? props.containerClasses : "py-1 flex flex-col"}>
+        <label
+          className={
+            props.labelClasses
+              ? props.labelClasses
+              : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+          }
+        >
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
           type="number"
-          className="w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          className={
+            props.inputClasses
+              ? props.inputClasses
+              : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          }
           required={item.required}
           size="small"
           InputProps={{
@@ -166,9 +176,7 @@ const RenderInput = ({
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) => {
-            const value = item.valueInDecimal
-              ? parseFloat(e.target.value).toFixed(2)
-              : e.target.value;
+            const value = item.valueInDecimal ? parseFloat(e.target.value).toFixed(2) : e.target.value;
 
             // Enforce maximum length
             const maxLength = item.maxLength || undefined;
@@ -193,11 +201,7 @@ const RenderInput = ({
     // console.log("state[item.id]=====>", state[item.id]);
     // console.log("item.options=====>", item.options);
     let isDisabled = false;
-    if (
-      item.id === "isVegetarian" &&
-      state["productCategory"] &&
-      state["productCategory"] !== "f_and_b"
-    ) {
+    if (item.id === "isVegetarian" && state["productCategory"] && state["productCategory"] !== "f_and_b") {
       isDisabled = true;
     } else {
     }
@@ -222,22 +226,11 @@ const RenderInput = ({
             <div className="flex flex-row">
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
-                  disabled={
-                    item?.isDisabled || isDisabled || previewOnly || false
-                  }
+                  disabled={item?.isDisabled || isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
-                  control={
-                    <Radio
-                      size="small"
-                      checked={radioItem.value === state[item.id]}
-                    />
-                  }
-                  label={
-                    <div className="text-sm font-medium text-[#606161]">
-                      {radioItem.key}
-                    </div>
-                  }
+                  control={<Radio size="small" checked={radioItem.value === state[item.id]} />}
+                  label={<div className="text-sm font-medium text-[#606161]">{radioItem.key}</div>}
                 />
               ))}
             </div>
@@ -285,19 +278,11 @@ const RenderInput = ({
                   onChange={onChange}
                   name={checkboxItem.value}
                   size="small"
-                  checked={
-                    state[item.id] &&
-                    state[item.id].find((day) => day === checkboxItem.value)
-                      ? true
-                      : false
-                  }
+                  checked={state[item.id] && state[item.id].find((day) => day === checkboxItem.value) ? true : false}
                 />
               }
               label={
-                <div
-                  className="text-sm font-medium text-[#606161]"
-                  key={checkboxItem.key}
-                >
+                <div className="text-sm font-medium text-[#606161]" key={checkboxItem.key}>
                   {checkboxItem.key}
                 </div>
               }
@@ -310,18 +295,21 @@ const RenderInput = ({
     //  console.log("state[item.id]=====>", item.id, "=====>", state[item.id]);
 
     return (
-      <div className="py-1 flex flex-col">
-        <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+      <div className={props.containerClasses != undefined ? `${props.containerClasses}` : "py-1 flex flex-col"}>
+        <label
+          className={
+            props.labelClasses != undefined
+              ? `${props.labelClasses}`
+              : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+          }
+        >
           {item.title}
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <FormControl error={item.error || false}>
           <Autocomplete
-            disableClearable={
-              item.disableClearable !== undefined
-                ? item.disableClearable
-                : false
-            }
+            sx={props.inputStyles && props.inputStyles}
+            disableClearable={item.disableClearable !== undefined ? item.disableClearable : false}
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
@@ -353,9 +341,7 @@ const RenderInput = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={
-                  !previewOnly && !state[item.id] ? item.placeholder : ""
-                }
+                placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -374,11 +360,7 @@ const RenderInput = ({
         </label>
         <div style={{ width: "100%", height: "400px" }}>
           <PlacePickerMap
-            location={
-              state[item.id]
-                ? { lat: state[item.id].lat, lng: state[item.id].long }
-                : {}
-            }
+            location={state[item.id] ? { lat: state[item.id].lat, lng: state[item.id].long } : {}}
             setLocation={(location) => {
               const {
                 district,
@@ -417,10 +399,9 @@ const RenderInput = ({
       }
       return newString;
     }
-    const dateValue = moment(
-      state[item.id],
-      item.format || "DD/MM/YYYY"
-    ).format(item.format ? reverseString(item.format) : "YYYY/MM/DD");
+    const dateValue = moment(state[item.id], item.format || "DD/MM/YYYY").format(
+      item.format ? reverseString(item.format) : "YYYY/MM/DD"
+    );
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -567,20 +548,12 @@ const RenderInput = ({
                 readOnly
                 getOptionLabel={(option) => option}
                 renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={option}
-                      {...getTagProps({ index })}
-                      onClick={() => {}}
-                    />
-                  ))
+                  value.map((option, index) => <Chip label={option} {...getTagProps({ index })} onClick={() => {}} />)
                 }
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder={
-                      !previewOnly && !state[item.id] ? item.placeholder : ""
-                    }
+                    placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
                     onFocus={openCalendar}
                   />
                 )}
@@ -621,9 +594,7 @@ const RenderInput = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={
-                  state[item.id].length === 0 ? item.placeholder : ""
-                }
+                placeholder={state[item.id].length === 0 ? item.placeholder : ""}
                 variant="outlined"
                 error={item.error || false}
                 helperText={item.error && item.helperText}
@@ -651,14 +622,7 @@ const RenderInput = ({
       if (item?.multiple) {
         if (state?.uploaded_urls) {
           return state?.uploaded_urls?.map((url) => {
-            return (
-              <img
-                src={url}
-                height={50}
-                width={50}
-                style={{ margin: "10px" }}
-              />
-            );
+            return <img src={url} height={50} width={50} style={{ margin: "10px" }} />;
           });
         }
       } else {
@@ -680,9 +644,7 @@ const RenderInput = ({
     if (previewOnly) {
       if (typeof state[item.id] == "string") {
         return (
-          <div
-            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
-          >
+          <div style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}>
             <label
               className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
               style={{ width: 200 }}
@@ -694,13 +656,8 @@ const RenderInput = ({
         );
       } else {
         return (
-          <div
-            style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }}
-            className="flex"
-          >
-            <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
-              {item.title}
-            </label>
+          <div style={{ height: 100, width: 100, marginBottom: 40, marginTop: 10 }} className="flex">
+            <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">{item.title}</label>
             {state[item.id]?.map((img_url) => (
               <img className="ml-1 h-full w-full" key={img_url} src={img_url} />
             ))}
@@ -730,12 +687,7 @@ const RenderInput = ({
       };
 
       return (
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems={"center"}
-          style={{ marginBottom: 20 }}
-        >
+        <Stack direction="row" spacing={1} alignItems={"center"} style={{ marginBottom: 20 }}>
           <IconButton
             style={{ width: 35, height: 35 }}
             size="small"
@@ -747,9 +699,7 @@ const RenderInput = ({
               stateHandler((prevState) => {
                 const newState = {
                   ...prevState,
-                  [item.id]: Array.isArray(prevState[item.id])
-                    ? prevState[item.id].filter((ele) => ele != name)
-                    : "",
+                  [item.id]: Array.isArray(prevState[item.id]) ? prevState[item.id].filter((ele) => ele != name) : "",
                   uploaded_urls: [],
                 };
                 return newState;
@@ -760,29 +710,17 @@ const RenderInput = ({
           </IconButton>
           <div>
             <div className="flex items-center">
-              <p className="text-xs text-neutral-900 max-w-sm">
-                File name: &nbsp;
-              </p>
-              <p className="text-xs text-neutral-600 max-w-sm">
-                {getImageName(name)}
-              </p>
+              <p className="text-xs text-neutral-900 max-w-sm">File name: &nbsp;</p>
+              <p className="text-xs text-neutral-600 max-w-sm">{getImageName(name)}</p>
             </div>
             <div className="flex items-center">
-              <p className="text-xs text-neutral-900 max-w-sm">
-                File type: &nbsp;
-              </p>
-              <p className="text-xs text-neutral-600 max-w-sm">
-                {getImageType(name)}
-              </p>
+              <p className="text-xs text-neutral-900 max-w-sm">File type: &nbsp;</p>
+              <p className="text-xs text-neutral-600 max-w-sm">{getImageType(name)}</p>
             </div>
             {!item.multiple && (
               <div className="flex items-center">
-                <p className="text-xs text-neutral-900 max-w-sm">
-                  File size: &nbsp;
-                </p>
-                <p className="text-xs text-neutral-600 max-w-sm">
-                  {fetchedImageSize}
-                </p>
+                <p className="text-xs text-neutral-900 max-w-sm">File size: &nbsp;</p>
+                <p className="text-xs text-neutral-600 max-w-sm">{fetchedImageSize}</p>
               </div>
             )}
           </div>
@@ -801,7 +739,7 @@ const RenderInput = ({
         </label>
         {/* <Button sx={{ textTransform: 'none' }} variant="contained">
           <label for="contained-button-file">
-            Choose file        
+            Choose file
           </label>
         </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
