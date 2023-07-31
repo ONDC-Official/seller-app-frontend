@@ -432,9 +432,10 @@ const AddGenericProduct = ({
 
   const getProductInfoFields = () => {
     let product_info_fields = [...productDetailsFields];
-
-    let protocolKey = PRODUCT_SUBCATEGORY[category]?.filter(
-      (sub_category) => sub_category.value === subCategory
+    let p_category = state?.productId ? state?.productCategory : category;
+    let p_sub_category = state?.productId ? state?.productSubCategory : subCategory;
+    let protocolKey = PRODUCT_SUBCATEGORY[p_category]?.filter(
+      (sub_category) => sub_category.value === p_sub_category
     )[0].protocolKey;
 
     if (protocolKey && protocolKey !== "") {
