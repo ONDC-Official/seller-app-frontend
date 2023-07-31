@@ -234,7 +234,7 @@ const AddGenericProduct = ({
       })
       .catch((error) => {
         cogoToast.error("Something went wrong!");
-        console.log(error.response);
+        console.log(error);
       });
   };
 
@@ -384,7 +384,6 @@ const AddGenericProduct = ({
       return prevState;
     });
   }, [variationOn]);
-  console.log(errors);
 
   // TODO: get the actual option from store details api
   const availableFulfillments = [

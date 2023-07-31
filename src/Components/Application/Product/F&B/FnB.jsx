@@ -72,10 +72,10 @@ const FnB = (props) => {
     instructions: "",
     longDescription: "",
     description: "",
-    isReturnable: "",
-    isVegetarian: "",
-    isCancellable: "",
-    availableOnCod: "",
+    isReturnable: "false",
+    isVegetarian: "false",
+    isCancellable: "false",
+    availableOnCod: "false",
     images: [],
     manufacturerOrPackerName: "",
     manufacturerOrPackerAddress: "",
@@ -192,7 +192,11 @@ const FnB = (props) => {
         : formValues?.UOM?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.fulfillmentOption = formValues?.fulfillmentOption === "" ? "Fulfillment Option is required" : "";
+    formErrors.fulfillmentOption =
+      formValues?.fulfillmentOption == undefined || formValues?.fulfillmentOption === ""
+        ? "Fulfillment Option is required"
+        : "";
+
     formErrors.packQty = !formValues?.packQty
       ? "Please enter a valid Measurement Quantity"
       : !isNumberOnly(formValues?.packQty)
