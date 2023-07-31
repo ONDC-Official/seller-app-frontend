@@ -30,7 +30,6 @@ export default function CustomerActionCard({
   onSuccess,
   user
 }) {
-
   // CONSTANTS
   const ACTION_TYPES = {
     replaceIssue: "REPLACE_ISSUE",
@@ -85,7 +84,7 @@ export default function CustomerActionCard({
     }
     setLoading(true);
     const { context } = supportActionDetails;
-
+    
     function getAction() {
       switch (selectedCancelType) {
         case ACTION_TYPES.replaceIssue: return "REPLACEMENT"
@@ -97,7 +96,7 @@ export default function CustomerActionCard({
           break;
       }
     }
-
+    
     const body = {
       "transaction_id": context.transaction_id,
       "respondent_action": selectedCancelType === ACTION_TYPES.cascadeIssue ? "CASCADED" : "RESOLVED",

@@ -1,6 +1,6 @@
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
-export const allProductFieldDetails = [
+const productFields = [
   {
     id: "productCode",
     title: "Product Code",
@@ -156,22 +156,6 @@ export const allProductFieldDetails = [
     id: "UOM",
     title: "UOM",
     placeholder: "UOM",
-    type: "select",
-    required: true,
-    options: [
-      { key: "unit", value: "unit" },
-      { key: "dozen", value: "dozen" },
-      { key: "gram", value: "gram" },
-      { key: "kilogram", value: "kilogram" },
-      { key: "tonne", value: "tonne" },
-      { key: "litre", value: "litre" },
-      { key: "millilitre", value: "millilitre" },
-    ],
-  },
-  {
-    id: "UOMValue",
-    title: "UOM value",
-    placeholder: "UOM value",
     type: "input",
     required: true,
   },
@@ -325,49 +309,4 @@ export const allProductFieldDetails = [
   },
 ];
 
-export const categoryFields = ["productCategory", "productSubcategory1"];
-
-export const productDetailsFields = [
-  "productCode",
-  "productName",
-  "HSNCode",
-  "GST_Percentage",
-  "maxAllowedQty",
-  "packQty",
-  "length",
-  "breadth",
-  "height",
-  "weight",
-  "returnWindow",
-  "manufacturerName",
-  "manufacturedDate",
-  "nutritionalInfo",
-  "additiveInfo",
-  "instructions",
-  "longDescription",
-  "description",
-  "isReturnable",
-  "isVegetarian",
-  "isCancellable",
-  "availableOnCod",
-  "manufacturerOrPackerName",
-  "manufacturerOrPackerAddress",
-  "commonOrGenericNameOfCommodity",
-  "monthYearOfManufacturePackingImport",
-  "importerFSSAILicenseNo",
-  "brandOwnerFSSAILicenseNo",
-  "UOM",
-];
-
-export const variationCommonFields = [
-  "MRP",
-  "retailPrice",
-  "purchasePrice",
-  "quantity",
-  "barcode",
-  "images",
-]
-
-export const UOMVariationFields = [
-  "UOMValue"
-]
+export default productFields;

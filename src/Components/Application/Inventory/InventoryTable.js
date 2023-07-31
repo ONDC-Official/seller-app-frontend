@@ -25,7 +25,14 @@ const StyledTableCell = styled(TableCell)({
 });
 
 export default function InventoryTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props;
+  const {
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+    onRefresh,
+  } = props;
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
@@ -69,11 +76,19 @@ export default function InventoryTable(props) {
             <MoreVertIcon />
           </Button>
         </Tooltip>
-        <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <Link to="/application/add-products" state={{ productId: row._id, productCategory: row.productCategory }}>
+        <Menu
+          id="card-actions-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <Link to="/application/add-products" state={{ productId: row._id }}>
             <MenuItem>Edit</MenuItem>
           </Link>
-          <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
+          <MenuItem
+            onClick={() => handlePublishState(row?._id, row?.published)}
+          >
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
         </Menu>
@@ -85,7 +100,9 @@ export default function InventoryTable(props) {
     if (typeof value == "boolean") {
       return (
         <div>
-          <span className="ml-2">{value === false || value === null ? "No" : "Yes"}</span>
+          <span className="ml-2">
+            {value === false || value === null ? "No" : "Yes"}
+          </span>
         </div>
       );
     } else {
@@ -128,7 +145,8 @@ export default function InventoryTable(props) {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                   {props.columns.map((column) => {
-                    const value = row[column.id] === undefined ? " - " : row[column.id];
+                    const value =
+                      row[column.id] === undefined ? " - " : row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
                         {renderCellContent(column, value)}
