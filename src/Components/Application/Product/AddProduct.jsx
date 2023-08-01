@@ -277,7 +277,7 @@ export default function AddProduct() {
       return (
         <div>
           {renderCategoryFields()}
-          {category && subCategory && renderVariants()}
+          {category && subCategory && category !== "F&B" && renderVariants()}
           {variationOn === "attributes" && renderVariantsList()}
         </div>
       );
