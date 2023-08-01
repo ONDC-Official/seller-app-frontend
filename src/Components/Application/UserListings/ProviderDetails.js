@@ -838,19 +838,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                 <>
                   <RenderInput
                     item={{
-                      id: "radius",
-                      title: "Serviceable Radius/Circle (in Kilometer)",
-                      placeholder: "Serviceable Radius/Circle (in Kilometer)",
-                      type: "input",
-                      error: errors?.["radius"] ? true : false,
-                      helperText: errors?.["radius"] || "",
-                      required: true,
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                  <RenderInput
-                    item={{
                       id: "logisticsBppId",
                       title: "Logistics Bpp Id",
                       placeholder: "Logistics Bpp Id",
@@ -871,8 +858,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     setFulfillmentDetails={setFulfillmentDetails}
                   />
 
-                  <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
-
+                  <p className="text-2xl font-semibold mb-2 mt-14">Store Timing</p>
+                  <RenderInput
+                    item={{
+                      id: "radius",
+                      title: "Serviceable Radius/Circle (in Kilometer)",
+                      placeholder: "Serviceable Radius/Circle (in Kilometer)",
+                      type: "input",
+                      error: errors?.["radius"] ? true : false,
+                      helperText: errors?.["radius"] || "",
+                      required: true,
+                    }}
+                    state={storeDetails}
+                    stateHandler={setStoreDetails}
+                  />
                   <div className="py-1 flex flex-col">
                     <FormControl component="fieldset">
                       <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">

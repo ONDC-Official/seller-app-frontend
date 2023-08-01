@@ -514,6 +514,7 @@ const RenderInput = (props) => {
     // if(values && values.length > 0){
     //   values = values.map((itemDate) => moment(itemDate, item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD'));
     // }else{}
+
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -543,6 +544,7 @@ const RenderInput = (props) => {
             const valuesArray = value ? value.split(",") : "";
             return (
               <Autocomplete
+                size="small"
                 multiple
                 id="tags-readOnly"
                 options={[]}
@@ -554,7 +556,14 @@ const RenderInput = (props) => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
+                    //   placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
+                    placeholder={
+                      (!previewOnly && !state[item.id]) ||
+                      (typeof state[item.id] === "string" && state[item.id].trim() === "") ||
+                      (Array.isArray(state[item.id]) && state[item.id].length === 0)
+                        ? item.placeholder
+                        : ""
+                    }
                     onFocus={openCalendar}
                   />
                 )}
