@@ -82,7 +82,6 @@ const AddGenericProduct = ({
     barcode: "",
     maxAllowedQty: "",
     UOM: "",
-    packQty: "",
     length: "",
     breadth: "",
     height: "",

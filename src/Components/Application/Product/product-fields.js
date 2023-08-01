@@ -176,13 +176,6 @@ export const allProductFieldDetails = [
     required: true,
   },
   {
-    id: "packQty",
-    title: "Measurement Quantity",
-    placeholder: "Measurement Quantity",
-    type: "input",
-    required: true,
-  },
-  {
     id: "length",
     title: "Length",
     placeholder: "Length",
@@ -333,7 +326,6 @@ export const productDetailsFields = [
   "HSNCode",
   "GST_Percentage",
   "maxAllowedQty",
-  "packQty",
   "length",
   "breadth",
   "height",

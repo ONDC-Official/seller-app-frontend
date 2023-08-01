@@ -59,7 +59,6 @@ const FnB = (props) => {
     barcode: "",
     maxAllowedQty: "",
     UOM: "",
-    packQty: "",
     length: "",
     breadth: "",
     height: "",
