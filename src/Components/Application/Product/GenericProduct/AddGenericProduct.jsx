@@ -95,8 +95,8 @@ const AddGenericProduct = ({
     instructions: "",
     longDescription: "",
     description: "",
+    vegNonVeg: "",
     isReturnable: "false",
-    isVegetarian: "false",
     isCancellable: "false",
     availableOnCod: "false",
     images: [],
@@ -185,7 +185,7 @@ const AddGenericProduct = ({
       product_data.returnWindow = iso8601;
       product_data.isCancellable = product_data.isCancellable === "true" ? true : false;
       product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
-      product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
+      // product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
       product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
 
       delete product_data["uploaded_urls"];
@@ -303,30 +303,30 @@ const AddGenericProduct = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (formValues?.productCategory) {
-      let data = [...allFields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
-      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues?.productCategory];
+  //   useEffect(() => {
+  //     if (formValues?.productCategory) {
+  //       let data = [...allFields]; // Create a copy of the fields array
+  //       const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
+  //       data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[formValues?.productCategory];
 
-      const vegetarianIndex = data.findIndex((item) => item.id === "isVegetarian");
-      if (formValues.productCategory === "f_and_b") {
-        const imagesIndex = data.findIndex((item) => item.id === "images");
-        data[imagesIndex].required = false;
-        if (vegetarianIndex !== -1) {
-          data[vegetarianIndex].required = true;
-        }
-      } else {
-        const imagesIndex = data.findIndex((item) => item.id === "images");
-        data[imagesIndex].required = true;
-        if (vegetarianIndex !== -1) {
-          data[vegetarianIndex].required = false;
-        }
-      }
+  //       const vegetarianIndex = data.findIndex((item) => item.id === "isVegetarian");
+  //       if (formValues.productCategory === "f_and_b") {
+  //         const imagesIndex = data.findIndex((item) => item.id === "images");
+  //         data[imagesIndex].required = false;
+  //         if (vegetarianIndex !== -1) {
+  //           data[vegetarianIndex].required = true;
+  //         }
+  //       } else {
+  //         const imagesIndex = data.findIndex((item) => item.id === "images");
+  //         data[imagesIndex].required = true;
+  //         if (vegetarianIndex !== -1) {
+  //           data[vegetarianIndex].required = false;
+  //         }
+  //       }
 
-      setAllFields(data);
-    }
-  }, [formValues]);
+  //       setAllFields(data);
+  //     }
+  //   }, [formValues]);
 
   useEffect(() => {
     setProductInfoFields(getProductInfoFields());
@@ -415,6 +415,11 @@ const AddGenericProduct = ({
     if (protocolKey && protocolKey !== "") {
       let fields_to_remove = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
       product_info_fields = product_info_fields.filter((field) => !fields_to_remove.includes(field));
+    }
+
+    console.log(category, category != "Grocery" && category !== "F&B");
+    if (category !== "Grocery" && category !== "F&B") {
+      product_info_fields = product_info_fields.filter((field) => field !== "vegNonVeg");
     }
 
     if (!variationOn || variationOn === "none") {
@@ -705,7 +710,7 @@ const AddGenericProduct = ({
   };
 
   const handleSubmit = () => {
-    if (validate()) {
+    if (!validate()) {
       state?.productId ? updateProduct() : addProduct();
     }
   };

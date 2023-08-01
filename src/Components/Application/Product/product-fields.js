@@ -275,6 +275,19 @@ export const allProductFieldDetails = [
     multiline: true,
   },
   {
+    id: "vegNonVeg",
+    title: "Veg/Non-Veg/Egg",
+    placeholder: "Select Food Category",
+    type: "select",
+    options: [
+      { key: "Veg", value: "veg" },
+      { key: "Non Veg", value: "non_veg" },
+      { key: "Egg", value: "egg" },
+    ],
+    disableClearable: true,
+    required: true,
+  },
+  {
     id: "isCancellable",
     title: "Cancellable",
     type: "radio",
@@ -287,16 +300,6 @@ export const allProductFieldDetails = [
   {
     id: "isReturnable",
     title: "Returnable",
-    type: "radio",
-    options: [
-      { key: "Yes", value: "true" },
-      { key: "No", value: "false" },
-    ],
-    required: true,
-  },
-  {
-    id: "isVegetarian",
-    title: "Vegetarian",
     type: "radio",
     options: [
       { key: "Yes", value: "true" },
@@ -354,8 +357,8 @@ export const productDetailsFields = [
   "instructions",
   "longDescription",
   "description",
+  "vegNonVeg",
   "isReturnable",
-  "isVegetarian",
   "isCancellable",
   "availableOnCod",
   "manufacturerOrPackerName",
