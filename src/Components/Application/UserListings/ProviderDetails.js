@@ -500,40 +500,70 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
 
     formErrors.deliveryEmail =
-      fulfillmentDetails.deliveryDetails.deliveryEmail.trim() === ""
+      supportedFulfillments.delivery != false &&
+      (fulfillmentDetails.deliveryDetails.deliveryEmail.trim() === ""
         ? "Delivery Email is required"
         : !isEmailValid(fulfillmentDetails.deliveryDetails.deliveryEmail)
         ? "Please enter a valid email address"
-        : "";
+        : "");
 
     formErrors.deliveryMobile =
-      fulfillmentDetails.deliveryDetails.deliveryMobile?.trim() === ""
+      supportedFulfillments.delivery != false &&
+      (fulfillmentDetails.deliveryDetails.deliveryMobile?.trim() === ""
         ? "Support Mobile Number is required"
         : !isPhoneNoValid(fulfillmentDetails.deliveryDetails.deliveryMobile)
         ? "Please enter a valid mobile number"
-        : "";
+        : "");
 
     formErrors.selfPickupEmail =
-      fulfillmentDetails.selfPickupDetails.selfPickupEmail.trim() === ""
+      supportedFulfillments.selfPickup != false &&
+      (fulfillmentDetails.selfPickupDetails.selfPickupEmail.trim() === ""
         ? "Delivery Email is required"
         : !isEmailValid(fulfillmentDetails.selfPickupDetails.selfPickupEmail)
         ? "Please enter a valid email address"
-        : "";
+        : "");
 
     formErrors.selfPickupMobile =
-      fulfillmentDetails.selfPickupDetails.selfPickupMobile?.trim() === ""
+      supportedFulfillments.selfPickup != false &&
+      (fulfillmentDetails.selfPickupDetails.selfPickupMobile?.trim() === ""
         ? "Support Mobile Number is required"
         : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails.selfPickupMobile)
         ? "Please enter a valid mobile number"
-        : "";
+        : "");
 
-    //  TODO: add validations for deliveryAndSelfPickupDetails
-    //  formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
-    //    fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
-    //      ? "Delivery Email is required"
-    //      : !isEmailValid(fulfillmentDetails.selfPickupDetails.selfPickupEmail)
-    //      ? "Please enter a valid email address"
-    //      : "";
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      formErrors.deliveryAndSelfPickupDetails = {};
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
+        fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryAndSelfPickupDetails)
+          ? "Please enter a valid email address"
+          : "";
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryMobile =
+        fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile?.trim() === ""
+          ? "Support Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile)
+          ? "Please enter a valid mobile number"
+          : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupEmail =
+        fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail)
+          ? "Please enter a valid email address"
+          : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupMobile =
+        fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile?.trim() === ""
+          ? "Support Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile)
+          ? "Please enter a valid mobile number"
+          : "";
+    } else {
+      formErrors.deliveryAndSelfPickupDetails = {};
+    }
 
     if (storeStatus === "closed") {
       if (temporaryClosedTimings.from === temporaryClosedTimings.to && temporaryClosedTimings.from !== "Invalid Date") {
@@ -753,29 +783,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   />
 
                   <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
-                  <RenderInput
-                    item={{
-                      id: "holidays",
-                      title: "Holidays",
-                      placeholder: "Holidays",
-                      type: "days-picker",
-                      required: true,
-                      format: "YYYY-MM-DD",
-                      error: errors?.["holidays"] ? true : false,
-                      helperText: errors?.["holidays"] || "",
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                  <p
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "0.75rem",
-                      marginLeft: 12,
-                    }}
-                  >
-                    {errors?.["holidays"] || ""}
-                  </p>
 
                   <div className="py-1 flex flex-col">
                     <FormControl component="fieldset">
@@ -806,6 +813,34 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       </RadioGroup>
                     </FormControl>
                   </div>
+
+                  {storeStatus === "enabled" && (
+                    <>
+                      <RenderInput
+                        item={{
+                          id: "holidays",
+                          title: "Holidays",
+                          placeholder: "Holidays",
+                          type: "days-picker",
+                          required: true,
+                          format: "YYYY-MM-DD",
+                          error: errors?.["holidays"] ? true : false,
+                          helperText: errors?.["holidays"] || "",
+                        }}
+                        state={storeDetails}
+                        stateHandler={setStoreDetails}
+                      />
+                      <p
+                        style={{
+                          color: "#d32f2f",
+                          fontSize: "0.75rem",
+                          marginLeft: 12,
+                        }}
+                      >
+                        {errors?.["holidays"] || ""}
+                      </p>
+                    </>
+                  )}
 
                   <StoreTimingsRenderer
                     errors={errors}
