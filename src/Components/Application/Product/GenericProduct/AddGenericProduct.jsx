@@ -679,8 +679,8 @@ const AddGenericProduct = ({
         : "";
       formErrors.images =
         formValues?.productCategory !== "f_and_b" &&
-        formValues?.images.length < 1
-          ? "At least one image is required"
+        formValues?.images.length < 3
+          ? "Minimum 3 images are required"
           : "";
     }
 
