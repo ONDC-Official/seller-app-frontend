@@ -163,19 +163,18 @@ export const allProperties = {
             {'name':'Maximum Size','type':'input','example':'', 'variationAllowed':true} ,
         ],
     },
-    'Home Decor':{
+    'Home and Decor':{
         'Home Decor':[
             {'name':'Size','type':'input','example':'small', 'variationAllowed':true},
             {'name':'Style','type':'input','example':'modern', 'variationAllowed':true},
             {'name':'Number of Items','type':'number','example':'6', 'variationAllowed':true},
-            {'name':'Material Type','type':'input','example':'wood', 'variationAllowed':true},
+            {'name':'Material Type','type':'input','example':'wood', 'variationAllowed':false},
             {'name':'Pattern','type':'input','example':'Sripped', 'variationAllowed':true},
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
             {'name':'Model','type':'input','example':'AB-12', 'variationAllowed':true},
-            {'name':'Manufacturer Part Number','type':'float','example':'A-112', 'variationAllowed':true},
+            {'name':'Manufacturer Part Number','type':'float','example':'A-112', 'variationAllowed':false},
             {'name':'Color','type':'input','example':'', 'variationAllowed':true},
             {'name':'Wattage','type':'input','example':'', 'unit':unitWattage},
-            {'name':'VoltageColor','type':'input','example':'6', 'variationAllowed':true},
             {'name':'Unit Count','type':'number','example':'6', 'variationAllowed':true},
             {'name':'Shape','type':'input','example':'Round', 'variationAllowed':true},
         ],
