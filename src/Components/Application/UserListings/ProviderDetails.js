@@ -485,9 +485,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     formErrors.logo = storeDetails.logo.trim() === "" ? "Logo is required" : "";
 
     if (!isFromUserListing) {
-      formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
-
-      formErrors.storeTimes = getStoreTimesErrors();
+      if (storeStatus === "enabled") {
+        formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
+        formErrors.storeTimes = getStoreTimesErrors();
+      } else {
+        formErrors.holidays = "";
+        formErrors.storeTimes = "";
+      }
     } else {
     }
 
@@ -537,7 +541,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
         fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
           ? "Delivery Email is required"
-          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryAndSelfPickupDetails)
+          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail)
           ? "Please enter a valid email address"
           : "";
 
