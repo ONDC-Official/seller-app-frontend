@@ -658,8 +658,30 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return fulfillments;
   };
 
+  const getStoreTimingsPayloadFormat = () => {
+    let storeTiming = {
+      status: storeStatus,
+    };
+
+    if (storeStatus === "enabled") {
+      storeTiming.schedule = {
+        holidays: storeDetails.holidays,
+        timings: storeTimings,
+      };
+    } else if (storeStatus === "closed") {
+      storeTiming.schedule = {
+        from: temporaryClosedTimings.from,
+        to: temporaryClosedTimings.to,
+      };
+    } else {
+      storeTiming.schedule = {};
+    }
+
+    return storeTiming;
+  };
+
   const onUpdate = () => {
-    if (anyChangeInData && !validate()) {
+    if (anyChangeInData && validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
@@ -701,6 +723,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
 
       let fulfillments = getFulfillmentsPayloadFormat();
+      let storeTiming = getStoreTimingsPayloadFormat();
 
       let payload = {
         categories,
@@ -714,12 +737,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           mobile,
         },
         fulfillments,
-        storeTiming: {
-          schedule: {
-            holidays: storeDetails.holidays,
-            timings: storeTimings,
-          },
-        },
+        storeTiming,
         radius: {
           unit: "km",
           value: storeDetails.radius || "",

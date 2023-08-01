@@ -51,8 +51,6 @@ const StoreTimingsRenderer = (props) => {
     return dayjs(moment(time, "HH:mm"));
   };
 
-  console.log(errors, temporaryClosedTimings);
-
   const renderTimePicker = (key) => {
     return (
       <>
