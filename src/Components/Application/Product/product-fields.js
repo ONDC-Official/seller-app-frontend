@@ -178,7 +178,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "length",
-    title: "Length",
+    title: "Length(cm)",
     placeholder: "Length",
     type: "input",
     maxLength: 6,
@@ -186,7 +186,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "breadth",
-    title: "Breadth",
+    title: "Breadth(cm)",
     placeholder: "Breadth",
     type: "input",
     maxLength: 6,
@@ -194,7 +194,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "height",
-    title: "Height",
+    title: "Height(cm)",
     placeholder: "Height",
     type: "input",
     maxLength: 6,
