@@ -533,7 +533,6 @@ const RenderInput = (props) => {
                   const date = moment(new Date(itemDate))
                     .format(item.format || "DD/MM/YYYY")
                     .toString();
-                  console.log("date=====>", date);
                   return date;
                 }),
               };
@@ -779,7 +778,6 @@ const RenderInput = (props) => {
                 formData.append("file", file);
                 getSignUrl(file).then((d) => {
                   const url = d.urls;
-                  console.log("url=====>", url);
                   axios(url, {
                     method: "PUT",
                     data: file,

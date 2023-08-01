@@ -149,7 +149,7 @@ export default function AddProduct() {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
     if (category && category !== "F&B" && sub_category) {
-      let category_data =  allProperties[category]
+      let category_data =  allProperties[category];
       let properties = category_data?.hasOwnProperty(sub_category) ? category_data[sub_category] : (category_data["default"] || []);
       let variants = properties?.filter(
         (property) => property.variationAllowed
@@ -277,6 +277,7 @@ export default function AddProduct() {
             subCategory={categoryForm.formValues?.productSubcategory1}
             attributes={attributes}
             variants={variants}
+            variationOn={variationOn}
             selectedVariantNames={getSelectedVariantNames()}
           />
         );

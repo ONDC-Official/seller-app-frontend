@@ -293,9 +293,8 @@ const InviteProvider = () => {
   };
 
   const handleSubmit = () => {
-    console.log("VALIDATE", validate());
     if (validate()) {
-      step == 4 ? sendInvite() : handleContinue();
+      step === 4 ? sendInvite() : handleContinue();
     }
   };
 

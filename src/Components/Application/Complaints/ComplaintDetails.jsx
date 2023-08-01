@@ -362,7 +362,7 @@ function OppositeContentTimeline(data) {
             <TimelineContent>
               <div className="flex items-center">
                 <p className="text-base font-semibold mr-2">{x.respondent_action}:</p>
-                <p className="text-md font-normal"> {x.remarks}</p>
+                <p className="text-md font-normal"> {x.short_desc}</p>
               </div>
               <div className="flex items-center">
                 <p className="text-base font-semibold mr-2">Updated by:</p>

@@ -470,7 +470,6 @@ const ProviderInitialSteps = () => {
     delete data["StoreTimeType"];
     delete data["tempURL"];
 
-    console.log("DATA==========>", data);
     const url = `/api/v1/organizations/${org._id}/storeDetails`;
     try {
       const res = await postCall(url, data);
@@ -504,7 +503,6 @@ const ProviderInitialSteps = () => {
   }, [form2Values]);
 
   const checkDisabled = () => {
-    console.log("form2Values=====>", form2Values);
     if (step == 1) {
       return false;
     } else if (

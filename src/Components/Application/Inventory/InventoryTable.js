@@ -70,7 +70,7 @@ export default function InventoryTable(props) {
           </Button>
         </Tooltip>
         <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <Link to="/application/add-products" state={{ productId: row._id, productCategory: row.productCategory }}>
+          <Link to="/application/add-products" state={{ productId: row._id, productCategory: row.productCategory, productSubCategory: row.productSubcategory1 }}>
             <MenuItem>Edit</MenuItem>
           </Link>
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
