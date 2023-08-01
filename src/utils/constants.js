@@ -10,10 +10,12 @@ export const MAX_STRING_LENGTH_13 = 13;
 
 export const PRODUCT_CATEGORY = {
     "Grocery": "Grocery",
+    "F&B": "F&B",
+    "Home & Decor": "Home & Decor",
+    "Health & Wellness": "Health & Wellness",
+    "Electronics": "Electronics",
     "Beauty & Personal Care": "Beauty & Personal Care",
     "Fashion": "Fashion",
-    "Home and Decor": "Home and Decor",
-    "F&B": "F&B",
 }
 
 export const PRODUCT_SUBCATEGORY = {
@@ -84,7 +86,7 @@ export const PRODUCT_SUBCATEGORY = {
         {value: "Kid's Eyewear", key: "Kid's Eyewear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {value: "kids Kid's Bags & Luggage", key: "Kid's Bags & Luggage", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
     ],
-    "Home and Decor": [
+    "Home & Decor": [
         {value: 'Home Decor', key: 'Home Decor', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {value: 'Home Furnishings', key: 'Home Furnishings', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {value: 'Furniture', key: 'Furniture', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
@@ -107,7 +109,44 @@ export const PRODUCT_SUBCATEGORY = {
         {value: 'Desserts', key: 'Desserts', protocolKey: ''},
         {value: 'Bakes & Cakes', key: 'Bakes & Cakes', protocolKey: ''},
         {value: 'Beverages (MTO)', key: 'Beverages (MTO)', protocolKey: ''},
-    ]
+    ],
+    "Electronics": [
+        {value: "Audio", key: "Audio", protocolKey: ""},
+        {value: "Camera and Camcorder",key: "Camera and Camcorder", protocolKey: ""},
+        {value: "Computer Peripheral", key: "Computer Peripheral", protocolKey: ""},
+        {value: "Desktop and Laptop", key: "Desktop and Laptop", protocolKey: ""},
+        {value: "Earphone", key: "Earphone", protocolKey: ""},
+        {value: "Gaming", key: "Gaming", protocolKey: ""},
+        {value: "Headphone", key: "Headphone", protocolKey: ""},
+        {value: "Mobile Phone", key: "Mobile Phone", protocolKey: ""},
+        {value: "Mobile Accessories", key: "Mobile Accessories", protocolKey: ""},
+        {value: "Safety Security", key: "Safety Security", protocolKey: ""},
+        {value: "Smart Watches", key: "Smart Watches", protocolKey: ""},
+        {value: "Speaker", key: "Speaker", protocolKey: ""},
+        {value: "Television", key: "Television", protocolKey: ""},
+        {value: "Video", key: "Video", protocolKey: ""},
+        {value: "Air Conditioning and Air Cleaners", key: "Air Conditioning and Air Cleaners", protocolKey: ""},
+        {value: "Health, Home and Personal Care", key: "Health, Home and Personal Care", protocolKey: ""},
+        {value: "Heaters", key: "Heaters", protocolKey: ""},
+        {value: "Kitchen Appliances", key: "Kitchen Appliances", protocolKey: ""},
+        {value: "Lighting & Electric Fans", key: "Lighting & Electric Fans", protocolKey: ""},
+        {value: "Refrigerators and Freezers", key: "Refrigerators and Freezers", protocolKey: ""},
+        {value: "Vacuum Cleaners", key: "Vacuum Cleaners", protocolKey: ""},
+        {value: "Washing Machines and Accessories", key: "Washing Machines and Accessories", protocolKey: ""},
+        {value: "Water Purifiers and Coolers", key: "Water Purifiers and Coolers", protocolKey: ""},
+        {value: "Inverter & Stabilizer", key: "Inverter & Stabilizer", protocolKey: ""
+        }
+      ],
+    "Health & Wellness": [
+        {key: "Pain Relieving Ointments", value: "Pain Relieving Ointments", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Nutrition and Supplements", value: "Nutrition and Supplements", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Personal and Baby Care", value: "Personal and Baby Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Sexual Wellness", value: "Sexual Wellness", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Gastric and Other Concerns", value: "Gastric and Other Concerns", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Covid Essentials", value: "Covid Essentials", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Diabetes Control", value: "Diabetes Control", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {key: "Health Devices", value: "Health Devices", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"}
+      ]
 };
 
 export const FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY = {

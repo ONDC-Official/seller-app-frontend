@@ -163,7 +163,7 @@ export const allProperties = {
             {'name':'Maximum Size','type':'input','example':'', 'variationAllowed':true} ,
         ],
     },
-    'Home and Decor':{
+    'Home & Decor':{
         'Home Decor':[
             {'name':'Size','type':'input','example':'small', 'variationAllowed':true},
             {'name':'Style','type':'input','example':'modern', 'variationAllowed':true},
@@ -236,16 +236,15 @@ export const allProperties = {
             {'name':'Shape','type':'input','example':'Round', 'variationAllowed':true},
         ],
     },
-    'Health and Wellness':{
-        'Pain Relieving Ointments':[
-            {'name':'Style','type':'input','example':'Art Deco', 'variationAllowed':true},
-            {'name':'Material Type','type':'input','example':'Metal', 'variationAllowed':true},
+    'Health & Wellness':{
+        'default': [
             {'name':'Size','type':'input','example':'Large', 'variationAllowed':true},
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
-            {'name':'Model','type':'input','example':'AB-12', 'variationAllowed':true},
-            {'name':'Manufacturer Part Number','type':'float','example':'A-112', 'variationAllowed':true},
-            {'name':'Color','type':'input','example':'Grey', 'variationAllowed':true},
-            {'name':'PPU Count','type':'number','example':'6', 'variationAllowed':true},
+        ],
+        'Pain Relieving Ointments':[
+            {'name':'Style','type':'input','example':'Art Deco', 'variationAllowed':true},
+            {'name':'Size','type':'input','example':'Large', 'variationAllowed':true},
+            {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
         ],
         'Nutrition and Supplements':[
             {'name':'Flavour','type':'input','example':'Strawberry', 'variationAllowed':true},
@@ -254,8 +253,8 @@ export const allProperties = {
             {'name':'Number of Items','type':'number','example':'6', 'variationAllowed':true},
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
             {'name':'Color','type':'input','example':'', 'variationAllowed':true},
-            {'name':'PPU Count','type':'input','example':'6', 'variationAllowed':true},
-            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':true},
+            {'name':'PPU Count','type':'input','example':'6', 'variationAllowed':false},
+            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':false},
         ],
         'Personal and Baby Care':[
             {'name':'Scent','type':'input','example':'musk', 'variationAllowed':true},
@@ -264,7 +263,7 @@ export const allProperties = {
             {'name':'Itrm Form','type':'input','example':'Cream', 'variationAllowed':true},
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
             {'name':'PPU Count','type':'input','example':'6', 'variationAllowed':true},
-            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':true},
+            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':false},
         ],
         'Sexual Wellness':[
             {'name':'Scent','type':'input','example':'musk', 'variationAllowed':true},
@@ -273,7 +272,7 @@ export const allProperties = {
             {'name':'Item Form','type':'input','example':'Cream', 'variationAllowed':true},
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
             {'name':'PPU Count','type':'input','example':'6', 'variationAllowed':true},
-            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':true},
+            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':false},
         ],
         'Gastric and Other Concerns':[
             {'name':'Flavour','type':'input','example':'Strawberry', 'variationAllowed':true},
@@ -283,7 +282,7 @@ export const allProperties = {
             {'name':'Item Weight','type':'input','example':'5','unit':unitWeight},
             {'name':'Color','type':'input','example':'', 'variationAllowed':true},
             {'name':'PPU Count','type':'input','example':'6', 'variationAllowed':true},
-            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':true},
+            {'name':'Model','type':'input','example':'EEPL 456', 'variationAllowed':false},
         ],
         'Covid Essentials':[
             {'name':'Size','type':'input','example':'small', 'variationAllowed':true},
@@ -295,7 +294,7 @@ export const allProperties = {
             {'name':'Unit Count','type':'number','example':'4', 'variationAllowed':true},
             {'name':'Color','type':'input','example':'', 'variationAllowed':true},
             {'name':'Team Name','type':'input','example':'Royal', 'variationAllowed':true},
-            {'name':'Item Shape','type':'input','example':'Molded cup', 'variationAllowed':true},
+            {'name':'Item Shape','type':'input','example':'Molded cup', 'variationAllowed':false},
         ],
         'Diabetes Control':[
             {'name':'Flavour','type':'input','example':'Strawberry', 'variationAllowed':true},
