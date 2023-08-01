@@ -514,7 +514,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     formErrors.deliveryMobile =
       supportedFulfillments.delivery != false &&
       (fulfillmentDetails.deliveryDetails.deliveryMobile?.trim() === ""
-        ? "Support Mobile Number is required"
+        ? "Mobile Number is required"
         : !isPhoneNoValid(fulfillmentDetails.deliveryDetails.deliveryMobile)
         ? "Please enter a valid mobile number"
         : "");
@@ -530,7 +530,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     formErrors.selfPickupMobile =
       supportedFulfillments.selfPickup != false &&
       (fulfillmentDetails.selfPickupDetails.selfPickupMobile?.trim() === ""
-        ? "Support Mobile Number is required"
+        ? "Mobile Number is required"
         : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails.selfPickupMobile)
         ? "Please enter a valid mobile number"
         : "");
@@ -538,35 +538,46 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     if (supportedFulfillments.deliveryAndSelfPickup) {
       formErrors.deliveryAndSelfPickupDetails = {};
 
-      formErrors.deliveryAndSelfPickupDetails.deliveryEmail =
-        fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail.trim() === ""
-          ? "Delivery Email is required"
-          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail)
-          ? "Please enter a valid email address"
-          : "";
+      const deliveryAndSelfPickupDetails = fulfillmentDetails?.deliveryAndSelfPickupDetails || {};
+      const deliveryEmail = deliveryAndSelfPickupDetails.deliveryEmail?.trim();
+      const deliveryMobile = deliveryAndSelfPickupDetails.deliveryMobile?.trim();
+      const selfPickupEmail = deliveryAndSelfPickupDetails.selfPickupEmail?.trim();
+      const selfPickupMobile = deliveryAndSelfPickupDetails.selfPickupMobile?.trim();
 
-      formErrors.deliveryAndSelfPickupDetails.deliveryMobile =
-        fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile?.trim() === ""
-          ? "Support Mobile Number is required"
-          : !isPhoneNoValid(fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile)
-          ? "Please enter a valid mobile number"
-          : "";
+      formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(deliveryEmail)
+        ? "Please enter a valid email address"
+        : "";
 
-      formErrors.deliveryAndSelfPickupDetails.selfPickupEmail =
-        fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail.trim() === ""
-          ? "Delivery Email is required"
-          : !isEmailValid(fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail)
-          ? "Please enter a valid email address"
-          : "";
+      formErrors.deliveryAndSelfPickupDetails.deliveryMobile = !deliveryMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(deliveryMobile)
+        ? "Please enter a valid mobile number"
+        : "";
 
-      formErrors.deliveryAndSelfPickupDetails.selfPickupMobile =
-        fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile?.trim() === ""
-          ? "Support Mobile Number is required"
-          : !isPhoneNoValid(fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile)
-          ? "Please enter a valid mobile number"
-          : "";
+      formErrors.deliveryAndSelfPickupDetails.selfPickupEmail = !selfPickupEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(selfPickupEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupMobile = !selfPickupMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(selfPickupMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+      // Check if all nested properties are empty, then delete the entire object from formErrors
+      if (
+        Object.keys(formErrors.deliveryAndSelfPickupDetails).every(
+          (key) => formErrors.deliveryAndSelfPickupDetails[key] === ""
+        )
+      ) {
+        delete formErrors.deliveryAndSelfPickupDetails;
+      }
     } else {
-      formErrors.deliveryAndSelfPickupDetails = {};
+      delete formErrors.deliveryAndSelfPickupDetails;
     }
 
     if (storeStatus === "closed") {
@@ -597,6 +608,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   };
 
   const onUpdate = () => {
+    console.log(validate());
     if (anyChangeInData && validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
@@ -669,16 +681,18 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
-      postCall(url, payload)
-        .then((resp) => {
-          cogoToast.success("Store details updated successfully");
-          getOrgDetails(provider_id);
-          navigate("/application/inventory");
-        })
-        .catch((error) => {
-          console.log(error);
-          cogoToast.error(error.response.data.error);
-        });
+
+      console.log("Payload", payload);
+      // postCall(url, payload)
+      //   .then((resp) => {
+      //     cogoToast.success("Store details updated successfully");
+      //     getOrgDetails(provider_id);
+      //     navigate("/application/inventory");
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     cogoToast.error(error.response.data.error);
+      //   });
     }
   };
 

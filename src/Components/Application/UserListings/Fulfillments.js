@@ -83,8 +83,8 @@ const Fulfillments = (props) => {
         <RenderInput
           item={{
             ...field,
-            error: errors?.["deliveryAndSelfPickupDetails"][field?.id] ? true : false,
-            helperText: errors?.["deliveryAndSelfPickupDetails"][field.id] || "",
+            error: errors?.["deliveryAndSelfPickupDetails"]?.[field?.id] ? true : false,
+            helperText: errors?.["deliveryAndSelfPickupDetails"]?.[field.id] || "",
             args: { name: "deliveryAndSelfPickupDetails" },
           }}
           state={fulfillmentDetails}
