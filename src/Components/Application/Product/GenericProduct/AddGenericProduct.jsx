@@ -417,7 +417,6 @@ const AddGenericProduct = ({
       product_info_fields = product_info_fields.filter((field) => !fields_to_remove.includes(field));
     }
 
-    console.log(category, category != "Grocery" && category !== "F&B");
     if (category !== "Grocery" && category !== "F&B") {
       product_info_fields = product_info_fields.filter((field) => field !== "vegNonVeg");
     }

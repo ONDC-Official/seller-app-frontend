@@ -356,6 +356,68 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     ],
   });
 
+  const getAvailableFulfillments = (fulfillments) => {
+    let hasF1 = false;
+    let hasF2 = false;
+    let hasF3 = false;
+    let deliveryEmail = "";
+    let deliveryMobile = "";
+    let selfPickupEmail = "";
+    let selfPickupMobile = "";
+    let email_delivery = "";
+    let mobile_delivery = "";
+    let email_self = "";
+    let mobile_self = "";
+
+    fulfillments.forEach((fulfillment) => {
+      if (fulfillment.id === "f1") {
+        hasF1 = true;
+        deliveryEmail = fulfillment.contact.email;
+        deliveryMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f2") {
+        console.log("f2", fulfillment);
+        hasF2 = true;
+        selfPickupEmail = fulfillment.contact.email;
+        selfPickupMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f3") {
+        console.log("f3", fulfillment);
+        hasF3 = true;
+        email_delivery = fulfillment.contact.delivery.email;
+        mobile_delivery = fulfillment.contact.delivery.phone;
+        email_self = fulfillment.contact.pickup.email;
+        mobile_self = fulfillment.contact.pickup.phone;
+      }
+    });
+
+    return {
+      supportedFulfillments: {
+        delivery: hasF1,
+        selfPickup: hasF2,
+        deliveryAndSelfPickup: hasF3,
+      },
+      fulfillmentDetails: {
+        deliveryDetails: {
+          deliveryEmail,
+          deliveryMobile,
+        },
+        selfPickupDetails: {
+          selfPickupEmail,
+          selfPickupMobile,
+        },
+        deliveryAndSelfPickupDetails: {
+          deliveryEmail: email_delivery,
+          deliveryMobile: mobile_delivery,
+          selfPickupEmail: email_self,
+          selfPickupMobile: mobile_self,
+        },
+      },
+    };
+  };
+
   const getOrgDetails = async (id) => {
     try {
       const url = `/api/v1/organizations/${id}`;
@@ -416,12 +478,16 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
       };
 
-      // if(storeData.categories && storeData.categories.length > 0){
-      //   storeData.categories = storeData.categories.map((item) => {
-      //     const findFromList = categoriesList.find((catItem) => catItem.value === item);
-      //     return findFromList;
-      //   })
-      // }else{}
+      const fulfillments = res.providerDetail.storeDetails.fulfillments;
+      const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
+
+      setSupportedFulfillments(supportedFulfillments);
+
+      setFulfillmentDetails((prevDetails) => ({
+        ...prevDetails,
+        ...fulfillmentDetails,
+      }));
+
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
@@ -501,7 +567,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isNumberOnly(storeDetails?.radius)
         ? "Please enter only digit"
         : "";
-    formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
@@ -844,7 +910,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       type: "input",
                       error: errors?.["logisticsBppId"] ? true : false,
                       helperText: errors?.["logisticsBppId"] || "",
-                      required: true,
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}

@@ -68,7 +68,7 @@ const Fulfillments = (props) => {
             helperText: errors?.[field.id] || "",
             args: { name: "selfPickupDetails" },
           }}
-          state={fulfillmentDetails}
+          state={fulfillmentDetails["selfPickupDetails"]}
           stateHandler={setFulfillmentDetails}
           key={field?.id}
           handleChange={handleChange}
@@ -87,7 +87,7 @@ const Fulfillments = (props) => {
             helperText: errors?.["deliveryAndSelfPickupDetails"]?.[field.id] || "",
             args: { name: "deliveryAndSelfPickupDetails" },
           }}
-          state={fulfillmentDetails}
+          state={fulfillmentDetails["deliveryAndSelfPickupDetails"]}
           stateHandler={setFulfillmentDetails}
           key={field?.id}
           handleChange={handleChange}
