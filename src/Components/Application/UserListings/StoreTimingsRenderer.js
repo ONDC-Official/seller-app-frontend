@@ -15,17 +15,21 @@ const StoreTimingsRenderer = ({ storeTimings, setStoreTimings }) => {
     setStoreTimings([...storeTimings]);
   };
 
+  const handleRemoveDaysAndTimings = (i) => {
+    storeTimings.splice(i, 1);
+    setStoreTimings([...storeTimings]);
+  };
+
   return (
     <>
       {storeTimings.map((storeTiming, index) => (
         <StoreTimings
           storeTiming={storeTiming}
           setStoreTiming={(data) => handleStoreTiming(data, index)}
+          handleRemoveDaysAndTimings={() => handleRemoveDaysAndTimings(index)}
         />
       ))}
-      <div
-        style={{marginTop: "7px", marginBottom: "10px" }}
-      >
+      <div style={{ marginTop: "7px", marginBottom: "10px" }}>
         <MyButton
           variant="outlined"
           type="button"
