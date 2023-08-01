@@ -504,36 +504,40 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
 
     formErrors.deliveryEmail =
-      supportedFulfillments.delivery != false &&
-      (fulfillmentDetails.deliveryDetails.deliveryEmail.trim() === ""
-        ? "Delivery Email is required"
-        : !isEmailValid(fulfillmentDetails.deliveryDetails.deliveryEmail)
-        ? "Please enter a valid email address"
-        : "");
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.deliveryDetails?.deliveryEmail)
+          ? "Please enter a valid email address"
+          : ""
+        : "";
 
     formErrors.deliveryMobile =
-      supportedFulfillments.delivery != false &&
-      (fulfillmentDetails.deliveryDetails.deliveryMobile?.trim() === ""
-        ? "Mobile Number is required"
-        : !isPhoneNoValid(fulfillmentDetails.deliveryDetails.deliveryMobile)
-        ? "Please enter a valid mobile number"
-        : "");
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.deliveryDetails?.deliveryMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
 
     formErrors.selfPickupEmail =
-      supportedFulfillments.selfPickup != false &&
-      (fulfillmentDetails.selfPickupDetails.selfPickupEmail.trim() === ""
-        ? "Delivery Email is required"
-        : !isEmailValid(fulfillmentDetails.selfPickupDetails.selfPickupEmail)
-        ? "Please enter a valid email address"
-        : "");
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.selfPickupDetails?.selfPickupEmail)
+          ? "Please enter a valid email address"
+          : ""
+        : "";
 
     formErrors.selfPickupMobile =
-      supportedFulfillments.selfPickup != false &&
-      (fulfillmentDetails.selfPickupDetails.selfPickupMobile?.trim() === ""
-        ? "Mobile Number is required"
-        : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails.selfPickupMobile)
-        ? "Please enter a valid mobile number"
-        : "");
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails?.selfPickupMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
 
     if (supportedFulfillments.deliveryAndSelfPickup) {
       formErrors.deliveryAndSelfPickupDetails = {};
@@ -607,9 +611,55 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return true;
   };
 
+  const getFulfillmentsPayloadFormat = () => {
+    let fulfillments = [];
+    if (supportedFulfillments.delivery) {
+      let deliveryDetails = {
+        id: "f1",
+        type: "delivery",
+        contact: {
+          email: fulfillmentDetails.deliveryDetails.deliveryEmail,
+          phone: fulfillmentDetails.deliveryDetails.deliveryMobile,
+        },
+      };
+      fulfillments.push(deliveryDetails);
+    }
+
+    if (supportedFulfillments.selfPickup) {
+      let selfPickupDetails = {
+        id: "f2",
+        type: "pickup",
+        contact: {
+          email: fulfillmentDetails.selfPickupDetails.selfPickupEmail,
+          phone: fulfillmentDetails.selfPickupDetails.selfPickupMobile,
+        },
+      };
+      fulfillments.push(selfPickupDetails);
+    }
+
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      let deliveryAndSelfPickupDetails = {
+        id: "f3",
+        type: "delivery&pickup",
+        contact: {
+          delivery: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile,
+          },
+          pickup: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile,
+          },
+        },
+      };
+      fulfillments.push(deliveryAndSelfPickupDetails);
+    }
+
+    return fulfillments;
+  };
+
   const onUpdate = () => {
-    console.log(validate());
-    if (anyChangeInData && validate()) {
+    if (anyChangeInData && !validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
@@ -649,6 +699,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         iso8601 = duration.toISOString();
       } else {
       }
+
+      let fulfillments = getFulfillmentsPayloadFormat();
+
       let payload = {
         categories,
         logo: logo,
@@ -660,6 +713,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email,
           mobile,
         },
+        fulfillments,
         storeTiming: {
           schedule: {
             holidays: storeDetails.holidays,
@@ -682,17 +736,16 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
       }
 
-      console.log("Payload", payload);
-      // postCall(url, payload)
-      //   .then((resp) => {
-      //     cogoToast.success("Store details updated successfully");
-      //     getOrgDetails(provider_id);
-      //     navigate("/application/inventory");
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     cogoToast.error(error.response.data.error);
-      //   });
+      postCall(url, payload)
+        .then((resp) => {
+          cogoToast.success("Store details updated successfully");
+          getOrgDetails(provider_id);
+          navigate("/application/inventory");
+        })
+        .catch((error) => {
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
     }
   };
 
