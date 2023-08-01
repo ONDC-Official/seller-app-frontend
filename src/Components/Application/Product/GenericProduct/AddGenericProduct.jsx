@@ -105,6 +105,7 @@ const AddGenericProduct = ({
     monthYearOfManufacturePackingImport: "",
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
+    countryOfOrigin: "",
   };
 
   const productInfoForm = useForm({
@@ -117,7 +118,7 @@ const AddGenericProduct = ({
     setTabValue(newValue);
   };
 
-  const formatAttributesToFieldsDataFormat = (variants, required= false) => {
+  const formatAttributesToFieldsDataFormat = (variants, required = false) => {
     return variants.map((variant) => {
       return {
         id: variant.name,
@@ -432,7 +433,9 @@ const AddGenericProduct = ({
   const getProductInfoFields = () => {
     let product_info_fields = [...productDetailsFields];
     let p_category = state?.productId ? state?.productCategory : category;
-    let p_sub_category = state?.productId ? state?.productSubCategory : subCategory;
+    let p_sub_category = state?.productId
+      ? state?.productSubCategory
+      : subCategory;
     let protocolKey = PRODUCT_SUBCATEGORY[p_category]?.filter(
       (sub_category) => sub_category.value === p_sub_category
     )[0].protocolKey;
@@ -495,6 +498,10 @@ const AddGenericProduct = ({
         : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
+    formErrors.countryOfOrigin =
+      formValues?.countryOfOrigin?.trim() === ""
+        ? "Country of origin is not allowed to be empty"
+        : "";
     formErrors.GST_Percentage =
       formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
@@ -511,13 +518,6 @@ const AddGenericProduct = ({
     //     : formValues?.UOM?.length > MAX_STRING_LENGTH
     //     ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
     //     : "";
-    if (productInfoFields.includes("packQty")) {
-      formErrors.packQty = !formValues?.packQty
-        ? "Please enter a valid Measurement Quantity"
-        : !isNumberOnly(formValues?.packQty)
-        ? "Please enter only digit"
-        : "";
-    }
     formErrors.length =
       formValues?.length?.trim() === ""
         ? "Length is required"

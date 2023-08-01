@@ -1,3 +1,4 @@
+import { countries } from "../../../Constants/countries";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 export const allProductFieldDetails = [
@@ -137,8 +138,8 @@ export const allProductFieldDetails = [
   },
   {
     id: "barcode",
-    title: "Barcode",
-    placeholder: "Barcode",
+    title: "SKU",
+    placeholder: "SKU",
     type: "number",
     maxLength: 12,
     required: true,
@@ -316,6 +317,13 @@ export const allProductFieldDetails = [
     file_type: "product_image",
     required: true,
   },
+  {
+    id: "countryOfOrigin",
+    title: "County Of Origin",
+    type: "select",
+    options: countries,
+    required: true,
+  },
 ];
 
 export const categoryFields = ["productCategory", "productSubcategory1"];
@@ -323,6 +331,9 @@ export const categoryFields = ["productCategory", "productSubcategory1"];
 export const productDetailsFields = [
   "productCode",
   "productName",
+  "description",
+  "longDescription",
+  "countryOfOrigin",
   "HSNCode",
   "GST_Percentage",
   "maxAllowedQty",
@@ -336,8 +347,6 @@ export const productDetailsFields = [
   "nutritionalInfo",
   "additiveInfo",
   "instructions",
-  "longDescription",
-  "description",
   "isReturnable",
   "isVegetarian",
   "isCancellable",
@@ -358,8 +367,6 @@ export const variationCommonFields = [
   "quantity",
   "barcode",
   "images",
-]
+];
 
-export const UOMVariationFields = [
-  "UOMValue"
-]
+export const UOMVariationFields = ["UOMValue"];

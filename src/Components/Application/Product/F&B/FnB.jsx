@@ -82,6 +82,7 @@ const FnB = (props) => {
     monthYearOfManufacturePackingImport: "",
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
+    countryOfOrigin: "",
   };
 
   const productInfoForm = useForm({
@@ -100,29 +101,45 @@ const FnB = (props) => {
   };
 
   const getCustomizationName = (customizationId) => {
-    const customization = customizations.find((customization) => customization.id === customizationId);
+    const customization = customizations.find(
+      (customization) => customization.id === customizationId
+    );
     return customization ? customization.name : "";
   };
 
   const validateProductInfoForm = () => {
-    const selectedCustomizations = customizations.filter((customization) => customization.parent);
+    const selectedCustomizations = customizations.filter(
+      (customization) => customization.parent
+    );
 
     if (customizationGroups.length > 0) {
       // Validation check: If customization groups are present, check that all groups have at least one customization.
-      const groupIdsWithCustomizations = new Set(selectedCustomizations.map((customization) => customization.parent));
+      const groupIdsWithCustomizations = new Set(
+        selectedCustomizations.map((customization) => customization.parent)
+      );
       const groupIds = new Set(customizationGroups.map((group) => group.id));
 
       if (groupIdsWithCustomizations.size < groupIds.size) {
-        const missingGroups = [...groupIds].filter((groupId) => !groupIdsWithCustomizations.has(groupId));
-        const missingGroupNames = missingGroups.map((groupId) => getCustomizationGroupName(groupId));
-        cogoToast.error(`Please add at least one customization for groups: ${missingGroupNames.join(", ")}.`);
+        const missingGroups = [...groupIds].filter(
+          (groupId) => !groupIdsWithCustomizations.has(groupId)
+        );
+        const missingGroupNames = missingGroups.map((groupId) =>
+          getCustomizationGroupName(groupId)
+        );
+        cogoToast.error(
+          `Please add at least one customization for groups: ${missingGroupNames.join(
+            ", "
+          )}.`
+        );
         return;
       }
     }
 
     // Validation check: If any customization has no child property, it must have a price value greater than 0.
     const invalidCustomizations = selectedCustomizations.filter(
-      (customization) => !customization.child && (!customization.price || customization.price <= 0)
+      (customization) =>
+        !customization.child &&
+        (!customization.price || customization.price <= 0)
     );
 
     if (invalidCustomizations.length > 0) {
@@ -133,7 +150,9 @@ const FnB = (props) => {
       });
 
       cogoToast.error(
-        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(", ")}.`
+        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(
+          ", "
+        )}.`
       );
       return;
     }
@@ -159,7 +178,12 @@ const FnB = (props) => {
         : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
-    formErrors.GST_Percentage = formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
+    formErrors.countryOfOrigin =
+      formValues?.countryOfOrigin?.trim() === ""
+        ? "Country of origin is not allowed to be empty"
+        : "";
+    formErrors.GST_Percentage =
+      formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"
       : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10
@@ -174,11 +198,6 @@ const FnB = (props) => {
         : formValues?.UOM?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.packQty = !formValues?.packQty
-      ? "Please enter a valid Measurement Quantity"
-      : !isNumberOnly(formValues?.packQty)
-      ? "Please enter only digit"
-      : "";
     formErrors.length =
       formValues?.length?.trim() === ""
         ? "Length is required"
@@ -217,7 +236,10 @@ const FnB = (props) => {
         : formValues?.manufacturerName?.length > MAX_STRING_LENGTH_50
         ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
         : "";
-    formErrors.manufacturedDate = formValues?.manufacturedDate?.trim() === "" ? "Manufactured date is required" : "";
+    formErrors.manufacturedDate =
+      formValues?.manufacturedDate?.trim() === ""
+        ? "Manufactured date is required"
+        : "";
     formErrors.nutritionalInfo =
       formValues?.nutritionalInfo?.trim() === ""
         ? "Nutritional info is required"
@@ -263,13 +285,15 @@ const FnB = (props) => {
     formErrors.commonOrGenericNameOfCommodity =
       formValues?.commonOrGenericNameOfCommodity?.trim() === ""
         ? "Common or generic name of commodity is required"
-        : formValues?.commonOrGenericNameOfCommodity?.length > MAX_STRING_LENGTH_50
+        : formValues?.commonOrGenericNameOfCommodity?.length >
+          MAX_STRING_LENGTH_50
         ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
         : "";
     formErrors.monthYearOfManufacturePackingImport =
       formValues?.monthYearOfManufacturePackingImport?.trim() === ""
         ? "Month year of manufacture packing import is required"
-        : formValues?.monthYearOfManufacturePackingImport?.length > MAX_STRING_LENGTH
+        : formValues?.monthYearOfManufacturePackingImport?.length >
+          MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
     formErrors.importerFSSAILicenseNo =
@@ -291,9 +315,14 @@ const FnB = (props) => {
 
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-      const selectedSubCatObject = subCatList?.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      const selectedSubCatObject = subCatList?.find(
+        (subitem) => subitem.value === formValues?.productSubcategory1
+      );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        const hiddenFields =
+          FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
+            selectedSubCatObject.protocolKey
+          ];
         hiddenFields?.forEach((field) => {
           formErrors[field] = "";
         });
@@ -325,13 +354,23 @@ const FnB = (props) => {
   const getProduct = () => {
     getCall(`/api/v1/products/${state?.productId}`)
       .then((resp) => {
-        resp.commonDetails["uploaded_urls"] = resp?.commonDetails.images?.map((i) => i?.url) || [];
-        resp.commonDetails["images"] = resp?.commonDetails.images?.map((i) => i?.path) || [];
+        resp.commonDetails["uploaded_urls"] =
+          resp?.commonDetails.images?.map((i) => i?.url) || [];
+        resp.commonDetails["images"] =
+          resp?.commonDetails.images?.map((i) => i?.path) || [];
 
-        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable ? "true" : "false";
-        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
-        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
-        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
+        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable
+          ? "true"
+          : "false";
+        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable
+          ? "true"
+          : "false";
+        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian
+          ? "true"
+          : "false";
+        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod
+          ? "true"
+          : "false";
 
         // Create a duration object from the ISO 8601 string
         const duration = moment.duration(resp.returnWindow);
@@ -356,21 +395,32 @@ const FnB = (props) => {
 
   const addProduct = async () => {
     try {
-      let product_data = Object.assign({}, formValues, productInfoForm.formValues);
+      let product_data = Object.assign(
+        {},
+        formValues,
+        productInfoForm.formValues
+      );
       let api_url = "/api/v1/products";
 
       product_data.productCategory = category;
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
       product_data.returnWindow = iso8601;
-      product_data.isCancellable = product_data.isCancellable === "true" ? true : false;
-      product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
-      product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
-      product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
+      product_data.isCancellable =
+        product_data.isCancellable === "true" ? true : false;
+      product_data.isReturnable =
+        product_data.isReturnable === "true" ? true : false;
+      product_data.isVegetarian =
+        product_data.isVegetarian === "true" ? true : false;
+      product_data.availableOnCod =
+        product_data.availableOnCod === "true" ? true : false;
 
       delete product_data["uploaded_urls"];
 
@@ -395,9 +445,14 @@ const FnB = (props) => {
     try {
       let product_data = Object.assign({}, formValues);
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      const selectedSubCatObject = subCatList.find(
+        (subitem) => subitem.value === formValues?.productSubcategory1
+      );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        const hiddenFields =
+          FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
+            selectedSubCatObject.protocolKey
+          ];
         hiddenFields.forEach((field) => {
           delete product_data[field];
         });
@@ -405,7 +460,10 @@ const FnB = (props) => {
       }
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
@@ -458,7 +516,11 @@ const FnB = (props) => {
     return (
       <AddProductInfo
         allFields={allFields}
-        fields={[...productDetailsFields, ...UOMVariationFields, ...variationCommonFields]}
+        fields={[
+          ...productDetailsFields,
+          ...UOMVariationFields,
+          ...variationCommonFields,
+        ]}
         category={category}
         subCategory={subCategory}
         state={state}
@@ -474,17 +536,27 @@ const FnB = (props) => {
     <Box sx={{ width: "100%", typography: "body1" }}>
       <TabContext value={tabValue}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleTabChange} textColor={highlightedTabColor} centered>
+          <TabList
+            onChange={handleTabChange}
+            textColor={highlightedTabColor}
+            centered
+          >
             <Tab
               sx={{
-                color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none",
+                color:
+                  tabErrors[0] && Object.keys(errors).length > 0
+                    ? "red"
+                    : "none",
               }}
               label="Product Info"
               value="1"
             />
             <Tab
               sx={{
-                color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none",
+                color:
+                  tabErrors[1] && Object.keys(errors).length > 0
+                    ? "red"
+                    : "none",
               }}
               label="Customizations"
               value="2"
