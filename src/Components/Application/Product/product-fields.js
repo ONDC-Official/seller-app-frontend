@@ -370,8 +370,8 @@ export const productDetailsFields = [
   "monthYearOfManufacturePackingImport",
   "importerFSSAILicenseNo",
   "brandOwnerFSSAILicenseNo",
-  "UOM",
   "fulfillmentOption",
+  "UOM",
 ];
 
 export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
