@@ -192,11 +192,11 @@ const FnB = (props) => {
         ? "Fulfillment Option is required"
         : "";
 
-    formErrors.packQty = !formValues?.packQty
-      ? "Please enter a valid Measurement Quantity"
-      : !isNumberOnly(formValues?.packQty)
-      ? "Please enter only digit"
-      : "";
+    //  formErrors.packQty = !formValues?.packQty
+    //    ? "Please enter a valid Measurement Quantity"
+    //    : !isNumberOnly(formValues?.packQty)
+    //    ? "Please enter only digit"
+    //    : "";
     formErrors.length =
       formValues?.length?.trim() === ""
         ? "Length is required"
@@ -346,11 +346,11 @@ const FnB = (props) => {
 
   const validate = () => {
     let product_info_form_validity = validateProductInfoForm();
-    let product_timing_form_validity = getStoreTimesErrors();
+    //  let product_timing_form_validity = getStoreTimesErrors();
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
-      prev_state[3] = !product_timing_form_validity;
+      // prev_state[3] = !product_timing_form_validity;
       return [...prev_state];
     });
 
@@ -483,6 +483,7 @@ const FnB = (props) => {
   };
 
   const handleSubmit = () => {
+    console.log("ADD", errors);
     if (validate()) {
       state?.productId ? updateProduct() : addProduct();
     }

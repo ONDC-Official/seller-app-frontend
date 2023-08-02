@@ -327,6 +327,8 @@ export const allProductFieldDetails = [
     required: true,
     options: [],
     disableClearable: true,
+  },
+  {
     id: "countryOfOrigin",
     title: "County Of Origin",
     type: "select",

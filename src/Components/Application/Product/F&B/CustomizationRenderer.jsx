@@ -30,6 +30,7 @@ const CustomizationRenderer = (props) => {
     UOMValue: "",
     available: "",
     maximum: "",
+    vegNonVeg: "",
   });
 
   // handles change in customizations group data

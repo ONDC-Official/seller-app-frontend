@@ -49,6 +49,21 @@ export const customizationFields = [
     type: "number",
   },
   {
+    id: "vegNonVeg",
+    title: "Veg/Non-Veg/Egg",
+    placeholder: "Select Food Category",
+    type: "select",
+    options: [
+      { key: "Veg", value: "VEG" },
+      { key: "Non Veg", value: "NONVEG" },
+      { key: "Egg", value: "EGG" },
+    ],
+    disableClearable: true,
+    inputStyles: {
+      width: 320,
+    },
+  },
+  {
     id: "parent",
     title: "Parent",
     placeholder: "Enter Customization Name",
