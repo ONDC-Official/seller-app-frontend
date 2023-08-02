@@ -31,6 +31,13 @@ import cogoToast from "cogo-toast";
 import { getCall, postCall, putCall } from "../../../../Api/axios";
 import useCancellablePromise from "../../../../Api/cancelRequest";
 import { allProperties } from "../categoryProperties";
+import StoreTimingsRenderer from "../../UserListings/StoreTimingsRenderer";
+const defaultStoreTimings = [
+  {
+    daysRange: { from: 1, to: 5 },
+    timings: [{ from: "00:00", to: "00:00" }],
+  },
+];
 
 const FnB = (props) => {
   const { category, subCategory } = props;
@@ -39,6 +46,8 @@ const FnB = (props) => {
   const { state } = useLocation();
   const [allFields, setAllFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
+
+  const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
 
   const [customizationGroups, setCustomizationGroups] = useState([]);
   const [customizations, setCustomizations] = useState([]);
@@ -312,6 +321,8 @@ const FnB = (props) => {
         ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
         : "";
 
+    formErrors.storeTimes = getStoreTimesErrors();
+
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
       const selectedSubCatObject = subCatList?.find((subitem) => subitem.value === formValues?.productSubcategory1);
@@ -334,11 +345,26 @@ const FnB = (props) => {
     return valid_form;
   };
 
+  const getStoreTimesErrors = () => {
+    let values = storeTimings.reduce((acc, storeTiming) => {
+      acc.push(storeTiming.daysRange.from);
+      acc.push(storeTiming.daysRange.to);
+      storeTiming.timings.forEach((element) => {
+        acc.push(element.from);
+        acc.push(element.to);
+      });
+      return acc;
+    }, []);
+    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
+  };
+
   const validate = () => {
     let product_info_form_validity = validateProductInfoForm();
+    let product_timing_form_validity = getStoreTimesErrors();
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
+      prev_state[3] = !product_timing_form_validity;
       return [...prev_state];
     });
 
@@ -394,6 +420,7 @@ const FnB = (props) => {
       product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
       product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
       product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
+      product_data.timing = storeTimings;
 
       delete product_data["uploaded_urls"];
 
@@ -404,6 +431,8 @@ const FnB = (props) => {
           customizations,
         },
       };
+
+      console.log(data);
 
       await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
@@ -491,6 +520,19 @@ const FnB = (props) => {
     );
   };
 
+  const renderProductTimings = () => {
+    return (
+      <>
+        <StoreTimingsRenderer
+          errors={errors}
+          storeStatus={"enabled"}
+          storeTimings={storeTimings}
+          setStoreTimings={setStoreTimings}
+        />
+      </>
+    );
+  };
+
   let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
 
   return (
@@ -512,6 +554,13 @@ const FnB = (props) => {
               label="Customizations"
               value="2"
             />
+            <Tab
+              sx={{
+                color: tabErrors[3] && Object.keys(errors).length > 0 ? "red" : "none",
+              }}
+              label="Product Timings"
+              value="3"
+            />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -524,6 +573,9 @@ const FnB = (props) => {
             customizations={customizations}
             setCustomizations={setCustomizations}
           />
+        </TabPanel>
+        <TabPanel value="3">
+          <div className="mt-2 mb-4">{renderProductTimings()}</div>
         </TabPanel>
       </TabContext>
 
