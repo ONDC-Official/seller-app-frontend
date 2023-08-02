@@ -1,21 +1,15 @@
 import React, { useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
-import {
-  areObjectsEqual,
-  isEmailValid,
-  isNumberOnly,
-  isPhoneNoValid,
-} from "../../../utils/validations";
+import { areObjectsEqual, isEmailValid, isNumberOnly, isPhoneNoValid } from "../../../utils/validations";
 import { useEffect } from "react";
 import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
-import { AddOutlined, DeleteOutlined } from "@mui/icons-material";
-import StoreTimings from "./StoreTimings";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
+import Fulfillments from "./Fulfillments";
 
 const providerFields = [
   {
@@ -303,11 +297,34 @@ const defaultStoreTimings = [
 ];
 
 const ProviderDetails = ({ isFromUserListing = false }) => {
-
   const navigate = useNavigate();
   const params = useParams();
 
+  const [supportedFulfillments, setSupportedFulfillments] = useState({
+    delivery: false,
+    selfPickup: false,
+    deliveryAndSelfPickup: false,
+  });
+  const [fulfillmentDetails, setFulfillmentDetails] = useState({
+    deliveryDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+    },
+    selfPickupDetails: {
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
+    deliveryAndSelfPickupDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
+  });
+
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
+  const [storeStatus, setStoreStatus] = useState("enabled");
+  const [temporaryClosedTimings, setTemporaryClosedTimings] = useState({ from: "00:00", to: "00:00" });
   const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
   const [originalStoreTimings, setOriginalStoreTimings] = useState([...defaultStoreTimings]);
   const [providerDetails, setProviderDetails] = useState({});
@@ -325,7 +342,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     ],
   });
 
-
   const [errors, setErrors] = useState(null);
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
@@ -339,6 +355,67 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Pune", value: "pune" },
     ],
   });
+
+  const getAvailableFulfillments = (fulfillments) => {
+    let hasF1 = false;
+    let hasF2 = false;
+    let hasF3 = false;
+    let deliveryEmail = "";
+    let deliveryMobile = "";
+    let selfPickupEmail = "";
+    let selfPickupMobile = "";
+    let email_delivery = "";
+    let mobile_delivery = "";
+    let email_self = "";
+    let mobile_self = "";
+
+    fulfillments?.forEach((fulfillment) => {
+      if (fulfillment.id === "f1") {
+        hasF1 = true;
+        deliveryEmail = fulfillment.contact.email;
+        deliveryMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f2") {
+        console.log("f2", fulfillment);
+        hasF2 = true;
+        selfPickupEmail = fulfillment.contact.email;
+        selfPickupMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f3") {
+        hasF3 = true;
+        email_delivery = fulfillment.contact.delivery.email;
+        mobile_delivery = fulfillment.contact.delivery.phone;
+        email_self = fulfillment.contact.pickup.email;
+        mobile_self = fulfillment.contact.pickup.phone;
+      }
+    });
+
+    return {
+      supportedFulfillments: {
+        delivery: hasF1,
+        selfPickup: hasF2,
+        deliveryAndSelfPickup: hasF3,
+      },
+      fulfillmentDetails: {
+        deliveryDetails: {
+          deliveryEmail,
+          deliveryMobile,
+        },
+        selfPickupDetails: {
+          selfPickupEmail,
+          selfPickupMobile,
+        },
+        deliveryAndSelfPickupDetails: {
+          deliveryEmail: email_delivery,
+          deliveryMobile: mobile_delivery,
+          selfPickupEmail: email_self,
+          selfPickupMobile: mobile_self,
+        },
+      },
+    };
+  };
 
   const getOrgDetails = async (id) => {
     try {
@@ -395,31 +472,25 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
         logo: res?.providerDetail?.storeDetails?.logo?.url || "",
 
-        holidays:
-          res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays ||
-          [],
+        holidays: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
       };
 
-      // if(storeData.categories && storeData.categories.length > 0){
-      //   storeData.categories = storeData.categories.map((item) => {
-      //     const findFromList = categoriesList.find((catItem) => catItem.value === item);
-      //     return findFromList;
-      //   })
-      // }else{}
+      const fulfillments = res.providerDetail.storeDetails.fulfillments;
+      const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
+
+      setSupportedFulfillments(supportedFulfillments);
+
+      setFulfillmentDetails((prevDetails) => ({
+        ...prevDetails,
+        ...fulfillmentDetails,
+      }));
+
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
-      setDefaultStoreDetails(
-        Object.assign({}, JSON.parse(JSON.stringify(storeData)))
-      );
-      setStoreTimings(
-        res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings ||
-          defaultStoreTimings
-      );
-      setOriginalStoreTimings(
-        res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings ||
-          defaultStoreTimings
-      );
+      setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
+      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
+      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
     } catch (error) {
       console.log(error);
     }
@@ -448,9 +519,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       });
       return acc;
     }, []);
-    return values.some((value) => value === "")
-      ? "Please fix all details of timings!"
-      : "";
+    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
   };
 
   const validate = () => {
@@ -467,33 +536,27 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isPhoneNoValid(storeDetails.mobile)
         ? "Please enter a valid mobile number"
         : "";
-    formErrors.categories =
-      storeDetails.categories.length === 0
-        ? "Supported Product Categories are required"
-        : "";
+    formErrors.categories = storeDetails.categories.length === 0 ? "Supported Product Categories are required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
-      formErrors.cities =
-        storeDetails.cities.length === 0 ? "City is required" : "";
+      formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
     } else {
     }
-    formErrors.country =
-      storeDetails.country.trim() === "" ? "Country is required" : "";
-    formErrors.state =
-      storeDetails.state.trim() === "" ? "State is required" : "";
-    formErrors.address_city =
-      storeDetails.address_city.trim() === "" ? "City is required" : "";
-    formErrors.building =
-      storeDetails.building.trim() === "" ? "Building is required" : "";
-    formErrors.area_code =
-      storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
+    formErrors.country = storeDetails.country.trim() === "" ? "Country is required" : "";
+    formErrors.state = storeDetails.state.trim() === "" ? "State is required" : "";
+    formErrors.address_city = storeDetails.address_city.trim() === "" ? "City is required" : "";
+    formErrors.building = storeDetails.building.trim() === "" ? "Building is required" : "";
+    formErrors.area_code = storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
     formErrors.logo = storeDetails.logo.trim() === "" ? "Logo is required" : "";
 
     if (!isFromUserListing) {
-      formErrors.holidays =
-        storeDetails.holidays.length === 0 ? "Holidays are required" : "";
-
-      formErrors.storeTimes = getStoreTimesErrors();
+      if (storeStatus === "enabled") {
+        formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
+        formErrors.storeTimes = getStoreTimesErrors();
+      } else {
+        formErrors.holidays = "";
+        formErrors.storeTimes = "";
+      }
     } else {
     }
 
@@ -503,13 +566,103 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isNumberOnly(storeDetails?.radius)
         ? "Please enter only digit"
         : "";
-    formErrors.logisticsBppId =
-      storeDetails.logisticsBppId.trim() === ""
-        ? "Logistics Bpp Id is required"
+    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+
+    formErrors.deliveryEmail =
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.deliveryDetails?.deliveryEmail)
+          ? "Please enter a valid email address"
+          : ""
         : "";
 
+    formErrors.deliveryMobile =
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.deliveryDetails?.deliveryMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
+
+    formErrors.selfPickupEmail =
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.selfPickupDetails?.selfPickupEmail)
+          ? "Please enter a valid email address"
+          : ""
+        : "";
+
+    formErrors.selfPickupMobile =
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails?.selfPickupMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
+
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      formErrors.deliveryAndSelfPickupDetails = {};
+
+      const deliveryAndSelfPickupDetails = fulfillmentDetails?.deliveryAndSelfPickupDetails || {};
+      const deliveryEmail = deliveryAndSelfPickupDetails.deliveryEmail?.trim();
+      const deliveryMobile = deliveryAndSelfPickupDetails.deliveryMobile?.trim();
+      const selfPickupEmail = deliveryAndSelfPickupDetails.selfPickupEmail?.trim();
+      const selfPickupMobile = deliveryAndSelfPickupDetails.selfPickupMobile?.trim();
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(deliveryEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryMobile = !deliveryMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(deliveryMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupEmail = !selfPickupEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(selfPickupEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupMobile = !selfPickupMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(selfPickupMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+      // Check if all nested properties are empty, then delete the entire object from formErrors
+      if (
+        Object.keys(formErrors.deliveryAndSelfPickupDetails).every(
+          (key) => formErrors.deliveryAndSelfPickupDetails[key] === ""
+        )
+      ) {
+        delete formErrors.deliveryAndSelfPickupDetails;
+      }
+    } else {
+      delete formErrors.deliveryAndSelfPickupDetails;
+    }
+
+    if (storeStatus === "closed") {
+      if (temporaryClosedTimings.from === temporaryClosedTimings.to && temporaryClosedTimings.from !== "Invalid Date") {
+        formErrors.temporaryClosedTimings = "Opening and closing times cannot be the same";
+      } else if (temporaryClosedTimings.from === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid opening time";
+      } else if (temporaryClosedTimings.to === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid closing time";
+      } else {
+        formErrors.temporaryClosedTimings = "";
+      }
+    }
+
     setErrors(formErrors);
-    if(Object.values(formErrors).some((val) => val !== "")) {
+    if (Object.values(formErrors).some((val) => val !== "")) {
       cogoToast.error("Please fill in all required data!");
     }
     return !Object.values(formErrors).some((val) => val !== "");
@@ -521,6 +674,75 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     let is_store_time_updated = !areObjectsEqual(storeTimings, originalStoreTimings);
     //return is_form_updated || is_store_time_updated;
     return true;
+  };
+
+  const getFulfillmentsPayloadFormat = () => {
+    let fulfillments = [];
+    if (supportedFulfillments.delivery) {
+      let deliveryDetails = {
+        id: "f1",
+        type: "delivery",
+        contact: {
+          email: fulfillmentDetails.deliveryDetails.deliveryEmail,
+          phone: fulfillmentDetails.deliveryDetails.deliveryMobile,
+        },
+      };
+      fulfillments.push(deliveryDetails);
+    }
+
+    if (supportedFulfillments.selfPickup) {
+      let selfPickupDetails = {
+        id: "f2",
+        type: "pickup",
+        contact: {
+          email: fulfillmentDetails.selfPickupDetails.selfPickupEmail,
+          phone: fulfillmentDetails.selfPickupDetails.selfPickupMobile,
+        },
+      };
+      fulfillments.push(selfPickupDetails);
+    }
+
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      let deliveryAndSelfPickupDetails = {
+        id: "f3",
+        type: "delivery&pickup",
+        contact: {
+          delivery: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile,
+          },
+          pickup: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile,
+          },
+        },
+      };
+      fulfillments.push(deliveryAndSelfPickupDetails);
+    }
+
+    return fulfillments;
+  };
+
+  const getStoreTimingsPayloadFormat = () => {
+    let storeTiming = {
+      status: storeStatus,
+    };
+
+    if (storeStatus === "enabled") {
+      storeTiming.schedule = {
+        holidays: storeDetails.holidays,
+        timings: storeTimings,
+      };
+    } else if (storeStatus === "closed") {
+      storeTiming.schedule = {
+        from: temporaryClosedTimings.from,
+        to: temporaryClosedTimings.to,
+      };
+    } else {
+      storeTiming.schedule = {};
+    }
+
+    return storeTiming;
   };
 
   const onUpdate = () => {
@@ -546,8 +768,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality = "",
       } = storeDetails;
 
-      const locationAvailability =
-        location_availability === "pan_india" ? true : false;
+      const locationAvailability = location_availability === "pan_india" ? true : false;
       const addressDetails = {
         building: building,
         city: address_city,
@@ -557,20 +778,18 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality: locality,
       };
       let iso8601 = "";
-      if (
-        storeDetails.frequency &&
-        storeDetails.StoreTimeType === "frequency"
-      ) {
+      if (storeDetails.frequency && storeDetails.StoreTimeType === "frequency") {
         // Create a duration object with the hours you want to convert
-        const duration = moment.duration(
-          parseInt(storeDetails.frequency),
-          "hours"
-        );
+        const duration = moment.duration(parseInt(storeDetails.frequency), "hours");
 
         // Format the duration in ISO 8601 format
         iso8601 = duration.toISOString();
       } else {
       }
+
+      let fulfillments = getFulfillmentsPayloadFormat();
+      let storeTiming = getStoreTimingsPayloadFormat();
+
       let payload = {
         categories,
         logo: logo,
@@ -582,12 +801,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email,
           mobile,
         },
-        storeTiming: {
-          schedule: {
-            holidays: storeDetails.holidays,
-            timings: storeTimings,
-          },
-        },
+        fulfillments,
+        storeTiming,
         radius: {
           unit: "km",
           value: storeDetails.radius || "",
@@ -603,6 +818,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
+
       postCall(url, payload)
         .then((resp) => {
           cogoToast.success("Store details updated successfully");
@@ -658,30 +874,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
               />
               <p className="text-2xl font-semibold mb-4">Provider Details</p>
               {providerFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={providerDetails}
-                  statehandler={setProviderDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={providerDetails} statehandler={setProviderDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">KYC Details</p>
               {kycFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={kycDetails}
-                  statehandler={setKycDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={kycDetails} statehandler={setKycDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">Bank Details</p>
               {bankFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={bankDetails}
-                  statehandler={setBankDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={bankDetails} statehandler={setBankDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">Store Details</p>
               {storeDetailFields.map((item) => (
@@ -697,8 +898,31 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   stateHandler={setStoreDetails}
                 />
               ))}
+
               {!isFromUserListing && (
                 <>
+                  <RenderInput
+                    item={{
+                      id: "logisticsBppId",
+                      title: "Logistics Bpp Id",
+                      placeholder: "Logistics Bpp Id",
+                      type: "input",
+                      error: errors?.["logisticsBppId"] ? true : false,
+                      helperText: errors?.["logisticsBppId"] || "",
+                    }}
+                    state={storeDetails}
+                    stateHandler={setStoreDetails}
+                  />
+
+                  <Fulfillments
+                    errors={errors}
+                    supportedFulfillments={supportedFulfillments}
+                    setSupportedFulfillments={setSupportedFulfillments}
+                    fulfillmentDetails={fulfillmentDetails}
+                    setFulfillmentDetails={setFulfillmentDetails}
+                  />
+
+                  <p className="text-2xl font-semibold mb-2 mt-14">Store Timing</p>
                   <RenderInput
                     item={{
                       id: "radius",
@@ -712,46 +936,71 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-                  <RenderInput
-                    item={{
-                      id: "logisticsBppId",
-                      title: "Logistics Bpp Id",
-                      placeholder: "Logistics Bpp Id",
-                      type: "input",
-                      error: errors?.["logisticsBppId"] ? true : false,
-                      helperText: errors?.["logisticsBppId"] || "",
-                      required: true,
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                    <p className="text-2xl font-semibold mb-4 mt-14">Store Timing</p>
-                  <RenderInput
-                    item={{
-                      id: "holidays",
-                      title: "Holidays",
-                      placeholder: "Holidays",
-                      type: "days-picker",
-                      required: true,
-                      format: "YYYY-MM-DD",
-                      error: errors?.["holidays"] ? true : false,
-                      helperText: errors?.["holidays"] || "",
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                   <p
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "0.75rem",
-                      marginLeft: 12,
-                    }}
-                  >
-                    {errors?.["holidays"] || ""}
-                  </p>
+                  <div className="py-1 flex flex-col">
+                    <FormControl component="fieldset">
+                      <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+                        Store Status
+                        <span className="text-[#FF0000]"> *</span>
+                      </label>
+                      <RadioGroup
+                        value={storeStatus}
+                        onChange={(e) => {
+                          setStoreStatus(e.target.value);
+                        }}
+                      >
+                        <div className="flex flex-row">
+                          {[
+                            { key: "Enabled", value: "enabled" },
+                            { key: "Temporarily Closed", value: "closed" },
+                            { key: "Disabled", value: "disabled" },
+                          ].map((radioItem, i) => (
+                            <FormControlLabel
+                              key={i}
+                              value={radioItem.value}
+                              control={<Radio size="small" checked={radioItem.value === storeStatus} />}
+                              label={<div className="text-sm font-medium text-[#606161]">{radioItem.key}</div>}
+                            />
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+
+                  {storeStatus === "enabled" && (
+                    <>
+                      <RenderInput
+                        item={{
+                          id: "holidays",
+                          title: "Holidays",
+                          placeholder: "Holidays",
+                          type: "days-picker",
+                          required: true,
+                          format: "YYYY-MM-DD",
+                          error: errors?.["holidays"] ? true : false,
+                          helperText: errors?.["holidays"] || "",
+                        }}
+                        state={storeDetails}
+                        stateHandler={setStoreDetails}
+                      />
+                      <p
+                        style={{
+                          color: "#d32f2f",
+                          fontSize: "0.75rem",
+                          marginLeft: 12,
+                        }}
+                      >
+                        {errors?.["holidays"] || ""}
+                      </p>
+                    </>
+                  )}
+
                   <StoreTimingsRenderer
+                    errors={errors}
+                    storeStatus={storeStatus}
                     storeTimings={storeTimings}
                     setStoreTimings={setStoreTimings}
+                    temporaryClosedTimings={temporaryClosedTimings}
+                    setTemporaryClosedTimings={setTemporaryClosedTimings}
                   />
                 </>
               )}

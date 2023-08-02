@@ -31,6 +31,13 @@ import cogoToast from "cogo-toast";
 import { getCall, postCall, putCall } from "../../../../Api/axios";
 import useCancellablePromise from "../../../../Api/cancelRequest";
 import { allProperties } from "../categoryProperties";
+import StoreTimingsRenderer from "../../UserListings/StoreTimingsRenderer";
+const defaultStoreTimings = [
+  {
+    daysRange: { from: 1, to: 5 },
+    timings: [{ from: "00:00", to: "00:00" }],
+  },
+];
 
 const FnB = (props) => {
   const { category, subCategory } = props;
@@ -39,6 +46,8 @@ const FnB = (props) => {
   const { state } = useLocation();
   const [allFields, setAllFields] = useState(allProductFieldDetails);
   const [focusedField, setFocusedField] = useState("");
+
+  const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
 
   const [customizationGroups, setCustomizationGroups] = useState([]);
   const [customizations, setCustomizations] = useState([]);
@@ -59,7 +68,6 @@ const FnB = (props) => {
     barcode: "",
     maxAllowedQty: "",
     UOM: "",
-    packQty: "",
     length: "",
     breadth: "",
     height: "",
@@ -72,10 +80,10 @@ const FnB = (props) => {
     instructions: "",
     longDescription: "",
     description: "",
-    isReturnable: "",
-    isVegetarian: "",
-    isCancellable: "",
-    availableOnCod: "",
+    isReturnable: "false",
+    isVegetarian: "false",
+    isCancellable: "false",
+    availableOnCod: "false",
     images: [],
     manufacturerOrPackerName: "",
     manufacturerOrPackerAddress: "",
@@ -83,6 +91,8 @@ const FnB = (props) => {
     monthYearOfManufacturePackingImport: "",
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
+    fulfillmentOption: "",
+    countryOfOrigin: "",
   };
 
   const productInfoForm = useForm({
@@ -160,6 +170,8 @@ const FnB = (props) => {
         : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
+    formErrors.countryOfOrigin =
+      formValues?.countryOfOrigin?.trim() === "" ? "Country of origin is not allowed to be empty" : "";
     formErrors.GST_Percentage = formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"
@@ -175,6 +187,11 @@ const FnB = (props) => {
         : formValues?.UOM?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
+    formErrors.fulfillmentOption =
+      formValues?.fulfillmentOption == undefined || formValues?.fulfillmentOption === ""
+        ? "Fulfillment Option is required"
+        : "";
+
     formErrors.packQty = !formValues?.packQty
       ? "Please enter a valid Measurement Quantity"
       : !isNumberOnly(formValues?.packQty)
@@ -290,6 +307,8 @@ const FnB = (props) => {
         ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
         : "";
 
+    formErrors.storeTimes = getStoreTimesErrors();
+
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
       const selectedSubCatObject = subCatList?.find((subitem) => subitem.value === formValues?.productSubcategory1);
@@ -312,11 +331,26 @@ const FnB = (props) => {
     return valid_form;
   };
 
+  const getStoreTimesErrors = () => {
+    let values = storeTimings.reduce((acc, storeTiming) => {
+      acc.push(storeTiming.daysRange.from);
+      acc.push(storeTiming.daysRange.to);
+      storeTiming.timings.forEach((element) => {
+        acc.push(element.from);
+        acc.push(element.to);
+      });
+      return acc;
+    }, []);
+    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
+  };
+
   const validate = () => {
     let product_info_form_validity = validateProductInfoForm();
+    let product_timing_form_validity = getStoreTimesErrors();
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
+      prev_state[3] = !product_timing_form_validity;
       return [...prev_state];
     });
 
@@ -372,6 +406,7 @@ const FnB = (props) => {
       product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
       product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
       product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
+      product_data.timing = storeTimings;
 
       delete product_data["uploaded_urls"];
 
@@ -382,6 +417,8 @@ const FnB = (props) => {
           customizations,
         },
       };
+
+      console.log(data);
 
       await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
@@ -451,8 +488,42 @@ const FnB = (props) => {
     }
   };
 
+  const getOrgDetails = async (id) => {
+    try {
+      const url = `/api/v1/organizations/${id}`;
+      const res = await getCall(url);
+
+      const fulfillments = res.providerDetail.storeDetails.fulfillments;
+      getFulfillmentOptions(fulfillments);
+    } catch (error) {}
+  };
+
+  const getFulfillmentOptions = (fulfillments) => {
+    const availableOptions = [];
+    fulfillments.forEach((fulfillment) => {
+      if (fulfillment.id === "f1") {
+        availableOptions.push({ key: "Delivery", value: "delivery" });
+      }
+      if (fulfillment.id === "f2") {
+        availableOptions.push({ key: "Self Pickup", value: "selfPickup" });
+      }
+      if (fulfillment.id === "f3") {
+        availableOptions.push({ key: "Delivery And Self Pickup", value: "deliveryAndSelfPickup" });
+      }
+    });
+
+    let updatedFields = [...allFields];
+    const fulfillmentOptionIndex = allFields.findIndex((field) => field.id === "fulfillmentOption");
+    if (fulfillmentOptionIndex !== -1) {
+      updatedFields[fulfillmentOptionIndex].options = availableOptions;
+      setAllFields(updatedFields);
+    }
+  };
+
   useEffect(() => {
     if (state?.productId) getProduct();
+    const user = JSON.parse(localStorage.getItem("user"));
+    getOrgDetails(user.organization);
   }, []);
 
   const renderProductInfoFields = () => {
@@ -466,6 +537,19 @@ const FnB = (props) => {
         form={productInfoForm}
         setFocusedField={setFocusedField}
       />
+    );
+  };
+
+  const renderProductTimings = () => {
+    return (
+      <>
+        <StoreTimingsRenderer
+          errors={errors}
+          storeStatus={"enabled"}
+          storeTimings={storeTimings}
+          setStoreTimings={setStoreTimings}
+        />
+      </>
     );
   };
 
@@ -490,6 +574,13 @@ const FnB = (props) => {
               label="Customizations"
               value="2"
             />
+            <Tab
+              sx={{
+                color: tabErrors[3] && Object.keys(errors).length > 0 ? "red" : "none",
+              }}
+              label="Product Timings"
+              value="3"
+            />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -502,6 +593,9 @@ const FnB = (props) => {
             customizations={customizations}
             setCustomizations={setCustomizations}
           />
+        </TabPanel>
+        <TabPanel value="3">
+          <div className="mt-2 mb-4">{renderProductTimings()}</div>
         </TabPanel>
       </TabContext>
 

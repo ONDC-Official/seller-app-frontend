@@ -17,7 +17,7 @@ export const getFormErrors = (fields, formValues) => {
           ? "Please enter only digit"
           : "";
       } else if (field.type === "upload") {
-        error = field_value.length < 1 ? "At least one image is required" : "";
+        error = field_value.length < 3 ? "Minimum 3 images are required" : "";
       } else {
         error =
           field_value?.trim() === ""
