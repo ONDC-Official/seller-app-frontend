@@ -269,6 +269,19 @@ export const allProductFieldDetails = [
     multiline: true,
   },
   {
+    id: "vegNonVeg",
+    title: "Veg/Non-Veg/Egg",
+    placeholder: "Select Food Category",
+    type: "select",
+    options: [
+      { key: "Veg", value: "VEG" },
+      { key: "Non Veg", value: "NONVEG" },
+      { key: "Egg", value: "EGG" },
+    ],
+    disableClearable: true,
+    required: true,
+  },
+  {
     id: "isCancellable",
     title: "Cancellable",
     type: "radio",
@@ -289,16 +302,6 @@ export const allProductFieldDetails = [
     required: true,
   },
   {
-    id: "isVegetarian",
-    title: "Vegetarian",
-    type: "radio",
-    options: [
-      { key: "Yes", value: "true" },
-      { key: "No", value: "false" },
-    ],
-    required: true,
-  },
-  {
     id: "availableOnCod",
     title: "Available On Cash On Delivery",
     type: "radio",
@@ -310,14 +313,20 @@ export const allProductFieldDetails = [
   },
   {
     id: "images",
-    title:
-      "Images (Select minimum 3 files with maximum size of 2Mb for each file)",
+    title: "Images (Select minimum 3 files with maximum size of 2Mb for each file)",
     type: "upload",
     multiple: true,
     file_type: "product_image",
     required: true,
   },
   {
+    id: "fulfillmentOption",
+    title: "Fulfilment Option",
+    placeholder: "Available Fulfillment Options",
+    type: "select",
+    required: true,
+    options: [],
+    disableClearable: true,
     id: "countryOfOrigin",
     title: "County Of Origin",
     type: "select",
@@ -347,8 +356,10 @@ export const productDetailsFields = [
   "nutritionalInfo",
   "additiveInfo",
   "instructions",
+  "longDescription",
+  "description",
+  "vegNonVeg",
   "isReturnable",
-  "isVegetarian",
   "isCancellable",
   "availableOnCod",
   "manufacturerOrPackerName",
@@ -358,15 +369,9 @@ export const productDetailsFields = [
   "importerFSSAILicenseNo",
   "brandOwnerFSSAILicenseNo",
   "UOM",
+  "fulfillmentOption",
 ];
 
-export const variationCommonFields = [
-  "MRP",
-  "retailPrice",
-  "purchasePrice",
-  "quantity",
-  "barcode",
-  "images",
-];
+export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
 
 export const UOMVariationFields = ["UOMValue"];
