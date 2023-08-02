@@ -327,12 +327,14 @@ export const allProductFieldDetails = [
     required: true,
     options: [],
     disableClearable: true,
+  },
+  {
     id: "countryOfOrigin",
     title: "County Of Origin",
     type: "select",
     options: countries,
     required: true,
-  },
+  }
 ];
 
 export const categoryFields = ["productCategory", "productSubcategory1"];
