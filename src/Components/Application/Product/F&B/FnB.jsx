@@ -101,22 +101,6 @@ const FnB = (props) => {
 
   const { formValues, setFormValues, errors, setErrors } = productInfoForm;
 
-  // TODO: get the actual option from store details api
-  const availableFulfillments = [
-    { key: "Delivery", value: "delivery" },
-    { key: "Self Pickup", value: "selfPickup" },
-    { key: "Delivery And Self Pickup", value: "deliveryAndSelfPickup" },
-  ];
-
-  useEffect(() => {
-    let updatedFields = [...allFields];
-    const fulfillmentOptionIndex = allFields.findIndex((field) => field.id === "fulfillmentOption");
-    if (fulfillmentOptionIndex !== -1) {
-      updatedFields[fulfillmentOptionIndex].options = availableFulfillments;
-      setAllFields(updatedFields);
-    }
-  }, []);
-
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -502,8 +486,42 @@ const FnB = (props) => {
     }
   };
 
+  const getOrgDetails = async (id) => {
+    try {
+      const url = `/api/v1/organizations/${id}`;
+      const res = await getCall(url);
+
+      const fulfillments = res.providerDetail.storeDetails.fulfillments;
+      getFulfillmentOptions(fulfillments);
+    } catch (error) {}
+  };
+
+  const getFulfillmentOptions = (fulfillments) => {
+    const availableOptions = [];
+    fulfillments.forEach((fulfillment) => {
+      if (fulfillment.id === "f1") {
+        availableOptions.push({ key: "Delivery", value: "delivery" });
+      }
+      if (fulfillment.id === "f2") {
+        availableOptions.push({ key: "Self Pickup", value: "selfPickup" });
+      }
+      if (fulfillment.id === "f3") {
+        availableOptions.push({ key: "Delivery And Self Pickup", value: "deliveryAndSelfPickup" });
+      }
+    });
+
+    let updatedFields = [...allFields];
+    const fulfillmentOptionIndex = allFields.findIndex((field) => field.id === "fulfillmentOption");
+    if (fulfillmentOptionIndex !== -1) {
+      updatedFields[fulfillmentOptionIndex].options = availableOptions;
+      setAllFields(updatedFields);
+    }
+  };
+
   useEffect(() => {
     if (state?.productId) getProduct();
+    const user = JSON.parse(localStorage.getItem("user"));
+    getOrgDetails(user.organization);
   }, []);
 
   const renderProductInfoFields = () => {
