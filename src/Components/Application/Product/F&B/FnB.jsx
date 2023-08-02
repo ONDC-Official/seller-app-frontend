@@ -68,7 +68,6 @@ const FnB = (props) => {
     barcode: "",
     maxAllowedQty: "",
     UOM: "",
-    packQty: "",
     length: "",
     breadth: "",
     height: "",
@@ -93,6 +92,7 @@ const FnB = (props) => {
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
     fulfillmentOption: "",
+    countryOfOrigin: "",
   };
 
   const productInfoForm = useForm({
@@ -170,6 +170,8 @@ const FnB = (props) => {
         : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
+    formErrors.countryOfOrigin =
+      formValues?.countryOfOrigin?.trim() === "" ? "Country of origin is not allowed to be empty" : "";
     formErrors.GST_Percentage = formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"

@@ -1,3 +1,4 @@
+import { countries } from "../../../Constants/countries";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 export const allProductFieldDetails = [
@@ -137,8 +138,8 @@ export const allProductFieldDetails = [
   },
   {
     id: "barcode",
-    title: "Barcode",
-    placeholder: "Barcode",
+    title: "SKU",
+    placeholder: "SKU",
     type: "number",
     maxLength: 12,
     required: true,
@@ -176,15 +177,8 @@ export const allProductFieldDetails = [
     required: true,
   },
   {
-    id: "packQty",
-    title: "Measurement Quantity",
-    placeholder: "Measurement Quantity",
-    type: "input",
-    required: true,
-  },
-  {
     id: "length",
-    title: "Length",
+    title: "Length(cm)",
     placeholder: "Length",
     type: "input",
     maxLength: 6,
@@ -192,7 +186,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "breadth",
-    title: "Breadth",
+    title: "Breadth(cm)",
     placeholder: "Breadth",
     type: "input",
     maxLength: 6,
@@ -200,7 +194,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "height",
-    title: "Height",
+    title: "Height(cm)",
     placeholder: "Height",
     type: "input",
     maxLength: 6,
@@ -319,7 +313,7 @@ export const allProductFieldDetails = [
   },
   {
     id: "images",
-    title: "Images (Multiple file selection allowed, maximum size of 2Mb for each file)",
+    title: "Images (Select minimum 3 files with maximum size of 2Mb for each file)",
     type: "upload",
     multiple: true,
     file_type: "product_image",
@@ -333,6 +327,11 @@ export const allProductFieldDetails = [
     required: true,
     options: [],
     disableClearable: true,
+    id: "countryOfOrigin",
+    title: "County Of Origin",
+    type: "select",
+    options: countries,
+    required: true,
   },
 ];
 
@@ -341,10 +340,12 @@ export const categoryFields = ["productCategory", "productSubcategory1"];
 export const productDetailsFields = [
   "productCode",
   "productName",
+  "description",
+  "longDescription",
+  "countryOfOrigin",
   "HSNCode",
   "GST_Percentage",
   "maxAllowedQty",
-  "packQty",
   "length",
   "breadth",
   "height",

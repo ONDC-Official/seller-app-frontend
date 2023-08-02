@@ -23,11 +23,19 @@ const StoreTimingsRenderer = (props) => {
     setStoreTimings([...storeTimings]);
   };
 
+  const handleRemoveDaysAndTimings = (i) => {
+    storeTimings.splice(i, 1);
+    setStoreTimings([...storeTimings]);
+  };
   const renderEnabledTimings = () => {
     return (
       <>
         {storeTimings.map((storeTiming, index) => (
-          <StoreTimings storeTiming={storeTiming} setStoreTiming={(data) => handleStoreTiming(data, index)} />
+          <StoreTimings
+            storeTiming={storeTiming}
+            setStoreTiming={(data) => handleStoreTiming(data, index)}
+            handleRemoveDaysAndTimings={() => handleRemoveDaysAndTimings(index)}
+          />
         ))}
         <div style={{ marginTop: "7px", marginBottom: "10px" }}>
           <MyButton

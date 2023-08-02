@@ -82,7 +82,6 @@ const AddGenericProduct = ({
     barcode: "",
     maxAllowedQty: "",
     UOM: "",
-    packQty: "",
     length: "",
     breadth: "",
     height: "",
@@ -107,6 +106,7 @@ const AddGenericProduct = ({
     importerFSSAILicenseNo: "",
     brandOwnerFSSAILicenseNo: "",
     fulfillmentOption: "",
+    countryOfOrigin: "",
   };
 
   const productInfoForm = useForm({
@@ -481,6 +481,8 @@ const AddGenericProduct = ({
         : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
         ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
         : "";
+    formErrors.countryOfOrigin =
+      formValues?.countryOfOrigin?.trim() === "" ? "Country of origin is not allowed to be empty" : "";
     formErrors.GST_Percentage = formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"
@@ -500,13 +502,6 @@ const AddGenericProduct = ({
     //     : formValues?.UOM?.length > MAX_STRING_LENGTH
     //     ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
     //     : "";
-    if (productInfoFields.includes("packQty")) {
-      formErrors.packQty = !formValues?.packQty
-        ? "Please enter a valid Measurement Quantity"
-        : !isNumberOnly(formValues?.packQty)
-        ? "Please enter only digit"
-        : "";
-    }
     formErrors.length =
       formValues?.length?.trim() === ""
         ? "Length is required"
@@ -661,8 +656,8 @@ const AddGenericProduct = ({
         ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters`
         : "";
       formErrors.images =
-        formValues?.productCategory !== "f_and_b" && formValues?.images.length < 1
-          ? "At least one image is required"
+        formValues?.productCategory !== "f_and_b" && formValues?.images.length < 3
+          ? "Minimum 3 images are required"
           : "";
     }
 

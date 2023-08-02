@@ -138,8 +138,11 @@ export default function AddProduct() {
   useEffect(() => {
     if (categoryForm.formValues?.productCategory) {
       let data = [...fields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
-      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
+      const subCategoryIndex = data.findIndex(
+        (item) => item.id === "productSubcategory1"
+      );
+      data[subCategoryIndex].options =
+        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       setFields(data);
       setVariationOn("none");
     }
@@ -149,8 +152,10 @@ export default function AddProduct() {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
     if (category && category !== "F&B" && sub_category) {
-      let category_data =  allProperties[category];
-      let properties = category_data?.hasOwnProperty(sub_category) ? category_data[sub_category] : (category_data["default"] || []);
+      let category_data = allProperties[category];
+      let properties = category_data?.hasOwnProperty(sub_category)
+        ? category_data[sub_category]
+        : category_data["default"] || [];
       let variants = properties?.filter(
         (property) => property.variationAllowed
       );
@@ -202,7 +207,11 @@ export default function AddProduct() {
           Select Variants
         </label>
         <Box sx={{ display: "flex" }}>
-          <FormControl sx={{ ml: 3, display: "flex" }} component="fieldset" variant="standard">
+          <FormControl
+            sx={{ ml: 3, display: "flex" }}
+            component="fieldset"
+            variant="standard"
+          >
             <FormGroup sx={{ display: "flex" }}>
               {variants?.map(({ name }) => (
                 <FormControlLabel
@@ -226,18 +235,24 @@ export default function AddProduct() {
 
   const getSelectedVariantNames = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.filter((variant_name) => variantsCheckboxState[variant_name]);
+    return variant_names.filter(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
   };
 
   const anyVariantSelected = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.some((variant_name) => variantsCheckboxState[variant_name]);
+    return variant_names.some(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
   };
 
   const renderVariants = () => {
     return (
       <FormControl>
-        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">Variation On</div>
+        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">
+          Variation On
+        </div>
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
@@ -246,7 +261,11 @@ export default function AddProduct() {
           sx={{ paddingLeft: "22px" }}
         >
           <FormControlLabel value="none" control={<Radio />} label="None" />
-          <FormControlLabel value="attributes" control={<Radio />} label="Attribute" />
+          <FormControlLabel
+            value="attributes"
+            control={<Radio />}
+            label="Attribute"
+          />
           <FormControlLabel value="uom" control={<Radio />} label="UOM" />
         </RadioGroup>
       </FormControl>
@@ -258,7 +277,7 @@ export default function AddProduct() {
       return (
         <div>
           {renderCategoryFields()}
-          {category && subCategory && renderVariants()}
+          {category && subCategory && category !== "F&B" && renderVariants()}
           {variationOn === "attributes" && renderVariantsList()}
         </div>
       );
@@ -267,7 +286,12 @@ export default function AddProduct() {
 
       if (!selectedCategory) selectedCategory = state?.productCategory;
       if (selectedCategory === "F&B") {
-        return <FnB category={selectedCategory} subCategory={categoryForm.formValues?.productSubcategory1} />;
+        return (
+          <FnB
+            category={selectedCategory}
+            subCategory={categoryForm.formValues?.productSubcategory1}
+          />
+        );
       } else {
         return (
           <AddGenericProduct
@@ -288,37 +312,46 @@ export default function AddProduct() {
   return (
     <>
       <div className="container mx-auto my-8">
-        <BackNavigationButton onClick={() => navigate("/application/inventory")} />
-        <div className="w-full !h-full">
-          <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
-            {state?.productId == undefined ? "Add Product" : "Update Product"}
-          </label>
-          <form>
-            <div className="mt-2">{renderFields()}</div>
-          </form>
-          {}
-          <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-            <MyButton
-              type="button"
-              title="CANCEL"
-              className="text-black"
-              onClick={() => navigate("/application/inventory")}
-            />
-            {renderCategories && (
+        <div
+          className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
+          style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
+        >
+          <BackNavigationButton
+            onClick={() => navigate("/application/inventory")}
+          />
+          <div className="w-full !h-full">
+            <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
+              {state?.productId == undefined ? "Add Product" : "Update Product"}
+            </label>
+            <form>
+              <div className="mt-2">{renderFields()}</div>
+            </form>
+            {}
+            <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
               <MyButton
                 type="button"
-                title="NEXT"
+                title="CANCEL"
                 className="text-black"
-                disabled={
-                  !(
-                    categoryForm.formValues["productCategory"] &&
-                    categoryForm.formValues["productSubcategory1"] &&
-                    (variationOn === "none" || variationOn === "uom" || anyVariantSelected())
-                  )
-                }
-                onClick={() => setRenderCategories(false)}
+                onClick={() => navigate("/application/inventory")}
               />
-            )}
+              {renderCategories && (
+                <MyButton
+                  type="button"
+                  title="NEXT"
+                  className="text-black"
+                  disabled={
+                    !(
+                      categoryForm.formValues["productCategory"] &&
+                      categoryForm.formValues["productSubcategory1"] &&
+                      (variationOn === "none" ||
+                        variationOn === "uom" ||
+                        anyVariantSelected())
+                    )
+                  }
+                  onClick={() => setRenderCategories(false)}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
