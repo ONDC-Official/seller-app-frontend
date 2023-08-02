@@ -235,19 +235,6 @@ const FnB = (props) => {
         : formValues?.manufacturerName?.length > MAX_STRING_LENGTH_50
         ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
         : "";
-    formErrors.manufacturedDate = formValues?.manufacturedDate?.trim() === "" ? "Manufactured date is required" : "";
-    formErrors.nutritionalInfo =
-      formValues?.nutritionalInfo?.trim() === ""
-        ? "Nutritional info is required"
-        : formValues?.nutritionalInfo?.length > MAX_STRING_LENGTH
-        ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
-        : "";
-    formErrors.additiveInfo =
-      formValues?.additiveInfo?.trim() === ""
-        ? "Additive info is required"
-        : formValues?.additiveInfo?.length > MAX_STRING_LENGTH
-        ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
-        : "";
     formErrors.instructions =
       formValues?.instructions?.trim() === ""
         ? "Instruction is required"
@@ -266,46 +253,7 @@ const FnB = (props) => {
         : formValues?.description?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.manufacturerOrPackerName =
-      formValues?.manufacturerOrPackerName?.trim() === ""
-        ? "Manufacturer or packer name is required"
-        : formValues?.manufacturerOrPackerName?.length > MAX_STRING_LENGTH_50
-        ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
-        : "";
-    formErrors.manufacturerOrPackerAddress =
-      formValues?.manufacturerOrPackerAddress?.trim() === ""
-        ? "Manufacturer or packer address is required"
-        : formValues?.manufacturerOrPackerAddress?.length > MAX_STRING_LENGTH_50
-        ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
-        : "";
-    formErrors.commonOrGenericNameOfCommodity =
-      formValues?.commonOrGenericNameOfCommodity?.trim() === ""
-        ? "Common or generic name of commodity is required"
-        : formValues?.commonOrGenericNameOfCommodity?.length > MAX_STRING_LENGTH_50
-        ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
-        : "";
-    formErrors.monthYearOfManufacturePackingImport =
-      formValues?.monthYearOfManufacturePackingImport?.trim() === ""
-        ? "Month year of manufacture packing import is required"
-        : formValues?.monthYearOfManufacturePackingImport?.length > MAX_STRING_LENGTH
-        ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
-        : "";
-    formErrors.importerFSSAILicenseNo =
-      formValues?.importerFSSAILicenseNo?.trim() === ""
-        ? "Importer FSSAI license no is required"
-        : !isNumberOnly(formValues?.importerFSSAILicenseNo)
-        ? "Please enter only digit"
-        : formValues?.importerFSSAILicenseNo?.length > MAX_STRING_LENGTH_14
-        ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
-        : "";
-    formErrors.brandOwnerFSSAILicenseNo =
-      formValues?.brandOwnerFSSAILicenseNo?.trim() === ""
-        ? "Brand owner FSSAI license no is required"
-        : !isNumberOnly(formValues?.brandOwnerFSSAILicenseNo)
-        ? "Please enter only digit"
-        : formValues?.brandOwnerFSSAILicenseNo?.length > MAX_STRING_LENGTH_14
-        ? `Cannot be more than ${MAX_STRING_LENGTH_14} characters`
-        : "";
+
 
     formErrors.storeTimes = getStoreTimesErrors();
 
@@ -527,11 +475,28 @@ const FnB = (props) => {
     getOrgDetails(user.organization);
   }, []);
 
+
+  const getProductDetailsFields = () => {
+    let product_info_fields = [...productDetailsFields];
+    let p_category = state?.productId ? state?.productCategory : category;
+    let p_sub_category = state?.productId ? state?.productSubCategory : subCategory;
+    let protocolKey = PRODUCT_SUBCATEGORY[p_category]?.filter(
+      (sub_category) => sub_category.value === p_sub_category
+    )[0].protocolKey;
+
+    if (protocolKey && protocolKey !== "") {
+      let fields_to_remove = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
+      product_info_fields = product_info_fields.filter((field) => !fields_to_remove.includes(field));
+    }
+
+    return product_info_fields;
+  }
+
   const renderProductInfoFields = () => {
     return (
       <AddProductInfo
         allFields={allFields}
-        fields={[...productDetailsFields, ...UOMVariationFields, ...variationCommonFields]}
+        fields={[...getProductDetailsFields(), ...UOMVariationFields, ...variationCommonFields]}
         category={category}
         subCategory={subCategory}
         state={state}
