@@ -384,7 +384,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
 
       if (fulfillment.id === "f3") {
-        console.log("f3", fulfillment);
         hasF3 = true;
         email_delivery = fulfillment.contact.delivery.email;
         mobile_delivery = fulfillment.contact.delivery.phone;

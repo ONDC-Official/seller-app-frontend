@@ -280,9 +280,9 @@ export const allProductFieldDetails = [
     placeholder: "Select Food Category",
     type: "select",
     options: [
-      { key: "Veg", value: "veg" },
-      { key: "Non Veg", value: "non_veg" },
-      { key: "Egg", value: "egg" },
+      { key: "Veg", value: "VEG" },
+      { key: "Non Veg", value: "NONVEG" },
+      { key: "Egg", value: "EGG" },
     ],
     disableClearable: true,
     required: true,
