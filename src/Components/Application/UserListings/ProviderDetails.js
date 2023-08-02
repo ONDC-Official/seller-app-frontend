@@ -369,7 +369,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     let email_self = "";
     let mobile_self = "";
 
-    fulfillments.forEach((fulfillment) => {
+    fulfillments?.forEach((fulfillment) => {
       if (fulfillment.id === "f1") {
         hasF1 = true;
         deliveryEmail = fulfillment.contact.email;
