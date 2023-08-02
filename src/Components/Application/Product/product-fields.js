@@ -359,8 +359,6 @@ export const productDetailsFields = [
   "nutritionalInfo",
   "additiveInfo",
   "instructions",
-  "longDescription",
-  "description",
   "vegNonVeg",
   "isReturnable",
   "isCancellable",
