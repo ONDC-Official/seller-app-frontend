@@ -330,7 +330,8 @@ export const allProductFieldDetails = [
   },
   {
     id: "countryOfOrigin",
-    title: "County Of Origin",
+    title: "Country Of Origin",
+    placeholder: "Country Of Origin",
     type: "select",
     options: countries,
     required: true,
@@ -358,8 +359,6 @@ export const productDetailsFields = [
   "nutritionalInfo",
   "additiveInfo",
   "instructions",
-  "longDescription",
-  "description",
   "vegNonVeg",
   "isReturnable",
   "isCancellable",

@@ -325,6 +325,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
   const [storeStatus, setStoreStatus] = useState("enabled");
   const [temporaryClosedTimings, setTemporaryClosedTimings] = useState({ from: "00:00", to: "00:00" });
+  const [temporaryClosedDays, setTemporaryClosedDays] = useState({ from: 1, to: 5 });
   const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
   const [originalStoreTimings, setOriginalStoreTimings] = useState([...defaultStoreTimings]);
   const [providerDetails, setProviderDetails] = useState({});
@@ -472,7 +473,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
         logo: res?.providerDetail?.storeDetails?.logo?.url || "",
 
-        holidays: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays || [],
+        holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
       };
@@ -481,16 +482,21 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
 
       setSupportedFulfillments(supportedFulfillments);
-
       setFulfillmentDetails((prevDetails) => ({
         ...prevDetails,
         ...fulfillmentDetails,
       }));
 
+      const storeTimingDetails = res?.providerDetail?.storeDetails?.storeTiming;
+
+      setStoreStatus(storeTimingDetails.status);
+      setTemporaryClosedTimings(storeTimingDetails?.closed);
+      setTemporaryClosedDays(storeTimingDetails.closedDays);
+
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
-      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
-      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
+      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
+      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
     } catch (error) {
       console.log(error);
     }
@@ -724,24 +730,12 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   };
 
   const getStoreTimingsPayloadFormat = () => {
-    let storeTiming = {
-      status: storeStatus,
-    };
-
-    if (storeStatus === "enabled") {
-      storeTiming.schedule = {
-        holidays: storeDetails.holidays,
-        timings: storeTimings,
-      };
-    } else if (storeStatus === "closed") {
-      storeTiming.schedule = {
-        from: temporaryClosedTimings.from,
-        to: temporaryClosedTimings.to,
-      };
-    } else {
-      storeTiming.schedule = {};
-    }
-
+    let storeTiming = {};
+    storeTiming.status = storeStatus;
+    storeTiming.holidays = storeDetails.holidays;
+    storeTiming.enabled = storeTimings;
+    storeTiming.closed = temporaryClosedTimings;
+    storeTiming.closedDays = temporaryClosedDays;
     return storeTiming;
   };
 
@@ -1001,6 +995,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     setStoreTimings={setStoreTimings}
                     temporaryClosedTimings={temporaryClosedTimings}
                     setTemporaryClosedTimings={setTemporaryClosedTimings}
+                    temporaryClosedDays={temporaryClosedDays}
+                    setTemporaryClosedDays={setTemporaryClosedDays}
                   />
                 </>
               )}
