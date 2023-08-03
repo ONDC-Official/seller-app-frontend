@@ -1,6 +1,7 @@
+import { countries } from "../../../Constants/countries";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
-const productFields = [
+export const allProductFieldDetails = [
   {
     id: "productCode",
     title: "Product Code",
@@ -137,8 +138,8 @@ const productFields = [
   },
   {
     id: "barcode",
-    title: "Barcode",
-    placeholder: "Barcode",
+    title: "SKU",
+    placeholder: "SKU",
     type: "number",
     maxLength: 12,
     required: true,
@@ -156,19 +157,28 @@ const productFields = [
     id: "UOM",
     title: "UOM",
     placeholder: "UOM",
-    type: "input",
+    type: "select",
     required: true,
+    options: [
+      { key: "unit", value: "unit" },
+      { key: "dozen", value: "dozen" },
+      { key: "gram", value: "gram" },
+      { key: "kilogram", value: "kilogram" },
+      { key: "tonne", value: "tonne" },
+      { key: "litre", value: "litre" },
+      { key: "millilitre", value: "millilitre" },
+    ],
   },
   {
-    id: "packQty",
-    title: "Measurement Quantity",
-    placeholder: "Measurement Quantity",
+    id: "UOMValue",
+    title: "UOM value",
+    placeholder: "UOM value",
     type: "input",
     required: true,
   },
   {
     id: "length",
-    title: "Length",
+    title: "Length(cm)",
     placeholder: "Length",
     type: "input",
     maxLength: 6,
@@ -176,7 +186,7 @@ const productFields = [
   },
   {
     id: "breadth",
-    title: "Breadth",
+    title: "Breadth(cm)",
     placeholder: "Breadth",
     type: "input",
     maxLength: 6,
@@ -184,7 +194,7 @@ const productFields = [
   },
   {
     id: "height",
-    title: "Height",
+    title: "Height(cm)",
     placeholder: "Height",
     type: "input",
     maxLength: 6,
@@ -259,6 +269,19 @@ const productFields = [
     multiline: true,
   },
   {
+    id: "vegNonVeg",
+    title: "Veg/Non-Veg/Egg",
+    placeholder: "Select Food Category",
+    type: "select",
+    options: [
+      { key: "Veg", value: "VEG" },
+      { key: "Non Veg", value: "NONVEG" },
+      { key: "Egg", value: "EGG" },
+    ],
+    disableClearable: true,
+    required: true,
+  },
+  {
     id: "isCancellable",
     title: "Cancellable",
     type: "radio",
@@ -279,16 +302,6 @@ const productFields = [
     required: true,
   },
   {
-    id: "isVegetarian",
-    title: "Vegetarian",
-    type: "radio",
-    options: [
-      { key: "Yes", value: "true" },
-      { key: "No", value: "false" },
-    ],
-    required: true,
-  },
-  {
     id: "availableOnCod",
     title: "Available On Cash On Delivery",
     type: "radio",
@@ -300,13 +313,66 @@ const productFields = [
   },
   {
     id: "images",
-    title:
-      "Images (Multiple file selection allowed, maximum size of 2Mb for each file)",
+    title: "Images (Select minimum 3 files with maximum size of 2Mb for each file)",
     type: "upload",
     multiple: true,
     file_type: "product_image",
     required: true,
   },
+  {
+    id: "fulfillmentOption",
+    title: "Fulfilment Option",
+    placeholder: "Available Fulfillment Options",
+    type: "select",
+    required: true,
+    options: [],
+    disableClearable: true,
+  },
+  {
+    id: "countryOfOrigin",
+    title: "Country Of Origin",
+    placeholder: "Country Of Origin",
+    type: "select",
+    options: countries,
+    required: true,
+  }
 ];
 
-export default productFields;
+export const categoryFields = ["productCategory", "productSubcategory1"];
+
+export const productDetailsFields = [
+  "productCode",
+  "productName",
+  "description",
+  "longDescription",
+  "countryOfOrigin",
+  "HSNCode",
+  "GST_Percentage",
+  "maxAllowedQty",
+  "length",
+  "breadth",
+  "height",
+  "weight",
+  "returnWindow",
+  "manufacturerName",
+  "manufacturedDate",
+  "nutritionalInfo",
+  "additiveInfo",
+  "instructions",
+  "vegNonVeg",
+  "isReturnable",
+  "isCancellable",
+  "availableOnCod",
+  "manufacturerOrPackerName",
+  "manufacturerOrPackerAddress",
+  "commonOrGenericNameOfCommodity",
+  "monthYearOfManufacturePackingImport",
+  "importerFSSAILicenseNo",
+  "brandOwnerFSSAILicenseNo",
+  "fulfillmentOption",
+  "UOM",
+];
+
+export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
+
+export const UOMVariationFields = ["UOMValue"];

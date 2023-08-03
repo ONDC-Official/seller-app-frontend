@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
-import {
-  areObjectsEqual,
-  isEmailValid,
-  isNumberOnly,
-  isPhoneNoValid,
-} from "../../../utils/validations";
+import { areObjectsEqual, isEmailValid, isNumberOnly, isPhoneNoValid } from "../../../utils/validations";
 import { useEffect } from "react";
 import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
-import { AddOutlined, DeleteOutlined } from "@mui/icons-material";
+import StoreTimingsRenderer from "./StoreTimingsRenderer";
+import Fulfillments from "./Fulfillments";
 
 const providerFields = [
   {
@@ -293,12 +289,45 @@ let storeFields = [
   },
 ];
 
+const defaultStoreTimings = [
+  {
+    daysRange: { from: 1, to: 5 },
+    timings: [{ from: "00:00", to: "00:00" }],
+  },
+];
+
 const ProviderDetails = ({ isFromUserListing = false }) => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
+  const [supportedFulfillments, setSupportedFulfillments] = useState({
+    delivery: false,
+    selfPickup: false,
+    deliveryAndSelfPickup: false,
+  });
+  const [fulfillmentDetails, setFulfillmentDetails] = useState({
+    deliveryDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+    },
+    selfPickupDetails: {
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
+    deliveryAndSelfPickupDetails: {
+      deliveryEmail: "",
+      deliveryMobile: "",
+      selfPickupEmail: "",
+      selfPickupMobile: "",
+    },
+  });
 
+  const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
+  const [storeStatus, setStoreStatus] = useState("enabled");
+  const [temporaryClosedTimings, setTemporaryClosedTimings] = useState({ from: "00:00", to: "00:00" });
+  const [temporaryClosedDays, setTemporaryClosedDays] = useState({ from: 1, to: 5 });
+  const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
+  const [originalStoreTimings, setOriginalStoreTimings] = useState([...defaultStoreTimings]);
   const [providerDetails, setProviderDetails] = useState({});
   const [kycDetails, setKycDetails] = useState({});
   const [bankDetails, setBankDetails] = useState({});
@@ -313,6 +342,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Pune", value: "pune" },
     ],
   });
+
   const [errors, setErrors] = useState(null);
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
@@ -326,6 +356,67 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Pune", value: "pune" },
     ],
   });
+
+  const getAvailableFulfillments = (fulfillments) => {
+    let hasF1 = false;
+    let hasF2 = false;
+    let hasF3 = false;
+    let deliveryEmail = "";
+    let deliveryMobile = "";
+    let selfPickupEmail = "";
+    let selfPickupMobile = "";
+    let email_delivery = "";
+    let mobile_delivery = "";
+    let email_self = "";
+    let mobile_self = "";
+
+    fulfillments?.forEach((fulfillment) => {
+      if (fulfillment.id === "f1") {
+        hasF1 = true;
+        deliveryEmail = fulfillment.contact.email;
+        deliveryMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f2") {
+        console.log("f2", fulfillment);
+        hasF2 = true;
+        selfPickupEmail = fulfillment.contact.email;
+        selfPickupMobile = fulfillment.contact.phone;
+      }
+
+      if (fulfillment.id === "f3") {
+        hasF3 = true;
+        email_delivery = fulfillment.contact.delivery.email;
+        mobile_delivery = fulfillment.contact.delivery.phone;
+        email_self = fulfillment.contact.pickup.email;
+        mobile_self = fulfillment.contact.pickup.phone;
+      }
+    });
+
+    return {
+      supportedFulfillments: {
+        delivery: hasF1,
+        selfPickup: hasF2,
+        deliveryAndSelfPickup: hasF3,
+      },
+      fulfillmentDetails: {
+        deliveryDetails: {
+          deliveryEmail,
+          deliveryMobile,
+        },
+        selfPickupDetails: {
+          selfPickupEmail,
+          selfPickupMobile,
+        },
+        deliveryAndSelfPickupDetails: {
+          deliveryEmail: email_delivery,
+          deliveryMobile: mobile_delivery,
+          selfPickupEmail: email_self,
+          selfPickupMobile: mobile_self,
+        },
+      },
+    };
+  };
 
   const getOrgDetails = async (id) => {
     try {
@@ -382,50 +473,30 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
         logo: res?.providerDetail?.storeDetails?.logo?.url || "",
 
-        days: res?.providerDetail?.storeDetails?.storeTiming?.days || [],
-        holidays:
-          res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays ||
-          [],
-        StoreTimeType: res?.providerDetail?.storeDetails?.storeTiming?.schedule
-          ?.frequency
-          ? "frequency"
-          : "time",
-        startTime:
-          res?.providerDetail?.storeDetails?.storeTiming?.range?.start || "",
-        endTime:
-          res?.providerDetail?.storeDetails?.storeTiming?.range?.end || "",
-        frequency: "",
-        storeTimes:
-          res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times
-            .length > 0
-            ? res?.providerDetail?.storeDetails?.storeTiming?.schedule?.times
-            : [""],
+        holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
       };
 
-      if (res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency) {
-        // Create a duration object from the ISO 8601 string
-        const duration = moment.duration(
-          res?.providerDetail?.storeDetails?.storeTiming?.schedule?.frequency
-        );
+      const fulfillments = res.providerDetail.storeDetails.fulfillments;
+      const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
 
-        // Get the number of hours from the duration object
-        const hours = duration.asHours();
-        storeData.frequency = String(hours);
-      } else {
-      }
+      setSupportedFulfillments(supportedFulfillments);
+      setFulfillmentDetails((prevDetails) => ({
+        ...prevDetails,
+        ...fulfillmentDetails,
+      }));
 
-      // if(storeData.categories && storeData.categories.length > 0){
-      //   storeData.categories = storeData.categories.map((item) => {
-      //     const findFromList = categoriesList.find((catItem) => catItem.value === item);
-      //     return findFromList;
-      //   })
-      // }else{}
+      const storeTimingDetails = res?.providerDetail?.storeDetails?.storeTiming;
+
+      setStoreStatus(storeTimingDetails.status);
+      setTemporaryClosedTimings(storeTimingDetails?.closed);
+      setTemporaryClosedDays(storeTimingDetails.closedDays);
+
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
-      setDefaultStoreDetails(
-        Object.assign({}, JSON.parse(JSON.stringify(storeData)))
-      );
+      setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
+      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
+      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
     } catch (error) {
       console.log(error);
     }
@@ -444,8 +515,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
   }
 
+  const getStoreTimesErrors = () => {
+    let values = storeTimings.reduce((acc, storeTiming) => {
+      acc.push(storeTiming.daysRange.from);
+      acc.push(storeTiming.daysRange.to);
+      storeTiming.timings.forEach((element) => {
+        acc.push(element.from);
+        acc.push(element.to);
+      });
+      return acc;
+    }, []);
+    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
+  };
+
   const validate = () => {
-    console.log("storeDetails=====>", storeDetails);
     const formErrors = {};
     formErrors.email =
       storeDetails.email.trim() === ""
@@ -459,107 +542,205 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isPhoneNoValid(storeDetails.mobile)
         ? "Please enter a valid mobile number"
         : "";
-    formErrors.categories =
-      storeDetails.categories.length === 0
-        ? "Supported Product Categories are required"
-        : "";
+    formErrors.categories = storeDetails.categories.length === 0 ? "Supported Product Categories are required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
-      formErrors.cities =
-        storeDetails.cities.length === 0 ? "City is required" : "";
+      formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
     } else {
     }
-    formErrors.country =
-      storeDetails.country.trim() === "" ? "Country is required" : "";
-    formErrors.state =
-      storeDetails.state.trim() === "" ? "State is required" : "";
+    formErrors.country = storeDetails.country.trim() === "" ? "Country is required" : "";
+    formErrors.state = storeDetails.state.trim() === "" ? "State is required" : "";
     formErrors.address_city = storeDetails.address_city.trim() === "" ? "City is required" : "";
-    formErrors.building =
-      storeDetails.building.trim() === "" ? "Building is required" : "";
-    formErrors.area_code =
-      storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
+    formErrors.building = storeDetails.building.trim() === "" ? "Building is required" : "";
+    formErrors.area_code = storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
     formErrors.logo = storeDetails.logo.trim() === "" ? "Logo is required" : "";
 
     if (!isFromUserListing) {
-      formErrors.days =
-        storeDetails.days.length === 0 ? "Opening Days are required" : "";
-      formErrors.holidays =
-        storeDetails.holidays.length === 0 ? "Holidays are required" : "";
-
-      formErrors.storeTimes =
-        storeDetails.StoreTimeType === "frequency" &&
-        storeDetails.storeTimes.length === 0
-          ? "At least One store time is required"
-          : "";
-
-      if (
-        storeDetails.StoreTimeType === "frequency" &&
-        storeDetails.storeTimes.length > 0
-      ) {
-        const invalidTimeIndices = storeDetails.storeTimes.reduce(
-          (invalidIndices, time, index) => {
-            if (time === "Invalid date" || time === "") {
-              invalidIndices.push(index);
-            }
-            return invalidIndices;
-          },
-          []
-        );
-
-        if (invalidTimeIndices.length > 0) {
-          formErrors.storeTimes = invalidTimeIndices;
-        } else {
-          delete formErrors.storeTimes; // Remove the error if all store times are valid
-        }
+      if (storeStatus === "enabled") {
+        formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
+        formErrors.storeTimes = getStoreTimesErrors();
       } else {
-        delete formErrors.storeTimes; // Remove the error if there are no store times
+        formErrors.holidays = "";
+        formErrors.storeTimes = "";
       }
-
-      formErrors.startTime =
-        storeDetails.StoreTimeType === "time" &&
-        (storeDetails.startTime === "" ||
-          storeDetails.startTime === "Invalid date")
-          ? "Opening time is required"
-          : "";
-
-      formErrors.endTime =
-        storeDetails.StoreTimeType === "time" &&
-        (storeDetails.endTime === "" || storeDetails.endTime === "Invalid date")
-          ? "Closing time is required"
-          : "";
-
-      formErrors.frequency =
-        storeDetails.StoreTimeType === "frequency"
-          ? storeDetails.frequency === ""
-            ? "Frequency is required"
-            : !isNumberOnly(storeDetails?.frequency)
-            ? "Please enter only digits"
-            : ""
-          : "";
     } else {
     }
+
     formErrors.radius =
       storeDetails.radius.trim() === ""
         ? "Serviceable Radius/Circle is required"
         : !isNumberOnly(storeDetails?.radius)
         ? "Please enter only digit"
         : "";
-    formErrors.logisticsBppId =
-      storeDetails.logisticsBppId.trim() === ""
-        ? "Logistics Bpp Id is required"
+    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+
+    formErrors.deliveryEmail =
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.deliveryDetails?.deliveryEmail)
+          ? "Please enter a valid email address"
+          : ""
         : "";
 
-    console.log("formErrors=====>", formErrors);
+    formErrors.deliveryMobile =
+      supportedFulfillments.delivery !== false
+        ? fulfillmentDetails.deliveryDetails?.deliveryMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.deliveryDetails?.deliveryMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
+
+    formErrors.selfPickupEmail =
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupEmail?.trim() === ""
+          ? "Delivery Email is required"
+          : !isEmailValid(fulfillmentDetails.selfPickupDetails?.selfPickupEmail)
+          ? "Please enter a valid email address"
+          : ""
+        : "";
+
+    formErrors.selfPickupMobile =
+      supportedFulfillments.selfPickup !== false
+        ? fulfillmentDetails.selfPickupDetails?.selfPickupMobile?.trim() === ""
+          ? "Mobile Number is required"
+          : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails?.selfPickupMobile)
+          ? "Please enter a valid mobile number"
+          : ""
+        : "";
+
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      formErrors.deliveryAndSelfPickupDetails = {};
+
+      const deliveryAndSelfPickupDetails = fulfillmentDetails?.deliveryAndSelfPickupDetails || {};
+      const deliveryEmail = deliveryAndSelfPickupDetails.deliveryEmail?.trim();
+      const deliveryMobile = deliveryAndSelfPickupDetails.deliveryMobile?.trim();
+      const selfPickupEmail = deliveryAndSelfPickupDetails.selfPickupEmail?.trim();
+      const selfPickupMobile = deliveryAndSelfPickupDetails.selfPickupMobile?.trim();
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(deliveryEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.deliveryMobile = !deliveryMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(deliveryMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupEmail = !selfPickupEmail
+        ? "Delivery Email is required"
+        : !isEmailValid(selfPickupEmail)
+        ? "Please enter a valid email address"
+        : "";
+
+      formErrors.deliveryAndSelfPickupDetails.selfPickupMobile = !selfPickupMobile
+        ? "Mobile Number is required"
+        : !isPhoneNoValid(selfPickupMobile)
+        ? "Please enter a valid mobile number"
+        : "";
+
+      // Check if all nested properties are empty, then delete the entire object from formErrors
+      if (
+        Object.keys(formErrors.deliveryAndSelfPickupDetails).every(
+          (key) => formErrors.deliveryAndSelfPickupDetails[key] === ""
+        )
+      ) {
+        delete formErrors.deliveryAndSelfPickupDetails;
+      }
+    } else {
+      delete formErrors.deliveryAndSelfPickupDetails;
+    }
+
+    if (storeStatus === "closed") {
+      if (temporaryClosedTimings.from === temporaryClosedTimings.to && temporaryClosedTimings.from !== "Invalid Date") {
+        formErrors.temporaryClosedTimings = "Opening and closing times cannot be the same";
+      } else if (temporaryClosedTimings.from === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid opening time";
+      } else if (temporaryClosedTimings.to === "Invalid date") {
+        formErrors.temporaryClosedTimings = "Please provide a valid closing time";
+      } else {
+        formErrors.temporaryClosedTimings = "";
+      }
+    }
+
     setErrors(formErrors);
+    if (Object.values(formErrors).some((val) => val !== "")) {
+      cogoToast.error("Please fill in all required data!");
+    }
     return !Object.values(formErrors).some((val) => val !== "");
   };
 
+  const anyChangeInData = () => {
+    // TODO: debug following
+    let is_form_updated = !areObjectsEqual(storeDetails, defaultStoreDetails);
+    let is_store_time_updated = !areObjectsEqual(storeTimings, originalStoreTimings);
+    //return is_form_updated || is_store_time_updated;
+    return true;
+  };
+
+  const getFulfillmentsPayloadFormat = () => {
+    let fulfillments = [];
+    if (supportedFulfillments.delivery) {
+      let deliveryDetails = {
+        id: "f1",
+        type: "delivery",
+        contact: {
+          email: fulfillmentDetails.deliveryDetails.deliveryEmail,
+          phone: fulfillmentDetails.deliveryDetails.deliveryMobile,
+        },
+      };
+      fulfillments.push(deliveryDetails);
+    }
+
+    if (supportedFulfillments.selfPickup) {
+      let selfPickupDetails = {
+        id: "f2",
+        type: "pickup",
+        contact: {
+          email: fulfillmentDetails.selfPickupDetails.selfPickupEmail,
+          phone: fulfillmentDetails.selfPickupDetails.selfPickupMobile,
+        },
+      };
+      fulfillments.push(selfPickupDetails);
+    }
+
+    if (supportedFulfillments.deliveryAndSelfPickup) {
+      let deliveryAndSelfPickupDetails = {
+        id: "f3",
+        type: "delivery&pickup",
+        contact: {
+          delivery: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.deliveryMobile,
+          },
+          pickup: {
+            email: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupEmail,
+            phone: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile,
+          },
+        },
+      };
+      fulfillments.push(deliveryAndSelfPickupDetails);
+    }
+
+    return fulfillments;
+  };
+
+  const getStoreTimingsPayloadFormat = () => {
+    let storeTiming = {};
+    storeTiming.status = storeStatus;
+    storeTiming.holidays = storeDetails.holidays;
+    storeTiming.enabled = storeTimings;
+    storeTiming.closed = temporaryClosedTimings;
+    storeTiming.closedDays = temporaryClosedDays;
+    return storeTiming;
+  };
+
   const onUpdate = () => {
-    console.log(
-      "areObjectsEqual(storeDetails, defaultStoreDetails)",
-      !areObjectsEqual(storeDetails, defaultStoreDetails)
-    );
-    if (!areObjectsEqual(storeDetails, defaultStoreDetails) && validate()) {
+    if (anyChangeInData && validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
@@ -581,8 +762,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality = "",
       } = storeDetails;
 
-      const locationAvailability =
-        location_availability === "pan_india" ? true : false;
+      const locationAvailability = location_availability === "pan_india" ? true : false;
       const addressDetails = {
         building: building,
         city: address_city,
@@ -592,20 +772,18 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         locality: locality,
       };
       let iso8601 = "";
-      if (
-        storeDetails.frequency &&
-        storeDetails.StoreTimeType === "frequency"
-      ) {
+      if (storeDetails.frequency && storeDetails.StoreTimeType === "frequency") {
         // Create a duration object with the hours you want to convert
-        const duration = moment.duration(
-          parseInt(storeDetails.frequency),
-          "hours"
-        );
+        const duration = moment.duration(parseInt(storeDetails.frequency), "hours");
 
         // Format the duration in ISO 8601 format
         iso8601 = duration.toISOString();
       } else {
       }
+
+      let fulfillments = getFulfillmentsPayloadFormat();
+      let storeTiming = getStoreTimingsPayloadFormat();
+
       let payload = {
         categories,
         logo: logo,
@@ -617,25 +795,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email,
           mobile,
         },
-        storeTiming: {
-          days: storeDetails.days,
-          schedule: {
-            holidays: storeDetails.holidays,
-            frequency: iso8601 || "",
-            times:
-              storeDetails.StoreTimeType === "frequency"
-                ? storeDetails.storeTimes
-                : [],
-          },
-          range: {
-            start:
-              storeDetails.StoreTimeType === "time"
-                ? storeDetails.startTime
-                : "",
-            end:
-              storeDetails.StoreTimeType === "time" ? storeDetails.endTime : "",
-          },
-        },
+        fulfillments,
+        storeTiming,
         radius: {
           unit: "km",
           value: storeDetails.radius || "",
@@ -651,7 +812,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
-      console.log("payload=====>", payload);
+
       postCall(url, payload)
         .then((resp) => {
           cogoToast.success("Store details updated successfully");
@@ -707,30 +868,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
               />
               <p className="text-2xl font-semibold mb-4">Provider Details</p>
               {providerFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={providerDetails}
-                  statehandler={setProviderDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={providerDetails} statehandler={setProviderDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">KYC Details</p>
               {kycFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={kycDetails}
-                  statehandler={setKycDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={kycDetails} statehandler={setKycDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">Bank Details</p>
               {bankFields.map((item) => (
-                <RenderInput
-                  previewOnly={true}
-                  item={item}
-                  state={bankDetails}
-                  statehandler={setBankDetails}
-                />
+                <RenderInput previewOnly={true} item={item} state={bankDetails} statehandler={setBankDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">Store Details</p>
               {storeDetailFields.map((item) => (
@@ -746,245 +892,31 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   stateHandler={setStoreDetails}
                 />
               ))}
+
               {!isFromUserListing && (
                 <>
-                  <p className="text-2xl font-semibold mb-4 mt-14">
-                    Store Timing
-                  </p>
                   <RenderInput
                     item={{
-                      id: "days",
-                      title: "Opening Days",
-                      options: [
-                        { key: "Monday", value: "1" },
-                        { key: "Tuesday", value: "2" },
-                        { key: "Wednesday", value: "3" },
-                        { key: "Thursday", value: "4" },
-                        { key: "Friday", value: "5" },
-                        { key: "Saturday", value: "6" },
-                        { key: "Sunday", value: "7" },
-                      ],
-                      type: "checkbox",
-                      required: true,
-                      error: errors?.["days"] ? true : false,
-                      helperText: errors?.["days"] || "",
+                      id: "logisticsBppId",
+                      title: "Logistics Bpp Id",
+                      placeholder: "Logistics Bpp Id",
+                      type: "input",
+                      error: errors?.["logisticsBppId"] ? true : false,
+                      helperText: errors?.["logisticsBppId"] || "",
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-                  <p
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "0.75rem",
-                      marginLeft: 12,
-                    }}
-                  >
-                    {errors?.["days"] || ""}
-                  </p>
-                  <RenderInput
-                    item={{
-                      id: "holidays",
-                      title: "Holidays",
-                      placeholder: "Holidays",
-                      type: "days-picker",
-                      required: true,
-                      format: "YYYY-MM-DD",
-                      error: errors?.["holidays"] ? true : false,
-                      helperText: errors?.["holidays"] || "",
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                  <p
-                    style={{
-                      color: "#d32f2f",
-                      fontSize: "0.75rem",
-                      marginLeft: 12,
-                    }}
-                  >
-                    {errors?.["holidays"] || ""}
-                  </p>
-                  <RenderInput
-                    item={{
-                      id: "StoreTimeType",
-                      title: "Store Time Type",
-                      options: [
-                        { key: "Frequency", value: "frequency" },
-                        { key: "Time", value: "time" },
-                      ],
-                      type: "radio",
-                      required: true,
-                      error: errors?.["StoreTimeType"] ? true : false,
-                      helperText: errors?.["StoreTimeType"] || "",
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-                  {storeDetails.StoreTimeType === "frequency" ? (
-                    <>
-                      <RenderInput
-                        item={{
-                          id: "frequency",
-                          title: "Frequency (in hours)",
-                          placeholder: "Frequency (in hours)",
-                          type: "number",
-                          min: 1,
-                          required: true,
-                          error: errors?.["frequency"] ? true : false,
-                          helperText: errors?.["frequency"] || "",
-                        }}
-                        state={storeDetails}
-                        stateHandler={setStoreDetails}
-                      />
-                      <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
-                        Store Time
-                        <span className="text-[#FF0000]"> *</span>
-                      </label>
-                      {storeDetails.storeTimes &&
-                        storeDetails.storeTimes.length > 0 &&
-                        storeDetails.storeTimes.map((itemTime, idx) => {
-                          const isError =
-                            errors?.storeTimes &&
-                            errors.storeTimes.includes(idx);
-                          return (
-                            <div style={{ display: "flex" }}>
-                              <div style={{ flex: 1 }}>
-                                <RenderInput
-                                  item={{
-                                    id: "time",
-                                    title: "",
-                                    format: "HH:mm",
-                                    ampm: false,
-                                    placeholder: "Frequency (in hours)",
-                                    type: "time-picker",
-                                    required: true,
-                                    error: isError,
-                                    helperText: isError
-                                      ? "Please enter a valid store time"
-                                      : "",
-                                  }}
-                                  state={{ time: itemTime }}
-                                  onChange={(value) => {
-                                    let data = JSON.parse(
-                                      JSON.stringify(storeDetails.storeTimes)
-                                    );
-                                    data[idx] = value;
-                                    setStoreDetails((prevState) => {
-                                      const newState = {
-                                        ...prevState,
-                                        storeTimes: data,
-                                      };
-                                      return newState;
-                                    });
-                                  }}
-                                />
-                              </div>
-                              <div
-                                style={{
-                                  width: "100px",
-                                  margin: "auto",
-                                  paddingLeft: "20px",
-                                  display:
-                                    storeDetails.storeTimes.length - 1 === idx
-                                      ? "none"
-                                      : "flex",
-                                }}
-                              >
-                                {storeDetails.storeTimes.length - 1 !== idx && (
-                                  <IconButton
-                                    style={{ width: 35, height: 35 }}
-                                    size="small"
-                                    onClick={(e) => {
-                                      let updatedStoreTimes = [
-                                        ...storeDetails.storeTimes,
-                                      ];
-                                      updatedStoreTimes.splice(idx, 1);
-                                      setStoreDetails((prevState) => ({
-                                        ...prevState,
-                                        storeTimes: updatedStoreTimes,
-                                      }));
-                                    }}
-                                  >
-                                    <DeleteOutlined fontSize="small" />
-                                  </IconButton>
-                                )}
-                              </div>
-                              <div
-                                style={{
-                                  width:
-                                    storeDetails.storeTimes.length - 1 !== idx
-                                      ? 0
-                                      : "120px",
-                                  margin: "auto",
-                                  paddingLeft: "20px",
-                                  marginLeft: -1,
-                                }}
-                              >
-                                {storeDetails.storeTimes.length - 1 === idx && (
-                                  <IconButton
-                                    style={{ width: 35, height: 35 }}
-                                    size="small"
-                                    onClick={(e) => {
-                                      console.log(
-                                        "storeDetails.storeTimes=====>",
-                                        storeDetails.storeTimes
-                                      );
-                                      let data = JSON.parse(
-                                        JSON.stringify(storeDetails.storeTimes)
-                                      );
-                                      data.push("");
-                                      setStoreDetails((prevState) => {
-                                        const newState = {
-                                          ...prevState,
-                                          storeTimes: data,
-                                        };
-                                        return newState;
-                                      });
-                                    }}
-                                  >
-                                    <AddOutlined fontSize="small" />
-                                  </IconButton>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </>
-                  ) : (
-                    <>
-                      <RenderInput
-                        item={{
-                          ampm: false,
-                          id: "startTime",
-                          title: "Opening Time",
-                          placeholder: "Opening Time",
-                          type: "time-picker",
-                          format: "HH:mm",
-                          required: true,
-                          error: errors?.["startTime"] ? true : false,
-                          helperText: errors?.["startTime"] || "",
-                        }}
-                        state={storeDetails}
-                        stateHandler={setStoreDetails}
-                      />
-                      <RenderInput
-                        item={{
-                          ampm: false,
-                          id: "endTime",
-                          title: "Closing Time",
-                          placeholder: "Closing Time",
-                          type: "time-picker",
-                          format: "HH:mm",
-                          required: true,
-                          error: errors?.["endTime"] ? true : false,
-                          helperText: errors?.["endTime"] || "",
-                        }}
-                        state={storeDetails}
-                        stateHandler={setStoreDetails}
-                      />
-                    </>
-                  )}
 
+                  <Fulfillments
+                    errors={errors}
+                    supportedFulfillments={supportedFulfillments}
+                    setSupportedFulfillments={setSupportedFulfillments}
+                    fulfillmentDetails={fulfillmentDetails}
+                    setFulfillmentDetails={setFulfillmentDetails}
+                  />
+
+                  <p className="text-2xl font-semibold mb-2 mt-14">Store Timing</p>
                   <RenderInput
                     item={{
                       id: "radius",
@@ -998,30 +930,85 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-                  <RenderInput
-                    item={{
-                      id: "logisticsBppId",
-                      title: "Logistics Bpp Id",
-                      placeholder: "Logistics Bpp Id",
-                      type: "input",
-                      error: errors?.["logisticsBppId"] ? true : false,
-                      helperText: errors?.["logisticsBppId"] || "",
-                      required: true,
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
+                  <div className="py-1 flex flex-col">
+                    <FormControl component="fieldset">
+                      <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+                        Store Status
+                        <span className="text-[#FF0000]"> *</span>
+                      </label>
+                      <RadioGroup
+                        value={storeStatus}
+                        onChange={(e) => {
+                          setStoreStatus(e.target.value);
+                        }}
+                      >
+                        <div className="flex flex-row">
+                          {[
+                            { key: "Enabled", value: "enabled" },
+                            { key: "Temporarily Closed", value: "closed" },
+                            { key: "Disabled", value: "disabled" },
+                          ].map((radioItem, i) => (
+                            <FormControlLabel
+                              key={i}
+                              value={radioItem.value}
+                              control={<Radio size="small" checked={radioItem.value === storeStatus} />}
+                              label={<div className="text-sm font-medium text-[#606161]">{radioItem.key}</div>}
+                            />
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+
+                  {storeStatus === "enabled" && (
+                    <>
+                      <RenderInput
+                        item={{
+                          id: "holidays",
+                          title: "Holidays",
+                          placeholder: "Holidays",
+                          type: "days-picker",
+                          required: true,
+                          format: "YYYY-MM-DD",
+                          error: errors?.["holidays"] ? true : false,
+                          helperText: errors?.["holidays"] || "",
+                        }}
+                        state={storeDetails}
+                        stateHandler={setStoreDetails}
+                      />
+                      <p
+                        style={{
+                          color: "#d32f2f",
+                          fontSize: "0.75rem",
+                          marginLeft: 12,
+                        }}
+                      >
+                        {errors?.["holidays"] || ""}
+                      </p>
+                    </>
+                  )}
+
+                  <StoreTimingsRenderer
+                    errors={errors}
+                    storeStatus={storeStatus}
+                    storeTimings={storeTimings}
+                    setStoreTimings={setStoreTimings}
+                    temporaryClosedTimings={temporaryClosedTimings}
+                    setTemporaryClosedTimings={setTemporaryClosedTimings}
+                    temporaryClosedDays={temporaryClosedDays}
+                    setTemporaryClosedDays={setTemporaryClosedDays}
                   />
                 </>
               )}
 
               {/* {
                 !areObjectsEqual(storeDetails, defaultStoreDetails) && ( */}
-              <div className="flex mt-16">
+              <div className="flex mt16">
                 <Button
                   style={{ marginRight: 10 }}
                   variant="contained"
                   onClick={onUpdate}
-                  disabled={areObjectsEqual(storeDetails, defaultStoreDetails)}
+                  disabled={!anyChangeInData()}
                 >
                   Update Store
                 </Button>
