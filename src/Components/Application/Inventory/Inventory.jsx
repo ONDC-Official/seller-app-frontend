@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../../Shared/Navbar";
 import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -7,8 +6,38 @@ import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
-import { PRODUCT_CATEGORY } from '../../../utils/constants';
-import { useTheme } from '@mui/material/styles';
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { useTheme } from "@mui/material/styles";
+import FilterComponent from "../../Shared/FilterComponent";
+
+const filterFields = [
+  {
+    id: "productName",
+    title: "",
+    placeholder: "Search by Product Name",
+    type: "input",
+    variant: "standard",
+  },
+  {
+    id: "quantity",
+    title: "",
+    placeholder: "Search by Product Quantity",
+    type: "number",
+    variant: "standard",
+  },
+  {
+    id: "productCategory",
+    title: "",
+    placeholder: "Please Select Product Category",
+    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+      return { key: value, value: key };
+    }),
+    type: "select",
+    disableClearable: false,
+    variant: "standard",
+    disableClearable: true,
+  },
+];
 
 const columns = [
   { id: "productName", label: "Product Name", minWidth: 100 },
@@ -57,6 +86,12 @@ export default function Inventory() {
   const { cancellablePromise } = useCancellablePromise();
   const [products, setProducts] = useState([]);
 
+  const [filters, setFilters] = useState({
+    productName: "",
+    quantity: "",
+    productCategory: "",
+  });
+
   const getProducts = async () => {
     try {
       const res = await cancellablePromise(getCall(`/api/v1/products?limit=${rowsPerPage}&offset=${page}`));
@@ -102,11 +137,17 @@ export default function Inventory() {
     getProducts();
   };
 
+  const onFilter = () => {
+    console.log("Filters", filters);
+  };
+
   return (
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">Inventory</label>
+          <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">
+            Inventory
+          </label>
           <div className="flex">
             <div style={{ marginRight: 15 }}>
               <Button
@@ -114,7 +155,7 @@ export default function Inventory() {
                 icon={<AddIcon />}
                 title="Bulk upload"
                 onClick={() => navigate("/application/bulk-upload")}
-                />
+              />
             </div>
             <Button
               variant="contained"
@@ -125,6 +166,7 @@ export default function Inventory() {
             />
           </div>
         </div>
+        <FilterComponent fields={filterFields} state={filters} stateHandler={setFilters} onFilter={onFilter} />
         <InventoryTable
           columns={columns}
           data={products}

@@ -114,12 +114,14 @@ const RenderInput = (props) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
+          variant={item.variant ? item.variant : "outlined"}
           type={item.password ? "password" : "input"}
           className={
             props.inputClasses
               ? props.inputClasses
               : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           }
+          sx={props.inputStyles && props.inputStyles}
           required={item.required}
           size="small"
           multiline={item.multiline || false}
@@ -159,12 +161,14 @@ const RenderInput = (props) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
+          variant={item.variant ? item.variant : "outlined"}
           type="number"
           className={
             props.inputClasses
               ? props.inputClasses
               : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           }
+          sx={props.inputStyles && props.inputStyles}
           required={item.required}
           size="small"
           InputProps={{
@@ -313,8 +317,8 @@ const RenderInput = (props) => {
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
-            options={item.options}
-            getOptionLabel={(option) => option.key}
+            options={item?.options}
+            getOptionLabel={(option) => option?.key}
             value={
               state[item.id] !== "" && item.options && item.options.length > 0
                 ? item.options.find((option) => option.value === state[item.id])
@@ -342,7 +346,7 @@ const RenderInput = (props) => {
               <TextField
                 {...params}
                 placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
-                variant="outlined"
+                variant={item.variant ? item.variant : "outlined"}
                 error={item.error || false}
                 helperText={item.error && item.helperText}
               />
@@ -594,7 +598,7 @@ const RenderInput = (props) => {
               <TextField
                 {...params}
                 placeholder={state[item.id].length === 0 ? item.placeholder : ""}
-                variant="outlined"
+                variant={item.variant ? item.variant : "outlined"}
                 error={item.error || false}
                 helperText={item.error && item.helperText}
               />
