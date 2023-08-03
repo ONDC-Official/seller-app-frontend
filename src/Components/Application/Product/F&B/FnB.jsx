@@ -191,12 +191,6 @@ const FnB = (props) => {
       formValues?.fulfillmentOption == undefined || formValues?.fulfillmentOption === ""
         ? "Fulfillment Option is required"
         : "";
-
-    //  formErrors.packQty = !formValues?.packQty
-    //    ? "Please enter a valid Measurement Quantity"
-    //    : !isNumberOnly(formValues?.packQty)
-    //    ? "Please enter only digit"
-    //    : "";
     formErrors.length =
       formValues?.length?.trim() === ""
         ? "Length is required"
@@ -343,6 +337,7 @@ const FnB = (props) => {
       let api_url = "/api/v1/products";
 
       product_data.productCategory = category;
+      product_data.productSubcategory1 = subCategory;
 
       // Create a duration object with the hours you want to convert
       const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
