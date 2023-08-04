@@ -128,6 +128,7 @@ const AddGenericProduct = ({
         type: variant.type || "input",
         required: required,
         options: variant.type === "select" ? variant.options : null,
+        file_type: variant.type === 'upload' ? "product_image" : null,
       };
     });
   };
@@ -189,6 +190,7 @@ const AddGenericProduct = ({
       product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
 
       delete product_data["uploaded_urls"];
+      delete vital_data["tempURL"];
 
       let data = {
         commonDetails: product_data,
@@ -219,6 +221,11 @@ const AddGenericProduct = ({
         resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
         resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
         resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
+
+        // console.log(resp.commonAttributesValues["size_chart"]);
+        // resp.commonAttributesValues["size_chart"] = resp?.commonAttributesValues?.size_chart?.url;
+
+        console.log(resp.commonAttributesValues)
 
         // Create a duration object from the ISO 8601 string
         const duration = moment.duration(resp.returnWindow);
@@ -277,6 +284,8 @@ const AddGenericProduct = ({
       fields_to_remove.forEach((field) => {
         delete product_data[field];
       });
+
+      delete vital_data["tempURL"];
 
       let data = {
         commonDetails: product_data,
