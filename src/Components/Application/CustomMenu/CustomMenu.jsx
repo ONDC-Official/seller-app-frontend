@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MenuManager from "./MenuManager";
 import { Button } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import { Link, useParams } from "react-router-dom";
 
@@ -17,6 +18,7 @@ const CustomMenu = () => {
 
   const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
 
+  const [mode, setMode] = useState("add");
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [menuData, setMenuData] = useState({ id: "", position: "", name: "" });
 
@@ -29,7 +31,14 @@ const CustomMenu = () => {
     setMenuData({});
   };
 
-  const handleEdit = (data) => {};
+  const handleEdit = (data) => {
+    const itemIndex = availableMenuItems.findIndex((m) => m.id === data.id);
+    const updatedMenuItems = [...availableMenuItems];
+    updatedMenuItems[itemIndex] = data;
+    setAvailableMenuItems(updatedMenuItems);
+    setShowMenuModal(false);
+    setMenuData({});
+  };
 
   return (
     <div className="container mx-auto my-8">
@@ -37,7 +46,13 @@ const CustomMenu = () => {
         <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
           {params.category}: &nbsp;Custom Menu
         </label>
-        <Button variant="contained" onClick={() => setShowMenuModal(true)}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setShowMenuModal(true);
+            setMode("add");
+          }}
+        >
           Add Menu
         </Button>
       </div>
@@ -45,14 +60,25 @@ const CustomMenu = () => {
       <div>
         {availableMenuItems.map((item) => {
           return (
-            <div className="py-4 px-8 mb-2 border border-[#1876d1a1] rounded-xl hover:bg-[#1876D1] text-black hover:text-white cursor-pointer duration-300">
-              <p>{item.name}</p>
+            <div>
+              <div className="flex items-center justify-between py-4 px-8 mb-2 border border-[#1876d1a1] rounded-xl hover:bg-[#1876D1] text-black hover:text-white cursor-pointer duration-300">
+                <p className="w-24">{item.name}</p>
+                <Button
+                  onClick={() => {
+                    setMode("edit");
+                    setMenuData(item);
+                    setShowMenuModal(true);
+                  }}
+                >
+                  <Edit style={{ color: "#8798ad" }} />
+                </Button>
+              </div>
             </div>
           );
         })}
       </div>
       <MenuManager
-        mode="add"
+        mode={mode}
         showMenuModal={showMenuModal}
         handleCloseMenuModal={() => setShowMenuModal(false)}
         menuData={menuData}
