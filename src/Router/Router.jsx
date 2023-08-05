@@ -19,8 +19,12 @@ import ForgotPassword from "../Components/Auth/ForgotPassword/ForgotPassword";
 import BulkUpload from "../Components/Application/Product/BulkUpload";
 import StoreDetails from "../Components/Application/Store/StoreDetails.jsx";
 import { getUser } from "../utils/validateToken.js";
-import Complaints from "../Components/Application/Complaints/Complaints"
+import Complaints from "../Components/Application/Complaints/Complaints";
 import ComplaintDetails from "../Components/Application/Complaints/ComplaintDetails";
+import CustomMenu from "../Components/Application/CustomMenu/CustomMenu";
+import MenuCategory from "../Components/Application/CustomMenu/MenuCategory";
+import MenuProducts from "../Components/Application/CustomMenu/MenuProducts";
+
 export default function OndcRoutes() {
   return (
     <Router>
@@ -42,6 +46,30 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <Inventory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={"/application/menu-category"}
+          element={
+            <PrivateRoute>
+              <MenuCategory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={"/application/menu-category/:category"}
+          element={
+            <PrivateRoute>
+              <CustomMenu />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={"/application/menu-category/:category/:menu"}
+          element={
+            <PrivateRoute>
+              <MenuProducts />
             </PrivateRoute>
           }
         />
@@ -122,7 +150,7 @@ export default function OndcRoutes() {
           path="/sign-up"
           element={
             // <PrivateRoute>
-              <AddProvider />
+            <AddProvider />
             // </PrivateRoute>
           }
         />
