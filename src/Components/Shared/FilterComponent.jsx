@@ -3,7 +3,7 @@ import Button from "./Button";
 import RenderInput from "../../utils/RenderInput";
 
 const FilterComponent = (props) => {
-  const { fields = [], state, stateHandler, onFilter } = props;
+  const { fields = [], state, stateHandler, onFilter, onReset } = props;
 
   console.log("State", state);
 
@@ -15,9 +15,8 @@ const FilterComponent = (props) => {
         </p>
       </div>
       <div className="flex">
-        <div className="flex">
+        <div className="flex items-end">
           {fields.map((item) => {
-            console.log(item.id, state[item.id]);
             return (
               <RenderInput
                 key={item.id}
@@ -31,14 +30,7 @@ const FilterComponent = (props) => {
           })}
         </div>
         <div className="flex items-end mb-1 ml-4">
-          <Button
-            title="Reset"
-            variant="outlined"
-            sx={{ fontSize: 12 }}
-            onClick={(e) => {
-              stateHandler({ productName: "", quantity: "", productCategory: null });
-            }}
-          />
+          <Button title="Reset" variant="outlined" sx={{ fontSize: 12 }} onClick={onReset} />
           <Button title="Filter" variant="contained" sx={{ marginLeft: 2, fontSize: 12 }} onClick={onFilter} />
         </div>
       </div>

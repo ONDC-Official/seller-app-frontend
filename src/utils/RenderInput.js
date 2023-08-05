@@ -17,6 +17,7 @@ import {
   TextField,
   Stack,
   Chip,
+  Switch,
 } from "@mui/material";
 import { DeleteOutlined } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -330,7 +331,7 @@ const RenderInput = (props) => {
                   const newState = {
                     ...prevState,
                     [item.id]: newValue.value || "",
-                    productSubcategory1: "",
+                    //   productSubcategory1: "",
                   };
                   return newState;
                 } else {
@@ -833,6 +834,34 @@ const RenderInput = (props) => {
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
           {/* </label> */}
         </FormControl>
+      </div>
+    );
+  } else if (item.type == "switch") {
+    return (
+      <div className={item.containerClasses ? item.containerClasses : props.containerClasses || "py-1 flex flex-col"}>
+        <label
+          className={
+            props.labelClasses
+              ? props.labelClasses
+              : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+          }
+        >
+          {item.title}
+          {item.required && <span className="text-[#FF0000]"> *</span>}
+        </label>
+        <FormControlLabel
+          control={
+            <Switch
+              sx={item.styles && item.styles}
+              checked={state[item.id]}
+              onChange={(e) => stateHandler({ ...state, [item.id]: e.target.checked })}
+              disabled={item?.isDisabled || previewOnly || false}
+              color="primary"
+              size="medium"
+            />
+          }
+          label={item.switchLabel || ""}
+        />
       </div>
     );
   } else if (item.type == "label") {

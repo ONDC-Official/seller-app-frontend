@@ -19,13 +19,6 @@ const filterFields = [
     variant: "standard",
   },
   {
-    id: "quantity",
-    title: "",
-    placeholder: "Search by Product Quantity",
-    type: "number",
-    variant: "standard",
-  },
-  {
     id: "productCategory",
     title: "",
     placeholder: "Please Select Product Category",
@@ -33,9 +26,18 @@ const filterFields = [
       return { key: value, value: key };
     }),
     type: "select",
-    disableClearable: false,
     variant: "standard",
     disableClearable: true,
+  },
+  {
+    id: "outOfStock",
+    title: "Out of Stock",
+    placeholder: "Please Select Product Category",
+    type: "switch",
+    containerClasses: "flex items-center",
+    styles: {
+      marginLeft: 2,
+    },
   },
 ];
 
@@ -88,8 +90,8 @@ export default function Inventory() {
 
   const [filters, setFilters] = useState({
     productName: "",
-    quantity: "",
     productCategory: "",
+    outOfStock: false,
   });
 
   const getProducts = async () => {
@@ -137,6 +139,10 @@ export default function Inventory() {
     getProducts();
   };
 
+  const onReset = () => {
+    setFilters({ productName: "", productCategory: null, outOfStock: false });
+  };
+
   const onFilter = () => {
     console.log("Filters", filters);
   };
@@ -166,7 +172,13 @@ export default function Inventory() {
             />
           </div>
         </div>
-        <FilterComponent fields={filterFields} state={filters} stateHandler={setFilters} onFilter={onFilter} />
+        <FilterComponent
+          fields={filterFields}
+          state={filters}
+          stateHandler={setFilters}
+          onReset={onReset}
+          onFilter={onFilter}
+        />
         <InventoryTable
           columns={columns}
           data={products}
