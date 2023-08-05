@@ -100,7 +100,7 @@ export default function Sidebar(props) {
                     <ListItemText primary="Inventory" />
                   </ListItemButton>
                 </NavLink>
-                <NavLink to="/application/custom-menu" className="no-underline text-black">
+                <NavLink to="/application/menu-category" className="no-underline text-black">
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemText primary="Custom Menu" />
                   </ListItemButton>

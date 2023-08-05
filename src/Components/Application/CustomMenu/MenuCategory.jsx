@@ -1,6 +1,7 @@
 import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { Link } from "react-router-dom";
 
 const MenuCategory = () => {
   const theme = useTheme();
@@ -8,12 +9,14 @@ const MenuCategory = () => {
     <div className="container mx-auto my-8">
       <div className="mb-4 flex flex-row justify-between items-center">
         <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">
-          Custom Menu
+          Available Categories:
         </label>
       </div>
       <div className="flex flex-wrap">
         {Object.entries(PRODUCT_CATEGORY).map(([key, value]) => (
-          <MenuItem name={key} />
+          <Link to={`/application/menu-category/${key}`}>
+            <MenuItem name={key} />
+          </Link>
         ))}
       </div>
     </div>
