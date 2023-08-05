@@ -25,6 +25,8 @@ const CustomMenu = () => {
     newMenuItem["id"] = `M${availableMenuItems.length + 1}`;
     newMenuItem["position"] = availableMenuItems.length + 1;
     setAvailableMenuItems([...availableMenuItems, newMenuItem]);
+    setShowMenuModal(false);
+    setMenuData({});
   };
 
   const handleEdit = (data) => {};
