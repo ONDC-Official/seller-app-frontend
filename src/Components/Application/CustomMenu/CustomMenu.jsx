@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import MenuManager from "./MenuManager";
 import { Button } from "@mui/material";
-import { Edit } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { Edit } from "@mui/icons-material";
 
 const availableMenu = [
   { id: "M1", position: 1, name: "Snacks" },
@@ -15,6 +16,7 @@ const availableMenu = [
 const CustomMenu = () => {
   const theme = useTheme();
   const params = useParams();
+  const navigate = useNavigate();
 
   const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
 
@@ -40,6 +42,71 @@ const CustomMenu = () => {
     setMenuData({});
   };
 
+  const MenuItem = SortableElement(({ item }) => (
+    <div>
+      <div
+        className="flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl cursor-pointer bg-white"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <p>{item.name}</p>
+        <div>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setMode("edit");
+              setMenuData(item);
+              setShowMenuModal(true);
+            }}
+            sx={{ marginRight: 2 }}
+            variant="contained"
+          >
+            Edit Menu
+            {/* <Edit sx={{ backgroundColor: "red", height: 1, position: "absolute", zIndex: 1 }} /> */}
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/application/menu-category/${params.category}/${item.name}`);
+            }}
+            sx={{ zIndex: 10 }}
+            variant="contained"
+          >
+            Add Products
+          </Button>
+        </div>
+      </div>
+    </div>
+  ));
+
+  const MenuList = SortableContainer(({ items }) => {
+    return (
+      <div>
+        {items.map((item, index) => (
+          <MenuItem key={`item-${index}`} index={index} item={item} />
+        ))}
+      </div>
+    );
+  });
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    if (oldIndex === newIndex) return;
+
+    setAvailableMenuItems((items) => {
+      const reorderedItems = [...items];
+      const movedItem = reorderedItems.splice(oldIndex, 1)[0];
+      reorderedItems.splice(newIndex, 0, movedItem);
+
+      // Update the position attribute based on the new index
+      reorderedItems.forEach((item, index) => {
+        item.position = index + 1;
+      });
+
+      return reorderedItems;
+    });
+  };
+
+  const sortedMenuItems = availableMenuItems.sort((a, b) => a.position - b.position);
+
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4 flex flex-row justify-between items-center">
@@ -58,25 +125,9 @@ const CustomMenu = () => {
       </div>
 
       <div>
-        {availableMenuItems.map((item) => {
-          return (
-            <div>
-              <div className="flex items-center justify-between py-4 px-8 mb-2 border border-[#1876d1a1] rounded-xl hover:bg-[#1876D1] text-black hover:text-white cursor-pointer duration-300">
-                <p className="w-24">{item.name}</p>
-                <Button
-                  onClick={() => {
-                    setMode("edit");
-                    setMenuData(item);
-                    setShowMenuModal(true);
-                  }}
-                >
-                  <Edit style={{ color: "#8798ad" }} />
-                </Button>
-              </div>
-            </div>
-          );
-        })}
+        <MenuList items={sortedMenuItems} onSortEnd={onSortEnd} />
       </div>
+
       <MenuManager
         mode={mode}
         showMenuModal={showMenuModal}
