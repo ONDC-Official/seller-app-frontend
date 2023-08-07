@@ -7,10 +7,10 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Edit } from "@mui/icons-material";
 
 const availableMenu = [
-  { id: "M1", position: 1, name: "Snacks" },
-  { id: "M2", position: 2, name: "Breakfast" },
-  { id: "M3", position: 3, name: "Lunch" },
-  { id: "M4", position: 4, name: "Dinner" },
+  { id: "M1", name: "Snacks" },
+  { id: "M2", name: "Breakfast" },
+  { id: "M3", name: "Lunch" },
+  { id: "M4", name: "Dinner" },
 ];
 
 const CustomMenu = () => {
@@ -95,17 +95,11 @@ const CustomMenu = () => {
       const reorderedItems = [...items];
       const movedItem = reorderedItems.splice(oldIndex, 1)[0];
       reorderedItems.splice(newIndex, 0, movedItem);
-
-      // Update the position attribute based on the new index
-      reorderedItems.forEach((item, index) => {
-        item.position = index + 1;
-      });
-
       return reorderedItems;
     });
   };
 
-  const sortedMenuItems = availableMenuItems.sort((a, b) => a.position - b.position);
+  console.log(availableMenuItems);
 
   return (
     <div className="container mx-auto my-8">
@@ -125,7 +119,7 @@ const CustomMenu = () => {
       </div>
 
       <div>
-        <MenuList items={sortedMenuItems} onSortEnd={onSortEnd} />
+        <MenuList items={availableMenuItems} onSortEnd={onSortEnd} />
       </div>
 
       <MenuManager
