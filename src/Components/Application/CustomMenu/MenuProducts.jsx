@@ -7,10 +7,10 @@ import { Add, Delete } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
 
 const products = [
-  { id: "P1", position: 1, name: "Product A" },
-  { id: "P2", position: 2, name: "Product B" },
-  { id: "P3", position: 3, name: "Product C" },
-  { id: "P4", position: 4, name: "Product D" },
+  { id: "P1", name: "Product A" },
+  { id: "P2", name: "Product B" },
+  { id: "P3", name: "Product C" },
+  { id: "P4", name: "Product D" },
 ];
 
 const _allProducts = [
@@ -76,18 +76,9 @@ const MenuProducts = () => {
       const reorderedItems = [...items];
       const movedItem = reorderedItems.splice(oldIndex, 1)[0];
       reorderedItems.splice(newIndex, 0, movedItem);
-
-      // Update the position attribute based on the new index
-      reorderedItems.forEach((item, index) => {
-        item.position = index + 1;
-      });
-
       return reorderedItems;
     });
   };
-
-  const sortedProductItems = addedProducts.sort((a, b) => a.position - b.position);
-  const maxPosition = addedProducts.reduce((max, product) => (product.position > max ? product.position : max), 0);
 
   return (
     <div className="container mx-auto my-8">
@@ -99,13 +90,12 @@ const MenuProducts = () => {
       </div>
 
       <div>
-        <ProductList items={sortedProductItems} onSortEnd={onSortEnd} />
+        <ProductList items={addedProducts} onSortEnd={onSortEnd} />
       </div>
 
       <AddMenuProduct
         showModal={showModal}
         handleCloseModal={() => setShowModal(false)}
-        initialPosition={addedProducts.length + 1}
         addedProducts={addedProducts}
         setAddedProducts={setAddedProducts}
         allProducts={allProducts}

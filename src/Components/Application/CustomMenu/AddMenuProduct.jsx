@@ -40,11 +40,7 @@ const AddMenuProduct = (props) => {
   };
 
   const handleAddProducts = () => {
-    const newAddedProducts = selectedProducts.map((product, index) => ({
-      ...product,
-      position: addedProducts.length + 2 + index,
-    }));
-    setAddedProducts([...addedProducts, ...newAddedProducts]);
+    setAddedProducts([...addedProducts, ...selectedProducts]);
     handleCloseModal();
     setSelectedProducts([]);
   };
