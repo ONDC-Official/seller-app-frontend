@@ -4,20 +4,35 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Add, Delete } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
 
-const _products = [
+const addedProducts = [
   { id: "P1", position: 1, name: "Product A" },
   { id: "P2", position: 2, name: "Product B" },
   { id: "P3", position: 3, name: "Product C" },
   { id: "P4", position: 4, name: "Product D" },
 ];
 
+const allProducts = [
+  { id: "P5", position: 1, name: "Product E" },
+  { id: "P6", position: 2, name: "Product F" },
+  { id: "P7", position: 3, name: "Product G" },
+  { id: "P8", position: 4, name: "Product H" },
+  { id: "P8", position: 1, name: "Product I" },
+  { id: "P10", position: 2, name: "Product J" },
+  { id: "P11", position: 3, name: "Product K" },
+  { id: "P12", position: 4, name: "Product L" },
+];
+
 const MenuProducts = () => {
   const theme = useTheme();
   const params = useParams();
 
-  const [products, setProducts] = useState(_products);
+  const [products, setProducts] = useState(addedProducts);
+
+  const handleRemoveProduct = (item) => {
+    const filteredProducts = products.filter((p) => p.id !== item.id);
+    setProducts(filteredProducts);
+  };
 
   const ProductItem = SortableElement(({ item }) => (
     <div>
@@ -26,10 +41,8 @@ const MenuProducts = () => {
         onClick={(e) => e.stopPropagation()}
       >
         <p>{item.name}</p>
-        <div>
-          <IconButton aria-label="delete">
-            <Delete />
-          </IconButton>
+        <div onClick={() => handleRemoveProduct(item)}>
+          <Button title="Remove" icon={<Delete />} />
         </div>
       </div>
     </div>
