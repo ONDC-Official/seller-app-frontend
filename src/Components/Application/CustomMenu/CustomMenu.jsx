@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
+import ExitDialog from "../../Shared/ExitDialog";
 
 const availableMenu = [
   { id: "M1", name: "Snacks" },
@@ -18,12 +19,22 @@ const CustomMenu = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const [showExitDialog, setShowExitDialog] = useState(false);
+
   const [reordering, setReordering] = useState(false);
   const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
 
   const [mode, setMode] = useState("add");
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [menuData, setMenuData] = useState({ id: "", position: "", name: "" });
+
+  const onDiscardChanges = () => {
+    navigate(`/application/menu-category/`);
+  };
+
+  const onSaveChanges = () => {
+    setShowExitDialog(false);
+  };
 
   const handleAdd = (data) => {
     let newMenuItem = { ...data };
@@ -93,7 +104,11 @@ const CustomMenu = () => {
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
-        <BackNavigationButton onClick={() => navigate(`/application/menu-category/`)} />
+        <BackNavigationButton
+          onClick={() => {
+            setShowExitDialog(true);
+          }}
+        />
       </div>
       <div className="mb-4 flex flex-row justify-between items-center">
         <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
@@ -142,6 +157,13 @@ const CustomMenu = () => {
         setMenuData={setMenuData}
         handleAdd={handleAdd}
         handleEdit={handleEdit}
+      />
+
+      <ExitDialog
+        showExitDialog={showExitDialog}
+        onClose={() => setShowExitDialog(false)}
+        onDiscard={onDiscardChanges}
+        onSave={onSaveChanges}
       />
     </div>
   );
