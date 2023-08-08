@@ -4,7 +4,6 @@ import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Edit } from "@mui/icons-material";
 
 const availableMenu = [
   { id: "M1", name: "Snacks" },
@@ -51,27 +50,13 @@ const CustomMenu = () => {
         <p>{item.name}</p>
         <div>
           <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setMode("edit");
-              setMenuData(item);
-              setShowMenuModal(true);
-            }}
-            sx={{ marginRight: 2 }}
             variant="contained"
-          >
-            Edit Menu
-            {/* <Edit sx={{ backgroundColor: "red", height: 1, position: "absolute", zIndex: 1 }} /> */}
-          </Button>
-          <Button
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/application/menu-category/${params.category}/${item.name}`);
             }}
-            sx={{ zIndex: 10 }}
-            variant="contained"
           >
-            Add Products
+            Edit Menu
           </Button>
         </div>
       </div>
@@ -98,8 +83,6 @@ const CustomMenu = () => {
       return reorderedItems;
     });
   };
-
-  console.log(availableMenuItems);
 
   return (
     <div className="container mx-auto my-8">

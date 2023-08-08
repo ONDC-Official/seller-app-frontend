@@ -3,8 +3,9 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 const products = [
   { id: "P1", name: "Product A" },
@@ -39,6 +40,9 @@ const MenuProducts = () => {
   const [addedProducts, setAddedProducts] = useState(products);
   const [allProducts, setAllProducts] = useState([..._allProducts]);
   const [showModal, setShowModal] = useState(false);
+  const [menuDetails, setMenuDetails] = useState({
+    name: params.menu || "",
+  });
 
   const handleRemoveProduct = (item) => {
     const filteredProducts = addedProducts.filter((p) => p.id !== item.id);
@@ -83,9 +87,26 @@ const MenuProducts = () => {
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4 flex flex-row justify-between items-center">
-        <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
+        {/* <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
           {params.menu}: &nbsp;Menu Products
-        </label>
+        </label> */}
+        <TextField
+          size="small"
+          variant="outlined"
+          placeholder="Search products..."
+          value={menuDetails.name}
+          onChange={(e) => setMenuDetails({ ...menuDetails, name: e.target.value })}
+          //  style={{ width: 550 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton sx={{ marginLeft: -1 }}>
+                  <Edit size="small" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
         <Button title="Add Products" variant="contained" icon={<Add />} onClick={() => setShowModal(true)} />
       </div>
 
