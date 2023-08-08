@@ -233,6 +233,9 @@ const AddGenericProduct = ({
         // Get the number of hours from the duration object
         const hours = duration.asHours();
         resp.commonDetails.returnWindow = String(hours);
+        if(resp.commonAttributesValues["size_chart"]) {
+          resp.commonAttributesValues["size_chart"] = resp.commonAttributesValues["size_chart"].url
+        }
         setFormValues({ ...resp.commonDetails });
         setVitalForm({ ...resp.commonAttributesValues });
 
