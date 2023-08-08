@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
 
 const availableMenu = [
   { id: "M1", name: "Snacks" },
@@ -91,6 +92,9 @@ const CustomMenu = () => {
 
   return (
     <div className="container mx-auto my-8">
+      <div className="mb-4">
+        <BackNavigationButton onClick={() => navigate(`/application/menu-category/`)} />
+      </div>
       <div className="mb-4 flex flex-row justify-between items-center">
         <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
           {params.category}: &nbsp;Custom Menu

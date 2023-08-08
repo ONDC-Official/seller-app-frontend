@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Add, Delete, Edit, Save } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
@@ -35,6 +36,7 @@ const _allProducts = [
 
 const MenuProducts = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [reordering, setReordering] = useState(false);
   const [addedProducts, setAddedProducts] = useState(products);
@@ -91,23 +93,28 @@ const MenuProducts = () => {
 
   return (
     <div className="container mx-auto my-8">
+      <div className="mb-4">
+        <BackNavigationButton onClick={() => navigate(`/application/menu-category/${params.category}`)} />
+      </div>
       <div className="mb-4 flex flex-row justify-between items-center">
-        <TextField
-          size="small"
-          variant="outlined"
-          placeholder="Search products..."
-          value={menuDetails.name}
-          onChange={(e) => setMenuDetails({ ...menuDetails, name: e.target.value })}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton sx={{ marginLeft: -1 }}>
-                  <Edit size="small" />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+        <div className="flex ">
+          <TextField
+            size="small"
+            variant="outlined"
+            placeholder="Search products..."
+            value={menuDetails.name}
+            onChange={(e) => setMenuDetails({ ...menuDetails, name: e.target.value })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton sx={{ marginLeft: -1 }}>
+                    <Edit size="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
         <div className="flex">
           <div className="mr-2">
             <Button
