@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import MenuManager from "./MenuManager";
 import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -8,16 +8,17 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import ExitDialog from "../../Shared/ExitDialog";
 
 const availableMenu = [
-  { id: "M1", name: "Snacks" },
-  { id: "M2", name: "Breakfast" },
-  { id: "M3", name: "Lunch" },
-  { id: "M4", name: "Dinner" },
+  { id: "M1", seq: 1, name: "Snacks" },
+  { id: "M2", seq: 2, name: "Breakfast" },
+  { id: "M3", seq: 3, name: "Lunch" },
+  { id: "M4", seq: 4, name: "Dinner" },
 ];
 
 const CustomMenu = () => {
   const theme = useTheme();
   const params = useParams();
   const navigate = useNavigate();
+  const initialAvailableMenu = useRef(availableMenu);
 
   const [showExitDialog, setShowExitDialog] = useState(false);
 
@@ -33,6 +34,7 @@ const CustomMenu = () => {
   };
 
   const onSaveChanges = () => {
+    initialAvailableMenu.current = availableMenuItems;
     setShowExitDialog(false);
   };
 
@@ -52,6 +54,16 @@ const CustomMenu = () => {
     setAvailableMenuItems(updatedMenuItems);
     setShowMenuModal(false);
     setMenuData({});
+  };
+
+  const detectChanges = () => {
+    const hasChanges = availableMenuItems.some(
+      (currentItem, index) =>
+        currentItem.name !== initialAvailableMenu.current[index].name ||
+        currentItem.seq !== initialAvailableMenu.current[index].seq
+    );
+
+    return hasChanges;
   };
 
   const Menu = ({ data }) => {
@@ -106,7 +118,11 @@ const CustomMenu = () => {
       <div className="mb-4">
         <BackNavigationButton
           onClick={() => {
-            setShowExitDialog(true);
+            if (detectChanges()) {
+              setShowExitDialog(true);
+            } else {
+              navigate(`/application/menu-category/`);
+            }
           }}
         />
       </div>
