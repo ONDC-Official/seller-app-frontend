@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
@@ -38,6 +38,18 @@ const MenuProducts = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const [allProducts, setAllProducts] = useState([..._allProducts]);
+
+  const [addedProducts, setAddedProducts] = useState(products);
+  const initiallyAddedProducts = useRef(products);
+
+  const [menuDetails, setMenuDetails] = useState({
+    name: params.menu || "",
+  });
+  const initialMenuDetails = useRef({ name: params.menu || "" });
+
+  const [showModal, setShowModal] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
   const onDiscardChanges = () => {
@@ -45,16 +57,23 @@ const MenuProducts = () => {
   };
 
   const onSaveChanges = () => {
+    initiallyAddedProducts.current = addedProducts;
+    initialMenuDetails.current = menuDetails;
+
     setShowExitDialog(false);
   };
 
-  const [reordering, setReordering] = useState(false);
-  const [addedProducts, setAddedProducts] = useState(products);
-  const [allProducts, setAllProducts] = useState([..._allProducts]);
-  const [showModal, setShowModal] = useState(false);
-  const [menuDetails, setMenuDetails] = useState({
-    name: params.menu || "",
-  });
+  const detectChanges = () => {
+    const hasProductChanges = addedProducts.some(
+      (currentItem, index) =>
+        currentItem.name !== initiallyAddedProducts.current[index].name ||
+        currentItem.seq !== initiallyAddedProducts.current[index].seq
+    );
+
+    const hasMenuDetailsChanges = menuDetails.name !== initialMenuDetails.current.name;
+
+    return hasProductChanges || hasMenuDetailsChanges;
+  };
 
   const handleRemoveProduct = (item) => {
     const filteredProducts = addedProducts.filter((p) => p.id !== item.id);
@@ -106,7 +125,11 @@ const MenuProducts = () => {
       <div className="mb-4">
         <BackNavigationButton
           onClick={() => {
-            setShowExitDialog(true);
+            if (detectChanges()) {
+              setShowExitDialog(true);
+            } else {
+              navigate(`/application/menu-category/${params.category}`);
+            }
           }}
         />
       </div>
