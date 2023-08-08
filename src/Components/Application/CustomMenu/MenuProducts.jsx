@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Edit, Save } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
@@ -34,7 +34,6 @@ const _allProducts = [
 ];
 
 const MenuProducts = () => {
-  const theme = useTheme();
   const params = useParams();
 
   const [reordering, setReordering] = useState(false);
@@ -111,14 +110,17 @@ const MenuProducts = () => {
         <div className="flex">
           <div className="mr-2">
             <Button
+              sx={{ width: 200 }}
               title={!reordering ? "Reorder products" : "Save order"}
               variant="contained"
-              icon={<Add />}
               onClick={() => setReordering((prevState) => !prevState)}
             />
           </div>
-          <div>
+          <div className="mr-2">
             <Button title="Add Products" variant="contained" icon={<Add />} onClick={() => setShowModal(true)} />
+          </div>
+          <div>
+            <Button title="Save Changes" variant="contained" icon={<Save />} />
           </div>
         </div>
       </div>

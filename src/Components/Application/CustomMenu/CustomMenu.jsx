@@ -104,6 +104,7 @@ const CustomMenu = () => {
             {reordering ? "Save Order" : "Reorder Menu"}
           </Button>
           <Button
+            sx={{ marginRight: 1 }}
             variant="contained"
             onClick={() => {
               setShowMenuModal(true);
@@ -112,6 +113,7 @@ const CustomMenu = () => {
           >
             Add Menu
           </Button>
+          <Button variant="contained">Save Changes</Button>
         </div>
       </div>
 
