@@ -144,11 +144,11 @@ const CustomMenu = () => {
             Add Menu
           </Button>
           <Button
-            sx={{ marginRight: 1, width: 180 }}
+            sx={{ marginRight: 1, width: 200 }}
             variant="contained"
             onClick={() => setReordering((prevState) => !prevState)}
           >
-            {reordering ? "Save" : "Reorder Menu"}
+            {reordering ? "Finish Reordering" : "Reorder Menu"}
           </Button>
         </div>
       </div>

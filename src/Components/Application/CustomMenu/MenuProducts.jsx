@@ -156,7 +156,7 @@ const MenuProducts = () => {
           <div className="mr-2">
             <Button
               sx={{ width: 200 }}
-              title={!reordering ? "Reorder products" : "Save order"}
+              title={!reordering ? "Reorder products" : "Finish Reordering"}
               variant="contained"
               onClick={() => setReordering((prevState) => !prevState)}
             />
