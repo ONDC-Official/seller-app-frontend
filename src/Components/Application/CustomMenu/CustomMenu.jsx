@@ -17,6 +17,7 @@ const CustomMenu = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const [reordering, setReordering] = useState(false);
   const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
 
   const [mode, setMode] = useState("add");
@@ -41,27 +42,30 @@ const CustomMenu = () => {
     setMenuData({});
   };
 
-  const MenuItem = SortableElement(({ item }) => (
-    <div>
-      <div
-        className="flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl cursor-pointer bg-white"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <p>{item.name}</p>
-        <div>
-          <Button
-            variant="contained"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/application/menu-category/${params.category}/${item.name}`);
-            }}
-          >
-            Edit Menu
-          </Button>
+  const Menu = ({ data }) => {
+    return (
+      <div>
+        <div
+          className={`flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl bg-white `}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p>{data.name}</p>
+          <div>
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/application/menu-category/${params.category}/${data.name}`);
+              }}
+            >
+              Edit Menu
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
-  ));
+    );
+  };
+  const MenuItem = SortableElement(({ item }) => <Menu data={item} />);
 
   const MenuList = SortableContainer(({ items }) => {
     return (
@@ -90,19 +94,37 @@ const CustomMenu = () => {
         <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
           {params.category}: &nbsp;Custom Menu
         </label>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setShowMenuModal(true);
-            setMode("add");
-          }}
-        >
-          Add Menu
-        </Button>
+
+        <div>
+          <Button
+            sx={{ marginRight: 1, width: 180 }}
+            variant="contained"
+            onClick={() => setReordering((prevState) => !prevState)}
+          >
+            {reordering ? "Save Order" : "Reorder Menu"}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setShowMenuModal(true);
+              setMode("add");
+            }}
+          >
+            Add Menu
+          </Button>
+        </div>
       </div>
 
       <div>
-        <MenuList items={availableMenuItems} onSortEnd={onSortEnd} />
+        {reordering ? (
+          <MenuList items={availableMenuItems} onSortEnd={onSortEnd} />
+        ) : (
+          <div>
+            {availableMenuItems.map((item) => (
+              <Menu data={item} />
+            ))}
+          </div>
+        )}
       </div>
 
       <MenuManager
