@@ -46,6 +46,7 @@ const CustomMenu = () => {
     return (
       <div>
         <div
+          style={{ borderStyle: reordering ? "dashed" : "solid" }}
           className={`flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl bg-white `}
           onClick={(e) => e.stopPropagation()}
         >
@@ -97,23 +98,23 @@ const CustomMenu = () => {
 
         <div>
           <Button
-            sx={{ marginRight: 1, width: 180 }}
-            variant="contained"
-            onClick={() => setReordering((prevState) => !prevState)}
-          >
-            {reordering ? "Save Order" : "Reorder Menu"}
-          </Button>
-          <Button
             sx={{ marginRight: 1 }}
             variant="contained"
             onClick={() => {
               setShowMenuModal(true);
               setMode("add");
             }}
+            disabled={reordering}
           >
             Add Menu
           </Button>
-          <Button variant="contained">Save Changes</Button>
+          <Button
+            sx={{ marginRight: 1, width: 180 }}
+            variant="contained"
+            onClick={() => setReordering((prevState) => !prevState)}
+          >
+            {reordering ? "Save" : "Reorder Menu"}
+          </Button>
         </div>
       </div>
 
