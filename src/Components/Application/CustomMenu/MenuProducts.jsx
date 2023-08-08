@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../Shared/Button";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
@@ -7,12 +6,13 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Add, Delete, Edit, Save } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
+import ExitDialog from "../../Shared/ExitDialog";
 
 const products = [
-  { id: "P1", name: "Product A" },
-  { id: "P2", name: "Product B" },
-  { id: "P3", name: "Product C" },
-  { id: "P4", name: "Product D" },
+  { id: "P1", seq: 1, name: "Product A" },
+  { id: "P2", seq: 2, name: "Product B" },
+  { id: "P3", seq: 3, name: "Product C" },
+  { id: "P4", seq: 4, name: "Product D" },
 ];
 
 const _allProducts = [
@@ -37,6 +37,16 @@ const _allProducts = [
 const MenuProducts = () => {
   const params = useParams();
   const navigate = useNavigate();
+
+  const [showExitDialog, setShowExitDialog] = useState(false);
+
+  const onDiscardChanges = () => {
+    navigate(`/application/menu-category/${params.category}`);
+  };
+
+  const onSaveChanges = () => {
+    setShowExitDialog(false);
+  };
 
   const [reordering, setReordering] = useState(false);
   const [addedProducts, setAddedProducts] = useState(products);
@@ -94,7 +104,11 @@ const MenuProducts = () => {
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
-        <BackNavigationButton onClick={() => navigate(`/application/menu-category/${params.category}`)} />
+        <BackNavigationButton
+          onClick={() => {
+            setShowExitDialog(true);
+          }}
+        />
       </div>
       <div className="mb-4 flex flex-row justify-between items-center">
         <div className="flex ">
@@ -156,6 +170,13 @@ const MenuProducts = () => {
         setAddedProducts={setAddedProducts}
         allProducts={allProducts}
         setAllProducts={setAllProducts}
+      />
+
+      <ExitDialog
+        showExitDialog={showExitDialog}
+        onClose={() => setShowExitDialog(false)}
+        onDiscard={onDiscardChanges}
+        onSave={onSaveChanges}
       />
     </div>
   );
