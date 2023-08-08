@@ -37,6 +37,7 @@ const MenuProducts = () => {
   const theme = useTheme();
   const params = useParams();
 
+  const [reordering, setReordering] = useState(false);
   const [addedProducts, setAddedProducts] = useState(products);
   const [allProducts, setAllProducts] = useState([..._allProducts]);
   const [showModal, setShowModal] = useState(false);
@@ -49,19 +50,23 @@ const MenuProducts = () => {
     setAddedProducts(filteredProducts);
   };
 
-  const ProductItem = SortableElement(({ item }) => (
-    <div>
-      <div
-        className="flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl cursor-pointer bg-white"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <p>{item.name}</p>
-        <div onClick={() => handleRemoveProduct(item)}>
-          <Button title="Remove" icon={<Delete />} />
+  const Product = ({ item }) => {
+    return (
+      <div>
+        <div
+          className="flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl bg-white"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p>{item.name}</p>
+          <div onClick={() => handleRemoveProduct(item)}>
+            <Button title="Remove" icon={<Delete />} />
+          </div>
         </div>
       </div>
-    </div>
-  ));
+    );
+  };
+
+  const ProductItem = SortableElement(({ item }) => <Product item={item} />);
 
   const ProductList = SortableContainer(({ items }) => {
     return (
@@ -87,16 +92,12 @@ const MenuProducts = () => {
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4 flex flex-row justify-between items-center">
-        {/* <label style={{ color: theme.palette.primary.main }} className="text-2xl font-semibold">
-          {params.menu}: &nbsp;Menu Products
-        </label> */}
         <TextField
           size="small"
           variant="outlined"
           placeholder="Search products..."
           value={menuDetails.name}
           onChange={(e) => setMenuDetails({ ...menuDetails, name: e.target.value })}
-          //  style={{ width: 550 }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -107,12 +108,30 @@ const MenuProducts = () => {
             ),
           }}
         />
-        <Button title="Add Products" variant="contained" icon={<Add />} onClick={() => setShowModal(true)} />
+        <div className="flex">
+          <div className="mr-2">
+            <Button
+              title={!reordering ? "Reorder products" : "Save order"}
+              variant="contained"
+              icon={<Add />}
+              onClick={() => setReordering((prevState) => !prevState)}
+            />
+          </div>
+          <div>
+            <Button title="Add Products" variant="contained" icon={<Add />} onClick={() => setShowModal(true)} />
+          </div>
+        </div>
       </div>
 
-      <div>
+      {reordering ? (
         <ProductList items={addedProducts} onSortEnd={onSortEnd} />
-      </div>
+      ) : (
+        <div>
+          {addedProducts.map((item) => (
+            <Product item={item} />
+          ))}
+        </div>
+      )}
 
       <AddMenuProduct
         showModal={showModal}
