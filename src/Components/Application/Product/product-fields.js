@@ -335,7 +335,7 @@ export const allProductFieldDetails = [
     type: "select",
     options: countries,
     required: true,
-  }
+  },
 ];
 
 export const categoryFields = ["productCategory", "productSubcategory1"];

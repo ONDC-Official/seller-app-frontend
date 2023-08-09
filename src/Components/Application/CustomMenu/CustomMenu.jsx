@@ -27,7 +27,13 @@ const CustomMenu = () => {
 
   const [mode, setMode] = useState("add");
   const [showMenuModal, setShowMenuModal] = useState(false);
-  const [menuData, setMenuData] = useState({ id: "", position: "", name: "" });
+  const [menuData, setMenuData] = useState({
+    seq: "",
+    name: "",
+    longDescription: "",
+    shortDescription: "",
+    images: [],
+  });
 
   const onDiscardChanges = () => {
     navigate(`/application/menu-category/`);
@@ -40,8 +46,8 @@ const CustomMenu = () => {
 
   const handleAdd = (data) => {
     let newMenuItem = { ...data };
-    newMenuItem["id"] = `M${availableMenuItems.length + 1}`;
-    newMenuItem["position"] = availableMenuItems.length + 1;
+    newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
+    delete newMenuItem["uploaded_urls"];
     setAvailableMenuItems([...availableMenuItems, newMenuItem]);
     setShowMenuModal(false);
     setMenuData({});
