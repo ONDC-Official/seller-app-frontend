@@ -721,19 +721,74 @@ const AddGenericProduct = ({
     }
   };
 
+  const validateCustomizationDetails = () => {
+    const getCustomizationGroupName = (groupId) => {
+      const group = customizationGroups.find((group) => group.id === groupId);
+      return group ? group.name : "";
+    };
+
+    const getCustomizationName = (customizationId) => {
+      const customization = customizations.find((customization) => customization.id === customizationId);
+      return customization ? customization.name : "";
+    };
+
+    const selectedCustomizations = customizations.filter((customization) => customization.parent);
+
+    if (customizationGroups.length > 0) {
+      // Validation check: If customization groups are present, check that all groups have at least one customization.
+      const groupIdsWithCustomizations = new Set(selectedCustomizations.map((customization) => customization.parent));
+      const groupIds = new Set(customizationGroups.map((group) => group.id));
+
+      if (groupIdsWithCustomizations.size < groupIds.size) {
+        const missingGroups = [...groupIds].filter((groupId) => !groupIdsWithCustomizations.has(groupId));
+        const missingGroupNames = missingGroups.map((groupId) => getCustomizationGroupName(groupId));
+        cogoToast.error(`Please add at least one customization for groups: ${missingGroupNames.join(", ")}.`);
+        return false;
+      }
+    }
+
+    // Validation check: If any customization has no child property, it must have a price value greater than 0.
+    const invalidCustomizations = selectedCustomizations.filter(
+      (customization) => !customization.child && (!customization.price || customization.price <= 0)
+    );
+
+    if (invalidCustomizations.length > 0) {
+      const errorMessages = invalidCustomizations.map((customization) => {
+        const groupName = getCustomizationGroupName(customization.parent);
+        const customizationName = getCustomizationName(customization.id);
+        return `${groupName} [${customizationName}]`;
+      });
+
+      cogoToast.error(
+        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(", ")}.`
+      );
+      return false;
+    }
+
+    return true;
+  };
+
   const validate = () => {
     let product_info_form_validity = validateProductInfoForm();
     let vital_info_form_validity = validateVitalInfoForm();
     let variants_forms_validity = validateVariantsForms();
+    let customization_details_validity = validateCustomizationDetails();
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
       prev_state[1] = !vital_info_form_validity;
       prev_state[2] = !variants_forms_validity;
+      prev_state[3] = !customization_details_validity;
       return [...prev_state];
     });
 
-    return product_info_form_validity && vital_info_form_validity && variants_forms_validity;
+    let result =
+      variants_forms_validity &&
+      product_info_form_validity &&
+      vital_info_form_validity &&
+      customization_details_validity;
+
+    return result;
   };
 
   const handleSubmit = () => {
@@ -868,11 +923,9 @@ const AddGenericProduct = ({
                 />
               )}
               <Tab
-                sx={
-                  {
-                    // color: tabErrors[2] && Object.keys(errors).length > 0 ? "red" : "none",
-                  }
-                }
+                sx={{
+                  color: tabErrors[3] && Object.keys(errors).length > 0 ? "red" : "none",
+                }}
                 label="Customizations"
                 value="4"
               />
