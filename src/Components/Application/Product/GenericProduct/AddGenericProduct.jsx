@@ -38,6 +38,7 @@ import AddProductInfo from "../AddProductInfo";
 import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
+import CustomizationRenderer from "../F&B/CustomizationRenderer";
 
 const AddGenericProduct = ({
   state,
@@ -67,6 +68,9 @@ const AddGenericProduct = ({
   const [tabErrors, setTabErrors] = useState([true, true, true]);
   const [formValidate, setFormValidate] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
+
+  const [customizationGroups, setCustomizationGroups] = useState([]);
+  const [customizations, setCustomizations] = useState([]);
 
   const [tabValue, setTabValue] = useState("1");
 
@@ -193,6 +197,10 @@ const AddGenericProduct = ({
       let data = {
         commonDetails: product_data,
         commonAttributesValues: vital_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
       };
 
       if (variationOn !== "none") {
@@ -231,6 +239,9 @@ const AddGenericProduct = ({
 
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
+        setCustomizationGroups(resp.customizationDetails.customizationGroups);
+        setCustomizations(resp.customizationDetails.customizations);
+
         let attributes = allProperties[category][sub_category] || allProperties[category]["default"];
         setVitalFields(formatAttributesToFieldsDataFormat(attributes));
       })
@@ -281,6 +292,10 @@ const AddGenericProduct = ({
       let data = {
         commonDetails: product_data,
         commonAttributesValues: vital_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
       };
 
       await putCall(`/api/v1/products/${state.productId}`, data);
@@ -764,6 +779,17 @@ const AddGenericProduct = ({
     );
   };
 
+  const renderCustomizations = () => {
+    return (
+      <CustomizationRenderer
+        customizationGroups={customizationGroups}
+        setCustomizationGroups={setCustomizationGroups}
+        customizations={customizations}
+        setCustomizations={setCustomizations}
+      />
+    );
+  };
+
   useEffect(() => {
     if (!formValidate) {
       let formErrors = {};
@@ -841,6 +867,15 @@ const AddGenericProduct = ({
                   value="3"
                 />
               )}
+              <Tab
+                sx={
+                  {
+                    // color: tabErrors[2] && Object.keys(errors).length > 0 ? "red" : "none",
+                  }
+                }
+                label="Customizations"
+                value="4"
+              />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -850,6 +885,7 @@ const AddGenericProduct = ({
             <div className="mt-2">{renderProductVitalFields()}</div>
           </TabPanel>
           <TabPanel value="3">{renderVariationsFields()}</TabPanel>
+          <TabPanel value="4">{renderCustomizations()}</TabPanel>
         </TabContext>
       </Box>
 
