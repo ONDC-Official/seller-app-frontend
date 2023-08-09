@@ -8,7 +8,14 @@ const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !b
 const labelClasses = "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
 
 const AddCustomization = (props) => {
-  const { showModal, handleCloseModal, newCustomizationData, setNewCustomizationData, handleAddCustomization } = props;
+  const {
+    category,
+    showModal,
+    handleCloseModal,
+    newCustomizationData,
+    setNewCustomizationData,
+    handleAddCustomization,
+  } = props;
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -86,25 +93,46 @@ const AddCustomization = (props) => {
 
           <div className="w-auto">
             {customizationFields.map((field) => {
-              return (
-                <RenderInput
-                  item={{
-                    ...field,
-                    error: errors?.[field?.id] ? true : false,
-                    helperText: errors?.[field.id] || "",
-                  }}
-                  state={newCustomizationData}
-                  stateHandler={setNewCustomizationData}
-                  key={field?.id}
-                  containerClasses={containerClasses}
-                  labelClasses={labelClasses}
-                  inputClasses={inputClasses}
-                  inputStyles={field?.inputStyles}
-                />
-              );
+              const fieldsToRender = [
+                "name",
+                "price",
+                "UOM",
+                "UOMValue",
+                "available",
+                "maximum",
+                "vegNonVeg",
+                "parent",
+              ];
+              const fieldCategoryMap = {
+                vegNonVeg: ["F&B"],
+              };
+
+              const shouldRenderField =
+                fieldsToRender.includes(field.id) &&
+                (!fieldCategoryMap[field.id] || fieldCategoryMap[field.id].includes(category));
+
+              if (shouldRenderField) {
+                return (
+                  <RenderInput
+                    item={{
+                      ...field,
+                      error: errors?.[field?.id] ? true : false,
+                      helperText: errors?.[field.id] || "",
+                    }}
+                    state={newCustomizationData}
+                    stateHandler={setNewCustomizationData}
+                    key={field?.id}
+                    containerClasses={containerClasses}
+                    labelClasses={labelClasses}
+                    inputClasses={inputClasses}
+                    inputStyles={field?.inputStyles}
+                  />
+                );
+              }
+
+              return null;
             })}
           </div>
-
           <div className="flex justify-end mt-4">
             <Button variant="outlined" color="primary" onClick={handleAdd}>
               {props.mode === "edit" ? "Edit" : "Add"}

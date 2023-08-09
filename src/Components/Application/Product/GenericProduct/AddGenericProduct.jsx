@@ -837,6 +837,7 @@ const AddGenericProduct = ({
   const renderCustomizations = () => {
     return (
       <CustomizationRenderer
+        category={category}
         customizationGroups={customizationGroups}
         setCustomizationGroups={setCustomizationGroups}
         customizations={customizations}

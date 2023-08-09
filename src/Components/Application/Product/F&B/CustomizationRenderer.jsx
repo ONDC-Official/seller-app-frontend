@@ -6,7 +6,7 @@ import AddCustomizationGroup from "./AddCustomizationGroup";
 import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
-  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
+  const { category, customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
 
   // states for holding info regarding addition of customization-group
   const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
@@ -112,6 +112,7 @@ const CustomizationRenderer = (props) => {
       renderedElements.push(
         <Customization
           styles={{ marginLeft: `${level * 55}px` }}
+          category={category}
           customization={customization}
           customizations={customizations}
           setCustomizations={setCustomizations}

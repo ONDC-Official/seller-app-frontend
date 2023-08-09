@@ -8,7 +8,8 @@ const labelClasses = "w-28 text-md ml-1 text-md text-[#606161]";
 const inputClasses = "w-80 h-full text-md text-[#606161]";
 
 const Customization = (props) => {
-  const { customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } = props;
+  const { category, customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } =
+    props;
 
   const [showExistingGroups, setShowExistingGroups] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -150,6 +151,7 @@ const Customization = (props) => {
             </div>
             <AddCustomization
               mode="edit"
+              category={category}
               showModal={showCustomizationModal}
               handleCloseModal={() => setShowCustomizationModal(false)}
               newCustomizationData={customizationDetails}
@@ -161,9 +163,25 @@ const Customization = (props) => {
         <AccordionDetails>
           <div className="w-auto">
             {Object.keys(customizationDetails).map((f) => {
-              const fieldsToRender = ["id", "name", "price", "UOM", "UOMValue", "available", "maximum", "parent"];
+              const fieldsToRender = [
+                "id",
+                "name",
+                "price",
+                "UOM",
+                "UOMValue",
+                "available",
+                "maximum",
+                "vegNonVeg",
+                "parent",
+              ];
+              const fieldCategoryMap = {
+                vegNonVeg: ["F&B"],
+              };
 
-              if (fieldsToRender.includes(f)) {
+              const shouldRenderField =
+                fieldsToRender.includes(f) && (!fieldCategoryMap[f] || fieldCategoryMap[f].includes(category));
+
+              if (shouldRenderField) {
                 return (
                   <div className={containerClasses}>
                     <p className={labelClasses}>{f}: &nbsp;</p>
