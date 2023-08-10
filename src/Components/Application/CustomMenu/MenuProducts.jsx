@@ -76,9 +76,6 @@ const MenuProducts = (props) => {
               onClick={() => setShowModal(true)}
             />
           </div>
-          <div>
-            <Button title="Save Changes" variant="contained" icon={<Save />} disabled={reordering} />
-          </div>
         </div>
       </div>
 

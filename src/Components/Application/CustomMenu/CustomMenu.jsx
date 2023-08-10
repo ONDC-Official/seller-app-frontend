@@ -85,6 +85,16 @@ const CustomMenu = () => {
             >
               Edit Menu
             </Button>
+            <Button
+              disabled={reordering}
+              variant="contained"
+              sx={{ marginLeft: 2 }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              Delete Menu
+            </Button>
           </div>
         </div>
       </div>
