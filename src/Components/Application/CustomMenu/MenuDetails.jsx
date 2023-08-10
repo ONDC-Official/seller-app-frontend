@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import MenuManager from "./MenuManager";
 import MenuProducts from "./MenuProducts";
+import { Button } from "@mui/material";
 
 const initialMenuDetails = {
   seq: "",
@@ -48,6 +49,7 @@ const MenuDetails = () => {
   //   const initiallyAddedProducts = useRef(products);
   //   const initialMenuDetails = useRef(products);
 
+  const [tabErrors, setTabErrors] = useState([true, true]);
   const [tabValue, setTabValue] = useState("1");
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -56,13 +58,43 @@ const MenuDetails = () => {
   const [allProducts, setAllProducts] = useState([..._allProducts]);
   const [addedProducts, setAddedProducts] = useState(products);
 
-  const [menuInfoError, setMenuInfoError] = useState({});
+  const [menuDetailErrors, setMenuDetailErrors] = useState({});
   const [menuData, setMenuData] = useState(initialMenuDetails);
+
+  const validateMenuDetailsForm = () => {
+    let formErrors = {};
+    formErrors.name = menuData?.name.trim() === "" ? "Menu Name is required" : "";
+    formErrors.shortDescription = menuData?.shortDescription.trim() === "" ? "Short Description is required" : "";
+    formErrors.longDescription = menuData?.longDescription.trim() === "" ? "Long Description is required" : "";
+    formErrors.images = menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
+    setMenuDetailErrors({
+      ...formErrors,
+    });
+
+    let valid_form = !Object.values(formErrors).some((val) => val !== "");
+
+    return valid_form;
+  };
+
+  const validate = () => {
+    let menuDetailsValidity = validateMenuDetailsForm();
+
+    setTabErrors((prev_state) => {
+      prev_state[0] = !menuDetailsValidity;
+      return [...prev_state];
+    });
+
+    return menuDetailsValidity;
+  };
+
+  const handleSave = () => {
+    validate();
+  };
 
   const renderMenuDetails = () => {
     return (
       <div>
-        <MenuManager menuData={menuData} setMenuData={setMenuData} errors={menuInfoError} defaultStyles={true} />
+        <MenuManager menuData={menuData} setMenuData={setMenuData} errors={menuDetailErrors} defaultStyles={true} />
       </div>
     );
   };
@@ -71,6 +103,7 @@ const MenuDetails = () => {
     return <MenuProducts allProducts={allProducts} addedProducts={addedProducts} setAddedProducts={setAddedProducts} />;
   };
 
+  let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
@@ -87,26 +120,16 @@ const MenuDetails = () => {
         <Box sx={{ width: "100%" }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                centered
-                onChange={handleTabChange}
-                //  textColor={highlightedTabColor}
-              >
+              <TabList centered onChange={handleTabChange} textColor={highlightedTabColor}>
                 <Tab
-                  // sx={{
-                  //   color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none",
-                  // }}
+                  sx={{
+                    color: tabErrors[0] && Object.keys(menuDetailErrors).length > 0 ? "red" : "none",
+                  }}
                   label="Details"
                   value="1"
                 />
 
-                <Tab
-                  // sx={{
-                  //   color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none",
-                  // }}
-                  label="Products"
-                  value="2"
-                />
+                <Tab label="Products" value="2" />
               </TabList>
             </Box>
             <TabPanel value="1">
@@ -117,6 +140,12 @@ const MenuDetails = () => {
             </TabPanel>
           </TabContext>
         </Box>
+      </div>
+
+      <div className="mt-4 w-full flex justify-center">
+        <Button variant="contained" onClick={handleSave}>
+          SAVE
+        </Button>
       </div>
     </div>
   );
