@@ -5,7 +5,7 @@ import RenderInput from "../../utils/RenderInput";
 const FilterComponent = (props) => {
   const { fields = [], state, stateHandler, onFilter, onReset } = props;
 
-  console.log("State", state);
+  //   console.log("State", state);
 
   return (
     <div className=" mb-4 items-center mt-8">

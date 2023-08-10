@@ -12,14 +12,14 @@ import FilterComponent from "../../Shared/FilterComponent";
 
 const filterFields = [
   {
-    id: "productName",
+    id: "name",
     title: "",
     placeholder: "Search by Product Name",
     type: "input",
     variant: "standard",
   },
   {
-    id: "productCategory",
+    id: "category",
     title: "",
     placeholder: "Please Select Product Category",
     options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
@@ -30,7 +30,7 @@ const filterFields = [
     disableClearable: true,
   },
   {
-    id: "outOfStock",
+    id: "stock",
     title: "Out of Stock",
     placeholder: "Please Select Product Category",
     type: "switch",
@@ -89,9 +89,9 @@ export default function Inventory() {
   const [products, setProducts] = useState([]);
 
   const [filters, setFilters] = useState({
-    productName: "",
-    productCategory: "",
-    outOfStock: false,
+    name: "",
+    category: "",
+    stock: false,
   });
 
   const getProducts = async () => {
@@ -140,11 +140,32 @@ export default function Inventory() {
   };
 
   const onReset = () => {
-    setFilters({ productName: "", productCategory: null, outOfStock: false });
+    setFilters({ name: "", category: null, stock: false });
+    getProducts();
   };
 
-  const onFilter = () => {
-    console.log("Filters", filters);
+  const onFilter = async () => {
+    const filterParams = [];
+    if (filters.name.trim() !== "") {
+      filterParams.push(`name=${encodeURIComponent(filters.name)}`);
+    }
+
+    if (filters.category != undefined && filters.category !== "") {
+      filterParams.push(`category=${encodeURIComponent(filters.category)}`);
+    }
+
+    if (!filters.stock) {
+      filterParams.push(`stock=inStock`);
+    } else {
+      filterParams.push(`stock=outOfStock`);
+    }
+
+    const queryString = filterParams.join("&");
+    const url = `/api/v1/products?${queryString}`;
+
+    const res = await cancellablePromise(getCall(url));
+    setProducts(res.data);
+    setTotalRecords(res.count);
   };
 
   return (
