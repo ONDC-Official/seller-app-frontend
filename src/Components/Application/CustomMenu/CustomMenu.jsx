@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import ExitDialog from "../../Shared/ExitDialog";
-import { getCall, postCall } from "../../../Api/axios";
+import { deleteCall, getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 
 const availableMenu = [
@@ -49,6 +49,7 @@ const CustomMenu = () => {
     if (availableMenuItems.length === 0) newMenuItem["seq"] = 1;
     else newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
     delete newMenuItem["uploaded_urls"];
+
     try {
       const url = `api/v1/menu/${params.category}`;
       const res = await postCall(url, newMenuItem);
@@ -57,6 +58,11 @@ const CustomMenu = () => {
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
+  };
+
+  const handleRemoveMenu = (id) => {
+    const url = `/api/v1/menu/${id}`;
+    deleteCall(url).then(() => getAllMenu());
   };
 
   const onDiscardChanges = () => {
@@ -108,6 +114,7 @@ const CustomMenu = () => {
               sx={{ marginLeft: 2 }}
               onClick={(e) => {
                 e.stopPropagation();
+                handleRemoveMenu(data._id);
               }}
             >
               Delete Menu
