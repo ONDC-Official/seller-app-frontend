@@ -23,7 +23,7 @@ import Complaints from "../Components/Application/Complaints/Complaints";
 import ComplaintDetails from "../Components/Application/Complaints/ComplaintDetails";
 import CustomMenu from "../Components/Application/CustomMenu/CustomMenu";
 import MenuCategory from "../Components/Application/CustomMenu/MenuCategory";
-import MenuProducts from "../Components/Application/CustomMenu/MenuProducts";
+import MenuDetails from "../Components/Application/CustomMenu/MenuDetails";
 
 export default function OndcRoutes() {
   return (
@@ -69,7 +69,7 @@ export default function OndcRoutes() {
           path={"/application/menu-category/:category/:menu"}
           element={
             <PrivateRoute>
-              <MenuProducts />
+              <MenuDetails />
             </PrivateRoute>
           }
         />

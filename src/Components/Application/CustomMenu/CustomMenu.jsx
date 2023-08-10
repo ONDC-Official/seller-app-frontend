@@ -112,8 +112,6 @@ const CustomMenu = () => {
     });
   };
 
-  console.log(availableMenuItems);
-
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
