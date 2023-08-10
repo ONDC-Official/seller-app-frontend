@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MenuManager from "./MenuManager";
 import { Button, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import ExitDialog from "../../Shared/ExitDialog";
+import { getCall, postCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 
 const availableMenu = [
   { id: "M1", seq: 1, name: "Snacks" },
@@ -23,7 +25,7 @@ const CustomMenu = () => {
   const [showExitDialog, setShowExitDialog] = useState(false);
 
   const [reordering, setReordering] = useState(false);
-  const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
+  const [availableMenuItems, setAvailableMenuItems] = useState([]);
 
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [menuData, setMenuData] = useState({
@@ -34,6 +36,29 @@ const CustomMenu = () => {
     images: [],
   });
 
+  const getAllMenu = async () => {
+    const url = `/api/v1/menu?name=${params.category}`;
+    //  const url = `/api/v1/menu?name=`;
+    const res = await getCall(url);
+    setAvailableMenuItems(res.data);
+  };
+
+  const handleAddMenu = async (data) => {
+    let newMenuItem = { ...data };
+
+    if (availableMenuItems.length === 0) newMenuItem["seq"] = 1;
+    else newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
+    delete newMenuItem["uploaded_urls"];
+    try {
+      const url = `api/v1/menu/${params.category}`;
+      const res = await postCall(url, newMenuItem);
+      getAllMenu();
+      setShowMenuModal(false);
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
+
   const onDiscardChanges = () => {
     navigate(`/application/menu-category/`);
   };
@@ -41,18 +66,6 @@ const CustomMenu = () => {
   const onSaveChanges = () => {
     initialAvailableMenu.current = availableMenuItems;
     setShowExitDialog(false);
-  };
-
-  const handleAdd = (data) => {
-    let newMenuItem = { ...data };
-
-    if (availableMenuItems.length === 0) newMenuItem["seq"] = 1;
-    else newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
-
-    delete newMenuItem["uploaded_urls"];
-    setAvailableMenuItems([...availableMenuItems, newMenuItem]);
-    setShowMenuModal(false);
-    setMenuData({});
   };
 
   const detectChanges = () => {
@@ -64,6 +77,10 @@ const CustomMenu = () => {
 
     return hasChanges;
   };
+
+  useEffect(() => {
+    getAllMenu();
+  }, [showMenuModal]);
 
   const Menu = ({ data }) => {
     return (
@@ -179,7 +196,7 @@ const CustomMenu = () => {
         handleCloseMenuModal={() => setShowMenuModal(false)}
         menuData={menuData}
         setMenuData={setMenuData}
-        handleAdd={handleAdd}
+        handleAdd={handleAddMenu}
       />
 
       <ExitDialog
