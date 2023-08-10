@@ -76,6 +76,7 @@ const CustomMenu = () => {
           <p>{data.name}</p>
           <div>
             <Button
+              disabled={reordering}
               variant="contained"
               onClick={(e) => {
                 e.stopPropagation();

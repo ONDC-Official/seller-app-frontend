@@ -25,7 +25,7 @@ const MenuProducts = (props) => {
         >
           <p>{item.name}</p>
           <div onClick={() => handleRemoveProduct(item)}>
-            <Button title="Remove" icon={<Delete />} />
+            <Button title="Remove" icon={<Delete />} disabled={reordering} />
           </div>
         </div>
       </div>
