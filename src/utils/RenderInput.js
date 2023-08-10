@@ -624,7 +624,6 @@ const RenderInput = (props) => {
         fileType: file_type,
       };
       const res = await postCall(url, data);
-      console.log("getSignUrl", res);
       return res;
     };
 
@@ -737,7 +736,6 @@ const RenderInput = (props) => {
         </Stack>
       );
     };
-
     return (
       <div className="py-1 flex flex-col">
         <label
@@ -753,6 +751,7 @@ const RenderInput = (props) => {
           </label>
         </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
+
         <FormControl error={item.error}>
           {/* <label htmlFor="contained-button-file"> */}
           <input

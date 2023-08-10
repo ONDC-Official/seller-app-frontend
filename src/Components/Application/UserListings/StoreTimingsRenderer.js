@@ -33,12 +33,12 @@ const StoreTimingsRenderer = (props) => {
   const [toDays, setToDays] = useState(days);
 
   useEffect(() => {
-    if (temporaryClosedDays.from) {
+    if (temporaryClosedDays?.from) {
       let to_days = [...days];
       to_days = days.filter((dayMap) => dayMap.value >= temporaryClosedDays.from);
       setToDays(to_days);
     }
-  }, [temporaryClosedDays.from]);
+  }, [temporaryClosedDays?.from]);
 
   const handleDayChange = (event, key) => {
     temporaryClosedDays[key] = event.target.value;
