@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import MenuManager from "./MenuManager";
-import { Button } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
@@ -25,7 +25,6 @@ const CustomMenu = () => {
   const [reordering, setReordering] = useState(false);
   const [availableMenuItems, setAvailableMenuItems] = useState(availableMenu);
 
-  const [mode, setMode] = useState("add");
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [menuData, setMenuData] = useState({
     seq: "",
@@ -46,18 +45,12 @@ const CustomMenu = () => {
 
   const handleAdd = (data) => {
     let newMenuItem = { ...data };
-    newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
+
+    if (availableMenuItems.length === 0) newMenuItem["seq"] = 1;
+    else newMenuItem["seq"] = availableMenuItems[availableMenuItems.length - 1].seq + 1;
+
     delete newMenuItem["uploaded_urls"];
     setAvailableMenuItems([...availableMenuItems, newMenuItem]);
-    setShowMenuModal(false);
-    setMenuData({});
-  };
-
-  const handleEdit = (data) => {
-    const itemIndex = availableMenuItems.findIndex((m) => m.id === data.id);
-    const updatedMenuItems = [...availableMenuItems];
-    updatedMenuItems[itemIndex] = data;
-    setAvailableMenuItems(updatedMenuItems);
     setShowMenuModal(false);
     setMenuData({});
   };
@@ -119,6 +112,8 @@ const CustomMenu = () => {
     });
   };
 
+  console.log(availableMenuItems);
+
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
@@ -143,7 +138,6 @@ const CustomMenu = () => {
             variant="contained"
             onClick={() => {
               setShowMenuModal(true);
-              setMode("add");
             }}
             disabled={reordering}
           >
@@ -171,14 +165,12 @@ const CustomMenu = () => {
         )}
       </div>
 
-      <MenuManager
-        mode={mode}
+      <AddMenuModal
         showMenuModal={showMenuModal}
         handleCloseMenuModal={() => setShowMenuModal(false)}
         menuData={menuData}
         setMenuData={setMenuData}
         handleAdd={handleAdd}
-        handleEdit={handleEdit}
       />
 
       <ExitDialog
@@ -191,4 +183,77 @@ const CustomMenu = () => {
   );
 };
 
+const AddMenuModal = (props) => {
+  const { showMenuModal, handleCloseMenuModal, menuData, setMenuData, handleAdd } = props;
+
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    let formErrors = {};
+    formErrors.name = menuData?.name === "" ? "Menu Name is required" : "";
+    formErrors.shortDescription = menuData?.shortDescription === "" ? "Short Description is required" : "";
+    formErrors.longDescription = menuData?.longDescription === "" ? "Long Description is required" : "";
+    formErrors.images = menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
+    setErrors({
+      ...formErrors,
+    });
+
+    let valid_form = !Object.values(formErrors).some((val) => val !== "");
+
+    return valid_form;
+  };
+
+  const handleClick = () => {
+    if (validate()) {
+      handleAdd(menuData);
+    }
+  };
+
+  return (
+    <div onClick={(e) => e.stopPropagation()}>
+      <Modal
+        open={showMenuModal}
+        onClose={() => {
+          handleCloseMenuModal();
+          setErrors({});
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#fff",
+            padding: "24px 40px",
+            borderRadius: 20,
+          }}
+        >
+          <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
+            Add New Menu
+          </p>
+
+          <MenuManager menuData={menuData} setMenuData={setMenuData} errors={errors} />
+
+          <div className="flex justify-end mt-4">
+            <Button variant="contained" color="primary" onClick={handleClick}>
+              Add
+            </Button>
+            <Button
+              sx={{ marginLeft: 2 }}
+              color="primary"
+              onClick={(e) => {
+                setMenuData({ seq: "", name: "", longDescription: "", shortDescription: "", images: [] });
+                handleCloseMenuModal();
+                setErrors({});
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
 export default CustomMenu;
