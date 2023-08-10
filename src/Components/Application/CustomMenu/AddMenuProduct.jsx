@@ -3,7 +3,7 @@ import { Button, Checkbox, IconButton, InputAdornment, Modal, TextField } from "
 import { Search } from "@mui/icons-material";
 
 const AddMenuProduct = (props) => {
-  const { mode = "add", showModal, handleCloseModal, addedProducts, allProducts, setAddedProducts } = props;
+  const { showModal, handleCloseModal, addedProducts, allProducts, setAddedProducts } = props;
 
   const [searchInput, setSearchInput] = useState("");
   const [notAddedProducts, setNotAddedProducts] = useState([]);
@@ -40,7 +40,11 @@ const AddMenuProduct = (props) => {
   };
 
   const handleAddProducts = () => {
-    setAddedProducts([...addedProducts, ...selectedProducts]);
+    let updatedSelectedProducts = selectedProducts.map((item, index) => ({
+      ...item,
+      seq: addedProducts.length + index + 1,
+    }));
+    setAddedProducts([...addedProducts, ...updatedSelectedProducts]);
     handleCloseModal();
     setSelectedProducts([]);
   };
@@ -68,7 +72,7 @@ const AddMenuProduct = (props) => {
         }}
       >
         <p className="font-semibold text-xl mb-6" style={{ marginBottom: 20 }}>
-          {mode === "edit" ? "Edit Menu" : "Add products"}
+          Add products
         </p>
 
         <TextField

@@ -5,6 +5,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { useNavigate, useParams } from "react-router-dom";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import MenuManager from "./MenuManager";
+import MenuProducts from "./MenuProducts";
 
 const initialMenuDetails = {
   seq: "",
@@ -14,14 +15,46 @@ const initialMenuDetails = {
   images: [],
 };
 
+const products = [
+  { id: "P1", seq: 1, name: "Product A" },
+  { id: "P2", seq: 2, name: "Product B" },
+  { id: "P3", seq: 3, name: "Product C" },
+  { id: "P4", seq: 4, name: "Product D" },
+];
+
+const _allProducts = [
+  { id: "P1", name: "Product A" },
+  { id: "P2", name: "Product B" },
+  { id: "P3", name: "Product C" },
+  { id: "P4", name: "Product D" },
+  { id: "P5", name: "Product E" },
+  { id: "P6", name: "Product F" },
+  { id: "P7", name: "Product G" },
+  { id: "P8", name: "Product H" },
+  { id: "P9", name: "Product I" },
+  { id: "P10", name: "Product J" },
+  { id: "P11", name: "Product K" },
+  { id: "P12", name: "Product L" },
+  { id: "P13", name: "Product M" },
+  { id: "P14", name: "Product N" },
+  { id: "P15", name: "Product O" },
+  { id: "P16", name: "Product P" },
+];
+
 const MenuDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
+
+  //   const initiallyAddedProducts = useRef(products);
+  //   const initialMenuDetails = useRef(products);
 
   const [tabValue, setTabValue] = useState("1");
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  const [allProducts, setAllProducts] = useState([..._allProducts]);
+  const [addedProducts, setAddedProducts] = useState(products);
 
   const [menuInfoError, setMenuInfoError] = useState({});
   const [menuData, setMenuData] = useState(initialMenuDetails);
@@ -33,7 +66,10 @@ const MenuDetails = () => {
       </div>
     );
   };
-  const renderMenuProducts = () => {};
+
+  const renderMenuProducts = () => {
+    return <MenuProducts allProducts={allProducts} addedProducts={addedProducts} setAddedProducts={setAddedProducts} />;
+  };
 
   return (
     <div className="container mx-auto my-8">
