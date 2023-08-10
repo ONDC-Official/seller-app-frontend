@@ -65,6 +65,18 @@ const CustomMenu = () => {
     deleteCall(url).then(() => getAllMenu());
   };
 
+  const handleReordering = async () => {
+    const updatedMenuItems = availableMenuItems.map((item, index) => ({
+      ...item,
+      seq: index + 1,
+    }));
+    setAvailableMenuItems(updatedMenuItems);
+
+    const url = `/api/v1/menuOrdering`;
+    const res = await postCall(url, updatedMenuItems);
+    setReordering(false);
+  };
+
   const onDiscardChanges = () => {
     navigate(`/application/menu-category/`);
   };
@@ -179,7 +191,13 @@ const CustomMenu = () => {
           <Button
             sx={{ marginRight: 1, width: 200 }}
             variant="contained"
-            onClick={() => setReordering((prevState) => !prevState)}
+            onClick={() => {
+              if (!reordering) {
+                setReordering(true);
+              } else {
+                handleReordering();
+              }
+            }}
           >
             {reordering ? "Finish Reordering" : "Reorder Menu"}
           </Button>
@@ -191,9 +209,11 @@ const CustomMenu = () => {
           <MenuList items={availableMenuItems} onSortEnd={onSortEnd} />
         ) : (
           <div>
-            {availableMenuItems.map((item) => (
-              <Menu data={item} />
-            ))}
+            {availableMenuItems
+              .sort((a, b) => a.seq - b.seq)
+              .map((item) => (
+                <Menu data={item} key={item.id} />
+              ))}
           </div>
         )}
       </div>
