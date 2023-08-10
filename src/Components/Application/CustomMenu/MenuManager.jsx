@@ -32,13 +32,13 @@ const menuFields = [
     type: "upload",
     multiple: true,
     file_type: "menu_image",
-    fontColor: "#ffffff",
+    fontColor: "#000000",
     required: true,
   },
 ];
 
 const MenuManager = (props) => {
-  const { menuData, setMenuData, errors } = props;
+  const { menuData, setMenuData, errors, defaultStyles = false } = props;
 
   return (
     <div onClick={(e) => e.stopPropagation()}>
@@ -54,9 +54,9 @@ const MenuManager = (props) => {
               state={menuData}
               stateHandler={setMenuData}
               key={field?.id}
-              containerClasses={containerClasses}
-              labelClasses={labelClasses}
-              inputClasses={inputClasses}
+              containerClasses={!defaultStyles ? containerClasses : ""}
+              labelClasses={!defaultStyles ? labelClasses : ""}
+              inputClasses={!defaultStyles ? inputClasses : ""}
             />
           );
         })}

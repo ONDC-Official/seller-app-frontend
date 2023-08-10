@@ -1,13 +1,20 @@
 import React, { useState } from "react";
-import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { useTheme } from "@mui/material/styles";
-import { useNavigate, useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { useNavigate, useParams } from "react-router-dom";
+import BackNavigationButton from "../../Shared/BackNavigationButton";
+import MenuManager from "./MenuManager";
+
+const initialMenuDetails = {
+  seq: "",
+  name: "",
+  longDescription: "",
+  shortDescription: "",
+  images: [],
+};
 
 const MenuDetails = () => {
-  const theme = useTheme();
   const params = useParams();
   const navigate = useNavigate();
 
@@ -16,7 +23,16 @@ const MenuDetails = () => {
     setTabValue(newValue);
   };
 
-  const renderMenuDetails = () => {};
+  const [menuInfoError, setMenuInfoError] = useState({});
+  const [menuData, setMenuData] = useState(initialMenuDetails);
+
+  const renderMenuDetails = () => {
+    return (
+      <div>
+        <MenuManager menuData={menuData} setMenuData={setMenuData} errors={menuInfoError} defaultStyles={true} />
+      </div>
+    );
+  };
   const renderMenuProducts = () => {};
 
   return (
@@ -28,8 +44,11 @@ const MenuDetails = () => {
           }}
         />
       </div>
-      <div className="mb-4 flex flex-row justify-between items-center">
-        <Box sx={{ width: "100%", typography: "body1" }}>
+      <div
+        className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
+        style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
+      >
+        <Box sx={{ width: "100%" }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
