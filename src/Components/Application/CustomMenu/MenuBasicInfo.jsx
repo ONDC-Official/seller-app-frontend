@@ -37,7 +37,7 @@ const menuFields = [
   },
 ];
 
-const MenuManager = (props) => {
+const MenuBasicInfo = (props) => {
   const { menuData, setMenuData, errors, defaultStyles = false } = props;
 
   return (
@@ -65,4 +65,4 @@ const MenuManager = (props) => {
   );
 };
 
-export default MenuManager;
+export default MenuBasicInfo;

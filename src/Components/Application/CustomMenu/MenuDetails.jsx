@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { useNavigate, useParams } from "react-router-dom";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import MenuManager from "./MenuManager";
+import MenuBasicInfo from "./MenuBasicInfo";
 import MenuProducts from "./MenuProducts";
 import { Button } from "@mui/material";
 import { getCall, putCall } from "../../../Api/axios";
@@ -65,10 +65,18 @@ const MenuDetails = () => {
 
   const validateMenuDetailsForm = () => {
     let formErrors = {};
-    formErrors.name = menuData?.name.trim() === "" ? "Menu Name is required" : "";
-    formErrors.shortDescription = menuData?.shortDescription.trim() === "" ? "Short Description is required" : "";
-    formErrors.longDescription = menuData?.longDescription.trim() === "" ? "Long Description is required" : "";
-    formErrors.images = menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
+    formErrors.name =
+      menuData?.name.trim() === "" ? "Menu Name is required" : "";
+    formErrors.shortDescription =
+      menuData?.shortDescription.trim() === ""
+        ? "Short Description is required"
+        : "";
+    formErrors.longDescription =
+      menuData?.longDescription.trim() === ""
+        ? "Long Description is required"
+        : "";
+    formErrors.images =
+      menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
     setMenuDetailErrors({
       ...formErrors,
     });
@@ -109,6 +117,14 @@ const MenuDetails = () => {
       };
 
       setMenuData(updatedMenuDetails);
+      setAddedProducts(products);
+
+      const allProductsURL = `/api/v1/products?category=${params.category}`;
+      let products_res = await getCall(allProductsURL);
+      let all_products = products_res.data.map(product => {return {id: product._id, name: product.productName}});
+      console.log(all_products)
+      setAllProducts(all_products);
+
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -118,13 +134,20 @@ const MenuDetails = () => {
     try {
       const url = `/api/v1/menu/${params.menuId}`;
       const { name, seq, longDescription, shortDescription, images } = menuData;
-
+      console.log("$", addedProducts);
+      let added_products = addedProducts.map((product, index) => {
+        product.seq = index;
+        return product;
+      })
+      // console.log(addedProducts);
+      console.log("**", added_products)
       const updatedData = {
         name,
         seq,
         longDescription,
         shortDescription,
         images,
+        products: added_products
       };
 
       const res = await putCall(url, updatedData);
@@ -138,13 +161,24 @@ const MenuDetails = () => {
   const renderMenuDetails = () => {
     return (
       <div>
-        <MenuManager menuData={menuData} setMenuData={setMenuData} errors={menuDetailErrors} defaultStyles={true} />
+        <MenuBasicInfo
+          menuData={menuData}
+          setMenuData={setMenuData}
+          errors={menuDetailErrors}
+          defaultStyles={true}
+        />
       </div>
     );
   };
 
   const renderMenuProducts = () => {
-    return <MenuProducts allProducts={allProducts} addedProducts={addedProducts} setAddedProducts={setAddedProducts} />;
+    return (
+      <MenuProducts
+        allProducts={allProducts}
+        addedProducts={addedProducts}
+        setAddedProducts={setAddedProducts}
+      />
+    );
   };
 
   useEffect(() => {
@@ -168,10 +202,17 @@ const MenuDetails = () => {
         <Box sx={{ width: "100%" }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList centered onChange={handleTabChange} textColor={highlightedTabColor}>
+              <TabList
+                centered
+                onChange={handleTabChange}
+                textColor={highlightedTabColor}
+              >
                 <Tab
                   sx={{
-                    color: tabErrors[0] && Object.keys(menuDetailErrors).length > 0 ? "red" : "none",
+                    color:
+                      tabErrors[0] && Object.keys(menuDetailErrors).length > 0
+                        ? "red"
+                        : "none",
                   }}
                   label="Details"
                   value="1"
