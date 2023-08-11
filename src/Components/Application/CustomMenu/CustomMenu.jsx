@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import MenuManager from "./MenuManager";
+import MenuBasicInfo from "./MenuBasicInfo";
 import { Button, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import ExitDialog from "../../Shared/ExitDialog";
+import CustomDialog from "../../Shared/CustomDialog";
 import { deleteCall, getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 
@@ -22,7 +22,7 @@ const CustomMenu = () => {
   const navigate = useNavigate();
   const initialAvailableMenu = useRef(availableMenu);
 
-  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false);
 
   const [reordering, setReordering] = useState(false);
   const [availableMenuItems, setAvailableMenuItems] = useState([]);
@@ -36,8 +36,10 @@ const CustomMenu = () => {
     images: [],
   });
 
+  const [menuToDelete, setMenuToDelete] = useState(null);
+
   const getAllMenu = async () => {
-    const url = `/api/v1/menu?name=${params.category}`;
+    const url = `/api/v1/menu?category=${params.category}`;
     //  const url = `/api/v1/menu?name=`;
     const res = await getCall(url);
     setAvailableMenuItems(res.data);
@@ -55,6 +57,7 @@ const CustomMenu = () => {
       const res = await postCall(url, newMenuItem);
       getAllMenu();
       setShowMenuModal(false);
+      cogoToast.success("New menu created successfully");
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -63,6 +66,7 @@ const CustomMenu = () => {
   const handleRemoveMenu = (id) => {
     const url = `/api/v1/menu/${id}`;
     deleteCall(url).then(() => getAllMenu());
+    handleIgnoreDeleteAction();
   };
 
   const handleReordering = async () => {
@@ -73,8 +77,13 @@ const CustomMenu = () => {
     setAvailableMenuItems(updatedMenuItems);
 
     const url = `/api/v1/menuOrdering`;
+    try {
     const res = await postCall(url, updatedMenuItems);
     setReordering(false);
+      cogoToast.success("Menu order updated successfully");
+    }  catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
   };
 
   const onDiscardChanges = () => {
@@ -83,7 +92,7 @@ const CustomMenu = () => {
 
   const onSaveChanges = () => {
     initialAvailableMenu.current = availableMenuItems;
-    setShowExitDialog(false);
+    setShowDeleteConfirmDialog(false);
   };
 
   const detectChanges = () => {
@@ -126,7 +135,9 @@ const CustomMenu = () => {
               sx={{ marginLeft: 2 }}
               onClick={(e) => {
                 e.stopPropagation();
-                handleRemoveMenu(data._id);
+                setShowDeleteConfirmDialog(true);
+                setMenuToDelete(data._id)
+                // handleRemoveMenu(data._id);
               }}
             >
               Delete Menu
@@ -136,6 +147,7 @@ const CustomMenu = () => {
       </div>
     );
   };
+
   const MenuItem = SortableElement(({ item }) => <Menu data={item} />);
 
   const MenuList = SortableContainer(({ items }) => {
@@ -159,16 +171,22 @@ const CustomMenu = () => {
     });
   };
 
+  const handleIgnoreDeleteAction = () => {
+    setShowDeleteConfirmDialog(false)
+    setMenuToDelete(null);
+  }
+
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
         <BackNavigationButton
           onClick={() => {
-            if (detectChanges()) {
-              setShowExitDialog(true);
-            } else {
-              navigate(`/application/menu-category/`);
-            }
+            navigate(`/application/menu-category/`);
+            // if (detectChanges()) {
+            //   setShowExitDialog(true);
+            // } else {
+            //   navigate(`/application/menu-category/`);
+            // }
           }}
         />
       </div>
@@ -226,15 +244,21 @@ const CustomMenu = () => {
         handleAdd={handleAddMenu}
       />
 
-      <ExitDialog
-        showExitDialog={showExitDialog}
-        onClose={() => setShowExitDialog(false)}
-        onDiscard={onDiscardChanges}
-        onSave={onSaveChanges}
+      <CustomDialog
+        showDialog={showDeleteConfirmDialog}
+        onClose={handleIgnoreDeleteAction}
+        onDiscard={handleIgnoreDeleteAction}
+        onOk={() => handleRemoveMenu(menuToDelete)}
+        title="Delete Menu?"
+        message="Once deleted, it will be permanently deleted"
+        discardButtonText="Cancel"
+        okButtonText="Delete"
       />
     </div>
   );
 };
+
+
 
 const AddMenuModal = (props) => {
   const { showMenuModal, handleCloseMenuModal, menuData, setMenuData, handleAdd } = props;
@@ -286,7 +310,7 @@ const AddMenuModal = (props) => {
             Add New Menu
           </p>
 
-          <MenuManager menuData={menuData} setMenuData={setMenuData} errors={errors} />
+          <MenuBasicInfo menuData={menuData} setMenuData={setMenuData} errors={errors} />
 
           <div className="flex justify-end mt-4">
             <Button variant="contained" color="primary" onClick={handleClick}>
