@@ -40,12 +40,12 @@ const ComplaintDetails = () => {
 
   const AllCategory = ISSUE_TYPES.map((item) => {
     return item.subCategory.map((subcategoryItem) => {
-        return {
-            ...subcategoryItem,
-            category: item.value,
-        };
+      return {
+        ...subcategoryItem,
+        category: item.value,
+      };
     });
-}).flat();
+  }).flat();
 
   const getComplaint = async () => {
     const url = `/api/client/getissue/${params?.id}`;
@@ -82,9 +82,9 @@ const ComplaintDetails = () => {
     mergedarray.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
     setIssueActions(mergedarray)
 
-    const isProcessed = mergedarray?.some(x=> x.respondent_action === "PROCESSING")
+    const isProcessed = mergedarray?.some(x => x.respondent_action === "PROCESSING")
     const isCascaded = (mergedarray[mergedarray?.length - 2]?.respondent_action === "CASCADED" || mergedarray[mergedarray?.length - 1]?.respondent_action === "CASCADED")
-    const isEscalate = mergedarray[mergedarray?.length - 1]?.respondent_action === "ESCALATE" 
+    const isEscalate = mergedarray[mergedarray?.length - 1]?.respondent_action === "ESCALATE"
     const isResolved = mergedarray[mergedarray?.length - 1]?.respondent_action === "RESOLVED"
     setProcessed(isProcessed)
     setIsCascaded(isCascaded)
@@ -95,106 +95,106 @@ const ComplaintDetails = () => {
   const cardClass = `border-2 border-gray-200 rounded-lg p-2 bg-slate-50`;
 
   const renderActionButtons = () => {
-  function handleMenuClick() {
-    setSupportActionDetails(complaint)
-    handleClose()
-    setToggleActionModal(true)
-  }
-
-  const handleClick = (e) => {
-    console.log(e);
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
- const handleAction=()=> {
-  setLoading(true)
-  const body = {
-    "transaction_id": complaint.context.transaction_id,
-    "respondent_action": "PROCESSING",
-    "short_desc": "We are investigating your concern.",
-    "updated_by": {
-      "org": {
-        "name": user.organization
-      },
-      "contact": {
-        "phone": user.mobile,
-        "email": user.email
-      },
-      "person": {
-        "name": user.name
-      }
+    function handleMenuClick() {
+      setSupportActionDetails(complaint)
+      handleClose()
+      setToggleActionModal(true)
     }
-  }
-  postCall(`/api/client/issue_response`, body)
-    .then((resp) => {
-      setLoading(false)
-      if(resp.message?.ack?.status === "ACK") {
-      cogoToast.success("Action taken successfully");
-      setProcessed(true)
-      getComplaint()
-      }else{
-        cogoToast.error(resp.message);
+
+    const handleClick = (e) => {
+      console.log(e);
+      setAnchorEl(e.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleAction = () => {
+      setLoading(true)
+      const body = {
+        "transaction_id": complaint.context.transaction_id,
+        "respondent_action": "PROCESSING",
+        "short_desc": "We are investigating your concern.",
+        "updated_by": {
+          "org": {
+            "name": user.organization
+          },
+          "contact": {
+            "phone": user.mobile,
+            "email": user.email
+          },
+          "person": {
+            "name": user.name
+          }
+        }
       }
-    })
-    .catch((error) => {
-      setLoading(false)
-      console.log(error);
-      cogoToast.error(error.response.data.error);
-    });
- }
+      postCall(`/api/client/issue_response`, body)
+        .then((resp) => {
+          setLoading(false)
+          if (resp.message?.ack?.status === "ACK") {
+            cogoToast.success("Action taken successfully");
+            setProcessed(true)
+            getComplaint()
+          } else {
+            cogoToast.error(resp.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false)
+          console.log(error);
+          cogoToast.error(error.response.data.error);
+        });
+    }
 
- function checkProcessDisable() {
-  
-  if(processed || loading){
-    return true
-  }
-  if(isCascaded){
-    return true
-  }
+    function checkProcessDisable() {
 
-  return  false
-}
+      if (processed || loading) {
+        return true
+      }
+      if (isCascaded) {
+        return true
+      }
 
- function checkResolveDisable(){
-  if(expanded === supportActionDetails?.context.transaction_id){
-    return true
-  }
+      return false
+    }
 
-  if(isCascaded && !isEscalate){
-    return true
-  }
+    function checkResolveDisable() {
+      if (expanded === supportActionDetails?.context.transaction_id) {
+        return true
+      }
 
-  if(isEscalate && !isResolved && !isCascaded){
-    return false
-  }
-   
-  if(isResolved){
-    return true
-  }
+      if (isCascaded && !isEscalate) {
+        return true
+      }
 
-  if(!processed && !isEscalate){
-    return true
-  }
-  return false
- }
+      if (isEscalate && !isResolved && !isCascaded) {
+        return false
+      }
 
-      return (
-        <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
-       { (user?.role?.name !== "Super Admin") &&
+      if (isResolved) {
+        return true
+      }
+
+      if (!processed && !isEscalate) {
+        return true
+      }
+      return false
+    }
+
+    return (
+      <div style={{ display: 'flex', direction: 'row', gap: '8px' }}>
+        {(user?.role?.name !== "Super Admin") &&
           <Button
             variant="contained"
             className="!capitalize"
             onClick={(e) => handleClick(e)}
-            disabled={issue.status === "CLOSED" }
+            disabled={issue.status === "CLOSED"}
           >
             Action
           </Button>
         }
-          <Menu
+        <Menu
           id="card-actions-menu"
           anchorEl={anchorEl}
           keepMounted
@@ -204,43 +204,43 @@ const ComplaintDetails = () => {
           <MenuItem
             disabled={checkProcessDisable()}
             onClick={() => {
-                handleAction()
-           }}
+              handleAction()
+            }}
           >
             Process
           </MenuItem>
-          <MenuItem 
-          disabled={checkResolveDisable()}
-          onClick={() => handleMenuClick()}>
+          <MenuItem
+            disabled={checkResolveDisable()}
+            onClick={() => handleMenuClick()}>
             Resolve
           </MenuItem>
         </Menu>
         <Button
-        className="!capitalize"
-        variant="contained"
-        onClick={() => navigate(`/application/orders/${issue?.order_details?.orderDetailsId}`)}
-      >
-        Order Detail
+          className="!capitalize"
+          variant="contained"
+          onClick={() => navigate(`/application/orders/${issue?.order_details?.orderDetailsId}`)}
+        >
+          Order Detail
         </Button>
-        </div>
-      );
+      </div>
+    );
   };
 
   return (
     <div className="container mx-auto my-8">
-          {toggleActionModal && (
-                <CustomerActionCard
-                    user={user}
-                    supportActionDetails={supportActionDetails}
-                    onClose={() => setToggleActionModal(false)}
-                    onSuccess={(id) => {
-                        cogoToast.success("Action taken successfully");
-                        setToggleActionModal(false);
-                        setExpanded(id)
-                        getComplaint()
-                    }}
-                />
-            )}
+      {toggleActionModal && (
+        <CustomerActionCard
+          user={user}
+          supportActionDetails={supportActionDetails}
+          onClose={() => setToggleActionModal(false)}
+          onSuccess={(id) => {
+            cogoToast.success("Action taken successfully");
+            setToggleActionModal(false);
+            setExpanded(id)
+            getComplaint()
+          }}
+        />
+      )}
       <BackNavigationButton onClick={() => navigate("/application/complaints")} />
       <div className="flex flex-col">
         <div className={`${cardClass} my-4 p-4`}>
@@ -258,7 +258,7 @@ const ComplaintDetails = () => {
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Product Names</p>
-            <p className="text-base font-normal">{issue?.order_details.items.map(x=> x.product_name).toString()}</p>
+            <p className="text-base font-normal">{issue?.order_details.items.map(x => x.product_name).toString()}</p>
           </div>
           <div className="flex justify-between mt-3">
             <p className="text-base font-normal">Created On</p>
@@ -284,25 +284,72 @@ const ComplaintDetails = () => {
 
           <Divider orientation="horizontal" />
 
-          <p className="text-base font-semibold mt-3">Short description</p>
+          <p className="text-base font-semibold mt-3">Short Description</p>
           <p className="text-md font-normal">{issue?.description?.short_desc}</p>
-          <p className="text-base font-semibold mt-3">Long description</p>
-          <p className="text-base font-normal">{issue?.description?.long_desc}</p>
+          <p className="text-base font-semibold mt-3">Long Description</p>
+          <p className="text-base font-normal mb-3">{issue?.description?.long_desc}</p>
           {issue?.description?.images.length > 0 &&
-                          <div className="flex space-between mt-3 mb-3">
-{
-                        issue?.description?.images?.map((image) => {
-                            return (
-                                <div className="container mr-4" style={{ height: "10%", width: "5%" }}>
-                                    <a href={image} rel="noreferrer" target="_blank">
-                                        <img  src={image} />
-                                    </a>
-                                </div>
-                            );
-                        })
-                       } </div>
-                      }
+            <div className="flex space-between mb-3">
+              {
+                issue?.description?.images?.map((image) => {
+                  return (
+                    <div className="container mr-4" style={{ height: "10%", width: "5%" }}>
+                      <a href={image} rel="noreferrer" target="_blank">
+                        <img src={image} />
+                      </a>
+                    </div>
+                  );
+                })
+              } </div>
+          }
+
+          <Divider orientation="horizontal" />
+
+
+          {/* RESOLUTION  */}
+          {issue?.resolution && (
+            <div>
+              <p className="text-base font-semibold mt-3">
+                Resolution
+              </p>
+
+              <div className="flex justify-between pt-3">
+                <div style={{ width: "90%" }}>
+                  <p
+                    className="text-md font-normal"
+                  >
+                    {issue?.resolution?.short_desc}
+                  </p>
+                  {issue?.resolution?.long_desc &&
+                    <p
+                      className="text-md font-normal"
+                    >
+                      {issue?.resolution?.long_desc}
+                    </p>
+                  }
+                  {issue?.resolution?.refund_amount &&
+                    <p
+                      className="text-md font-normal"
+                    >
+                      Refund Amount: {issue?.resolution?.refund_amount}
+                    </p>
+                  }
+                </div>
+                <div className="ms-auto">
+                  <p
+                    className="text-base font-semibold mt-3"
+                  >
+                    Action: {issue?.resolution?.action_triggered}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
+
+
+
         <div className={`${cardClass} my-4 p-4`}>
           <div className="flex h-full">
             <p className="text-lg font-semibold mb-2"> Actions Taken</p>
