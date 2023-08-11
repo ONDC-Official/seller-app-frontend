@@ -7,7 +7,8 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import MenuManager from "./MenuManager";
 import MenuProducts from "./MenuProducts";
 import { Button } from "@mui/material";
-import { getCall } from "../../../Api/axios";
+import { getCall, putCall } from "../../../Api/axios";
+import cogoToast from "cogo-toast";
 
 const initialMenuDetails = {
   seq: "",
@@ -89,7 +90,9 @@ const MenuDetails = () => {
   };
 
   const handleSave = () => {
-    validate();
+    if (validate()) {
+      updateMenuDetails();
+    }
   };
 
   const getMenuDetails = async () => {
@@ -106,7 +109,30 @@ const MenuDetails = () => {
       };
 
       setMenuData(updatedMenuDetails);
-    } catch (error) {}
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
+
+  const updateMenuDetails = async () => {
+    try {
+      const url = `/api/v1/menu/${params.menuId}`;
+      const { name, seq, longDescription, shortDescription, images } = menuData;
+
+      const updatedData = {
+        name,
+        seq,
+        longDescription,
+        shortDescription,
+        images,
+      };
+
+      const res = await putCall(url, updatedData);
+      getMenuDetails();
+      cogoToast.success("Menu details updated successfully");
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
   };
 
   const renderMenuDetails = () => {
