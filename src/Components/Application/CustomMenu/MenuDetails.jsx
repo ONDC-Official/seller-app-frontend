@@ -119,10 +119,9 @@ const MenuDetails = () => {
       setMenuData(updatedMenuDetails);
       setAddedProducts(products);
 
-      const allProductsURL = `/api/v1/products?category=${params.category}`;
+      const allProductsURL = `/api/v1/products?category=${encodeURIComponent(params.category)}`;
       let products_res = await getCall(allProductsURL);
       let all_products = products_res.data.map(product => {return {id: product._id, name: product.productName}});
-      console.log(all_products)
       setAllProducts(all_products);
 
     } catch (error) {
@@ -134,13 +133,12 @@ const MenuDetails = () => {
     try {
       const url = `/api/v1/menu/${params.menuId}`;
       const { name, seq, longDescription, shortDescription, images } = menuData;
-      console.log("$", addedProducts);
+
       let added_products = addedProducts.map((product, index) => {
         product.seq = index;
         return product;
       })
-      // console.log(addedProducts);
-      console.log("**", added_products)
+
       const updatedData = {
         name,
         seq,

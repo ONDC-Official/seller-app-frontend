@@ -39,7 +39,7 @@ const CustomMenu = () => {
   const [menuToDelete, setMenuToDelete] = useState(null);
 
   const getAllMenu = async () => {
-    const url = `/api/v1/menu?category=${params.category}`;
+    const url = `/api/v1/menu?category=${encodeURIComponent(params.category)}`;
     //  const url = `/api/v1/menu?name=`;
     const res = await getCall(url);
     setAvailableMenuItems(res.data);

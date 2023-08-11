@@ -7,7 +7,7 @@ import AddMenuProduct from "./AddMenuProduct";
 const MenuProducts = (props) => {
 
   const { allProducts, addedProducts, setAddedProducts } = props;
-  console.log("addedProducts ", addedProducts);
+
   const [showModal, setShowModal] = useState(false);
   const [reordering, setReordering] = useState(false);
 
