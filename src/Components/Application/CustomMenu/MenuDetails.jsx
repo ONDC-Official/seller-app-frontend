@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -7,6 +7,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import MenuManager from "./MenuManager";
 import MenuProducts from "./MenuProducts";
 import { Button } from "@mui/material";
+import { getCall } from "../../../Api/axios";
 
 const initialMenuDetails = {
   seq: "",
@@ -91,6 +92,23 @@ const MenuDetails = () => {
     validate();
   };
 
+  const getMenuDetails = async () => {
+    try {
+      const url = `/api/v1/menu/${params.menuId}?menuProducts=true`;
+      let res = await getCall(url);
+      const { products, ...menuDetails } = res;
+
+      const modifiedImages = res.images.map((image) => image.url);
+
+      const updatedMenuDetails = {
+        ...menuDetails,
+        images: modifiedImages,
+      };
+
+      setMenuData(updatedMenuDetails);
+    } catch (error) {}
+  };
+
   const renderMenuDetails = () => {
     return (
       <div>
@@ -102,6 +120,10 @@ const MenuDetails = () => {
   const renderMenuProducts = () => {
     return <MenuProducts allProducts={allProducts} addedProducts={addedProducts} setAddedProducts={setAddedProducts} />;
   };
+
+  useEffect(() => {
+    getMenuDetails();
+  }, []);
 
   let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
   return (

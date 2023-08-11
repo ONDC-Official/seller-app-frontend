@@ -66,7 +66,7 @@ export default function OndcRoutes() {
           }
         />
         <Route
-          path={"/application/menu-category/:category/:menu"}
+          path={"/application/menu-category/:category/:menu/:menuId"}
           element={
             <PrivateRoute>
               <MenuDetails />

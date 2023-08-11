@@ -115,7 +115,7 @@ const CustomMenu = () => {
               variant="contained"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/application/menu-category/${params.category}/${data.name}`);
+                navigate(`/application/menu-category/${params.category}/${data.name}/${data._id}`);
               }}
             >
               Edit Menu
