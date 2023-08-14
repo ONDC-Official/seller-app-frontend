@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { allProductFieldDetails, categoryFields } from "./product-fields";
-import AddGenericProduct from "./AddGenericProduct";
+import ProductDetails from "./ProductDetails";
 import { PRODUCT_SUBCATEGORY } from "../../../utils/constants";
 import { allProperties } from "./categoryProperties";
 import Box from "@mui/material/Box";
@@ -267,7 +267,7 @@ export default function AddProduct() {
       if (!selectedCategory) selectedCategory = state?.productCategory;
 
       return (
-        <AddGenericProduct
+        <ProductDetails
           state={state}
           categoryForm={categoryForm}
           category={selectedCategory}
