@@ -5,7 +5,6 @@ import { Add, Delete, Save } from "@mui/icons-material";
 import AddMenuProduct from "./AddMenuProduct";
 
 const MenuProducts = (props) => {
-
   const { allProducts, addedProducts, setAddedProducts } = props;
 
   const [showModal, setShowModal] = useState(false);
@@ -66,6 +65,7 @@ const MenuProducts = (props) => {
               title={!reordering ? "Reorder products" : "Finish Reordering"}
               variant="contained"
               onClick={() => setReordering((prevState) => !prevState)}
+              disabled={addedProducts.length === 0}
             />
           </div>
           <div className="mr-2">
@@ -84,9 +84,15 @@ const MenuProducts = (props) => {
         <ProductList items={addedProducts} onSortEnd={onSortEnd} />
       ) : (
         <div>
-          {addedProducts.map((item) => (
-            <Product item={item} />
-          ))}
+          {addedProducts.length > 0 ? (
+            addedProducts.map((item) => <Product item={item} />)
+          ) : (
+            <div>
+              <div className="flex items-center justify-between py-3 px-4 mb-2 border border-[#1876d1a1] rounded-lg bg-white">
+                <p>No products are added in this menu.</p>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
