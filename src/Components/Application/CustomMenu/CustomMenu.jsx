@@ -177,8 +177,6 @@ const CustomMenu = () => {
     setMenuToDelete(null);
   };
 
-  console.log(availableMenuItems.length === 0);
-
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4">
