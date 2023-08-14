@@ -1,16 +1,9 @@
 import { useEffect } from "react";
-import useForm from "../../../../hooks/useForm";
-import RenderInput from "../../../../utils/RenderInput";
+import useForm from "../../../hooks/useForm";
+import RenderInput from "../../../utils/RenderInput";
 import { Typography, Box } from "@mui/material";
 
-const VarinatForm = ({
-  formData,
-  fields,
-  index,
-  onFormUpdate,
-  formsErrors,
-  removeForm,
-}) => {
+const VarinatForm = ({ formData, fields, index, onFormUpdate, formsErrors, removeForm }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({
     ...formData,
   });
@@ -30,16 +23,8 @@ const VarinatForm = ({
   return (
     <div className="mt-5">
       <div className="flex" style={{ justifyContent: "space-between" }}>
-        <Typography sx={{ fontWeight: "bold" }}>
-          {" "}
-          {"Variation " + (index + 1)}
-        </Typography>
-        <button
-          type="button"
-          className="close"
-          aria-label="Close"
-          onClick={() => removeForm(index)}
-        >
+        <Typography sx={{ fontWeight: "bold" }}> {"Variation " + (index + 1)}</Typography>
+        <button type="button" className="close" aria-label="Close" onClick={() => removeForm(index)}>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

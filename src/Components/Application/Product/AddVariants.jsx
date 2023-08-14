@@ -1,4 +1,4 @@
-import MyButton from "../../../Shared/Button";
+import MyButton from "../../Shared/Button";
 import VarinatForm from "./VariantForm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,10 +11,7 @@ const AddVariants = ({
   variantFormsErrors,
 }) => {
   const addNewVariationForm = () => {
-    setVariantForms([
-      ...variantForms,
-      { ...variantInitialValues, formKey: uuidv4() },
-    ]);
+    setVariantForms([...variantForms, { ...variantInitialValues, formKey: uuidv4() }]);
   };
 
   const handleOnVariantFormUpdate = (index, formValues) => {
@@ -48,12 +45,7 @@ const AddVariants = ({
   return (
     <>
       {renderForms()}
-      <MyButton
-        type="button"
-        title="Add Variation"
-        className="text-black"
-        onClick={() => addNewVariationForm()}
-      />
+      <MyButton type="button" title="Add Variation" className="text-black" onClick={() => addNewVariationForm()} />
     </>
   );
 };

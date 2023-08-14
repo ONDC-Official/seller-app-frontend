@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
 import moment from "moment";
-import MyButton from "../../../Shared/Button";
+import MyButton from "../../Shared/Button";
 import { useLocation, useNavigate } from "react-router-dom";
-import useCancellablePromise from "../../../../Api/cancelRequest";
-import { getCall, postCall, putCall } from "../../../../Api/axios";
-import useForm from "../../../../hooks/useForm";
+import useCancellablePromise from "../../../Api/cancelRequest";
+import { getCall, postCall, putCall } from "../../../Api/axios";
+import useForm from "../../../hooks/useForm";
 import {
   PRODUCT_SUBCATEGORY,
   FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY,
@@ -18,27 +18,27 @@ import {
   MAX_STRING_LENGTH_13,
   MAX_STRING_LENGTH_8,
   MAX_STRING_LENGTH_12,
-} from "../../../../utils/constants";
-import { isAmountValid, isNumberOnly } from "../../../../utils/validations";
+} from "../../../utils/constants";
+import { isAmountValid, isNumberOnly } from "../../../utils/validations";
 import {
   allProductFieldDetails,
   categoryFields,
   productDetailsFields,
   variationCommonFields,
   UOMVariationFields,
-} from "../product-fields";
+} from "./product-fields";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import AddVariants from "./AddVariants";
-import { allProperties } from "../categoryProperties";
-import AddProductInfo from "../AddProductInfo";
+import { allProperties } from "./categoryProperties";
+import AddProductInfo from "./AddProductInfo";
 import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
-import CustomizationRenderer from "../CustomizationRenderer";
+import CustomizationRenderer from "./CustomizationRenderer";
 
 const AddGenericProduct = ({
   state,

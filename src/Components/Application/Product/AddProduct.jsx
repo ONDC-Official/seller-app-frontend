@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { allProductFieldDetails, categoryFields } from "./product-fields";
-import AddGenericProduct from "./GenericProduct/AddGenericProduct";
+import AddGenericProduct from "./AddGenericProduct";
 import { PRODUCT_SUBCATEGORY } from "../../../utils/constants";
 import { allProperties } from "./categoryProperties";
 import Box from "@mui/material/Box";
