@@ -57,6 +57,7 @@ const CustomMenu = () => {
       const res = await postCall(url, newMenuItem);
       getAllMenu();
       setShowMenuModal(false);
+      setMenuData({});
       cogoToast.success("New menu created successfully");
     } catch (error) {
       cogoToast.error(error.response.data.error);
@@ -78,10 +79,10 @@ const CustomMenu = () => {
 
     const url = `/api/v1/menuOrdering`;
     try {
-    const res = await postCall(url, updatedMenuItems);
-    setReordering(false);
+      const res = await postCall(url, updatedMenuItems);
+      setReordering(false);
       cogoToast.success("Menu order updated successfully");
-    }  catch (error) {
+    } catch (error) {
       cogoToast.error(error.response.data.error);
     }
   };
@@ -136,7 +137,7 @@ const CustomMenu = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setShowDeleteConfirmDialog(true);
-                setMenuToDelete(data._id)
+                setMenuToDelete(data._id);
                 // handleRemoveMenu(data._id);
               }}
             >
@@ -172,9 +173,11 @@ const CustomMenu = () => {
   };
 
   const handleIgnoreDeleteAction = () => {
-    setShowDeleteConfirmDialog(false)
+    setShowDeleteConfirmDialog(false);
     setMenuToDelete(null);
-  }
+  };
+
+  console.log(availableMenuItems.length === 0);
 
   return (
     <div className="container mx-auto my-8">
@@ -182,11 +185,6 @@ const CustomMenu = () => {
         <BackNavigationButton
           onClick={() => {
             navigate(`/application/menu-category/`);
-            // if (detectChanges()) {
-            //   setShowExitDialog(true);
-            // } else {
-            //   navigate(`/application/menu-category/`);
-            // }
           }}
         />
       </div>
@@ -216,6 +214,7 @@ const CustomMenu = () => {
                 handleReordering();
               }
             }}
+            disabled={availableMenuItems.length === 0}
           >
             {reordering ? "Finish Reordering" : "Reorder Menu"}
           </Button>
@@ -227,11 +226,18 @@ const CustomMenu = () => {
           <MenuList items={availableMenuItems} onSortEnd={onSortEnd} />
         ) : (
           <div>
-            {availableMenuItems
-              .sort((a, b) => a.seq - b.seq)
-              .map((item) => (
-                <Menu data={item} key={item.id} />
-              ))}
+            {availableMenuItems.length > 0 ? (
+              availableMenuItems.sort((a, b) => a.seq - b.seq).map((item) => <Menu data={item} key={item.id} />)
+            ) : (
+              <div>
+                <div
+                  className={`flex items-center justify-between py-4 px-4 mb-2 rounded-lg bg-white `}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p>No menus available.</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -257,8 +263,6 @@ const CustomMenu = () => {
     </div>
   );
 };
-
-
 
 const AddMenuModal = (props) => {
   const { showMenuModal, handleCloseMenuModal, menuData, setMenuData, handleAdd } = props;
