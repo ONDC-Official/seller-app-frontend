@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal } from "@mui/material";
-import RenderInput from "../../../../utils/RenderInput";
+import RenderInput from "../../../utils/RenderInput";
 
 const containerClasses = "flex items-center";
 const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";

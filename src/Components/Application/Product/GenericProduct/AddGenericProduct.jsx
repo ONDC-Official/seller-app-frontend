@@ -38,7 +38,7 @@ import AddProductInfo from "../AddProductInfo";
 import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
-import CustomizationRenderer from "../F&B/CustomizationRenderer";
+import CustomizationRenderer from "../CustomizationRenderer";
 
 const AddGenericProduct = ({
   state,
