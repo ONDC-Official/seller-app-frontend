@@ -168,6 +168,7 @@ const CustomizationRenderer = (props) => {
         handleAddCustomizationGroup={handleAddCustomizationGroup}
       />
       <AddCustomization
+        category={category}
         showModal={showCustomizationModal}
         handleCloseModal={() => setShowCustomizationModal(false)}
         newCustomizationData={newCustomizationData}
