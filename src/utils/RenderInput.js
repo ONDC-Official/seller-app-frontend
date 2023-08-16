@@ -17,6 +17,7 @@ import {
   TextField,
   Stack,
   Chip,
+  Switch,
 } from "@mui/material";
 import { DeleteOutlined } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -114,12 +115,14 @@ const RenderInput = (props) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
+          variant={item.variant ? item.variant : "outlined"}
           type={item.password ? "password" : "input"}
           className={
             props.inputClasses
               ? props.inputClasses
               : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           }
+          sx={props.inputStyles && props.inputStyles}
           required={item.required}
           size="small"
           multiline={item.multiline || false}
@@ -163,12 +166,14 @@ const RenderInput = (props) => {
           {item.required && <span className="text-[#FF0000]"> *</span>}
         </label>
         <CssTextField
+          variant={item.variant ? item.variant : "outlined"}
           type="number"
           className={
             props.inputClasses
               ? props.inputClasses
               : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
           }
+          sx={props.inputStyles && props.inputStyles}
           required={item.required}
           size="small"
           InputProps={{
@@ -315,8 +320,8 @@ const RenderInput = (props) => {
             disabled={item?.isDisabled || previewOnly || false}
             // filterSelectedOptions
             size="small"
-            options={item.options}
-            getOptionLabel={(option) => option.key}
+            options={item?.options}
+            getOptionLabel={(option) => option?.key}
             value={
               state[item.id] !== "" && item.options && item.options.length > 0
                 ? item.options.find((option) => option.value === state[item.id])
@@ -328,7 +333,7 @@ const RenderInput = (props) => {
                   const newState = {
                     ...prevState,
                     [item.id]: newValue.value || "",
-                    productSubcategory1: "",
+                    //   productSubcategory1: "",
                   };
                   return newState;
                 } else {
@@ -344,7 +349,7 @@ const RenderInput = (props) => {
               <TextField
                 {...params}
                 placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
-                variant="outlined"
+                variant={item.variant ? item.variant : "outlined"}
                 error={item.error || false}
                 helperText={item.error && item.helperText}
               />
@@ -605,7 +610,7 @@ const RenderInput = (props) => {
               <TextField
                 {...params}
                 placeholder={state[item.id].length === 0 ? item.placeholder : ""}
-                variant="outlined"
+                variant={item.variant ? item.variant : "outlined"}
                 error={item.error || false}
                 helperText={item.error && item.helperText}
               />
@@ -839,6 +844,34 @@ const RenderInput = (props) => {
           {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
           {/* </label> */}
         </FormControl>
+      </div>
+    );
+  } else if (item.type == "switch") {
+    return (
+      <div className={item.containerClasses ? item.containerClasses : props.containerClasses || "py-1 flex flex-col"}>
+        <label
+          className={
+            props.labelClasses
+              ? props.labelClasses
+              : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+          }
+        >
+          {item.title}
+          {item.required && <span className="text-[#FF0000]"> *</span>}
+        </label>
+        <FormControlLabel
+          control={
+            <Switch
+              sx={item.styles && item.styles}
+              checked={state[item.id]}
+              onChange={(e) => stateHandler({ ...state, [item.id]: e.target.checked })}
+              disabled={item?.isDisabled || previewOnly || false}
+              color="primary"
+              size="medium"
+            />
+          }
+          label={item.switchLabel || ""}
+        />
       </div>
     );
   } else if (item.type == "label") {
