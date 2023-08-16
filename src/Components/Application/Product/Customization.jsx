@@ -1,15 +1,29 @@
 import React, { useState } from "react";
 import { Edit, ExpandMore } from "@mui/icons-material";
 import AddCustomization from "./AddCustomization";
-import { Button, Menu, MenuItem, ListItemText, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {
+  Button,
+  Menu,
+  MenuItem,
+  ListItemText,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 
 const containerClasses = "flex items-center mb-0.5";
 const labelClasses = "w-28 text-md ml-1 text-md text-[#606161]";
 const inputClasses = "w-80 h-full text-md text-[#606161]";
 
 const Customization = (props) => {
-  const { category, customization, customizations, handleCustomizationChange, customizationGroups, setCustomizations } =
-    props;
+  const {
+    category,
+    customization,
+    customizations,
+    handleCustomizationChange,
+    customizationGroups,
+    setCustomizations,
+  } = props;
 
   const [showExistingGroups, setShowExistingGroups] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -28,9 +42,14 @@ const Customization = (props) => {
   };
 
   const updateCustomizationDetail = () => {
-    const updatedCustomization = customizations.find((c) => c.id === customizationDetails.id);
+    const updatedCustomization = customizations.find(
+      (c) => c.id === customizationDetails.id
+    );
     if (updatedCustomization) {
-      const updatedCustomizationCopy = { ...updatedCustomization, ...customizationDetails };
+      const updatedCustomizationCopy = {
+        ...updatedCustomization,
+        ...customizationDetails,
+      };
       const updatedCustomizations = customizations.map((c) =>
         c.id === customizationDetails.id ? updatedCustomizationCopy : c
       );
@@ -52,7 +71,9 @@ const Customization = (props) => {
   };
 
   const handleChooseGroup = (groupId) => {
-    const selectedCustomizationIndex = customizations.findIndex((c) => c.id === customization.id);
+    const selectedCustomizationIndex = customizations.findIndex(
+      (c) => c.id === customization.id
+    );
     const updatedCustomizations = [...customizations];
     updatedCustomizations[selectedCustomizationIndex] = {
       ...updatedCustomizations[selectedCustomizationIndex],
@@ -63,9 +84,13 @@ const Customization = (props) => {
   };
 
   const renderValidGroupOptions = () => {
-    const parentIndex = customizationGroups.findIndex((g) => g.id === customization.parent);
+    const parentIndex = customizationGroups.findIndex(
+      (g) => g.id === customization.parent
+    );
     const parentSeq = parseInt(customizationGroups[parentIndex].seq);
-    const validGroups = customizationGroups.filter((group) => parseInt(group.seq) > parentSeq);
+    const validGroups = customizationGroups.filter(
+      (group) => parseInt(group.seq) > parentSeq
+    );
 
     if (validGroups.length === 0) {
       return (
@@ -82,8 +107,11 @@ const Customization = (props) => {
     ));
   };
 
-  const parentGroup = customizationGroups.find((group) => group.id === customization.parent);
-  const shouldShowButton = !customization.child && parentGroup && parentGroup.seq < 3;
+  const parentGroup = customizationGroups.find(
+    (group) => group.id === customization.parent
+  );
+  const shouldShowButton =
+    !customization.child && parentGroup && parentGroup.seq < 3;
 
   return (
     <>
@@ -91,64 +119,84 @@ const Customization = (props) => {
         style={{
           ...props.styles,
           backgroundColor: "#1876d221",
-          border: "2.5px solid #ffffff",
+          // border: "2.5px solid #ffffff",
           borderRadius: 8,
           marginTop: 10,
           marginBottom: 10,
           position: "unset",
+          boxShadow: "none",
         }}
         onClick={() => setCustomizationDetails(customization)}
       >
-        <AccordionSummary expandIcon={<ExpandMore />} style={{ borderRadius: 8 }}>
-          <div key={customization.id}>
-            <div className="flex">
-              <span className="flex items-center">
-                <p className="text-[#181818] text-medium">{customization.id}: &nbsp;</p>
-                <p className="text-[#000000] text-medium">{customization.name}, &nbsp;</p>
-                <p className="text-[#000000] text-medium">Price- &nbsp;</p>
-                <p className="text-[#000000] text-medium">{customization.price} Rupees</p>
-              </span>
-              <div className="flex align-center">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  sx={{ marginLeft: 2, fontSize: 12 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCustomizationDetails(customization);
-                    setShowCustomizationModal(true);
-                  }}
-                >
-                  <Edit />
-                </Button>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          style={{ borderRadius: 8 }}
+        >
+          <div key={customization.id} style={{width: "100%"}}>
+            <div className="flex" style={{justifyContent: "space-between", width: "100%"}}>
+              <div>
+                <span className="flex items-center">
+                  <p className="text-[#181818] text-medium">
+                    {customization.id}: &nbsp;
+                  </p>
+                  <p className="text-[#000000] text-medium">
+                    {customization.name}, &nbsp;
+                  </p>
+                  <p className="text-[#000000] text-medium">Price- &nbsp;</p>
+                  <p className="text-[#000000] text-medium">
+                    {customization.price} Rupees
+                  </p>
+                </span>
               </div>
+              <div className="flex">
               {shouldShowButton && (
-                <div>
-                  <Button size="small" variant="outlined" sx={{ marginLeft: 2 }} onClick={handleMenuOpen}>
-                    Add Customization Group
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    onClick={(e) => e.stopPropagation()}
+                  <div>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      sx={{ marginLeft: 2 }}
+                      onClick={handleMenuOpen}
+                    >
+                      Add Customization Group
+                    </Button>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {showExistingGroups ? (
+                        renderValidGroupOptions()
+                      ) : (
+                        <div>
+                          <MenuItem onClick={handleAddNewGroup}>
+                            <ListItemText primary="Add New Group" />
+                          </MenuItem>
+                          <MenuItem onClick={handleChooseExistingGroup}>
+                            <ListItemText primary="Choose Existing Group" />
+                          </MenuItem>
+                        </div>
+                      )}
+                    </Menu>
+                  </div>
+                )}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{ marginLeft: 2, fontSize: 12 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCustomizationDetails(customization);
+                      setShowCustomizationModal(true);
+                    }}
                   >
-                    {showExistingGroups ? (
-                      renderValidGroupOptions()
-                    ) : (
-                      <div>
-                        <MenuItem onClick={handleAddNewGroup}>
-                          <ListItemText primary="Add New Group" />
-                        </MenuItem>
-                        <MenuItem onClick={handleChooseExistingGroup}>
-                          <ListItemText primary="Choose Existing Group" />
-                        </MenuItem>
-                      </div>
-                    )}
-                  </Menu>
-                </div>
-              )}
+                    <Edit />
+                  </Button>
+
+
+              </div>
             </div>
+
             <AddCustomization
               mode="edit"
               category={category}
@@ -179,7 +227,9 @@ const Customization = (props) => {
               };
 
               const shouldRenderField =
-                fieldsToRender.includes(f) && (!fieldCategoryMap[f] || fieldCategoryMap[f].includes(category));
+                fieldsToRender.includes(f) &&
+                (!fieldCategoryMap[f] ||
+                  fieldCategoryMap[f].includes(category));
 
               if (shouldRenderField) {
                 return (
