@@ -166,20 +166,18 @@ const UserListings = () => {
       filterParams.push(`email=${encodeURIComponent(providerFilters.email)}`);
     }
     if (providerFilters.phone.trim() !== "") {
-      filterParams.push(`phone=${encodeURIComponent(providerFilters.phone)}`);
+      filterParams.push(`mobile=${encodeURIComponent(providerFilters.phone)}`);
     }
     if (providerFilters.storeName.trim() !== "") {
       filterParams.push(`storeName=${encodeURIComponent(providerFilters.storeName)}`);
     }
 
     const queryString = filterParams.join("&");
-    const url = `/api/v1/organizations?${queryString}`;
+    const url = `/api/v1/users?limit=${rowsPerPage}&offset=${page}&role=Organization Admin&${queryString}`;
 
-    console.log(url);
     const res = await getCall(url);
-    console.log(res);
-    //  setProviders(data);
-    //  setTotalRecords(res.count);
+    setProviders(res.data);
+    setTotalRecords(res.count);
   };
 
   useEffect(() => {

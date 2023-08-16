@@ -15,7 +15,7 @@ const FilterComponent = (props) => {
         </p>
       </div>
       <div className="flex">
-        <div className="flex items-end">
+        <div className="flex items-end flex-wrap">
           {fields.map((item) => {
             return (
               <RenderInput
@@ -23,7 +23,7 @@ const FilterComponent = (props) => {
                 item={{ ...item }}
                 state={state}
                 stateHandler={stateHandler}
-                inputStyles={{ width: 260 }}
+                inputStyles={{ width: 240 }}
                 containerClasses={"py-1 flex flex-col mr-4"}
               />
             );
