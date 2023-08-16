@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
 import moment from "moment";
-import MyButton from "../../../Shared/Button";
+import MyButton from "../../Shared/Button";
 import { useLocation, useNavigate } from "react-router-dom";
-import useCancellablePromise from "../../../../Api/cancelRequest";
-import { getCall, postCall, putCall } from "../../../../Api/axios";
-import useForm from "../../../../hooks/useForm";
+import useCancellablePromise from "../../../Api/cancelRequest";
+import { getCall, postCall, putCall } from "../../../Api/axios";
+import useForm from "../../../hooks/useForm";
 import {
   PRODUCT_SUBCATEGORY,
   FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY,
@@ -18,26 +18,27 @@ import {
   MAX_STRING_LENGTH_13,
   MAX_STRING_LENGTH_8,
   MAX_STRING_LENGTH_12,
-} from "../../../../utils/constants";
-import { isAmountValid, isNumberOnly } from "../../../../utils/validations";
+} from "../../../utils/constants";
+import { isAmountValid, isNumberOnly } from "../../../utils/validations";
 import {
   allProductFieldDetails,
   categoryFields,
   productDetailsFields,
   variationCommonFields,
   UOMVariationFields,
-} from "../product-fields";
+} from "./product-fields";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import AddVariants from "./AddVariants";
-import { allProperties } from "../categoryProperties";
-import AddProductInfo from "../AddProductInfo";
+import { allProperties } from "./categoryProperties";
+import AddProductInfo from "./AddProductInfo";
 import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
+import CustomizationRenderer from "./CustomizationRenderer";
 
 const AddGenericProduct = ({
   state,
@@ -67,6 +68,9 @@ const AddGenericProduct = ({
   const [tabErrors, setTabErrors] = useState([true, true, true]);
   const [formValidate, setFormValidate] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
+
+  const [customizationGroups, setCustomizationGroups] = useState([]);
+  const [customizations, setCustomizations] = useState([]);
 
   const [tabValue, setTabValue] = useState("1");
 
@@ -195,6 +199,10 @@ const AddGenericProduct = ({
       let data = {
         commonDetails: product_data,
         commonAttributesValues: vital_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
       };
 
       if (variationOn !== "none") {
@@ -241,6 +249,9 @@ const AddGenericProduct = ({
 
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
+        setCustomizationGroups(resp.customizationDetails.customizationGroups);
+        setCustomizations(resp.customizationDetails.customizations);
+
         let attributes = allProperties[category][sub_category] || allProperties[category]["default"];
         setVitalFields(formatAttributesToFieldsDataFormat(attributes));
       })
@@ -293,6 +304,10 @@ const AddGenericProduct = ({
       let data = {
         commonDetails: product_data,
         commonAttributesValues: vital_data,
+        customizationDetails: {
+          customizationGroups,
+          customizations,
+        },
       };
 
       await putCall(`/api/v1/products/${state.productId}`, data);
@@ -718,19 +733,74 @@ const AddGenericProduct = ({
     }
   };
 
+  const validateCustomizationDetails = () => {
+    const getCustomizationGroupName = (groupId) => {
+      const group = customizationGroups.find((group) => group.id === groupId);
+      return group ? group.name : "";
+    };
+
+    const getCustomizationName = (customizationId) => {
+      const customization = customizations.find((customization) => customization.id === customizationId);
+      return customization ? customization.name : "";
+    };
+
+    const selectedCustomizations = customizations.filter((customization) => customization.parent);
+
+    if (customizationGroups.length > 0) {
+      // Validation check: If customization groups are present, check that all groups have at least one customization.
+      const groupIdsWithCustomizations = new Set(selectedCustomizations.map((customization) => customization.parent));
+      const groupIds = new Set(customizationGroups.map((group) => group.id));
+
+      if (groupIdsWithCustomizations.size < groupIds.size) {
+        const missingGroups = [...groupIds].filter((groupId) => !groupIdsWithCustomizations.has(groupId));
+        const missingGroupNames = missingGroups.map((groupId) => getCustomizationGroupName(groupId));
+        cogoToast.error(`Please add at least one customization for groups: ${missingGroupNames.join(", ")}.`);
+        return false;
+      }
+    }
+
+    // Validation check: If any customization has no child property, it must have a price value greater than 0.
+    const invalidCustomizations = selectedCustomizations.filter(
+      (customization) => !customization.child && (!customization.price || customization.price <= 0)
+    );
+
+    if (invalidCustomizations.length > 0) {
+      const errorMessages = invalidCustomizations.map((customization) => {
+        const groupName = getCustomizationGroupName(customization.parent);
+        const customizationName = getCustomizationName(customization.id);
+        return `${groupName} [${customizationName}]`;
+      });
+
+      cogoToast.error(
+        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(", ")}.`
+      );
+      return false;
+    }
+
+    return true;
+  };
+
   const validate = () => {
     let product_info_form_validity = validateProductInfoForm();
     let vital_info_form_validity = validateVitalInfoForm();
     let variants_forms_validity = validateVariantsForms();
+    let customization_details_validity = validateCustomizationDetails();
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
       prev_state[1] = !vital_info_form_validity;
       prev_state[2] = !variants_forms_validity;
+      prev_state[3] = !customization_details_validity;
       return [...prev_state];
     });
 
-    return product_info_form_validity && vital_info_form_validity && variants_forms_validity;
+    let result =
+      variants_forms_validity &&
+      product_info_form_validity &&
+      vital_info_form_validity &&
+      customization_details_validity;
+
+    return result;
   };
 
   const handleSubmit = () => {
@@ -772,6 +842,18 @@ const AddGenericProduct = ({
         formData={vitalForm}
         onFormUpdate={setVitalForm}
         vitalFormErrors={vitalFormErrors}
+      />
+    );
+  };
+
+  const renderCustomizations = () => {
+    return (
+      <CustomizationRenderer
+        category={category}
+        customizationGroups={customizationGroups}
+        setCustomizationGroups={setCustomizationGroups}
+        customizations={customizations}
+        setCustomizations={setCustomizations}
       />
     );
   };
@@ -853,6 +935,13 @@ const AddGenericProduct = ({
                   value="3"
                 />
               )}
+              <Tab
+                sx={{
+                  color: tabErrors[3] && Object.keys(errors).length > 0 ? "red" : "none",
+                }}
+                label="Customizations"
+                value="4"
+              />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -862,6 +951,7 @@ const AddGenericProduct = ({
             <div className="mt-2">{renderProductVitalFields()}</div>
           </TabPanel>
           <TabPanel value="3">{renderVariationsFields()}</TabPanel>
+          <TabPanel value="4">{renderCustomizations()}</TabPanel>
         </TabContext>
       </Box>
 

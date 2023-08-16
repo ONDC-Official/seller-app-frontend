@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { allProductFieldDetails, categoryFields } from "./product-fields";
-import AddGenericProduct from "./GenericProduct/AddGenericProduct";
+import ProductDetails from "./ProductDetails";
 import { PRODUCT_SUBCATEGORY } from "../../../utils/constants";
 import { allProperties } from "./categoryProperties";
 import Box from "@mui/material/Box";
@@ -17,7 +17,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
-import FnB from "./F&B/FnB";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 
@@ -138,11 +137,8 @@ export default function AddProduct() {
   useEffect(() => {
     if (categoryForm.formValues?.productCategory) {
       let data = [...fields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex(
-        (item) => item.id === "productSubcategory1"
-      );
-      data[subCategoryIndex].options =
-        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
+      const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
+      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       setFields(data);
       setVariationOn("none");
     }
@@ -156,9 +152,7 @@ export default function AddProduct() {
       let properties = category_data?.hasOwnProperty(sub_category)
         ? category_data[sub_category]
         : category_data["default"] || [];
-      let variants = properties?.filter(
-        (property) => property.variationAllowed
-      );
+      let variants = properties?.filter((property) => property.variationAllowed);
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
         acc[variant.name] = false;
         return acc;
@@ -207,11 +201,7 @@ export default function AddProduct() {
           Select Variants
         </label>
         <Box sx={{ display: "flex" }}>
-          <FormControl
-            sx={{ ml: 3, display: "flex" }}
-            component="fieldset"
-            variant="standard"
-          >
+          <FormControl sx={{ ml: 3, display: "flex" }} component="fieldset" variant="standard">
             <FormGroup sx={{ display: "flex" }}>
               {variants?.map(({ name }) => (
                 <FormControlLabel
@@ -235,24 +225,18 @@ export default function AddProduct() {
 
   const getSelectedVariantNames = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.filter(
-      (variant_name) => variantsCheckboxState[variant_name]
-    );
+    return variant_names.filter((variant_name) => variantsCheckboxState[variant_name]);
   };
 
   const anyVariantSelected = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.some(
-      (variant_name) => variantsCheckboxState[variant_name]
-    );
+    return variant_names.some((variant_name) => variantsCheckboxState[variant_name]);
   };
 
   const renderVariants = () => {
     return (
       <FormControl>
-        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">
-          Variation On
-        </div>
+        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">Variation On</div>
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
@@ -261,11 +245,7 @@ export default function AddProduct() {
           sx={{ paddingLeft: "22px" }}
         >
           <FormControlLabel value="none" control={<Radio />} label="None" />
-          <FormControlLabel
-            value="attributes"
-            control={<Radio />}
-            label="Attribute"
-          />
+          <FormControlLabel value="attributes" control={<Radio />} label="Attribute" />
           <FormControlLabel value="uom" control={<Radio />} label="UOM" />
         </RadioGroup>
       </FormControl>
@@ -277,35 +257,27 @@ export default function AddProduct() {
       return (
         <div>
           {renderCategoryFields()}
-          {category && subCategory && category !== "F&B" && renderVariants()}
+          {/* {category && subCategory && category !== "F&B" && renderVariants()} */}
+          {renderVariants()}
           {variationOn === "attributes" && renderVariantsList()}
         </div>
       );
     } else {
       let selectedCategory = categoryForm.formValues?.productCategory;
-
       if (!selectedCategory) selectedCategory = state?.productCategory;
-      if (selectedCategory === "F&B") {
-        return (
-          <FnB
-            category={selectedCategory}
-            subCategory={categoryForm.formValues?.productSubcategory1}
-          />
-        );
-      } else {
-        return (
-          <AddGenericProduct
-            state={state}
-            categoryForm={categoryForm}
-            category={selectedCategory}
-            subCategory={categoryForm.formValues?.productSubcategory1}
-            attributes={attributes}
-            variants={variants}
-            variationOn={variationOn}
-            selectedVariantNames={getSelectedVariantNames()}
-          />
-        );
-      }
+
+      return (
+        <ProductDetails
+          state={state}
+          categoryForm={categoryForm}
+          category={selectedCategory}
+          subCategory={categoryForm.formValues?.productSubcategory1}
+          attributes={attributes}
+          variants={variants}
+          variationOn={variationOn}
+          selectedVariantNames={getSelectedVariantNames()}
+        />
+      );
     }
   };
 
@@ -316,9 +288,7 @@ export default function AddProduct() {
           className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
           style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
         >
-          <BackNavigationButton
-            onClick={() => navigate("/application/inventory")}
-          />
+          <BackNavigationButton onClick={() => navigate("/application/inventory")} />
           <div className="w-full !h-full">
             <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
               {state?.productId == undefined ? "Add Product" : "Update Product"}
@@ -343,9 +313,7 @@ export default function AddProduct() {
                     !(
                       categoryForm.formValues["productCategory"] &&
                       categoryForm.formValues["productSubcategory1"] &&
-                      (variationOn === "none" ||
-                        variationOn === "uom" ||
-                        anyVariantSelected())
+                      (variationOn === "none" || variationOn === "uom" || anyVariantSelected())
                     )
                   }
                   onClick={() => setRenderCategories(false)}
