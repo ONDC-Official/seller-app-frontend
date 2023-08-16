@@ -325,7 +325,8 @@ export const allProperties = {
             {'name':'skin_type','type':'input','example':'normal', 'variationAllowed':true},
         ],
     },
-    'Food and Beverages':{
+    'F&B':{
+        'default': []
 
     }
 };
