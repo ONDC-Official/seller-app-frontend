@@ -132,24 +132,27 @@ const Customization = (props) => {
           expandIcon={<ExpandMore />}
           style={{ borderRadius: 8 }}
         >
-          <div key={customization.id} style={{width: "100%"}}>
-            <div className="flex" style={{justifyContent: "space-between", width: "100%"}}>
+          <div key={customization.id} style={{ width: "100%" }}>
+            <div
+              className="flex"
+              style={{ justifyContent: "space-between", width: "100%" }}
+            >
               <div>
                 <span className="flex items-center">
                   <p className="text-[#181818] text-medium">
-                    {customization.id}: &nbsp;
+                    [{customization.id}] &nbsp;
                   </p>
                   <p className="text-[#000000] text-medium">
-                    {customization.name}, &nbsp;
+                    {customization.name} &nbsp; => &nbsp;
                   </p>
-                  <p className="text-[#000000] text-medium">Price- &nbsp;</p>
+
                   <p className="text-[#000000] text-medium">
                     {customization.price} Rupees
                   </p>
                 </span>
               </div>
               <div className="flex">
-              {shouldShowButton && (
+                {shouldShowButton && (
                   <div>
                     <Button
                       size="small"
@@ -180,20 +183,18 @@ const Customization = (props) => {
                     </Menu>
                   </div>
                 )}
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    sx={{ marginLeft: 2, fontSize: 12 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCustomizationDetails(customization);
-                      setShowCustomizationModal(true);
-                    }}
-                  >
-                    <Edit />
-                  </Button>
-
-
+                <Button
+                  size="small"
+                  variant="outlined"
+                  sx={{ marginLeft: 2, fontSize: 12 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCustomizationDetails(customization);
+                    setShowCustomizationModal(true);
+                  }}
+                >
+                  <Edit />
+                </Button>
               </div>
             </div>
 

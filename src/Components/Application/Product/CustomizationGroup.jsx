@@ -40,7 +40,7 @@ const CustomizationGroup = (props) => {
         >
           <div>
             <span className="flex">
-              <p className="text-[#181818] text-medium">{group.id}- &nbsp;</p>
+              <p className="text-[#181818] text-medium">[{group.id}]&nbsp;</p>
               <p className="text-[#000000] text-medium">{group.name}</p>
             </span>
           </div>
