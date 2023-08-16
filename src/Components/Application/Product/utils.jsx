@@ -1,5 +1,5 @@
-import { isAmountValid } from "../../../../utils/validations";
-import { MAX_STRING_LENGTH_50 } from "../../../../utils/constants";
+import { isAmountValid } from "../../../utils/validations";
+import { MAX_STRING_LENGTH_50 } from "../../../utils/constants";
 
 export const getFormErrors = (fields, formValues) => {
   if (formValues) {
@@ -17,7 +17,7 @@ export const getFormErrors = (fields, formValues) => {
           ? "Please enter only digit"
           : "";
       } else if (field.type === "upload") {
-        error = field_value.length < 1 ? "At least one image is required" : "";
+        error = field_value.length < 3 ? "Minimum 3 images are required" : "";
       } else {
         error =
           field_value?.trim() === ""

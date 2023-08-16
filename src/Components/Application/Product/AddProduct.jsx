@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { allProductFieldDetails, categoryFields } from "./product-fields";
-import AddGenericProduct from "./GenericProduct/AddGenericProduct";
+import ProductDetails from "./ProductDetails";
 import { PRODUCT_SUBCATEGORY } from "../../../utils/constants";
 import { allProperties } from "./categoryProperties";
 import Box from "@mui/material/Box";
@@ -17,7 +17,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
-import FnB from "./F&B/FnB";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 
@@ -149,11 +148,11 @@ export default function AddProduct() {
     let category = categoryForm.formValues["productCategory"];
     let sub_category = categoryForm.formValues["productSubcategory1"];
     if (category && category !== "F&B" && sub_category) {
-      let category_data =  allProperties[category];
-      let properties = category_data?.hasOwnProperty(sub_category) ? category_data[sub_category] : (category_data["default"] || []);
-      let variants = properties?.filter(
-        (property) => property.variationAllowed
-      );
+      let category_data = allProperties[category];
+      let properties = category_data?.hasOwnProperty(sub_category)
+        ? category_data[sub_category]
+        : category_data["default"] || [];
+      let variants = properties?.filter((property) => property.variationAllowed);
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
         acc[variant.name] = false;
         return acc;
@@ -258,67 +257,69 @@ export default function AddProduct() {
       return (
         <div>
           {renderCategoryFields()}
-          {category && subCategory && renderVariants()}
+          {/* {category && subCategory && category !== "F&B" && renderVariants()} */}
+          {renderVariants()}
           {variationOn === "attributes" && renderVariantsList()}
         </div>
       );
     } else {
       let selectedCategory = categoryForm.formValues?.productCategory;
-
       if (!selectedCategory) selectedCategory = state?.productCategory;
-      if (selectedCategory === "F&B") {
-        return <FnB category={selectedCategory} subCategory={categoryForm.formValues?.productSubcategory1} />;
-      } else {
-        return (
-          <AddGenericProduct
-            state={state}
-            categoryForm={categoryForm}
-            category={selectedCategory}
-            subCategory={categoryForm.formValues?.productSubcategory1}
-            attributes={attributes}
-            variants={variants}
-            variationOn={variationOn}
-            selectedVariantNames={getSelectedVariantNames()}
-          />
-        );
-      }
+
+      return (
+        <ProductDetails
+          state={state}
+          categoryForm={categoryForm}
+          category={selectedCategory}
+          subCategory={categoryForm.formValues?.productSubcategory1}
+          attributes={attributes}
+          variants={variants}
+          variationOn={variationOn}
+          selectedVariantNames={getSelectedVariantNames()}
+        />
+      );
     }
   };
 
   return (
     <>
       <div className="container mx-auto my-8">
-        <BackNavigationButton onClick={() => navigate("/application/inventory")} />
-        <div className="w-full !h-full">
-          <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
-            {state?.productId == undefined ? "Add Product" : "Update Product"}
-          </label>
-          <form>
-            <div className="mt-2">{renderFields()}</div>
-          </form>
-          {}
-          <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
-            <MyButton
-              type="button"
-              title="CANCEL"
-              className="text-black"
-              onClick={() => navigate("/application/inventory")}
-            />
-            {renderCategories && (
+        <div
+          className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
+          style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
+        >
+          <BackNavigationButton onClick={() => navigate("/application/inventory")} />
+          <div className="w-full !h-full">
+            <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
+              {state?.productId == undefined ? "Add Product" : "Update Product"}
+            </label>
+            <form>
+              <div className="mt-2">{renderFields()}</div>
+            </form>
+            {}
+            <div className="flex flex-row justify-center py-2 sm:pt-5 md:!mt-10">
               <MyButton
                 type="button"
-                title="NEXT"
+                title="CANCEL"
                 className="text-black"
-                disabled={
-                  !(
-                    categoryForm.formValues["productCategory"] &&
-                    categoryForm.formValues["productSubcategory1"] &&
-                    (variationOn === "none" || variationOn === "uom" || anyVariantSelected())
-                  )
-                }
-                onClick={() => setRenderCategories(false)}
+                onClick={() => navigate("/application/inventory")}
               />
-            )}
+              {renderCategories && (
+                <MyButton
+                  type="button"
+                  title="NEXT"
+                  className="text-black"
+                  disabled={
+                    !(
+                      categoryForm.formValues["productCategory"] &&
+                      categoryForm.formValues["productSubcategory1"] &&
+                      (variationOn === "none" || variationOn === "uom" || anyVariantSelected())
+                    )
+                  }
+                  onClick={() => setRenderCategories(false)}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

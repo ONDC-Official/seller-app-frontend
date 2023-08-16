@@ -52,7 +52,7 @@ const CssTextField = styled(TextField)({
 });
 
 const RenderInput = (props) => {
-  const { item, state, stateHandler, onChange, previewOnly, setFocusedField } = props;
+  const { item, state, stateHandler, onChange, previewOnly, setFocusedField, handleChange = undefined, args } = props;
   const uploadFileRef = useRef(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fetchedImageSize, setFetchedImageSize] = useState(0);
@@ -133,12 +133,16 @@ const RenderInput = (props) => {
           disabled={item?.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
-          onChange={(e) =>
-            stateHandler({
-              ...state,
-              [item.id]: item.isUperCase ? e.target.value.toUpperCase() : e.target.value,
-            })
-          }
+          onChange={(e) => {
+            if (handleChange) {
+              handleChange(e, item, item.args);
+            } else {
+              stateHandler({
+                ...state,
+                [item.id]: item.isUperCase ? e.target.value.toUpperCase() : e.target.value,
+              });
+            }
+          }}
           inputProps={{
             maxLength: item.maxLength || undefined,
             minLength: item.minLength || undefined,
@@ -222,8 +226,6 @@ const RenderInput = (props) => {
             name={item.id}
             value={state[item.id]}
             onChange={(e) => {
-              console.log("e.target.value=====>", e.target.value);
-              console.log("item.i=====>", item.id);
               stateHandler({ ...state, [item.id]: e.target.value });
             }}
             disabled={isDisabled}
@@ -517,6 +519,7 @@ const RenderInput = (props) => {
     // if(values && values.length > 0){
     //   values = values.map((itemDate) => moment(itemDate, item.format || 'DD/MM/YYYY').format(item.format?reverseString(item.format):'YYYY/MM/DD'));
     // }else{}
+
     return (
       <div className="py-1 flex flex-col">
         <label className="text-sm py-2 ml-1 mb-1 font-medium text-left text-[#606161] inline-block">
@@ -546,6 +549,7 @@ const RenderInput = (props) => {
             const valuesArray = value ? value.split(",") : "";
             return (
               <Autocomplete
+                size="small"
                 multiple
                 id="tags-readOnly"
                 options={[]}
@@ -557,7 +561,14 @@ const RenderInput = (props) => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
+                    //   placeholder={!previewOnly && !state[item.id] ? item.placeholder : ""}
+                    placeholder={
+                      (!previewOnly && !state[item.id]) ||
+                      (typeof state[item.id] === "string" && state[item.id].trim() === "") ||
+                      (Array.isArray(state[item.id]) && state[item.id].length === 0)
+                        ? item.placeholder
+                        : ""
+                    }
                     onFocus={openCalendar}
                   />
                 )}
@@ -618,7 +629,6 @@ const RenderInput = (props) => {
         fileType: file_type,
       };
       const res = await postCall(url, data);
-      console.log("getSignUrl", res);
       return res;
     };
 
@@ -731,7 +741,6 @@ const RenderInput = (props) => {
         </Stack>
       );
     };
-
     return (
       <div className="py-1 flex flex-col">
         <label
@@ -747,6 +756,7 @@ const RenderInput = (props) => {
           </label>
         </Button> */}
         <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
+
         <FormControl error={item.error}>
           {/* <label htmlFor="contained-button-file"> */}
           <input

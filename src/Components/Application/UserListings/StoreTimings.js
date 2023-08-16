@@ -8,6 +8,7 @@ import MyButton from "../../Shared/Button";
 import { useEffect, useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import Button from "@mui/material/Button";
 
 const days = [
   { label: "Monday", value: 1 },
@@ -19,7 +20,7 @@ const days = [
   { label: "Sunday", value: 7 },
 ];
 
-const StoreTimings = ({ storeTiming, setStoreTiming }) => {
+const StoreTimings = ({ storeTiming, setStoreTiming, handleRemoveDaysAndTimings }) => {
   /**
    * storeTiming looks like:
    * {
@@ -50,32 +51,53 @@ const StoreTimings = ({ storeTiming, setStoreTiming }) => {
     let days_list = key === "from" ? days : toDays;
     return (
       <div style={{ marginLeft: "10px" }}>
-          <Select
-            id={key}
-            value={storeTiming.daysRange[key]}
-            label={key +" day"}
-            size="small"
-            onChange={(event) => handleDayChange(event, key)}
-            sx={{minWidth: 120 }}
-            variant="outlined"
-          >
-            {days_list.map((day) => (
-              <MenuItem value={day.value}>{day.label}</MenuItem>
-            ))}
-          </Select>
+        <Select
+          id={key}
+          value={storeTiming.daysRange[key]}
+          label={key + " day"}
+          size="small"
+          onChange={(event) => handleDayChange(event, key)}
+          sx={{ minWidth: 120 }}
+          variant="outlined"
+        >
+          {days_list.map((day) => (
+            <MenuItem value={day.value}>{day.label}</MenuItem>
+          ))}
+        </Select>
       </div>
     );
   };
 
   const renderDaysDDs = () => {
     return (
-      <div style={{ display: "flex" }}>
-        <div style={{ marginLeft: "10px", marginTop: "7px" }}>
-          Days: <span style={{color: "red"}}>*</span>
+      <div style={{ display: "flex" , justifyContent: "space-between"}}>
+        <div style={{ display: "flex" }}>
+          <div style={{ marginLeft: "10px", marginTop: "7px" }}>
+            Days: <span style={{ color: "red" }}>*</span>
+          </div>
+          {renderDaysDD("from")}
+          <div style={{ marginLeft: "10px", marginTop: "7px" }}>To</div>
+          {renderDaysDD("to")}
         </div>
-        {renderDaysDD("from")}
-        <div style={{ marginLeft: "10px", marginTop: "7px" }}>To</div>
-        {renderDaysDD("to")}
+        <div style={{ marginRight: "5px" }}>
+                  <button
+                    type="button"
+                    className="close"
+                    aria-label="Close"
+                    onClick={() => handleRemoveDaysAndTimings()}
+                  >
+                    <img
+                      alt="Remove"
+                      src="https://d30y9cdsu7xlg0.cloudfront.net/png/53504-200.png"
+                      style={{
+                        cursor: "pointer",
+                        float: "right",
+                        marginTop: "7px",
+                        width: "20px",
+                      }}
+                    />
+                  </button>
+                </div>
       </div>
     );
   };
@@ -94,7 +116,7 @@ const StoreTimings = ({ storeTiming, setStoreTiming }) => {
     return (
       <div style={{ marginLeft: "10px" }}>
         <TimePicker
-           sx={{minWidth: 120 }}
+          sx={{ minWidth: 120 }}
           clearable
           ampm={false}
           label={key}
@@ -111,13 +133,18 @@ const StoreTimings = ({ storeTiming, setStoreTiming }) => {
     setStoreTiming({ ...storeTiming });
   };
 
+  const handleRemoveTiming = (i) => {
+    storeTiming["timings"].splice(i, 1);
+    setStoreTiming({ ...storeTiming });
+  };
+
   const renderTimings = () => {
     return (
       <div>
         <div
           style={{ marginLeft: "10px", marginTop: "7px", marginBottom: "10px" }}
         >
-          Timings: <span style={{color: "red"}}>*</span>
+          Timings: <span style={{ color: "red" }}>*</span>
         </div>
         {storeTiming.timings.map((timing, index) => {
           return (
@@ -125,6 +152,25 @@ const StoreTimings = ({ storeTiming, setStoreTiming }) => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {renderTimePicker(index, "from")}
                 {renderTimePicker(index, "to")}
+                <div style={{ margin: "10px" }}>
+                  <button
+                    type="button"
+                    className="close"
+                    aria-label="Close"
+                    onClick={() => handleRemoveTiming(index)}
+                  >
+                    <img
+                      alt="Remove"
+                      src="https://d30y9cdsu7xlg0.cloudfront.net/png/53504-200.png"
+                      style={{
+                        cursor: "pointer",
+                        float: "right",
+                        marginTop: "7px",
+                        width: "17px",
+                      }}
+                    />
+                  </button>
+                </div>
               </LocalizationProvider>
             </div>
           );

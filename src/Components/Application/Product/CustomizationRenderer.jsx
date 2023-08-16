@@ -6,10 +6,17 @@ import AddCustomizationGroup from "./AddCustomizationGroup";
 import AddCustomization from "./AddCustomization";
 
 const CustomizationRenderer = (props) => {
-  const { customizationGroups, setCustomizationGroups, customizations, setCustomizations } = props;
+  const {
+    category,
+    customizationGroups,
+    setCustomizationGroups,
+    customizations,
+    setCustomizations,
+  } = props;
 
   // states for holding info regarding addition of customization-group
-  const [showCustomizationGroupModal, setShowCustomizationGroupModal] = useState(false);
+  const [showCustomizationGroupModal, setShowCustomizationGroupModal] =
+    useState(false);
   const [newCustomizationGroupData, setNewCustomizationGroupData] = useState({
     name: "",
     minQuantity: "",
@@ -30,6 +37,7 @@ const CustomizationRenderer = (props) => {
     UOMValue: "",
     available: "",
     maximum: "",
+    vegNonVeg: "",
   });
 
   // handles change in customizations group data
@@ -44,16 +52,23 @@ const CustomizationRenderer = (props) => {
 
   // adds new customization group
   const handleAddCustomizationGroup = (data, inputType) => {
-    const parentGroupIndex = customizationGroups.findIndex((c) => c.id === selectedCustomization.parent);
+    const parentGroupIndex = customizationGroups.findIndex(
+      (c) => c.id === selectedCustomization.parent
+    );
     let newCustomizationGroup = {
       ...data,
       id: `CG${customizationGroups.length + 1}`,
-      seq: customizationGroups.length === 0 ? 1 : customizationGroups[parentGroupIndex].seq + 1,
+      seq:
+        customizationGroups.length === 0
+          ? 1
+          : customizationGroups[parentGroupIndex].seq + 1,
       inputType: inputType.toLowerCase(),
     };
 
     if (customizationGroups.length > 0) {
-      const selectedCustomizationIndex = customizations.findIndex((c) => c.id === selectedCustomization.id);
+      const selectedCustomizationIndex = customizations.findIndex(
+        (c) => c.id === selectedCustomization.id
+      );
       const updatedCustomizations = [...customizations];
       updatedCustomizations[selectedCustomizationIndex] = {
         ...updatedCustomizations[selectedCustomizationIndex],
@@ -73,7 +88,11 @@ const CustomizationRenderer = (props) => {
 
   // adds new customization
   const handleAddCustomization = () => {
-    let newCustomization = { ...newCustomizationData, id: `C${customizations.length + 1}`, inStock: true };
+    let newCustomization = {
+      ...newCustomizationData,
+      id: `C${customizations.length + 1}`,
+      inStock: true,
+    };
     setCustomizations([...customizations, newCustomization]);
     setNewCustomizationData({ price: 0 });
     setShowCustomizationModal(false);
@@ -106,11 +125,14 @@ const CustomizationRenderer = (props) => {
   const renderCustomizationElements = (groupId, level = 1) => {
     const renderedElements = [];
 
-    const groupCustomizations = customizations.filter((customization) => customization.parent === groupId);
+    const groupCustomizations = customizations.filter(
+      (customization) => customization.parent === groupId
+    );
     for (const customization of groupCustomizations) {
       renderedElements.push(
         <Customization
           styles={{ marginLeft: `${level * 55}px` }}
+          category={category}
           customization={customization}
           customizations={customizations}
           setCustomizations={setCustomizations}
@@ -122,14 +144,18 @@ const CustomizationRenderer = (props) => {
       );
 
       if (customization.child) {
-        const childGroup = customizationGroups.find((g) => g.id === customization.child);
+        const childGroup = customizationGroups.find(
+          (g) => g.id === customization.child
+        );
         if (childGroup) {
           renderedElements.push(
             <React.Fragment key={childGroup.id}>
               <CustomizationGroup
                 group={childGroup}
                 customizationGroups={customizationGroups}
-                handleGroupChange={(event) => handleGroupChange(event, childGroup.id)}
+                handleGroupChange={(event) =>
+                  handleGroupChange(event, childGroup.id)
+                }
                 styles={{ marginLeft: `${(level + 1) * 60}px` }}
                 openCustomizationModal={openCustomizationModal}
                 newCustomizationData={newCustomizationData}
@@ -146,16 +172,19 @@ const CustomizationRenderer = (props) => {
 
   return (
     <div>
-      <Button
-        sx={{ marginBottom: 2 }}
-        variant="contained"
-        onClick={() => {
-          setShowCustomizationGroupModal(true);
-        }}
-        disabled={!!customizationGroups.length}
-      >
-        Add Customization Group
-      </Button>
+      {customizationGroups.length === 0 && (
+        <Button
+          sx={{ marginBottom: 2 }}
+          variant="contained"
+          onClick={() => {
+            setShowCustomizationGroupModal(true);
+          }}
+          disabled={!!customizationGroups.length}
+        >
+          Add Customization Group
+        </Button>
+      )}
+
       {renderCustomizations(customizationGroups)}
       <AddCustomizationGroup
         showModal={showCustomizationGroupModal}
@@ -166,6 +195,7 @@ const CustomizationRenderer = (props) => {
         handleAddCustomizationGroup={handleAddCustomizationGroup}
       />
       <AddCustomization
+        category={category}
         showModal={showCustomizationModal}
         handleCloseModal={() => setShowCustomizationModal(false)}
         newCustomizationData={newCustomizationData}
