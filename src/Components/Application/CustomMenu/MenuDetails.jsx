@@ -109,7 +109,7 @@ const MenuDetails = () => {
     try {
       const url = `/api/v1/menu/${params.menuId}?menuProducts=true`;
       let res = await getCall(url);
-      const { products, ...menuDetails } = res;
+      const { products, timings, ...menuDetails } = res;
 
       const modifiedImages = res.images.map((image) => image.url);
 
@@ -120,6 +120,7 @@ const MenuDetails = () => {
 
       setMenuData(updatedMenuDetails);
       setAddedProducts(products);
+      setMenuTimings(timings);
 
       const allProductsURL = `/api/v1/products?category=${encodeURIComponent(params.category)}`;
       let products_res = await getCall(allProductsURL);
@@ -149,7 +150,10 @@ const MenuDetails = () => {
         shortDescription,
         images,
         products: added_products,
+        timings: menuTimings,
       };
+
+      console.log(updatedData);
 
       const res = await putCall(url, updatedData);
       getMenuDetails();
