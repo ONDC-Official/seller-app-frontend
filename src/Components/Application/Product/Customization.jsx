@@ -145,7 +145,6 @@ const Customization = (props) => {
                   <p className="text-[#000000] text-medium">
                     {customization.name} &nbsp; => &nbsp;
                   </p>
-
                   <p className="text-[#000000] text-medium">
                     {customization.price} Rupees
                   </p>

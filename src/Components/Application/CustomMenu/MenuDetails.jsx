@@ -120,7 +120,9 @@ const MenuDetails = () => {
 
       setMenuData(updatedMenuDetails);
       setAddedProducts(products);
-      setMenuTimings(timings);
+      if(timings){
+        setMenuTimings(timings);
+      }
 
       const allProductsURL = `/api/v1/products?category=${encodeURIComponent(params.category)}`;
       let products_res = await getCall(allProductsURL);

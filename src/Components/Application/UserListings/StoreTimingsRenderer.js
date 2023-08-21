@@ -101,7 +101,7 @@ const StoreTimingsRenderer = (props) => {
   const renderEnabledTimings = () => {
     return (
       <>
-        {storeTimings.map((storeTiming, index) => (
+        {storeTimings?.map((storeTiming, index) => (
           <StoreTimings
             storeTiming={storeTiming}
             setStoreTiming={(data) => handleStoreTiming(data, index)}
