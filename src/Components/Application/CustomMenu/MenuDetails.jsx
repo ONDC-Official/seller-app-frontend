@@ -9,6 +9,7 @@ import MenuProducts from "./MenuProducts";
 import { Button } from "@mui/material";
 import { getCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
+import StoreTimingsRenderer from "../UserListings/StoreTimingsRenderer";
 
 const initialMenuDetails = {
   seq: "",
@@ -44,6 +45,13 @@ const _allProducts = [
   { id: "P16", name: "Product P" },
 ];
 
+const defaultTimings = [
+  {
+    daysRange: { from: 1, to: 5 },
+    timings: [{ from: "00:00", to: "00:00" }],
+  },
+];
+
 const MenuDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -63,20 +71,14 @@ const MenuDetails = () => {
   const [menuDetailErrors, setMenuDetailErrors] = useState({});
   const [menuData, setMenuData] = useState(initialMenuDetails);
 
+  const [menuTimings, setMenuTimings] = useState([...defaultTimings]);
+
   const validateMenuDetailsForm = () => {
     let formErrors = {};
-    formErrors.name =
-      menuData?.name.trim() === "" ? "Menu Name is required" : "";
-    formErrors.shortDescription =
-      menuData?.shortDescription.trim() === ""
-        ? "Short Description is required"
-        : "";
-    formErrors.longDescription =
-      menuData?.longDescription.trim() === ""
-        ? "Long Description is required"
-        : "";
-    formErrors.images =
-      menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
+    formErrors.name = menuData?.name.trim() === "" ? "Menu Name is required" : "";
+    formErrors.shortDescription = menuData?.shortDescription.trim() === "" ? "Short Description is required" : "";
+    formErrors.longDescription = menuData?.longDescription.trim() === "" ? "Long Description is required" : "";
+    formErrors.images = menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
     setMenuDetailErrors({
       ...formErrors,
     });
@@ -107,7 +109,7 @@ const MenuDetails = () => {
     try {
       const url = `/api/v1/menu/${params.menuId}?menuProducts=true`;
       let res = await getCall(url);
-      const { products, ...menuDetails } = res;
+      const { products, timings, ...menuDetails } = res;
 
       const modifiedImages = res.images.map((image) => image.url);
 
@@ -118,12 +120,14 @@ const MenuDetails = () => {
 
       setMenuData(updatedMenuDetails);
       setAddedProducts(products);
+      setMenuTimings(timings);
 
       const allProductsURL = `/api/v1/products?category=${encodeURIComponent(params.category)}`;
       let products_res = await getCall(allProductsURL);
-      let all_products = products_res.data.map(product => {return {id: product._id, name: product.productName}});
+      let all_products = products_res.data.map((product) => {
+        return { id: product._id, name: product.productName };
+      });
       setAllProducts(all_products);
-
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -137,7 +141,7 @@ const MenuDetails = () => {
       let added_products = addedProducts.map((product, index) => {
         product.seq = index;
         return product;
-      })
+      });
 
       const updatedData = {
         name,
@@ -145,8 +149,11 @@ const MenuDetails = () => {
         longDescription,
         shortDescription,
         images,
-        products: added_products
+        products: added_products,
+        timings: menuTimings,
       };
+
+      console.log(updatedData);
 
       const res = await putCall(url, updatedData);
       getMenuDetails();
@@ -159,24 +166,17 @@ const MenuDetails = () => {
   const renderMenuDetails = () => {
     return (
       <div>
-        <MenuBasicInfo
-          menuData={menuData}
-          setMenuData={setMenuData}
-          errors={menuDetailErrors}
-          defaultStyles={true}
-        />
+        <MenuBasicInfo menuData={menuData} setMenuData={setMenuData} errors={menuDetailErrors} defaultStyles={true} />
       </div>
     );
   };
 
   const renderMenuProducts = () => {
-    return (
-      <MenuProducts
-        allProducts={allProducts}
-        addedProducts={addedProducts}
-        setAddedProducts={setAddedProducts}
-      />
-    );
+    return <MenuProducts allProducts={allProducts} addedProducts={addedProducts} setAddedProducts={setAddedProducts} />;
+  };
+
+  const renderMenuTimings = () => {
+    return <StoreTimingsRenderer storeStatus={"enabled"} storeTimings={menuTimings} setStoreTimings={setMenuTimings} />;
   };
 
   useEffect(() => {
@@ -200,23 +200,17 @@ const MenuDetails = () => {
         <Box sx={{ width: "100%" }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                centered
-                onChange={handleTabChange}
-                textColor={highlightedTabColor}
-              >
+              <TabList centered onChange={handleTabChange} textColor={highlightedTabColor}>
                 <Tab
                   sx={{
-                    color:
-                      tabErrors[0] && Object.keys(menuDetailErrors).length > 0
-                        ? "red"
-                        : "none",
+                    color: tabErrors[0] && Object.keys(menuDetailErrors).length > 0 ? "red" : "none",
                   }}
                   label="Details"
                   value="1"
                 />
 
                 <Tab label="Products" value="2" />
+                <Tab label="Timings" value="3" />
               </TabList>
             </Box>
             <TabPanel value="1">
@@ -224,6 +218,9 @@ const MenuDetails = () => {
             </TabPanel>
             <TabPanel value="2">
               <div className="mt-2">{renderMenuProducts()}</div>
+            </TabPanel>
+            <TabPanel value="3">
+              <div className="mt-2">{renderMenuTimings()}</div>
             </TabPanel>
           </TabContext>
         </Box>
