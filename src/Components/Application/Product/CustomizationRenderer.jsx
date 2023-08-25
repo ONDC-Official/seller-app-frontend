@@ -19,10 +19,11 @@ const CustomizationRenderer = (props) => {
     useState(false);
   const [newCustomizationGroupData, setNewCustomizationGroupData] = useState({
     name: "",
-    minQuantity: "",
+    minQuantity: "1",
     maxQuantity: "",
     seq: "",
     inputType: null,
+    optional: false,
   });
   const [selectedCustomization, setSelectedCustomization] = useState(null);
 

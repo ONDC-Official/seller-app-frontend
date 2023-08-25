@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Button, FormControl, MenuItem, Modal, Select, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Checkbox,
+} from "@mui/material";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -20,6 +28,7 @@ const CssTextField = styled(TextField)({
 });
 
 const AddCustomizationGroup = (props) => {
+  console.log(props);
   const {
     showModal,
     handleCloseModal,
@@ -34,17 +43,20 @@ const AddCustomizationGroup = (props) => {
   const validate = () => {
     const formErrors = {};
     formErrors.name =
-      newCustomizationGroupData?.name == undefined || newCustomizationGroupData?.name?.trim() === ""
+      newCustomizationGroupData?.name == undefined ||
+      newCustomizationGroupData?.name?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
     formErrors.minQuantity =
-      newCustomizationGroupData?.minQuantity == undefined || newCustomizationGroupData?.minQuantity === ""
+      newCustomizationGroupData?.minQuantity == undefined ||
+      newCustomizationGroupData?.minQuantity === ""
         ? "Min Quantity is not allowed to be empty"
-        : newCustomizationGroupData?.minQuantity <= 0
+        : newCustomizationGroupData?.minQuantity < 0
         ? `Please enter a valid quantity`
         : "";
     formErrors.maxQuantity =
-      newCustomizationGroupData?.maxQuantity == undefined || newCustomizationGroupData?.maxQuantity === ""
+      newCustomizationGroupData?.maxQuantity == undefined ||
+      newCustomizationGroupData?.maxQuantity === ""
         ? "Max Quantity is not allowed to be empty"
         : newCustomizationGroupData?.maxQuantity <= 0
         ? `Please enter a valid quantity`
@@ -68,7 +80,10 @@ const AddCustomizationGroup = (props) => {
   };
 
   useEffect(() => {
-    if (props.mode === "edit" && Object.keys(newCustomizationGroupData).length > 0) {
+    if (
+      props.mode === "edit" &&
+      Object.keys(newCustomizationGroupData).length > 0
+    ) {
       setInputType(newCustomizationGroupData.inputType);
     } else {
       setInputType("select");
@@ -97,7 +112,9 @@ const AddCustomizationGroup = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            {props.mode === "edit" ? "Edit Customization Group" : "Add New Customization Group"}
+            {props.mode === "edit"
+              ? "Edit Customization Group"
+              : "Add New Customization Group"}
           </p>
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -114,7 +131,35 @@ const AddCustomizationGroup = (props) => {
               error={!!errors.name}
               helperText={errors.name}
               value={newCustomizationGroupData.name}
-              onChange={(e) => setNewCustomizationGroupData({ ...newCustomizationGroupData, name: e.target.value })}
+              onChange={(e) =>
+                setNewCustomizationGroupData({
+                  ...newCustomizationGroupData,
+                  name: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="flex items-center">
+            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+              Optional? :
+            </label>
+
+            <Checkbox
+              checked={newCustomizationGroupData.optional}
+              onChange={(e) => {
+                let checkbox_state = e.target.checked;
+                let state = { optional: checkbox_state };
+                if (checkbox_state) {
+                  state["minQuantity"] = "0";
+                } else {
+                  state["minQuantity"] = "1";
+                }
+                setNewCustomizationGroupData({
+                  ...newCustomizationGroupData,
+                  ...state,
+                });
+              }}
             />
           </div>
 
@@ -125,6 +170,7 @@ const AddCustomizationGroup = (props) => {
 
             <CssTextField
               required
+              disabled={newCustomizationGroupData.optional}
               type="number"
               className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
               size="small"
@@ -133,9 +179,16 @@ const AddCustomizationGroup = (props) => {
               error={!!errors.minQuantity}
               helperText={errors.minQuantity}
               value={newCustomizationGroupData.minQuantity}
-              onChange={(e) =>
-                setNewCustomizationGroupData({ ...newCustomizationGroupData, minQuantity: e.target.value })
-              }
+              onChange={(e) => {
+                let val = e.target.value;
+                if (!newCustomizationGroupData.optional && val === "0") {
+                  val = "1";
+                }
+                setNewCustomizationGroupData({
+                  ...newCustomizationGroupData,
+                  minQuantity: val,
+                });
+              }}
             />
           </div>
           <div className="flex items-center">
@@ -154,7 +207,10 @@ const AddCustomizationGroup = (props) => {
               helperText={errors.maxQuantity}
               value={newCustomizationGroupData.maxQuantity}
               onChange={(e) =>
-                setNewCustomizationGroupData({ ...newCustomizationGroupData, maxQuantity: e.target.value })
+                setNewCustomizationGroupData({
+                  ...newCustomizationGroupData,
+                  maxQuantity: e.target.value,
+                })
               }
             />
           </div>
