@@ -24,6 +24,7 @@ const CustomizationRenderer = (props) => {
     seq: "",
     inputType: null,
     optional: false,
+    defaultCustomizationId: null,
   });
   const [selectedCustomization, setSelectedCustomization] = useState(null);
 
@@ -39,6 +40,7 @@ const CustomizationRenderer = (props) => {
     available: "",
     maximum: "",
     vegNonVeg: "",
+    default: "false",
   });
 
   // handles change in customizations group data
@@ -89,11 +91,22 @@ const CustomizationRenderer = (props) => {
 
   // adds new customization
   const handleAddCustomization = () => {
+    let id = `C${customizations.length + 1}`;
     let newCustomization = {
       ...newCustomizationData,
-      id: `C${customizations.length + 1}`,
+      id: id,
       inStock: true,
     };
+    delete newCustomization.defaultCustomizationId;
+
+    if (newCustomization.default === "true") {
+      const groupIndex = customizationGroups.findIndex(
+        (cg) => cg.id === newCustomization.parent
+      );
+      let groups = [...customizationGroups];
+      groups[groupIndex].defaultCustomizationId = id;
+    }
+
     setCustomizations([...customizations, newCustomization]);
     setNewCustomizationData({ price: 0 });
     setShowCustomizationModal(false);
@@ -114,7 +127,7 @@ const CustomizationRenderer = (props) => {
               newCustomizationData={newCustomizationData}
               setNewCustomizationData={setNewCustomizationData}
             />
-            {renderCustomizationElements(group.id)}
+            {renderCustomizationElements(group)}
           </React.Fragment>
         );
       }
@@ -123,7 +136,8 @@ const CustomizationRenderer = (props) => {
     return renderedElements;
   };
 
-  const renderCustomizationElements = (groupId, level = 1) => {
+  const renderCustomizationElements = (group, level = 1) => {
+    const groupId = group.id;
     const renderedElements = [];
 
     const groupCustomizations = customizations.filter(
@@ -134,6 +148,7 @@ const CustomizationRenderer = (props) => {
         <Customization
           styles={{ marginLeft: `${level * 55}px` }}
           category={category}
+          parentGroup={group}
           customization={customization}
           customizations={customizations}
           setCustomizations={setCustomizations}
@@ -141,6 +156,7 @@ const CustomizationRenderer = (props) => {
           handleCustomizationChange={handleCustomizationChange}
           setShowCustomizationGroupModal={setShowCustomizationGroupModal}
           setSelectedCustomization={setSelectedCustomization}
+          handleGroupChange={handleGroupChange}
         />
       );
 
@@ -162,7 +178,7 @@ const CustomizationRenderer = (props) => {
                 newCustomizationData={newCustomizationData}
                 setNewCustomizationData={setNewCustomizationData}
               />
-              {renderCustomizationElements(childGroup.id, level + 2)}
+              {renderCustomizationElements(childGroup, level + 2)}
             </React.Fragment>
           );
         }

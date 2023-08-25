@@ -28,7 +28,6 @@ const CssTextField = styled(TextField)({
 });
 
 const AddCustomizationGroup = (props) => {
-  console.log(props);
   const {
     showModal,
     handleCloseModal,

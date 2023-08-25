@@ -863,7 +863,7 @@ const AddGenericProduct = ({
     const invalidCustomizations = selectedCustomizations.filter(
       (customization) =>
         !customization.child &&
-        (!customization.price || customization.price <= 0)
+        (!customization.price || (customization.price <= 0 && customization.default === "false"))
     );
 
     if (invalidCustomizations.length > 0) {
