@@ -734,11 +734,6 @@ const AddGenericProduct = ({
         : !isAmountValid(formValues?.MRP)
         ? "Please enter only digit"
         : "";
-      formErrors.retailPrice = !formValues?.retailPrice
-        ? "Please enter a valid number"
-        : !isAmountValid(formValues?.retailPrice)
-        ? "Please enter only digit"
-        : "";
       formErrors.purchasePrice = !formValues?.purchasePrice
         ? "Please enter a valid number"
         : !isAmountValid(formValues?.purchasePrice)

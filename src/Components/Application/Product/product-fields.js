@@ -373,6 +373,6 @@ export const productDetailsFields = [
   "UOM",
 ];
 
-export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
+export const variationCommonFields = ["MRP", "purchasePrice", "quantity", "barcode", "images"];
 
 export const UOMVariationFields = ["UOMValue"];
