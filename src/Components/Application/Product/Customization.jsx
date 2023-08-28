@@ -54,7 +54,7 @@ const Customization = (props) => {
       if (
         customizationDetails.defaultCustomizationId ===
           customizationDetails.id &&
-        customizationDetails.default === "false"
+        customizationDetails.default === "No"
       ) {
         // Customization is no longer default, update the group data
         const groupIndex = customizationGroups.findIndex(
@@ -65,7 +65,7 @@ const Customization = (props) => {
       }
 
       if (
-        customizationDetails.default === "true" &&
+        customizationDetails.default === "Yes" &&
         customizationDetails.defaultCustomizationId === null
       ) {
         // Customization is marked default, update the group data

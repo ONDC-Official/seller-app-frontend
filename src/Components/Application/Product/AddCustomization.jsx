@@ -21,8 +21,8 @@ export const customizationFields = [
     //    placeholder: "Enter Customization Name",
     type: "radio",
     options: [
-      { key: "Yes", value: "true" },
-      { key: "No", value: "false" },
+      { key: "Yes", value: "Yes" },
+      { key: "No", value: "No" },
     ],
     required: true,
   },
@@ -105,7 +105,7 @@ const AddCustomization = (props) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (newCustomizationData.default === "true") {
+    if (newCustomizationData.default === "Yes") {
       setNewCustomizationData((prevState) => {
         return { ...prevState, price: "0" };
       });
@@ -228,7 +228,7 @@ const AddCustomization = (props) => {
 
               if (
                 field.id === "price" &&
-                newCustomizationData.default === "true"
+                newCustomizationData.default === "Yes"
               ) {
                 // disable price if the customization is default
                 disable = true;

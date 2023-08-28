@@ -78,7 +78,6 @@ const AddGenericProduct = ({
     productCode: "",
     productName: "",
     MRP: "",
-    retailPrice: "",
     purchasePrice: "",
     HSNCode: "",
     GST_Percentage: "",

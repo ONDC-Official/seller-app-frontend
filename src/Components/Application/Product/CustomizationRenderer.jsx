@@ -40,7 +40,7 @@ const CustomizationRenderer = (props) => {
     available: "",
     maximum: "",
     vegNonVeg: "",
-    default: "false",
+    default: "No",
   });
 
   // handles change in customizations group data
