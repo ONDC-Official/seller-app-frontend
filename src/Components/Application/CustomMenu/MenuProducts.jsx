@@ -62,7 +62,7 @@ const MenuProducts = (props) => {
           <div className="mr-2">
             <Button
               sx={{ width: 200 }}
-              title={!reordering ? "Reorder products" : "Finish Reordering"}
+              title={!reordering ? "Change Sequence" : "Finish"}
               variant="contained"
               onClick={() => setReordering((prevState) => !prevState)}
               disabled={addedProducts.length === 0}

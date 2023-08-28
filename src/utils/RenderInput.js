@@ -130,7 +130,7 @@ const RenderInput = (props) => {
           autoComplete="off"
           placeholder={item.placeholder}
           error={item.error || false}
-          disabled={item?.isDisabled || previewOnly || false}
+          disabled={item?.isDisabled || props.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) => {
@@ -181,7 +181,7 @@ const RenderInput = (props) => {
           }}
           placeholder={item.placeholder}
           error={item.error || false}
-          disabled={item?.isDisabled || previewOnly || false}
+          disabled={item?.isDisabled || props.isDisabled || previewOnly || false}
           helperText={item.error && item.helperText}
           value={state[item.id]}
           onChange={(e) => {
@@ -214,15 +214,27 @@ const RenderInput = (props) => {
       isDisabled = true;
     } else {
     }
+    isDisabled = props.isDisabled || isDisabled;
     return (
-      <div className="py-1 flex flex-col">
+      <div className={props.containerClasses !== undefined ? `${props.containerClasses}` : "py-1 flex flex-col"}>
         <FormControl component="fieldset">
-          <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
+          <label
+            className={
+              props.labelClasses
+                ? props.labelClasses
+                : "text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+            }
+          >
             {item.title}
             {item.required && <span className="text-[#FF0000]"> *</span>}
           </label>
           <RadioGroup
-            aria-label={item.id}
+          className={
+            props.inputClasses
+              ? props.inputClasses
+              : "w-full h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black"
+          }
+          aria-label={item.id}
             name={item.id}
             value={state[item.id]}
             onChange={(e) => {
@@ -230,10 +242,12 @@ const RenderInput = (props) => {
             }}
             disabled={isDisabled}
           >
-            <div className="flex flex-row">
+            <div
+            // className="flex flex-row"
+            >
               {item.options.map((radioItem, i) => (
                 <FormControlLabel
-                  disabled={item?.isDisabled || isDisabled || previewOnly || false}
+                  disabled={item?.isDisabled ||  isDisabled || previewOnly || false}
                   key={i}
                   value={radioItem.value}
                   control={<Radio size="small" checked={radioItem.value === state[item.id]} />}

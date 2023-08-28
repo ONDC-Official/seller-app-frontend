@@ -50,6 +50,32 @@ const Customization = (props) => {
         ...updatedCustomization,
         ...customizationDetails,
       };
+
+      if (
+        customizationDetails.defaultCustomizationId ===
+          customizationDetails.id &&
+        customizationDetails.default === "No"
+      ) {
+        // Customization is no longer default, update the group data
+        const groupIndex = customizationGroups.findIndex(
+          (cg) => cg.id === customizationDetails.parent
+        );
+        let groups = [...customizationGroups];
+        groups[groupIndex].defaultCustomizationId = null;
+      }
+
+      if (
+        customizationDetails.default === "Yes" &&
+        customizationDetails.defaultCustomizationId === null
+      ) {
+        // Customization is marked default, update the group data
+        const groupIndex = customizationGroups.findIndex(
+          (cg) => cg.id === customizationDetails.parent
+        );
+        let groups = [...customizationGroups];
+        groups[groupIndex].defaultCustomizationId = customizationDetails.id;
+      }
+
       const updatedCustomizations = customizations.map((c) =>
         c.id === customizationDetails.id ? updatedCustomizationCopy : c
       );
@@ -110,6 +136,7 @@ const Customization = (props) => {
   const parentGroup = customizationGroups.find(
     (group) => group.id === customization.parent
   );
+
   const shouldShowButton =
     !customization.child && parentGroup && parentGroup.seq < 3;
 
@@ -188,7 +215,11 @@ const Customization = (props) => {
                   sx={{ marginLeft: 2, fontSize: 12 }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setCustomizationDetails(customization);
+                    setCustomizationDetails({
+                      ...customization,
+                      defaultCustomizationId:
+                        parentGroup.defaultCustomizationId,
+                    });
                     setShowCustomizationModal(true);
                   }}
                 >

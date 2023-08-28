@@ -53,6 +53,7 @@ const CustomizationGroup = (props) => {
                 props?.setNewCustomizationData({
                   ...props.newCustomizationData,
                   parent: group.id,
+                  defaultCustomizationId: group.defaultCustomizationId,
                 });
                 props?.openCustomizationModal();
               }}

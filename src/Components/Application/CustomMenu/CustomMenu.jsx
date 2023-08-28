@@ -214,7 +214,7 @@ const CustomMenu = () => {
             }}
             disabled={availableMenuItems.length === 0}
           >
-            {reordering ? "Finish Reordering" : "Reorder Menu"}
+            {reordering ? "Finish" : "Change Sequence"}
           </Button>
         </div>
       </div>

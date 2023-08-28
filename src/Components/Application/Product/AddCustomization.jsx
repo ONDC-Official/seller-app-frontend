@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "@mui/material";
 import RenderInput from "../../../utils/RenderInput";
 
 const containerClasses = "flex items-center";
-const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
-const labelClasses = "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
+const inputClasses =
+  "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
+const labelClasses =
+  "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
 
 export const customizationFields = [
   {
@@ -12,6 +14,17 @@ export const customizationFields = [
     title: "Name",
     placeholder: "Enter Customization Name",
     type: "input",
+  },
+  {
+    id: "default",
+    title: "Default?",
+    //    placeholder: "Enter Customization Name",
+    type: "radio",
+    options: [
+      { key: "Yes", value: "Yes" },
+      { key: "No", value: "No" },
+    ],
+    required: true,
   },
   {
     id: "price",
@@ -91,14 +104,24 @@ const AddCustomization = (props) => {
   } = props;
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    if (newCustomizationData.default === "Yes") {
+      setNewCustomizationData((prevState) => {
+        return { ...prevState, price: "0" };
+      });
+    }
+  }, [newCustomizationData.default]);
+
   const validate = () => {
     const formErrors = {};
     formErrors.name =
-      newCustomizationData?.name?.trim() == undefined || newCustomizationData?.name?.trim() === ""
+      newCustomizationData?.name?.trim() == undefined ||
+      newCustomizationData?.name?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
 
-    formErrors.price = newCustomizationData?.price < 0 ? `Please enter a valid price` : "";
+    formErrors.price =
+      newCustomizationData?.price < 0 ? `Please enter a valid price` : "";
 
     formErrors.UOM =
       newCustomizationData?.UOM == undefined || newCustomizationData?.UOM === ""
@@ -106,21 +129,24 @@ const AddCustomization = (props) => {
         : "";
 
     formErrors.UOMValue =
-      newCustomizationData?.UOMValue == undefined || newCustomizationData?.UOMValue === ""
+      newCustomizationData?.UOMValue == undefined ||
+      newCustomizationData?.UOMValue === ""
         ? "UOM Value is not allowed to be empty"
         : newCustomizationData.UOMValue <= 0
         ? "Please Enter a Valid Value"
         : "";
 
     formErrors.available =
-      newCustomizationData?.available == undefined || newCustomizationData?.available === ""
+      newCustomizationData?.available == undefined ||
+      newCustomizationData?.available === ""
         ? "Available Quantity is not allowed to be empty"
         : newCustomizationData.available <= 0
         ? "Please Enter a Valid Value"
         : "";
 
     formErrors.maximum =
-      newCustomizationData?.maximum == undefined || newCustomizationData?.maximum === ""
+      newCustomizationData?.maximum == undefined ||
+      newCustomizationData?.maximum === ""
         ? "Maximum Quantity is not allowed to be empty"
         : newCustomizationData.maximum <= 0
         ? "Please Enter a Valid Value"
@@ -161,13 +187,18 @@ const AddCustomization = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            {props.mode === "edit" ? "Edit Customization" : "Add New Customization"}
+            {props.mode === "edit"
+              ? "Edit Customization"
+              : "Add New Customization"}
           </p>
 
           <div className="w-auto">
             {customizationFields.map((field) => {
+              let disable = false;
+
               const fieldsToRender = [
                 "name",
+                "default",
                 "price",
                 "UOM",
                 "UOMValue",
@@ -182,7 +213,26 @@ const AddCustomization = (props) => {
 
               const shouldRenderField =
                 fieldsToRender.includes(field.id) &&
-                (!fieldCategoryMap[field.id] || fieldCategoryMap[field.id].includes(category));
+                (!fieldCategoryMap[field.id] ||
+                  fieldCategoryMap[field.id].includes(category));
+
+              if (
+                field.id === "default" &&
+                newCustomizationData.defaultCustomizationId &&
+                newCustomizationData.defaultCustomizationId !==
+                  newCustomizationData.id
+              ) {
+                // disable default radio button if some other customization is already default
+                disable = true;
+              }
+
+              if (
+                field.id === "price" &&
+                newCustomizationData.default === "Yes"
+              ) {
+                // disable price if the customization is default
+                disable = true;
+              }
 
               if (shouldRenderField) {
                 return (
@@ -199,6 +249,7 @@ const AddCustomization = (props) => {
                     labelClasses={labelClasses}
                     inputClasses={inputClasses}
                     inputStyles={field?.inputStyles}
+                    isDisabled={disable}
                   />
                 );
               }
