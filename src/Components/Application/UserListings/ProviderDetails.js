@@ -10,6 +10,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 const providerFields = [
   {
@@ -158,13 +159,9 @@ const bankFields = [
   },
 ];
 
-const categoriesList = [
-  { key: "Grocery", value: "grocery" },
-  { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-  { key: "Fashion", value: "fashion" },
-  { key: "Home and Decor", value: "home_and_decor" },
-  { key: "F&B", value: "f_and_b" },
-];
+const categoriesList = Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+    return { key: value, value: key };
+})
 
 let storeFields = [
   // {
@@ -192,11 +189,11 @@ let storeFields = [
     required: true,
   },
   {
-    id: "categories",
+    id: "category",
     title: "Supported Product Categories",
     placeholder: "Please Select Supported Product Categories",
     options: categoriesList,
-    type: "multi-select",
+    type: "select",
     required: true,
   },
   {
@@ -333,7 +330,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const [bankDetails, setBankDetails] = useState({});
   const [storeDetails, setStoreDetails] = useState({
     location: {},
-    categories: [],
+    category: "",
     location_availability: "",
     default_cancellable: "",
     default_returnable: "",
@@ -347,7 +344,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
     location: {},
-    categories: [],
+    category: "",
     location_availability: "",
     default_cancellable: "",
     default_returnable: "",
@@ -378,7 +375,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
 
       if (fulfillment.id === "f2") {
-        console.log("f2", fulfillment);
         hasF2 = true;
         selfPickupEmail = fulfillment.contact.email;
         selfPickupMobile = fulfillment.contact.phone;
@@ -454,7 +450,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
-        categories: res?.providerDetail?.storeDetails?.categories || [],
+        category: res?.providerDetail?.storeDetails?.category || "",
         location: res?.providerDetail?.storeDetails?.location || "",
         location_availability: res.providerDetail.storeDetails
           ? res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
@@ -542,7 +538,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isPhoneNoValid(storeDetails.mobile)
         ? "Please enter a valid mobile number"
         : "";
-    formErrors.categories = storeDetails.categories.length === 0 ? "Supported Product Categories are required" : "";
+
+    formErrors.category = storeDetails.category.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
       formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
@@ -669,6 +666,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
+      console.log(formErrors)
       cogoToast.error("Please fill in all required data!");
     }
     return !Object.values(formErrors).some((val) => val !== "");
@@ -744,7 +742,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
-        categories,
+        category,
         logo,
         location_availability,
         default_cancellable,
@@ -785,7 +783,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       let storeTiming = getStoreTimingsPayloadFormat();
 
       let payload = {
-        categories,
+        category: category,
         logo: logo,
         locationAvailabilityPANIndia: locationAvailability,
         defaultCancellable: eval(default_cancellable),

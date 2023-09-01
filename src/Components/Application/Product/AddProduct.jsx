@@ -19,6 +19,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { Input } from "@material-ui/core";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
+import { getCall } from "../../../Api/axios";
+
 
 const customization_groups = [
   {
@@ -134,15 +136,33 @@ export default function AddProduct() {
     return allProductFieldDetails.find((field) => field.id === category_id);
   };
 
+
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    return res;
+  };
+
+  const getUser = async (id) => {
+    const url = `/api/v1/users/${id}`;
+    const res = await getCall(url);
+    return res[0];
+  };
+
   useEffect(() => {
-    if (categoryForm.formValues?.productCategory) {
-      let data = [...fields]; // Create a copy of the fields array
-      const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
-      data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
-      setFields(data);
-      setVariationOn("none");
-    }
-  }, [categoryForm.formValues]);
+    const user_id = localStorage.getItem("user_id");
+    getUser(user_id).then((u) => {
+      getOrgDetails(u.organization).then((org) => {
+        let category = org?.storeDetails?.category;
+        categoryForm.setFormValues(prev => { return {...prev, productCategory: category}})
+        let data = [...fields]; // Create a copy of the fields array
+        const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
+        data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[category];
+        console.log( data[subCategoryIndex].options);
+        setFields(data);
+      });
+    });
+  }, [])
 
   useEffect(() => {
     let category = categoryForm.formValues["productCategory"];

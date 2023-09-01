@@ -71,6 +71,7 @@ export const allProductFieldDetails = [
     type: "select",
     disableClearable: true,
     required: true,
+    isDisabled: true,
   },
   {
     id: "productSubcategory1",
