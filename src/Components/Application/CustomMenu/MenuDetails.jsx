@@ -19,12 +19,7 @@ const initialMenuDetails = {
   images: [],
 };
 
-const products = [
-  { id: "P1", seq: 1, name: "Product A" },
-  { id: "P2", seq: 2, name: "Product B" },
-  { id: "P3", seq: 3, name: "Product C" },
-  { id: "P4", seq: 4, name: "Product D" },
-];
+const products = [];
 
 const _allProducts = [
   { id: "P1", name: "Product A" },
@@ -141,7 +136,7 @@ const MenuDetails = () => {
       const { name, seq, longDescription, shortDescription, images } = menuData;
 
       let added_products = addedProducts.map((product, index) => {
-        product.seq = index;
+        product.seq = index + 1;
         return product;
       });
 
