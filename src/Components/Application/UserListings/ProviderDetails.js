@@ -467,7 +467,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         building: res.providerDetail?.storeDetails?.address?.building || "",
         area_code: res.providerDetail?.storeDetails?.address?.area_code || "",
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
-        logo: res?.providerDetail?.storeDetails?.logo?.url || "",
+        logo: res?.providerDetail?.storeDetails?.logo?.url   || "",
+        logo_path: res?.providerDetail?.storeDetails?.logo?.path || "",
 
         holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
@@ -737,13 +738,16 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return storeTiming;
   };
 
+  const startWithHttpRegex = new RegExp('^http');
+
   const onUpdate = () => {
-    if (anyChangeInData && validate()) {
+    if (anyChangeInData() && validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
         category,
         logo,
+        logo_path,
         location_availability,
         default_cancellable,
         default_returnable,
@@ -784,7 +788,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
       let payload = {
         category: category,
-        logo: logo,
         locationAvailabilityPANIndia: locationAvailability,
         defaultCancellable: eval(default_cancellable),
         defaultReturnable: eval(default_returnable),
@@ -809,6 +812,12 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       if (locationAvailability == false) {
         payload["city"] = cities;
       } else {
+      }
+
+      if(!startWithHttpRegex.test(storeDetails.logo)){
+        payload.logo = logo
+      } else {
+        payload.logo = logo_path
       }
 
       postCall(url, payload)
