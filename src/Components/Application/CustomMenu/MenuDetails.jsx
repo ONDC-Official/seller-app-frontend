@@ -106,11 +106,13 @@ const MenuDetails = () => {
       let res = await getCall(url);
       const { products, timings, ...menuDetails } = res;
 
-      const modifiedImages = res.images.map((image) => image.url);
+      const image_paths = res.images.map((image) => image.path);
+      const image_urls = res.images.map((image) => image.url)
 
       const updatedMenuDetails = {
         ...menuDetails,
-        images: modifiedImages,
+        images: image_paths,
+        uploaded_urls: image_urls
       };
 
       setMenuData(updatedMenuDetails);
