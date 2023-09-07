@@ -25,6 +25,7 @@ export default function Sidebar(props) {
   const [state, setState] = React.useState({
     left: false,
   });
+  const [category, setCategory] = React.useState("");
 
   const [open, setOpen] = React.useState(true);
 
@@ -39,9 +40,19 @@ export default function Sidebar(props) {
     return res[0];
   };
 
+  const getOrgDetails = async (org_id) => {
+    const url = `/api/v1/organizations/${org_id}/storeDetails`;
+    const res = await getCall(url);
+    return res;
+  };
+
   React.useEffect(() => {
     const user_id = localStorage.getItem("user_id");
-    getUser(user_id);
+    getUser(user_id).then((userData) => {
+      getOrgDetails(userData.organization).then((org) => {
+        setCategory(org?.storeDetails?.category);
+      })
+    })
   }, []);
 
   React.useEffect(() => {
@@ -100,7 +111,10 @@ export default function Sidebar(props) {
                     <ListItemText primary="Inventory" />
                   </ListItemButton>
                 </NavLink>
-                <NavLink to="/application/menu-category" className="no-underline text-black">
+                <NavLink  to={{
+                    pathname: `/application/menu-category/${category}`,
+                  }}
+                   className="no-underline text-black">
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemText primary="Custom Menu" />
                   </ListItemButton>
