@@ -273,7 +273,7 @@ const ComplaintDetails = () => {
             <p className="text-base font-normal">{issue?.category}</p>
           </div>
           <div className="flex justify-between mt-3">
-            <p className="text-base font-normal">Subcategory</p>
+            <p className="text-base font-normal">Issue Subcategory</p>
             <p className="text-base font-normal">{AllCategory.find(x => x.enums === issue?.sub_category)?.value}</p>
           </div>
           <div className="flex justify-between mt-3 mb-3">
