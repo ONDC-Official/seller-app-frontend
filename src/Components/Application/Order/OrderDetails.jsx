@@ -31,6 +31,7 @@ import cogoToast from "cogo-toast";
 import { convertDateInStandardFormat } from "../../../utils/formatting/date";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { Tooltip } from "@material-ui/core";
+import useStyles from "./style";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -332,14 +333,211 @@ const isOrderCancellable = (order_state) => {
   return order_state != "Completed" || order_state != "Cancelled";
 };
 
+const isItemCustomization = (tags) => {
+  let isCustomization = false;
+  tags?.forEach((tag) => {
+    if (tag.code === "type") {
+      tag.list.forEach((listOption) => {
+        if (listOption.code === "type" && listOption.value == "customization") {
+          isCustomization = true;
+          return true;
+        }
+      });
+    }
+  });
+  return isCustomization;
+};
+
+const parseQuoteToGetItems = (orderDetails) => {
+  let uuid = 0;
+  const provided_by = orderDetails?.provider?.descriptor?.name;
+  const breakup = orderDetails?.quote?.breakup;
+  console.log("breakup=====>", breakup);
+  const all_items = breakup?.map((break_up_item) => {
+    const items = orderDetails.items;
+    const itemIndex = items.findIndex(
+      (one) => one.id === break_up_item["@ondc/org/item_id"]
+    );
+    const item = itemIndex > -1 ? items[itemIndex] : null;
+    let itemQuantity = item ? item?.quantity?.count : 0;
+    let quantity = break_up_item["@ondc/org/item_quantity"]
+      ? break_up_item["@ondc/org/item_quantity"]["count"]
+      : 0;
+    let textClass = "";
+    let quantityMessage = "";
+    if (quantity === 0) {
+      if (break_up_item["@ondc/org/title_type"] === "item") {
+        textClass = "text-error";
+        quantityMessage = "Out of stock";
+
+        if (itemIndex > -1) {
+          items.splice(itemIndex, 1);
+        }
+      }
+    } else if (quantity !== itemQuantity) {
+      textClass =
+        break_up_item["@ondc/org/title_type"] === "item" ? "text-amber" : "";
+      quantityMessage = `Quantity: ${quantity}/${itemQuantity}`;
+      if (item) {
+        item.quantity.count = quantity;
+      }
+    } else {
+      quantityMessage = `Quantity: ${quantity}`;
+    }
+    uuid = uuid + 1;
+    return {
+      id: break_up_item["@ondc/org/item_id"],
+      title: break_up_item?.title,
+      title_type: break_up_item["@ondc/org/title_type"],
+      isCustomization: isItemCustomization(break_up_item?.item?.tags),
+      isDelivery: break_up_item["@ondc/org/title_type"] === "delivery",
+      parent_item_id: break_up_item?.item?.parent_item_id,
+      price: Number(break_up_item.price?.value)?.toFixed(2),
+      itemQuantity,
+      quantity,
+      provided_by,
+      textClass,
+      quantityMessage,
+      uuid: uuid,
+    };
+  });
+  let items = {};
+  let delivery = {};
+  all_items?.forEach((item) => {
+    // for type item
+    if (item.title_type === "item" && !item.isCustomization) {
+      let key = item.parent_item_id || item.id;
+      let price = {
+        title: item.quantity + " * Base Price",
+        value: item.price,
+      };
+      let prev_item_data = items[key];
+      let addition_item_data = {
+        title: item.title,
+        quantity: item.quantity,
+        price: price,
+        totalPrice: item.quantity * item.price,
+      };
+      items[key] = { ...prev_item_data, ...addition_item_data };
+    }
+    if (item.title_type === "tax" && !item.isCustomization) {
+      let key = item.parent_item_id || item.id;
+      items[key] = items[key] || {};
+      items[key]["tax"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "discount" && !item.isCustomization) {
+      let key = item.parent_item_id || item.id;
+      items[key] = items[key] || {};
+      items[key]["discount"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+
+    //for customizations
+    if (item.title_type === "item" && item.isCustomization) {
+      let key = item.parent_item_id;
+      items[key]["customizations"] = items[key]["customizations"] || {};
+      let existing_data = items[key]["customizations"][item.id] || {};
+      let customisation_details = {
+        title: item.title,
+        price: {
+          title: item.quantity + " * Base Price",
+          value: item.price,
+        },
+        quantityMessage: item.quantityMessage,
+        textClass: item.textClass,
+        quantity: item.quantity,
+        cartQuantity: item.cartQuantity,
+        totalPrice: item.quantity * item.price,
+      };
+
+      items[key]["customizations"][item.id] = {
+        ...existing_data,
+        ...customisation_details,
+      };
+    }
+    if (item.title_type === "tax" && item.isCustomization) {
+      let key = item.parent_item_id;
+      items[key]["customizations"] = items[key]["customizations"] || {};
+      items[key]["customizations"][item.id] =
+        items[key]["customizations"][item.id] || {};
+      items[key]["customizations"][item.id]["tax"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "discount" && item.isCustomization) {
+      let key = item.parent_item_id;
+      items[key]["customizations"] = items[key]["customizations"] || {};
+      items[key]["customizations"][item.id] =
+        items[key]["customizations"][item.id] || {};
+      items[key]["customizations"][item.id]["discount"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    //for delivery
+    if (item.title_type === "delivery") {
+      delivery["delivery"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "discount_f") {
+      delivery["discount"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "tax_f") {
+      delivery["tax"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "packing") {
+      delivery["packing"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+    if (item.title_type === "discount") {
+      if (item.isCustomization) {
+        let id = item.parent_item_id;
+      } else {
+        let id = item.id;
+        items[id]["discount"] = {
+          title: item.title,
+          value: item.price,
+        };
+      }
+    }
+    if (item.title_type === "misc") {
+      delivery["misc"] = {
+        title: item.title,
+        value: item.price,
+      };
+    }
+  });
+  return items;
+};
+
 const OrderItemsSummaryCard = (props) => {
   const [open, setOpen] = React.useState(false);
+  const classes = useStyles();
 
   let order_items = [];
+  console.log(parseQuoteToGetItems(props.order));
   props?.orderItems?.map((item) => {
     order_items.push(item);
   });
 
+  order_items = Object.values(parseQuoteToGetItems(props.order));
+  console.log("order items", order_items);
   let cols = [
     { id: "url name", align: "left", minWidth: 50, label: "Items Summary" },
     { id: "quantity", align: "center", minWidth: "auto", label: "Qty" },
@@ -449,6 +647,182 @@ const OrderItemsSummaryCard = (props) => {
     );
   };
 
+  const renderItem = (item) => {
+    console.log("rendering ", item);
+    return cols.map((col) => {
+      return (
+        <TableCell align={col.align}>
+          {col.id == "url name" ? (
+            <div className="flex items-center">
+              <div className="flex flex-col">
+                <span style={{ fontWeight: 600 }}>{item?.title}</span>
+              </div>
+            </div>
+          ) : col.id === "state" ? (
+            <div>{item?.state}</div>
+          ) : col.id === "price" ? (
+            <div>₹ {item?.price?.value}</div>
+          ) : col.id === "action" ? (
+            <div style={{ cursor: "pointer" }}>
+              {isOrderCancellable(props?.order?.state) &&
+              item?.state !== "Cancelled" ? (
+                <ThreeDotsMenu
+                  order_id={props?.order?._id}
+                  row={item}
+                  getOrder={props.getOrder}
+                />
+              ) : (
+                // props?.order?.state
+                <></>
+              )}
+            </div>
+          ) : col.id === "totalPrice" ? (
+            <div>₹ {item.totalPrice}</div>
+          ) : col.id === "quantity" ? (
+            <span>{item?.quantity}</span>
+          ) : null}
+        </TableCell>
+      );
+    });
+  };
+
+  const renderItemDetails = (quote, qIndex, isCustomization) => {
+    return (
+      <div>
+        <div
+          className={classes.summaryQuoteItemContainer}
+          key={`quote-${qIndex}-price`}
+        >
+          <Typography
+            variant="body1"
+            className={
+              isCustomization
+                ? classes.summaryCustomizationPriceLabel
+                : classes.summaryItemPriceLabel
+            }
+          >
+            {quote?.price?.title}
+          </Typography>
+          <Typography
+            variant="body1"
+            className={
+              isCustomization
+                ? classes.summaryCustomizationPriceValue
+                : classes.summaryItemPriceValue
+            }
+          >
+            {`₹${quote?.price?.value}`}
+          </Typography>
+        </div>
+        {quote?.tax && (
+          <div
+            className={classes.summaryQuoteItemContainer}
+            key={`quote-${qIndex}-tax`}
+          >
+            <Typography
+              variant="body1"
+              className={
+                isCustomization
+                  ? classes.summaryCustomizationTaxLabel
+                  : classes.summaryItemTaxLabel
+              }
+            >
+              {quote?.tax.title}
+            </Typography>
+            <Typography
+              variant="body1"
+              className={
+                isCustomization
+                  ? classes.summaryCustomizationPriceValue
+                  : classes.summaryItemPriceValue
+              }
+            >
+              {`₹${quote?.tax.value}`}
+            </Typography>
+          </div>
+        )}
+        {quote?.discount && (
+          <div
+            className={classes.summaryQuoteItemContainer}
+            key={`quote-${qIndex}-discount`}
+          >
+            <Typography
+              variant="body1"
+              className={
+                isCustomization
+                  ? classes.summaryCustomizationDiscountLabel
+                  : classes.summaryItemDiscountLabel
+              }
+            >
+              {quote?.discount.title}
+            </Typography>
+            <Typography
+              variant="body1"
+              className={classes.summaryItemPriceValue}
+            >
+              {`₹${quote?.discount.value}`}
+            </Typography>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderItemAllDetails = (quote, qIndex) => {
+    return (
+      <div key={`quote-${qIndex}`}>
+        <div
+          className={classes.summaryQuoteItemContainer}
+          key={`quote-${qIndex}-title`}
+        >
+          <Typography
+            variant="body1"
+            className={`${classes.summaryItemLabel} ${quote.textClass}`}
+          >
+            {/* {quote?.title} */}
+            <p className={`${classes.ordered_from} ${quote.textClass}`}>
+              {quote.quantityMessage}
+            </p>
+          </Typography>
+        </div>
+        {renderItemDetails(quote)}
+        {quote?.customizations && (
+          <div key={`quote-${qIndex}-customizations`}>
+            <div
+              className={classes.summaryQuoteItemContainer}
+              key={`quote-${qIndex}-customizations`}
+            >
+              <Typography
+                variant="body1"
+                className={classes.summaryItemPriceLabel}
+              >
+                Customizations
+              </Typography>
+            </div>
+            {Object.values(quote?.customizations).map(
+              (customization, cIndex) => (
+                <div>
+                  <div
+                    className={classes.summaryQuoteItemContainer}
+                    key={`quote-${qIndex}-customizations-${cIndex}`}
+                  >
+                    <Typography
+                      variant="body1"
+                      className={classes.summaryCustomizationLabel}
+                    >
+                      {customization.title}
+                    </Typography>
+                  </div>
+                  {renderItemDetails(customization, cIndex, true)}
+                </div>
+              )
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const ExpandableTableRow = ({ children, expandComponent, ...otherProps }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -496,65 +870,20 @@ const OrderItemsSummaryCard = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {order_items?.map((order_item) => {
-                let product = order_item?.details;
+              {order_items?.map((item) => {
+                let product = item?.details;
                 return (
                   <ExpandableTableRow
                     sx={{ "& > *": { borderBottom: "1px solid red" } }}
-                    key={order_item.order_id}
+                    key={item.order_id}
                     expandComponent={
-                      <TableCell colSpan="7">
-                        Product's additional information
+                      <TableCell colSpan="4">
+                                            {renderItemAllDetails(item)}
                       </TableCell>
+
                     }
                   >
-                    {cols.map((col) => {
-                      return (
-                        <TableCell align={col.align}>
-                          {col.id == "url name" ? (
-                            <div className="flex items-center">
-                              <div className="flex flex-col">
-                                <span style={{ fontWeight: 600 }}>
-                                  {product?.productName}
-                                </span>
-                                <span style={{ fontSize: 14 }}>
-                                  {product?.HSNCode}
-                                </span>
-                              </div>
-                            </div>
-                          ) : col.id === "state" ? (
-                            <div>{order_item?.state}</div>
-                          ) : col.id === "price" ? (
-                            <div>
-                              ₹ {product?.MRP?.toFixed(2).toLocaleString()}
-                            </div>
-                          ) : col.id === "action" ? (
-                            <div style={{ cursor: "pointer" }}>
-                              {isOrderCancellable(props?.order?.state) &&
-                              order_item?.state !== "Cancelled" ? (
-                                <ThreeDotsMenu
-                                  order_id={props?.order?._id}
-                                  row={order_item}
-                                  getOrder={props.getOrder}
-                                />
-                              ) : (
-                                // props?.order?.state
-                                <></>
-                              )}
-                            </div>
-                          ) : col.id === "totalPrice" ? (
-                            <div>
-                              ₹{" "}
-                              {(product?.MRP * order_item?.quantity?.count)
-                                .toFixed(2)
-                                .toLocaleString()}
-                            </div>
-                          ) : col.id === "quantity" ? (
-                            <span>{order_item[col.id]?.count}</span>
-                          ) : null}
-                        </TableCell>
-                      );
-                    })}
+                    {renderItem(item)}
                   </ExpandableTableRow>
                 );
               })}
