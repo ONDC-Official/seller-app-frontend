@@ -1,5 +1,5 @@
-import { isAmountValid } from "../../../../utils/validations";
-import { MAX_STRING_LENGTH_50 } from "../../../../utils/constants";
+import { isAmountValid } from "../../../utils/validations";
+import { MAX_STRING_LENGTH_50 } from "../../../utils/constants";
 
 export const getFormErrors = (fields, formValues) => {
   if (formValues) {

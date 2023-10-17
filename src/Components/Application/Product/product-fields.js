@@ -71,6 +71,7 @@ export const allProductFieldDetails = [
     type: "select",
     disableClearable: true,
     required: true,
+    isDisabled: true,
   },
   {
     id: "productSubcategory1",
@@ -327,8 +328,11 @@ export const allProductFieldDetails = [
     required: true,
     options: [],
     disableClearable: true,
+  },
+  {
     id: "countryOfOrigin",
-    title: "County Of Origin",
+    title: "Country Of Origin",
+    placeholder: "Country Of Origin",
     type: "select",
     options: countries,
     required: true,
@@ -356,8 +360,6 @@ export const productDetailsFields = [
   "nutritionalInfo",
   "additiveInfo",
   "instructions",
-  "longDescription",
-  "description",
   "vegNonVeg",
   "isReturnable",
   "isCancellable",
@@ -368,10 +370,10 @@ export const productDetailsFields = [
   "monthYearOfManufacturePackingImport",
   "importerFSSAILicenseNo",
   "brandOwnerFSSAILicenseNo",
-  "UOM",
   "fulfillmentOption",
+  "UOM",
 ];
 
-export const variationCommonFields = ["MRP", "retailPrice", "purchasePrice", "quantity", "barcode", "images"];
+export const variationCommonFields = ["MRP", "purchasePrice", "quantity", "barcode", "images"];
 
 export const UOMVariationFields = ["UOMValue"];

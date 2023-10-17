@@ -28,7 +28,7 @@ export const allProperties = {
             {'name':'features','type':'input','example':'alpha', 'variationAllowed':false},
             {'name':'material_finish','type':'input','example':'embossed', 'variationAllowed':false},
             //fix size chart to use image type
-            {'name':'size_chart','type':'input','example':'alpha', 'variationAllowed':false},
+            {'name':'size_chart','type':'upload', 'multiple': true, 'variationAllowed':false},
         ]
     },
     'Electronics':{
@@ -325,7 +325,8 @@ export const allProperties = {
             {'name':'skin_type','type':'input','example':'normal', 'variationAllowed':true},
         ],
     },
-    'Food and Beverages':{
+    'F&B':{
+        'default': []
 
     }
 };

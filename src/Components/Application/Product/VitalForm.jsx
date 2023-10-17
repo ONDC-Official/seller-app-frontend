@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import useForm from "../../../../hooks/useForm";
-import RenderInput from "../../../../utils/RenderInput";
+import useForm from "../../../hooks/useForm";
+import RenderInput from "../../../utils/RenderInput";
 
 const VitalForm = ({ fields, formData, onFormUpdate, vitalFormErrors }) => {
   const { formValues, setFormValues, errors, setErrors } = useForm({

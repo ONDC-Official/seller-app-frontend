@@ -5,10 +5,81 @@ import MyButton from "../../Shared/Button";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { useEffect, useState } from "react";
+import { MenuItem, Select } from "@mui/material";
+
+const days = [
+  { label: "Monday", value: 1 },
+  { label: "Tuesday", value: 2 },
+  { label: "Wednesday", value: 3 },
+  { label: "Thursday", value: 4 },
+  { label: "Friday", value: 5 },
+  { label: "Saturday", value: 6 },
+  { label: "Sunday", value: 7 },
+];
 
 const StoreTimingsRenderer = (props) => {
-  const { errors, storeStatus, storeTimings, setStoreTimings, temporaryClosedTimings, setTemporaryClosedTimings } =
-    props;
+  const {
+    errors,
+    storeStatus,
+    storeTimings,
+    setStoreTimings,
+    temporaryClosedTimings,
+    setTemporaryClosedTimings,
+    temporaryClosedDays,
+    setTemporaryClosedDays,
+  } = props;
+
+  const [toDays, setToDays] = useState(days);
+
+  useEffect(() => {
+    if (temporaryClosedDays?.from) {
+      let to_days = [...days];
+      to_days = days.filter((dayMap) => dayMap.value >= temporaryClosedDays.from);
+      setToDays(to_days);
+    }
+  }, [temporaryClosedDays?.from]);
+
+  const handleDayChange = (event, key) => {
+    temporaryClosedDays[key] = event.target.value;
+    setTemporaryClosedDays({ ...temporaryClosedDays });
+  };
+
+  const renderDaysDD = (key) => {
+    let days_list = key === "from" ? days : toDays;
+    return (
+      <div style={{ marginLeft: "10px" }}>
+        <Select
+          id={key}
+          value={temporaryClosedDays[key]}
+          label={key + " day"}
+          size="small"
+          onChange={(event) => handleDayChange(event, key)}
+          sx={{ minWidth: 120 }}
+          variant="outlined"
+        >
+          {days_list.map((day) => (
+            <MenuItem value={day.value}>{day.label}</MenuItem>
+          ))}
+        </Select>
+      </div>
+    );
+  };
+
+  const renderDaysDDs = () => {
+    return (
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10 }}>
+        <div style={{ display: "flex" }}>
+          <div style={{ marginLeft: "10px", marginTop: "7px" }}>
+            Days: <span style={{ color: "red" }}>*</span>
+          </div>
+          {renderDaysDD("from")}
+          <div style={{ marginLeft: "10px", marginTop: "7px" }}>To</div>
+          {renderDaysDD("to")}
+        </div>
+      </div>
+    );
+  };
 
   const handleStoreTiming = (data, index) => {
     storeTimings[index] = data;
@@ -30,7 +101,7 @@ const StoreTimingsRenderer = (props) => {
   const renderEnabledTimings = () => {
     return (
       <>
-        {storeTimings.map((storeTiming, index) => (
+        {storeTimings?.map((storeTiming, index) => (
           <StoreTimings
             storeTiming={storeTiming}
             setStoreTiming={(data) => handleStoreTiming(data, index)}
@@ -80,6 +151,7 @@ const StoreTimingsRenderer = (props) => {
   const renderTemporaryClosedTimings = () => {
     return (
       <>
+        {renderDaysDDs()}
         <div style={{ display: "flex" }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {renderTimePicker("from")}

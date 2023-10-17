@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation } from 'react-router'
+import { useLocation } from "react-router";
 import cogoToast from "cogo-toast";
 import UserTable from "./UserTable";
 import { Button, Tab, Tabs } from "@mui/material";
 import { Link } from "react-router-dom";
 import Navbar from "../../Shared/Navbar";
 import { getCall } from "../../../Api/axios";
-import useNavigation from '../../../hooks/useNavigation'
-import useQueryParams from '../../../hooks/useQueryParams'
-import { evalQueryString } from '../../../utils/index'
-import { useTheme } from '@mui/material/styles';
+import useNavigation from "../../../hooks/useNavigation";
+import useQueryParams from "../../../hooks/useQueryParams";
+import { evalQueryString } from "../../../utils/index";
+import { useTheme } from "@mui/material/styles";
+import FilterComponent from "../../Shared/FilterComponent";
 
 const superAdminCols = [
   {
@@ -62,17 +63,55 @@ const providerCols = [
   },
 ];
 
+const providerFilterFields = [
+  {
+    id: "name",
+    title: "",
+    placeholder: "Search by Provider Name",
+    type: "input",
+    variant: "standard",
+  },
+  {
+    id: "email",
+    title: "",
+    placeholder: "Search by Provider Email",
+    type: "input",
+    variant: "standard",
+  },
+  {
+    id: "phone",
+    title: "",
+    placeholder: "Search by Provider Phone",
+    type: "number",
+    variant: "standard",
+  },
+  {
+    id: "storeName",
+    title: "",
+    placeholder: "Search by Store Name",
+    type: "input",
+    variant: "standard",
+  },
+];
+
 const UserListings = () => {
   const theme = useTheme();
-  const queryParams = useQueryParams()
-  const [view, setView] = useState(queryParams.view || 'admin');
+  const queryParams = useQueryParams();
+  const [view, setView] = useState(queryParams.view || "admin");
   const [providers, setProviders] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
-  const navigation = useNavigation()
-  const location = useLocation()
+  const navigation = useNavigation();
+  const location = useLocation();
+
+  const [providerFilters, setProviderFilters] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    storeName: "",
+  });
 
   const handleChange = (event, newValue) => {
     setView(newValue);
@@ -109,8 +148,37 @@ const UserListings = () => {
   };
 
   const isAdmin = useMemo(() => {
-    return view === 'admin'
-  }, [view])
+    return view === "admin";
+  }, [view]);
+
+  const resetProviderFilters = () => {
+    setProviderFilters({ name: "", email: "", phone: "", storeName: "" });
+    getProviders();
+  };
+
+  const handleProviderFilters = async () => {
+    const filterParams = [];
+
+    if (providerFilters.name.trim() !== "") {
+      filterParams.push(`name=${encodeURIComponent(providerFilters.name)}`);
+    }
+    if (providerFilters.email.trim() !== "") {
+      filterParams.push(`email=${encodeURIComponent(providerFilters.email)}`);
+    }
+    if (providerFilters.phone.trim() !== "") {
+      filterParams.push(`mobile=${encodeURIComponent(providerFilters.phone)}`);
+    }
+    if (providerFilters.storeName.trim() !== "") {
+      filterParams.push(`storeName=${encodeURIComponent(providerFilters.storeName)}`);
+    }
+
+    const queryString = filterParams.join("&");
+    const url = `/api/v1/users?limit=${rowsPerPage}&offset=${page}&role=Organization Admin&${queryString}`;
+
+    const res = await getCall(url);
+    setProviders(res.data);
+    setTotalRecords(res.count);
+  };
 
   useEffect(() => {
     if (isAdmin) getAdmins();
@@ -118,17 +186,16 @@ const UserListings = () => {
   }, [isAdmin, page, rowsPerPage]);
 
   useEffect(() => {
-    navigation.toPathWithQuery(
-      `${location.pathname}`,
-      evalQueryString(location.search, { view })
-    )
-  }, [view])
+    navigation.toPathWithQuery(`${location.pathname}`, evalQueryString(location.search, { view }));
+  }, [view]);
 
   return (
     <div>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">User Listings</label>
+          <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">
+            User Listings
+          </label>
         </div>
 
         <div className="flex flex-row justify-between items-center">
@@ -149,10 +216,20 @@ const UserListings = () => {
             color="primary"
             onClick={""}
           >
-            <Link to={isAdmin ? "/invite-admin" : "/invite-provider"}>
-              Invite {isAdmin ? "Admin" : "Provider"}
-            </Link>
+            <Link to={isAdmin ? "/invite-admin" : "/invite-provider"}>Invite {isAdmin ? "Admin" : "Provider"}</Link>
           </Button>
+        </div>
+
+        <div>
+          {!isAdmin ? (
+            <FilterComponent
+              fields={providerFilterFields}
+              state={providerFilters}
+              stateHandler={setProviderFilters}
+              onReset={resetProviderFilters}
+              onFilter={handleProviderFilters}
+            />
+          ) : null}
         </div>
 
         <UserTable

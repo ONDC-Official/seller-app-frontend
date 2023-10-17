@@ -10,6 +10,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
 
 const providerFields = [
   {
@@ -158,13 +159,9 @@ const bankFields = [
   },
 ];
 
-const categoriesList = [
-  { key: "Grocery", value: "grocery" },
-  { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-  { key: "Fashion", value: "fashion" },
-  { key: "Home and Decor", value: "home_and_decor" },
-  { key: "F&B", value: "f_and_b" },
-];
+const categoriesList = Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+    return { key: value, value: key };
+})
 
 let storeFields = [
   // {
@@ -192,11 +189,11 @@ let storeFields = [
     required: true,
   },
   {
-    id: "categories",
+    id: "category",
     title: "Supported Product Categories",
     placeholder: "Please Select Supported Product Categories",
     options: categoriesList,
-    type: "multi-select",
+    type: "select",
     required: true,
   },
   {
@@ -325,6 +322,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const [storeDetailFields, setStoreDetailFields] = useState(storeFields);
   const [storeStatus, setStoreStatus] = useState("enabled");
   const [temporaryClosedTimings, setTemporaryClosedTimings] = useState({ from: "00:00", to: "00:00" });
+  const [temporaryClosedDays, setTemporaryClosedDays] = useState({ from: 1, to: 5 });
   const [storeTimings, setStoreTimings] = useState([...defaultStoreTimings]);
   const [originalStoreTimings, setOriginalStoreTimings] = useState([...defaultStoreTimings]);
   const [providerDetails, setProviderDetails] = useState({});
@@ -332,7 +330,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const [bankDetails, setBankDetails] = useState({});
   const [storeDetails, setStoreDetails] = useState({
     location: {},
-    categories: [],
+    category: "",
     location_availability: "",
     default_cancellable: "",
     default_returnable: "",
@@ -346,7 +344,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
     location: {},
-    categories: [],
+    category: "",
     location_availability: "",
     default_cancellable: "",
     default_returnable: "",
@@ -377,7 +375,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
 
       if (fulfillment.id === "f2") {
-        console.log("f2", fulfillment);
         hasF2 = true;
         selfPickupEmail = fulfillment.contact.email;
         selfPickupMobile = fulfillment.contact.phone;
@@ -453,7 +450,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
-        categories: res?.providerDetail?.storeDetails?.categories || [],
+        category: res?.providerDetail?.storeDetails?.category || "",
         location: res?.providerDetail?.storeDetails?.location || "",
         location_availability: res.providerDetail.storeDetails
           ? res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
@@ -470,9 +467,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         building: res.providerDetail?.storeDetails?.address?.building || "",
         area_code: res.providerDetail?.storeDetails?.address?.area_code || "",
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
-        logo: res?.providerDetail?.storeDetails?.logo?.url || "",
+        logo: res?.providerDetail?.storeDetails?.logo?.url   || "",
+        logo_path: res?.providerDetail?.storeDetails?.logo?.path || "",
 
-        holidays: res?.providerDetail?.storeDetails?.storeTiming?.schedule?.holidays || [],
+        holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
       };
@@ -481,16 +479,21 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
 
       setSupportedFulfillments(supportedFulfillments);
-
       setFulfillmentDetails((prevDetails) => ({
         ...prevDetails,
         ...fulfillmentDetails,
       }));
 
+      const storeTimingDetails = res?.providerDetail?.storeDetails?.storeTiming;
+
+      setStoreStatus(storeTimingDetails.status);
+      setTemporaryClosedTimings(storeTimingDetails?.closed);
+      setTemporaryClosedDays(storeTimingDetails.closedDays);
+
       setStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
-      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
-      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.schedule?.timings || defaultStoreTimings);
+      setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
+      setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
     } catch (error) {
       console.log(error);
     }
@@ -536,7 +539,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         : !isPhoneNoValid(storeDetails.mobile)
         ? "Please enter a valid mobile number"
         : "";
-    formErrors.categories = storeDetails.categories.length === 0 ? "Supported Product Categories are required" : "";
+
+    formErrors.category = storeDetails.category.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
       formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
@@ -663,6 +667,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
+      console.log(formErrors)
       cogoToast.error("Please fill in all required data!");
     }
     return !Object.values(formErrors).some((val) => val !== "");
@@ -724,34 +729,25 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   };
 
   const getStoreTimingsPayloadFormat = () => {
-    let storeTiming = {
-      status: storeStatus,
-    };
-
-    if (storeStatus === "enabled") {
-      storeTiming.schedule = {
-        holidays: storeDetails.holidays,
-        timings: storeTimings,
-      };
-    } else if (storeStatus === "closed") {
-      storeTiming.schedule = {
-        from: temporaryClosedTimings.from,
-        to: temporaryClosedTimings.to,
-      };
-    } else {
-      storeTiming.schedule = {};
-    }
-
+    let storeTiming = {};
+    storeTiming.status = storeStatus;
+    storeTiming.holidays = storeDetails.holidays;
+    storeTiming.enabled = storeTimings;
+    storeTiming.closed = temporaryClosedTimings;
+    storeTiming.closedDays = temporaryClosedDays;
     return storeTiming;
   };
 
+  const startWithHttpRegex = new RegExp('^http');
+
   const onUpdate = () => {
-    if (anyChangeInData && validate()) {
+    if (anyChangeInData() && validate()) {
       const provider_id = params?.id;
       const url = `/api/v1/organizations/${provider_id}/storeDetails`;
       const {
-        categories,
+        category,
         logo,
+        logo_path,
         location_availability,
         default_cancellable,
         default_returnable,
@@ -791,8 +787,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       let storeTiming = getStoreTimingsPayloadFormat();
 
       let payload = {
-        categories,
-        logo: logo,
+        category: category,
         locationAvailabilityPANIndia: locationAvailability,
         defaultCancellable: eval(default_cancellable),
         defaultReturnable: eval(default_returnable),
@@ -817,6 +812,12 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       if (locationAvailability == false) {
         payload["city"] = cities;
       } else {
+      }
+
+      if(!startWithHttpRegex.test(storeDetails.logo)){
+        payload.logo = logo
+      } else {
+        payload.logo = logo_path
       }
 
       postCall(url, payload)
@@ -1001,6 +1002,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     setStoreTimings={setStoreTimings}
                     temporaryClosedTimings={temporaryClosedTimings}
                     setTemporaryClosedTimings={setTemporaryClosedTimings}
+                    temporaryClosedDays={temporaryClosedDays}
+                    setTemporaryClosedDays={setTemporaryClosedDays}
                   />
                 </>
               )}

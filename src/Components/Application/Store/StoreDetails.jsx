@@ -7,6 +7,8 @@ import { getCall, postCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import Navbar from "../../Shared/Navbar";
 import { useAuth } from "../../../Router/AuthProvider.js";
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
+
 
 let storeFields = [
   {
@@ -28,14 +30,10 @@ let storeFields = [
     id: "categories",
     title: "Supported product categories",
     placeholder: "Supported product categories",
-    options: [
-      { key: "Grocery", value: "grocery" },
-      { key: "Beauty & Personal Care", value: "beauty_and_personal_care" },
-      { key: "Fashion", value: "fashion" },
-      { key: "Home and Decor", value: "home_and_decor" },
-      { key: "F&B", value: "f_and_b" },
-    ],
-    type: "multi-select",
+    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+      return { key: value, value: key };
+    }),
+    type: "select",
     required: true,
   },
   // {
