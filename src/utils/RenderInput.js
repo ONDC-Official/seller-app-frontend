@@ -353,7 +353,7 @@ const RenderInput = (props) => {
                 } else {
                   const newState = {
                     ...prevState,
-                    [item.id]: newValue.value,
+                    [item.id]: newValue?.value || "",
                   };
                   return newState;
                 }

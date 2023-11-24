@@ -528,7 +528,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const validate = () => {
     const formErrors = {};
     formErrors.email =
-      storeDetails.email.trim() === ""
+      storeDetails.email?.trim() === ""
         ? "Support Email is required"
         : !isEmailValid(storeDetails.email)
         ? "Please enter a valid email address"
@@ -540,22 +540,23 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter a valid mobile number"
         : "";
 
-    formErrors.category = storeDetails.category.trim() === "" ? "Supported Product Category is required" : "";
+    formErrors.category = storeDetails.category?.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
       formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
     } else {
     }
-    formErrors.country = storeDetails.country.trim() === "" ? "Country is required" : "";
-    formErrors.state = storeDetails.state.trim() === "" ? "State is required" : "";
-    formErrors.address_city = storeDetails.address_city.trim() === "" ? "City is required" : "";
-    formErrors.building = storeDetails.building.trim() === "" ? "Building is required" : "";
-    formErrors.area_code = storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
-    formErrors.logo = storeDetails.logo.trim() === "" ? "Logo is required" : "";
+    formErrors.country = storeDetails.country?.trim() === "" ? "Country is required" : "";
+    formErrors.state = storeDetails.state?.trim() === "" ? "State is required" : "";
+    formErrors.address_city = storeDetails.address_city?.trim() === "" ? "City is required" : "";
+    formErrors.building = storeDetails.building?.trim() === "" ? "Building is required" : "";
+    formErrors.area_code = storeDetails.area_code?.trim() === "" ? "PIN Code is required" : "";
+    formErrors.logo = storeDetails.logo?.trim() === "" ? "Logo is required" : "";
 
     if (!isFromUserListing) {
       if (storeStatus === "enabled") {
-        formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
+        const length = storeDetails.holidays?.length;
+        formErrors.holidays = length === 0  || !length ? "Holidays are required" : "";
         formErrors.storeTimes = getStoreTimesErrors();
       } else {
         formErrors.holidays = "";
@@ -565,7 +566,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     }
 
     formErrors.radius =
-      storeDetails.radius.trim() === ""
+      storeDetails.radius?.trim() === ""
         ? "Serviceable Radius/Circle is required"
         : !isNumberOnly(storeDetails?.radius)
         ? "Please enter only digit"
