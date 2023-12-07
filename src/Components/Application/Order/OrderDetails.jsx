@@ -32,6 +32,7 @@ import { convertDateInStandardFormat } from "../../../utils/formatting/date";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { Tooltip } from "@material-ui/core";
 import useStyles from "./style";
+import CancelOrderModal from "./cancelOrderModal.jsx";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
@@ -47,7 +48,6 @@ const OrderDetails = () => {
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
     getCall(url).then((resp) => {
-      console.log(resp);
       setOrder(resp);
     });
   };
@@ -99,9 +99,9 @@ const OrderDetails = () => {
     delivery_info = getFulfillmentData(fulfillments, "Delivery");
   }
 
-  const handleCompleteOrderCancel = (order_id) => {
+  const handleCompleteOrderCancel = (order_uuid) => {
     setloading({ ...loading, cancel_order_loading: true });
-    postCall(`/api/v1/orders/${order_id}/cancel`, {
+    postCall(`/api/v1/orders/${order_uuid}/cancel`, {
       cancellation_reason_id: "004",
     })
       .then((resp) => {
@@ -123,9 +123,9 @@ const OrderDetails = () => {
       });
   };
 
-  const handleCompleteOrderAccept = (order_id) => {
+  const handleCompleteOrderAccept = (order_uuid) => {
     setloading({ ...loading, accept_order_loading: true });
-    const url = `/api/v1/orders/${order_id}/status`;
+    const url = `/api/v1/orders/${order_uuid}/status`;
     postCall(url, {
       status: "Accepted",
     })
@@ -352,7 +352,6 @@ const parseQuoteToGetItems = (orderDetails) => {
   let uuid = 0;
   const provided_by = orderDetails?.provider?.descriptor?.name;
   const breakup = orderDetails?.quote?.breakup;
-  console.log("breakup=====>", breakup);
   const all_items = breakup?.map((break_up_item) => {
     const items = orderDetails.items;
     const itemIndex = items.findIndex(
@@ -414,6 +413,7 @@ const parseQuoteToGetItems = (orderDetails) => {
       let prev_item_data = items[key];
       let addition_item_data = {
         title: item.title,
+        id: item.id,
         quantity: item.quantity,
         price: price,
         totalPrice: item.quantity * item.price,
@@ -528,16 +528,17 @@ const parseQuoteToGetItems = (orderDetails) => {
 
 const OrderItemsSummaryCard = (props) => {
   const [open, setOpen] = React.useState(false);
+  const [itemToCancel, setItemToCancel] = React.useState(null);
+  const [order, setOrder] = React.useState(props?.order);
   const classes = useStyles();
 
   let order_items = [];
-  console.log(parseQuoteToGetItems(props.order));
   props?.orderItems?.map((item) => {
     order_items.push(item);
   });
 
-  order_items = Object.values(parseQuoteToGetItems(props.order));
-  console.log("order items", order_items);
+  order_items = Object.values(parseQuoteToGetItems(order));
+
   let cols = [
     { id: "url name", align: "left", minWidth: 50, label: "Items Summary" },
     { id: "quantity", align: "center", minWidth: "auto", label: "Qty" },
@@ -560,6 +561,10 @@ const OrderItemsSummaryCard = (props) => {
     });
   } else {
   }
+
+  useEffect(() => {
+    setOrder(props?.order)
+  }, [props?.order])
 
   const rows = [
     {
@@ -591,10 +596,6 @@ const OrderItemsSummaryCard = (props) => {
   const ThreeDotsMenu = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
-    function handleMenuClick(data) {
-      console.log(data);
-    }
-
     const handleClick = (e) => {
       setAnchorEl(e.currentTarget);
     };
@@ -605,19 +606,8 @@ const OrderItemsSummaryCard = (props) => {
 
     const { data } = props;
 
-    const handlePartialOrderCancel = (order_id, order_item_id) => {
-      postCall(`/api/v1/orders/${order_id}/item/cancel`, [
-        { cancellation_reason_id: "004", id: order_item_id },
-      ])
-        .then((resp) => {
-          cogoToast.success("Product cancelled successfully!");
-          props.getOrder();
-          handleClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          cogoToast.error(error.response.data.error);
-        });
+    const handlePartialOrderCancel = (data) => {
+      setItemToCancel(data)
     };
 
     return (
@@ -636,8 +626,9 @@ const OrderItemsSummaryCard = (props) => {
         >
           <MenuItem
             style={{ padding: 6 }}
-            onClick={() =>
-              handlePartialOrderCancel(props?.order_id, props?.row?.id)
+            onClick={() => {
+              handlePartialOrderCancel({order_id: props.order_id, item: props.row})
+              }
             }
           >
             Cancel Order
@@ -648,7 +639,6 @@ const OrderItemsSummaryCard = (props) => {
   };
 
   const renderItem = (item) => {
-    console.log("rendering ", item);
     return cols.map((col) => {
       return (
         <TableCell align={col.align}>
@@ -664,10 +654,11 @@ const OrderItemsSummaryCard = (props) => {
             <div>₹ {item?.price?.value}</div>
           ) : col.id === "action" ? (
             <div style={{ cursor: "pointer" }}>
-              {isOrderCancellable(props?.order?.state) &&
+              {isOrderCancellable(order?.state) &&
               item?.state !== "Cancelled" ? (
                 <ThreeDotsMenu
-                  order_id={props?.order?._id}
+                  order_uuid={order?._id}
+                  order_id={order?.orderId}
                   row={item}
                   getOrder={props.getOrder}
                 />
@@ -931,6 +922,11 @@ const OrderItemsSummaryCard = (props) => {
           </Table>
         </TableContainer>
       </div>
+      <CancelOrderModal
+        showModal={itemToCancel ? true : false}
+        setOrder={setOrder}
+        handleCloseModal={() => setItemToCancel(null)}
+        data={itemToCancel}/>
     </div>
   );
 };
