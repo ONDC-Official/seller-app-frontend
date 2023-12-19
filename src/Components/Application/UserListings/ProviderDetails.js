@@ -10,7 +10,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
-import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { PRODUCT_CATEGORY, DELIVERY_TYPE_LIST } from "../../../utils/constants";
 
 const providerFields = [
   {
@@ -161,6 +161,10 @@ const bankFields = [
 
 const categoriesList = Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
     return { key: value, value: key };
+})
+
+const deliveryTypeList = Object.entries(DELIVERY_TYPE_LIST).map(([key, value]) => {
+  return { key: value, value: key };
 })
 
 let storeFields = [
@@ -473,6 +477,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
+        logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
       };
 
       const fulfillments = res.providerDetail.storeDetails.fulfillments;
@@ -572,6 +577,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter only digit"
         : "";
     //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+    //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
+    formErrors.logisticsBppId = "";
+    formErrors.logisticsDeliveryType = "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
@@ -804,6 +812,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           value: storeDetails.radius || "",
         },
         logisticsBppId: storeDetails.logisticsBppId,
+        logisticsDeliveryType: storeDetails.logisticsDeliveryType,
       };
       if (location) {
         payload.location = location;
@@ -911,6 +920,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       type: "input",
                       error: errors?.["logisticsBppId"] ? true : false,
                       helperText: errors?.["logisticsBppId"] || "",
+                    }}
+                    state={storeDetails}
+                    stateHandler={setStoreDetails}
+                  />
+
+                  <RenderInput
+                    item={{
+                      id: "logisticsDeliveryType",
+                      title: "Logistics Delivery Type",
+                      placeholder: "Logistics Delivery Type",
+                      error: errors?.["logisticsDeliveryType"] ? true : false,
+                      helperText: errors?.["logisticsDeliveryType"] || "",
+                      options: deliveryTypeList,
+                      type: "select",
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
