@@ -342,6 +342,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Delhi", value: "delhi" },
       { key: "Pune", value: "pune" },
     ],
+    country: "",
+    state: "",
+    city: "",
+    address_city: "",
+    building: "",
+    area_code: "",
+    locality: "",
+    logo: "",
+    logo_path: "",
+    holidays: [],
+    radius: "",
+    logisticsBppId: "",
+    logisticsDeliveryType: "",
   });
 
   const [errors, setErrors] = useState(null);
@@ -356,6 +369,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Delhi", value: "delhi" },
       { key: "Pune", value: "pune" },
     ],
+    country: "",
+    state: "",
+    city: "",
+    address_city: "",
+    building: "",
+    area_code: "",
+    locality: "",
+    logo: "",
+    logo_path: "",
+    holidays: [],
+    radius: "",
+    logisticsBppId: "",
+    logisticsDeliveryType: "",
   });
 
   const getAvailableFulfillments = (fulfillments) => {
@@ -451,6 +477,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
+      console.log("res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>", res?.providerDetail?.storeDetails?.logisticsDeliveryType);
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
@@ -499,11 +526,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
       setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
+      console.log("storeData=====>", storeData);
     } catch (error) {
       console.log(error);
     }
   };
 
+  console.log("storeDetails=====>", storeDetails);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
