@@ -154,6 +154,7 @@ export default function AddProduct() {
     getUser(user_id).then((u) => {
       getOrgDetails(u.organization).then((org) => {
         let category = org?.storeDetails?.category;
+        if (!category) navigate(`/application/store-details/${u.organization}`);
         categoryForm.setFormValues(prev => { return {...prev, productCategory: category}})
         let data = [...fields]; // Create a copy of the fields array
         const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");

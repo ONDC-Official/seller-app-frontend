@@ -18,6 +18,14 @@ export const PRODUCT_CATEGORY = {
     "Fashion": "Fashion",
 }
 
+export const DELIVERY_TYPE_LIST = {
+    "Immediate Delivery": "Immediate Delivery",
+    "Express Delivery": "Express Delivery",
+    "Standard Delivery": "Standard Delivery",
+    "Same Day Delivery": "Same Day Delivery",
+    "Next Day Delivery": "Next Day Delivery",
+}
+
 export const PRODUCT_SUBCATEGORY = {
     "Grocery": [
         {value: 'Fruits and Vegetables', key: 'Fruits and Vegetables', protocolKey: "@ondc/org/mandatory_reqs_veggies_fruits"},

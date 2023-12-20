@@ -10,7 +10,7 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import moment from "moment";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
-import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { PRODUCT_CATEGORY, DELIVERY_TYPE_LIST } from "../../../utils/constants";
 
 const providerFields = [
   {
@@ -161,6 +161,10 @@ const bankFields = [
 
 const categoriesList = Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
     return { key: value, value: key };
+})
+
+const deliveryTypeList = Object.entries(DELIVERY_TYPE_LIST).map(([key, value]) => {
+  return { key: value, value: key };
 })
 
 let storeFields = [
@@ -338,6 +342,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Delhi", value: "delhi" },
       { key: "Pune", value: "pune" },
     ],
+    country: "",
+    state: "",
+    city: "",
+    address_city: "",
+    building: "",
+    area_code: "",
+    locality: "",
+    logo: "",
+    logo_path: "",
+    holidays: [],
+    radius: "",
+    logisticsBppId: "",
+    logisticsDeliveryType: "",
   });
 
   const [errors, setErrors] = useState(null);
@@ -352,6 +369,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       { key: "Delhi", value: "delhi" },
       { key: "Pune", value: "pune" },
     ],
+    country: "",
+    state: "",
+    city: "",
+    address_city: "",
+    building: "",
+    area_code: "",
+    locality: "",
+    logo: "",
+    logo_path: "",
+    holidays: [],
+    radius: "",
+    logisticsBppId: "",
+    logisticsDeliveryType: "",
   });
 
   const getAvailableFulfillments = (fulfillments) => {
@@ -447,6 +477,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
+      console.log("res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>", res?.providerDetail?.storeDetails?.logisticsDeliveryType);
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
@@ -473,6 +504,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
+        logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
       };
 
       const fulfillments = res.providerDetail.storeDetails.fulfillments;
@@ -494,11 +526,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
       setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
+      console.log("storeData=====>", storeData);
     } catch (error) {
       console.log(error);
     }
   };
 
+  console.log("storeDetails=====>", storeDetails);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -528,7 +562,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   const validate = () => {
     const formErrors = {};
     formErrors.email =
-      storeDetails.email.trim() === ""
+      storeDetails.email?.trim() === ""
         ? "Support Email is required"
         : !isEmailValid(storeDetails.email)
         ? "Please enter a valid email address"
@@ -540,22 +574,23 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? "Please enter a valid mobile number"
         : "";
 
-    formErrors.category = storeDetails.category.trim() === "" ? "Supported Product Category is required" : "";
+    formErrors.category = storeDetails.category?.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
     if (storeDetails.location_availability === "city") {
       formErrors.cities = storeDetails.cities.length === 0 ? "City is required" : "";
     } else {
     }
-    formErrors.country = storeDetails.country.trim() === "" ? "Country is required" : "";
-    formErrors.state = storeDetails.state.trim() === "" ? "State is required" : "";
-    formErrors.address_city = storeDetails.address_city.trim() === "" ? "City is required" : "";
-    formErrors.building = storeDetails.building.trim() === "" ? "Building is required" : "";
-    formErrors.area_code = storeDetails.area_code.trim() === "" ? "PIN Code is required" : "";
-    formErrors.logo = storeDetails.logo.trim() === "" ? "Logo is required" : "";
+    formErrors.country = storeDetails.country?.trim() === "" ? "Country is required" : "";
+    formErrors.state = storeDetails.state?.trim() === "" ? "State is required" : "";
+    formErrors.address_city = storeDetails.address_city?.trim() === "" ? "City is required" : "";
+    formErrors.building = storeDetails.building?.trim() === "" ? "Building is required" : "";
+    formErrors.area_code = storeDetails.area_code?.trim() === "" ? "PIN Code is required" : "";
+    formErrors.logo = storeDetails.logo?.trim() === "" ? "Logo is required" : "";
 
     if (!isFromUserListing) {
       if (storeStatus === "enabled") {
-        formErrors.holidays = storeDetails.holidays.length === 0 ? "Holidays are required" : "";
+        const length = storeDetails.holidays?.length;
+        formErrors.holidays = length === 0  || !length ? "Holidays are required" : "";
         formErrors.storeTimes = getStoreTimesErrors();
       } else {
         formErrors.holidays = "";
@@ -565,12 +600,15 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     }
 
     formErrors.radius =
-      storeDetails.radius.trim() === ""
+      storeDetails.radius?.trim() === ""
         ? "Serviceable Radius/Circle is required"
         : !isNumberOnly(storeDetails?.radius)
         ? "Please enter only digit"
         : "";
     //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
+    //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
+    formErrors.logisticsBppId = "";
+    formErrors.logisticsDeliveryType = "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
@@ -803,6 +841,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           value: storeDetails.radius || "",
         },
         logisticsBppId: storeDetails.logisticsBppId,
+        logisticsDeliveryType: storeDetails.logisticsDeliveryType,
       };
       if (location) {
         payload.location = location;
@@ -910,6 +949,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       type: "input",
                       error: errors?.["logisticsBppId"] ? true : false,
                       helperText: errors?.["logisticsBppId"] || "",
+                    }}
+                    state={storeDetails}
+                    stateHandler={setStoreDetails}
+                  />
+
+                  <RenderInput
+                    item={{
+                      id: "logisticsDeliveryType",
+                      title: "Logistics Delivery Type",
+                      placeholder: "Logistics Delivery Type",
+                      error: errors?.["logisticsDeliveryType"] ? true : false,
+                      helperText: errors?.["logisticsDeliveryType"] || "",
+                      options: deliveryTypeList,
+                      type: "select",
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}

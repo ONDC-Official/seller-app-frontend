@@ -223,6 +223,12 @@ export default function Login() {
           Forgot password
         </p>
       </NavLink>
+      <br />
+      <NavLink to="/sign-up" className="">
+        <p className="text-xs text-[#3d629ad2] hover:text-[#0066ffd2]">
+          Create New Account
+        </p>
+      </NavLink>
     </div>
   );
   return (
