@@ -28,21 +28,161 @@ export const DELIVERY_TYPE_LIST = {
 
 export const PRODUCT_SUBCATEGORY = {
     "Grocery": [
-        {value: 'Fruits and Vegetables', key: 'Fruits and Vegetables', protocolKey: "@ondc/org/mandatory_reqs_veggies_fruits"},
-        {value: 'Masala & Seasoning', key: 'Masala & Seasoning', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Oil & Ghee', key: 'Oil & Ghee', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Gourmet & World Foods', key: 'Gourmet & World Foods', protocolKey: "@ondc/org/statutory_reqs_prepackaged_food"},
-        {value: 'Foodgrains', key: 'Foodgrains', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Eggs, Meat & Fish', key: 'Eggs, Meat & Fish', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Cleaning & Household', key: 'Cleaning & Household', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Beverages', key: 'Beverages', protocolKey: "@ondc/org/statutory_reqs_prepackaged_food"},
-        {value: 'Beauty & Hygiene', key: 'Beauty & Hygiene', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Bakery, Cakes & Dairy', key: 'Bakery, Cakes & Dairy', protocolKey: "@ondc/org/statutory_reqs_prepackaged_food"},
-        {value: 'Kitchen Accessories', key: 'Kitchen Accessories', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Baby Care', key: 'Baby Care', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Snacks & Branded Foods', key: 'Snacks & Branded Foods', protocolKey: "@ondc/org/statutory_reqs_prepackaged_food"},
-        {value: 'Pet Care', key: 'Pet Care', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Stationery', key: 'Stationery', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {
+            "value": "Fruits and Vegetables",
+            "key": "Fruits and Vegetables",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Masala & Seasoning",
+            "key": "Masala & Seasoning",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Oil & Ghee",
+            "key": "Oil & Ghee",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eggs, Meat & Fish",
+            "key": "Eggs, Meat & Fish",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Cleaning & Household",
+            "key": "Cleaning & Household",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bakery, Cakes & Dairy",
+            "key": "Bakery, Cakes & Dairy",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Pet Care",
+            "key": "Pet Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Stationery",
+            "key": "Stationery",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dairy and Cheese",
+            "key": "Dairy and Cheese",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Snacks, Dry Fruits, Nuts",
+            "key": "Snacks, Dry Fruits, Nuts",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Pasta, Soup and Noodles",
+            "key": "Pasta, Soup and Noodles",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Cereals and Breakfast",
+            "key": "Cereals and Breakfast",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Sauces, Spreads and Dips",
+            "key": "Sauces, Spreads and Dips",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Chocolates and Biscuits",
+            "key": "Chocolates and Biscuits",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Cooking and Baking Needs",
+            "key": "Cooking and Baking Needs",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Tinned and Processed Food",
+            "key": "Tinned and Processed Food",
+            "protocolKey": "@ondc/org/statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Atta, Flours and Sooji",
+            "key": "Atta, Flours and Sooji",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Rice and Rice Products",
+            "key": "Rice and Rice Products",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dals and Pulses",
+            "key": "Dals and Pulses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Salt, Sugar and Jaggery",
+            "key": "Salt, Sugar and Jaggery",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Energy and Soft Drinks",
+            "key": "Energy and Soft Drinks",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Water",
+            "key": "Water",
+        },
+        {
+            "value": "Tea and Coffee",
+            "key": "Tea and Coffee",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Fruit Juices and Fruit Drinks",
+            "key": "Fruit Juices and Fruit Drinks",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Snacks and Namkeen",
+            "key": "Snacks and Namkeen",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Ready to Cook and Eat",
+            "key": "Ready to Cook and Eat",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Pickles and Chutney",
+            "key": "Pickles and Chutney",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Indian Sweets",
+            "key": "Indian Sweets",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Frozen Vegetables",
+            "key": "Frozen Vegetables",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Frozen Snacks",
+            "key": "Frozen Snacks",
+            "protocolKey": "@ondc/org//statutory_reqs_prepackaged_food"
+        },
+        {
+            "value": "Gift Voucher",
+            "key": "Gift Voucher",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
+    ],
     ],
     "Beauty & Personal Care": [
         {
