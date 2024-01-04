@@ -849,16 +849,197 @@ export const PRODUCT_SUBCATEGORY = {
         }
     ],
     "Health & Wellness": [
-        {key: "Pain Relief", value: "Pain Relief", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Nutrition and Fitness Supplements", value: "Nutrition and Fitness Supplements", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Personal Care", value: "Personal Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Speciality Care", value: "Speciality Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Covid Essentials", value: "Covid Essentials", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Diabetes Control", value: "Diabetes Control", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Healthcare Devices", value: "Healthcare Devices", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {key: "Ayush", value: "Ayush", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"}
-
-      ]
+        {
+            "value": "Pain Relief",
+            "key": "Pain Relief",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Nutrition and Fitness Supplements",
+            "key": "Nutrition and Fitness Supplements",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Speciality Care",
+            "key": "Speciality Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Covid Essentials",
+            "key": "Covid Essentials",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Diabetes Control",
+            "key": "Diabetes Control",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Healthcare & Fitness Devices",
+            "key": "Healthcare & Fitness Devices",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Ayurvedic",
+            "key": "Ayurvedic",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Homeopathy",
+            "key": "Homeopathy",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Unani and Siddha",
+            "key": "Unani and Siddha",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Elder Care",
+            "key": "Elder Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Baby Care",
+            "key": "Baby Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Orthopaedic Care",
+            "key": "Orthopaedic Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Mobility Aids",
+            "key": "Mobility Aids",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Medicated Hair Care",
+            "key": "Medicated Hair Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Medicated Skin Care",
+            "key": "Medicated Skin Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Speciality Face Cleansers",
+            "key": "Speciality Face Cleansers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gastric Care",
+            "key": "Gastric Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "ENT Care",
+            "key": "ENT Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eye Care",
+            "key": "Eye Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Cold and Cough",
+            "key": "Cold and Cough",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sexual Wellness",
+            "key": "Sexual Wellness",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Feminine Care",
+            "key": "Feminine Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Maternity Care",
+            "key": "Maternity Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Nursing and Feeding",
+            "key": "Nursing and Feeding",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Hand Wash",
+            "key": "Hand Wash",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sanitizers",
+            "key": "Sanitizers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Baby Care - Wipes and Buds",
+            "key": "Baby Care - Wipes and Buds",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Baby Care - Rash Creams",
+            "key": "Baby Care - Rash Creams",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Baby Care - Diapers and Accessories",
+            "key": "Baby Care - Diapers and Accessories",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Health and Safety",
+            "key": "Health and Safety",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Oral Care",
+            "key": "Oral Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Contraceptives",
+            "key": "Contraceptives",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Breathe Easy",
+            "key": "Breathe Easy",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Health Foods and Drinks",
+            "key": "Health Foods and Drinks",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Wound Care and Dressings",
+            "key": "Wound Care and Dressings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Surgicals",
+            "key": "Surgicals",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Mental Wellness",
+            "key": "Mental Wellness",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gift Voucher",
+            "key": "Gift Voucher",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
+    ]
 };
 
 export const FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY = {

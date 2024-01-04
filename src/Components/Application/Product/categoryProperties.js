@@ -26257,241 +26257,956 @@ export const allProperties = {
         ],
     },
     "Health & Wellness": {
-        default: [
-            { name: "Size", type: "input", example: "Large", variationAllowed: true },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
+        "Pain Relief": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Pain Relieving Ointments": [
+        "Nutrition and Fitness Supplements": [
             {
-                name: "Style",
-                type: "input",
-                example: "Art Deco",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
             },
-            { name: "Size", type: "input", example: "Large", variationAllowed: true },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Nutrition and Supplements": [
+        "Speciality Care": [
             {
-                name: "Flavour",
-                type: "input",
-                example: "Strawberry",
-                variationAllowed: true,
-            },
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
-            { name: "Scent", type: "input", example: "musk", variationAllowed: true },
-            {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            {
-                name: "PPU Count",
-                type: "input",
-                example: "6",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
             },
             {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: false,
-            },
-        ],
-        "Personal and Baby Care": [
-            { name: "Scent", type: "input", example: "musk", variationAllowed: true },
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
-            {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
             },
             {
-                name: "Itrm Form",
-                type: "input",
-                example: "Cream",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "PPU Count",
-                type: "input",
-                example: "6",
-                variationAllowed: true,
-            },
-            {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: false,
-            },
-        ],
-        "Sexual Wellness": [
-            { name: "Scent", type: "input", example: "musk", variationAllowed: true },
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
-            {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
-            },
-            {
-                name: "Item Form",
-                type: "input",
-                example: "Cream",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "PPU Count",
-                type: "input",
-                example: "6",
-                variationAllowed: true,
-            },
-            {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: false,
-            },
-        ],
-        "Gastric and Other Concerns": [
-            {
-                name: "Flavour",
-                type: "input",
-                example: "Strawberry",
-                variationAllowed: true,
-            },
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
-            { name: "Scent", type: "input", example: "musk", variationAllowed: true },
-            {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            {
-                name: "PPU Count",
-                type: "input",
-                example: "6",
-                variationAllowed: true,
-            },
-            {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: false,
-            },
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
         "Covid Essentials": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
             {
-                name: "Style",
-                type: "input",
-                example: "Cape Cod",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
             },
             {
-                name: "Material Type",
-                type: "number",
-                example: "Cotton",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: true,
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
             },
             {
-                name: "Manufacturer Part Number",
-                type: "input",
-                example: "RTC 54",
-                variationAllowed: true,
-            },
-            {
-                name: "Unit Count",
-                type: "number",
-                example: "4",
-                variationAllowed: true,
-            },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            {
-                name: "Team Name",
-                type: "input",
-                example: "Royal",
-                variationAllowed: true,
-            },
-            {
-                name: "Item Shape",
-                type: "input",
-                example: "Molded cup",
-                variationAllowed: false,
-            },
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
         "Diabetes Control": [
             {
-                name: "Flavour",
-                type: "input",
-                example: "Strawberry",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
             },
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
-            { name: "Scent", type: "input", example: "musk", variationAllowed: true },
             {
-                name: "Item Package Quantity",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
             },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Health Devices": [
+        "Healthcare & Fitness Devices": [
             {
-                name: "Thickness",
-                type: "input",
-                example: "11",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
             },
             {
-                name: "Material Type",
-                type: "input",
-                example: "Steel",
-                variationAllowed: true,
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
             },
             {
-                name: "Model",
-                type: "input",
-                example: "EEPL 456",
-                variationAllowed: true,
-            },
-            {
-                name: "Shape",
-                type: "input",
-                example: "Round",
-                variationAllowed: true,
-            },
-            { name: "Capacity", type: "input", example: "5", unit: unitCapacity },
-            {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
-            },
-            {
-                name: "Manufacturer Part Number",
-                type: "input",
-                example: "RTC 54",
-                variationAllowed: true,
-            },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
+        "Ayurvedic": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Homeopathy": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Unani and Siddha": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Elder Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Baby Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Orthopaedic Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Mobility Aids": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Medicated Hair Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Medicated Skin Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Speciality Face Cleansers": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Gastric Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "ENT Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Eye Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Cold and Cough": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Sexual Wellness": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Feminine Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Maternity Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Nursing and Feeding": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Hand Wash": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Sanitizers": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Baby Care - Wipes and Buds": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Baby Care - Rash Creams": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Baby Care - Diapers and Accessories": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Health and Safety": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Oral Care": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Contraceptives": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Breathe Easy": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Health Foods and Drinks": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Wound Care and Dressings": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Surgicals": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Mental Wellness": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Gift Voucher": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/brand**"
+            },
+            {
+                "name": "Prescription Required",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/prescription_required**"
+            },
+            {
+                "name": "Usage Instruction",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ]
     },
     "Beauty & Personal Care": {
         Fragrance: [
