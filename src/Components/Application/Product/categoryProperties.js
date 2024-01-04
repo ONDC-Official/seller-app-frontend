@@ -24663,6 +24663,24 @@ export const allProperties = {
             }
         ]
     },
+    Appliances: {
+        "Audio": [],
+        "Camera and Camcorder": [],
+        "Safety Security": [],
+        "Speaker": [],
+        "Television": [],
+        "Video": [],
+        "Air Conditioning and Air Cleaners": [],
+        "Health, Home and Personal Care": [],
+        "Heaters": [],
+        "Kitchen Appliances": [],
+        "Lighting & Electric Fans": [],
+        "Refrigerators and Freezers": [],
+        "Vacuum Cleaners": [],
+        "Washing Machines and Accessories": [],
+        "Water Purifiers and Coolers": [],
+        "Inverter & Stabilizer": []
+    },
     Electronics: {
         "Mobile Phone": [
             {

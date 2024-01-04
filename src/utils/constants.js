@@ -16,6 +16,7 @@ export const PRODUCT_CATEGORY = {
     "Electronics": "Electronics",
     "Beauty & Personal Care": "Beauty & Personal Care",
     "Fashion": "Fashion",
+    "Appliances":"Appliances",
 }
 
 export const DELIVERY_TYPE_LIST = {
@@ -183,6 +184,87 @@ export const PRODUCT_SUBCATEGORY = {
             "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
         }
     ],
+    "Appliances": [
+        {
+            "value": "Audio",
+            "key": "Audio",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Camera and Camcorder",
+            "key": "Camera and Camcorder",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Safety Security",
+            "key": "Safety Security",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Speaker",
+            "key": "Speaker",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Television",
+            "key": "Television",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Video",
+            "key": "Video",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Air Conditioning and Air Cleaners",
+            "key": "Air Conditioning and Air Cleaners",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Health, Home and Personal Care",
+            "key": "Health, Home and Personal Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Heaters",
+            "key": "Heaters",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Kitchen Appliances",
+            "key": "Kitchen Appliances",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Lighting & Electric Fans",
+            "key": "Lighting & Electric Fans",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Refrigerators and Freezers",
+            "key": "Refrigerators and Freezers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Vacuum Cleaners",
+            "key": "Vacuum Cleaners",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Washing Machines and Accessories",
+            "key": "Washing Machines and Accessories",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Water Purifiers and Coolers",
+            "key": "Water Purifiers and Coolers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Inverter & Stabilizer",
+            "key": "Inverter & Stabilizer",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
     ],
     "Beauty & Personal Care": [
         {
