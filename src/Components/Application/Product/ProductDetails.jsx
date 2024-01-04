@@ -129,7 +129,7 @@ const AddGenericProduct = ({
         title: variant.name,
         placeholder: "Example, " + variant.example,
         type: variant.type || "input",
-        required: required,
+        required: required || variant.required,
         options: variant.type === "select" ? variant.options : null,
         file_type: variant.type === "upload" ? "product_image" : null,
       };

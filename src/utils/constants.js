@@ -45,19 +45,136 @@ export const PRODUCT_SUBCATEGORY = {
         {value: 'Stationery', key: 'Stationery', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
     ],
     "Beauty & Personal Care": [
-        {value: "Bath & Body", key: "Bath & Body", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Feminine Care", key: "Feminine Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Fragrance", key: "Fragrance", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Hair Care", key: "Hair Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Make Up", key: "Make Up", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Grooming", key: "Men's Grooming", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Oral Care", key: "Oral Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Skin Care", key: "Skin Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Maternity Care", key: "Maternity Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Baby Care", key: "Baby Care", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Nursing & Feeding", key: "Nursing & Feeding", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Sexual Wellness & Sensuality", key: "Sexual Wellness & Sensuality", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Tools & Accessories", key: "Tools & Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {
+            "value": "Fragrance",
+            "key": "Fragrance",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bath Soaps and Gels",
+            "key": "Bath Soaps and Gels",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Hair Oils, Care, and Styling",
+            "key": "Hair Oils, Care, and Styling",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shampoos and Conditioners",
+            "key": "Shampoos and Conditioners",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shaving and Grooming",
+            "key": "Shaving and Grooming",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Beard Care and Tools",
+            "key": "Beard Care and Tools",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Grooming Tools and Accessories",
+            "key": "Grooming Tools and Accessories",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Nail Care",
+            "key": "Makeup - Nail Care",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Eyes",
+            "key": "Makeup - Eyes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Face",
+            "key": "Makeup - Face",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Lips",
+            "key": "Makeup - Lips",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Body",
+            "key": "Makeup - Body",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Remover",
+            "key": "Makeup - Remover",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Sets and Kits",
+            "key": "Makeup - Sets and Kits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Tools and Brushes",
+            "key": "Makeup - Tools and Brushes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Makeup - Kits and Combos",
+            "key": "Makeup - Kits and Combos",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Skin Care - Face Cleansers",
+            "key": "Skin Care - Face Cleansers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Skin Care - Hand and Feet",
+            "key": "Skin Care - Hand and Feet",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Body Care - Cleansers",
+            "key": "Body Care - Cleansers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Body Care - Moisturizers",
+            "key": "Body Care - Moisturizers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Body Care - Loofah and Other Tools",
+            "key": "Body Care - Loofah and Other Tools",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Body Care - Bath Salt and Additives",
+            "key": "Body Care - Bath Salt and Additives",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Hair Care - Shampoo, Oils, Conditioners",
+            "key": "Hair Care - Shampoo, Oils, Conditioners",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Skin Care - Lotions, Moisturisers, and Creams",
+            "key": "Skin Care - Lotions, Moisturisers, and Creams",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Skin Care - Oils and Serums",
+            "key": "Skin Care - Oils and Serums",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gift Voucher",
+            "key": "Gift Voucher",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
     ],
     "Fashion": [
         {value: "Men's Fashion Accessories", key: "Men's Fashion Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
