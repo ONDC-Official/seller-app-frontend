@@ -25998,263 +25998,1433 @@ export const allProperties = {
             },
         ],
     },
-    "Home & Decor": {
+    "Home & Kitchen": {
         "Home Decor": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
             {
-                name: "Style",
-                type: "input",
-                example: "modern",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
             {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: false,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Pattern",
-                type: "input",
-                example: "Sripped",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "Model",
-                type: "input",
-                example: "AB-12",
-                variationAllowed: true,
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
             },
             {
-                name: "Manufacturer Part Number",
-                type: "float",
-                example: "A-112",
-                variationAllowed: false,
-            },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            { name: "Wattage", type: "input", example: "", unit: unitWattage },
-            {
-                name: "Unit Count",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Shape",
-                type: "input",
-                example: "Round",
-                variationAllowed: true,
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Home Furnishings": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
+        "Furniture": [
             {
-                name: "Style",
-                type: "input",
-                example: "modern",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
-            },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
             {
-                name: "Pattern",
-                type: "input",
-                example: "Sripped",
-                variationAllowed: true,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "Display Weight", type: "input", example: "5", unit: unitWeight },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        Furniture: [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
+        "Home Furnishing - Bedding and Linen": [
             {
-                name: "Style",
-                type: "input",
-                example: "modern",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
             {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: true,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Pattern",
-                type: "input",
-                example: "Sripped",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "Unit Count",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
             },
             {
-                name: "Model",
-                type: "input",
-                example: "AB-12",
-                variationAllowed: true,
-            },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
-            {
-                name: "Team Name",
-                type: "input",
-                example: "chennai super kings",
-                variationAllowed: true,
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Shape",
-                type: "input",
-                example: "Round",
-                variationAllowed: true,
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Garden and Outdoor Products": [
+        "Cleaning Supplies": [
             {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Home Improvement": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
+        "Electricals": [
             {
-                name: "Style",
-                type: "input",
-                example: "modern",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Cookware and Dining": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
+        "Bathroom and Kitchen fixtures": [
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
             {
-                name: "Pattern",
-                type: "input",
-                example: "Sripped",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "Unit Count",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Model",
-                type: "input",
-                example: "AB-12",
-                variationAllowed: true,
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
             },
             {
-                name: "Shape",
-                type: "input",
-                example: "Round",
-                variationAllowed: true,
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "Capacity", type: "input", example: "", unit: unitCapacity },
             {
-                name: "Manufacturer Part Number",
-                type: "float",
-                example: "A-112",
-                variationAllowed: true,
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Storage and Organisation": [
-            { name: "Size", type: "input", example: "small", variationAllowed: true },
+        "Garden & Outdoor": [
             {
-                name: "Style",
-                type: "input",
-                example: "modern",
-                variationAllowed: true,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Number of Items",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
             },
             {
-                name: "Material Type",
-                type: "input",
-                example: "wood",
-                variationAllowed: true,
-            },
-            { name: "Item Weight", type: "input", example: "5", unit: unitWeight },
-            {
-                name: "Unit Count",
-                type: "number",
-                example: "6",
-                variationAllowed: true,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "Team Name",
-                type: "input",
-                example: "Lions",
-                variationAllowed: true,
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
             },
             {
-                name: "Model",
-                type: "input",
-                example: "AB-12",
-                variationAllowed: true,
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "Color", type: "input", example: "", variationAllowed: true },
             {
-                name: "Shape",
-                type: "input",
-                example: "Round",
-                variationAllowed: true,
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
+        "Sports and Fitness Equipment": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Cookware": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Serveware": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Kitchen Storage and Containers": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Kitchen Tools": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Closet/Laundry/Shoe Organization": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Toys and Games": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Stationery": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/colour**"
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Material",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": "propertyEnums/material**"
+            },
+            {
+                "name": "Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Assembly Required",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Care Instructions",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Features",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Gift Voucher": []
     },
     "Health & Wellness": {
         "Pain Relief": [

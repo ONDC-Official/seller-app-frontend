@@ -11,7 +11,7 @@ export const MAX_STRING_LENGTH_13 = 13;
 export const PRODUCT_CATEGORY = {
     "Grocery": "Grocery",
     "F&B": "F&B",
-    "Home & Decor": "Home & Decor",
+    "Home & Kitchen": "Home & Kitchen",
     "Health & Wellness": "Health & Wellness",
     "Electronics": "Electronics",
     "Beauty & Personal Care": "Beauty & Personal Care",
@@ -713,14 +713,87 @@ export const PRODUCT_SUBCATEGORY = {
             "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
         }
     ],
-    "Home & Decor": [
-        {value: 'Home Decor', key: 'Home Decor', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Home Furnishings', key: 'Home Furnishings', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Furniture', key: 'Furniture', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Garden and Outdoor Products', key: 'Garden and Outdoor Products', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Home Improvement', key: 'Home Improvement', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'Cookware and Dining', key: 'Cookware and Dining', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: 'torage and Organisation', key: 'Storage and Organisation', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+    "Home & Kitchen": [
+        {
+            "value": "Home Decor",
+            "key": "Home Decor",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Furniture",
+            "key": "Furniture",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Home Furnishing - Bedding and Linen",
+            "key": "Home Furnishing - Bedding and Linen",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Cleaning Supplies",
+            "key": "Cleaning Supplies",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Electricals",
+            "key": "Electricals",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bathroom and Kitchen fixtures",
+            "key": "Bathroom and Kitchen fixtures",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Garden & Outdoor",
+            "key": "Garden & Outdoor",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sports and Fitness Equipment",
+            "key": "Sports and Fitness Equipment",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Cookware",
+            "key": "Cookware",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Serveware",
+            "key": "Serveware",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Kitchen Storage and Containers",
+            "key": "Kitchen Storage and Containers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Kitchen Tools",
+            "key": "Kitchen Tools",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Closet/Laundry/Shoe Organization",
+            "key": "Closet/Laundry/Shoe Organization",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Toys and Games",
+            "key": "Toys and Games",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Stationery",
+            "key": "Stationery",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gift Voucher",
+            "key": "Gift Voucher",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
     ],
     "F&B": [
         {value: "Baklava", key: "Baklava", protocolKey: "@ondc/org/mandatory_reqs_veggies_fruits"},
