@@ -797,32 +797,57 @@ export const PRODUCT_SUBCATEGORY = {
         {value: "Yogurt", key: "Yogurt", protocolKey: "@ondc/org/mandatory_reqs_veggies_fruits"}
     ],
     "Electronics": [
-        {value: "Audio", key: "Audio", protocolKey: ""},
-        {value: "Camera and Camcorder", key: "Camera and Camcorder", protocolKey: ""},
-        {value: "Computer Peripheral", key: "Computer Peripheral", protocolKey: ""},
-        {value: "Desktop and Laptop", key: "Desktop and Laptop", protocolKey: ""},
-        {value: "Earphone", key: "Earphone", protocolKey: ""},
-        {value: "Gaming", key: "Gaming", protocolKey: ""},
-        {value: "Headphone", key: "Headphone", protocolKey: ""},
-        {value: "Mobile Phone", key: "Mobile Phone", protocolKey: ""},
-        {value: "Mobile Accessories", key: "Mobile Accessories", protocolKey: ""},
-        {value: "Safety Security", key: "Safety Security", protocolKey: ""},
-        {value: "Smart Watches", key: "Smart Watches", protocolKey: ""},
-        {value: "Speaker", key: "Speaker", protocolKey: ""},
-        {value: "Television", key: "Television", protocolKey: ""},
-        {value: "Video", key: "Video", protocolKey: ""},
-        {value: "Air Conditioning and Air Cleaners", key: "Air Conditioning and Air Cleaners", protocolKey: ""},
-        {value: "Health, Home and Personal Care", key: "Health, Home and Personal Care", protocolKey: ""},
-        {value: "Heaters", key: "Heaters", protocolKey: ""},
-        {value: "Kitchen Appliances", key: "Kitchen Appliances", protocolKey: ""},
-        {value: "Lighting & Electric Fans", key: "Lighting & Electric Fans", protocolKey: ""},
-        {value: "Refrigerators and Freezers", key: "Refrigerators and Freezers", protocolKey: ""},
-        {value: "Vacuum Cleaners", key: "Vacuum Cleaners", protocolKey: ""},
-        {value: "Washing Machines and Accessories", key: "Washing Machines and Accessories", protocolKey: ""},
-        {value: "Water Purifiers and Coolers", key: "Water Purifiers and Coolers", protocolKey: ""},
-        {value: "Inverter & Stabilizer", key: "Inverter & Stabilizer", protocolKey: ""
+        {
+            "value": "Mobile Phone",
+            "key": "Mobile Phone",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Smart Watch",
+            "key": "Smart Watch",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Headset",
+            "key": "Headset",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Laptop",
+            "key": "Laptop",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Desktop",
+            "key": "Desktop",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Tablet",
+            "key": "Tablet",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Keyboard",
+            "key": "Keyboard",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Monitor",
+            "key": "Monitor",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Mouse",
+            "key": "Mouse",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Power Bank",
+            "key": "Power Bank",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
         }
-      ],
+    ],
     "Health & Wellness": [
         {key: "Pain Relief", value: "Pain Relief", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
         {key: "Nutrition and Fitness Supplements", value: "Nutrition and Fitness Supplements", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},

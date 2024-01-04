@@ -24664,183 +24664,1117 @@ export const allProperties = {
         ]
     },
     Electronics: {
-        default: [
-            {
-                name: "brand",
-                type: "input",
-                example: "Apple iPhone",
-                variationAllowed: false,
-            },
-            {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
-            },
-            { name: "size", type: "input", example: "512GB", variationAllowed: true },
-        ],
         "Mobile Phone": [
             {
-                name: "brand",
-                type: "input",
-                example: "Apple iPhone",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
-            { name: "size", type: "input", example: "512GB", variationAllowed: true },
+            {
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.colour
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "RAM",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "RAM unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.ram_unit
+            },
+            {
+                "name": "ROM",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "ROM unit",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.rom_unit
+            },
+            {
+                "name": "Storage",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Storage unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_unit
+            },
+            {
+                "name": "Screen Size",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Primary Camera",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Secondary Camera",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "CPU",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "GPU",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Battery Capacity",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Version",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Connectivity",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.connectivity
+            },
+            {
+                "name": "Form factor",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        Earphone: [
+        "Smart Watch": [
             {
-                name: "brand",
-                type: "input",
-                example: "Samsung",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "model",
-                type: "input",
-                example: "Galaxy Bean Buds Live",
-                variationAllowed: false,
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "connectivity",
-                type: "input",
-                example: "wireless",
-                variationAllowed: true,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.colour
             },
             {
-                name: "form_factor",
-                type: "input",
-                example: "In Ear",
-                variationAllowed: false,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "Screen Size",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        Headphone: [
+        "Headset": [
             {
-                name: "brand",
-                type: "input",
-                example: "Samsung",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "model",
-                type: "input",
-                example: "Galaxy Bean Buds Live",
-                variationAllowed: false,
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "connectivity",
-                type: "input",
-                example: "wireless",
-                variationAllowed: true,
+                "name": "Connectivity",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.connectivity
             },
             {
-                name: "form_factor",
-                type: "input",
-                example: "In Ear",
-                variationAllowed: false,
+                "name": "Form factor",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Smart Watches": [
+        "Laptop": [
             {
-                name: "brand",
-                type: "input",
-                example: "Boat",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "model",
-                type: "input",
-                example: "Ultima Call Max",
-                variationAllowed: false,
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.colour
             },
             {
-                name: "style",
-                type: "input",
-                example: "Modern",
-                variationAllowed: true,
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "screen_size",
-                type: "input",
-                example: '1.99"',
-                variationAllowed: true,
+                "name": "RAM",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "RAM unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.ram_unit
+            },
+            {
+                "name": "ROM",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "ROM unit",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.rom_unit
+            },
+            {
+                "name": "Storage",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Storage unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_unit
+            },
+            {
+                "name": "Storage Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_type
+            },
+            {
+                "name": "Screen Size",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "CPU",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "GPU",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Battery Capacity",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Version",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Includes",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
-        "Desktop and Laptop": [
+        "Desktop": [
             {
-                name: "brand",
-                type: "input",
-                example: "Apple",
-                variationAllowed: false,
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "color",
-                type: "select",
-                example: "Black",
-                options: generateKeyValue( fashionColors ),
-                variationAllowed: true,
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "model",
-                type: "input",
-                example: "MacBook Air",
-                variationAllowed: false,
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "screen_size",
-                type: "input",
-                example: '13"',
-                variationAllowed: true,
-            },
-            { name: "memory", type: "input", example: "8GB", variationAllowed: true },
-            {
-                name: "cpu",
-                type: "input",
-                example: "Core M family",
-                variationAllowed: false,
+                "name": "RAM",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
             {
-                name: "cpu_mfr",
-                type: "input",
-                example: "Intel",
-                variationAllowed: false,
+                "name": "RAM unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.ram_unit
             },
             {
-                name: "storage",
-                type: "input",
-                example: '256GB"',
-                variationAllowed: true,
+                "name": "ROM",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
             },
+            {
+                "name": "ROM unit",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.rom_unit
+            },
+            {
+                "name": "Storage",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Storage unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_unit
+            },
+            {
+                "name": "Storage Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_type
+            },
+            {
+                "name": "Screen Size",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "CPU",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "GPU",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Battery Capacity",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Version",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Form factor",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Includes",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
         ],
+        "Tablet": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "RAM",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "RAM unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.ram_unit
+            },
+            {
+                "name": "ROM",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "ROM unit",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.rom_unit
+            },
+            {
+                "name": "Storage",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Storage unit",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_unit
+            },
+            {
+                "name": "Storage Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.storage_type
+            },
+            {
+                "name": "Screen Size",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "CPU",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "GPU",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Battery Capacity",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Type",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "OS Version",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Includes",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Keyboard": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.colour
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Connectivity",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.connectivity
+            },
+            {
+                "name": "Compatible Devices",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.compatible_devices
+            },
+            {
+                "name": "Includes",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Monitor": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Screen Size",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Special Feature",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.special_feature
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Mouse": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Colour",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.colour
+            },
+            {
+                "name": "Colour Name",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Connectivity",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.connectivity
+            },
+            {
+                "name": "Special Feature",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "select",
+                "options": propertyEnums.special_feature
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ],
+        "Power Bank": [
+            {
+                "name": "Brand",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Model Year",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Weight",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Length",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Breadth",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Height",
+                "required": true,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            },
+            {
+                "name": "Refurbished",
+                "required": false,
+                "example": "",
+                "variationAllowed": false,
+                "type": "input"
+            }
+        ]
     },
     Grocery: {
         "Fruits and Vegetables": [],
