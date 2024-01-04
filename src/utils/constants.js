@@ -177,39 +177,541 @@ export const PRODUCT_SUBCATEGORY = {
         }
     ],
     "Fashion": [
-        {value: "Men's Fashion Accessories", key: "Men's Fashion Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Footwear Accessories", key: "Men's Footwear Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Topwear", key: "Men's Topwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Bottomwear", key: "Men's Bottomwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Innerwear & Sleepwear", key: "Men's Innerwear & Sleepwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Bags & Luggage", key: "Men's Bags & Luggage", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Eyewear", key: "Men's Eyewear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Footwear", key: "Men's Footwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Men's Jewellery", key: "Men's Jewellery", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Fashion Accessories", key: "Women's Fashion Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Footwear Accessories", key: "Women's Footwear Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Indian & Fusion Wear", key: "Women's Indian & Fusion Wear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Western Wear", key: "Women's Western Wear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Lingerie & Sleepwear", key: "Women's Lingerie & Sleepwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Bags & Luggage", key: "Women's Bags & Luggage", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Eyewear", key: "Women's Eyewear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Footwear", key: "Women's Footwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Women's Jewellery", key: "Women's Jewellery", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Boy's Clothing", key: "Boy's Clothing", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Boy's Footwear", key: "Boy's Footwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Girl's Clothing", key: "Girl's Clothing", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Girl's Footwear", key: "Girl's Footwear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant's Wear", key: "Infant's Wear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant Care & Accessories", key: "Infant Care & Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant Feeding & Nursing Essentials", key: "Infant Feeding & Nursing Essentials", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant Bath Accessories", key: "Infant Bath Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant Health & Safety", key: "Infant Health & Safety", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Infant Diapers & Toilet Training", key: "Infant Diapers & Toilet Training", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Kid's Towels & Wrappers", key: "Kid's Towels & Wrappers", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Kid's Fashion Accessories", key: "Kid's Fashion Accessories", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Kid's Jewellery", key: "Kid's Jewellery", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Kid's Eyewear", key: "Kid's Eyewear", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
-        {value: "Kid's Bags & Luggage", key: "Kid's Bags & Luggage", protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
+        {
+            "value": "Shirts",
+            "key": "Shirts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "T Shirts",
+            "key": "T Shirts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sweatshirts",
+            "key": "Sweatshirts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Kurtas & Kurta Sets",
+            "key": "Kurtas & Kurta Sets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Jackets & Coats",
+            "key": "Jackets & Coats",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sweaters",
+            "key": "Sweaters",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Suits",
+            "key": "Suits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sherwanis",
+            "key": "Sherwanis",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Track Shirts",
+            "key": "Track Shirts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Track Suits",
+            "key": "Track Suits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Unstitched Fabrics",
+            "key": "Unstitched Fabrics",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dresses",
+            "key": "Dresses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Tops",
+            "key": "Tops",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Trousers",
+            "key": "Trousers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Capris",
+            "key": "Capris",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Coordinates",
+            "key": "Coordinates",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Playsuits",
+            "key": "Playsuits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Jumpsuits",
+            "key": "Jumpsuits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shrugs & Blouses",
+            "key": "Shrugs & Blouses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Blazers & Waistcoats",
+            "key": "Blazers & Waistcoats",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Tights, Leggings & Jeggings",
+            "key": "Tights, Leggings & Jeggings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Track Pants",
+            "key": "Track Pants",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Jeans",
+            "key": "Jeans",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shorts",
+            "key": "Shorts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Joggers",
+            "key": "Joggers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dhotis & Dhoti Pants",
+            "key": "Dhotis & Dhoti Pants",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Churidars",
+            "key": "Churidars",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Salwars",
+            "key": "Salwars",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dungarees & Jumpsuits",
+            "key": "Dungarees & Jumpsuits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Skirts",
+            "key": "Skirts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Clothing Sets",
+            "key": "Clothing Sets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Belts",
+            "key": "Belts",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Caps & Hats",
+            "key": "Caps & Hats",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Kurtis, Tunics",
+            "key": "Kurtis, Tunics",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sarees",
+            "key": "Sarees",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Ethnic Wear",
+            "key": "Ethnic Wear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Palazzos",
+            "key": "Palazzos",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dress Materials",
+            "key": "Dress Materials",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Lehenga Cholis",
+            "key": "Lehenga Cholis",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Dupattas & Shawls",
+            "key": "Dupattas & Shawls",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Burqas & Hijabs",
+            "key": "Burqas & Hijabs",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Blouses",
+            "key": "Blouses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Blouse Pieces",
+            "key": "Blouse Pieces",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Briefs",
+            "key": "Briefs",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Boxers",
+            "key": "Boxers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Vests",
+            "key": "Vests",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Robes",
+            "key": "Robes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Night Suits",
+            "key": "Night Suits",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Thermal Wear",
+            "key": "Thermal Wear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Swim Bottoms",
+            "key": "Swim Bottoms",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Swimwear",
+            "key": "Swimwear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bra",
+            "key": "Bra",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shapewear",
+            "key": "Shapewear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sleepwear & Loungewear",
+            "key": "Sleepwear & Loungewear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Camisoles",
+            "key": "Camisoles",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Lingerie Sets & Accessories",
+            "key": "Lingerie Sets & Accessories",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bath Robes",
+            "key": "Bath Robes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Towels",
+            "key": "Towels",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Pyjamas",
+            "key": "Pyjamas",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Party Wear",
+            "key": "Party Wear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Innerwear & Sleepwear",
+            "key": "Innerwear & Sleepwear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Nightwear & Loungewear",
+            "key": "Nightwear & Loungewear",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Watches",
+            "key": "Watches",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gloves",
+            "key": "Gloves",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Socks",
+            "key": "Socks",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Stockings",
+            "key": "Stockings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Laces",
+            "key": "Laces",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Soles & Charms",
+            "key": "Soles & Charms",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shoe Racks & Organisers",
+            "key": "Shoe Racks & Organisers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Shoe Care - Accessories",
+            "key": "Shoe Care - Accessories",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Flip-Flops & Flats",
+            "key": "Flip-Flops & Flats",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sandals & Floaters",
+            "key": "Sandals & Floaters",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Backpacks",
+            "key": "Backpacks",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Handbags",
+            "key": "Handbags",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Trolley, Luggage & Suitcases",
+            "key": "Trolley, Luggage & Suitcases",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Formal Shoes",
+            "key": "Formal Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Casual Shoes",
+            "key": "Casual Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sports Shoes",
+            "key": "Sports Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Outdoor Shoes",
+            "key": "Outdoor Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Work & Safety Shoes",
+            "key": "Work & Safety Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Ethnic Shoes",
+            "key": "Ethnic Shoes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Boots",
+            "key": "Boots",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Heels",
+            "key": "Heels",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Contact Lenses",
+            "key": "Contact Lenses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eye Glasses",
+            "key": "Eye Glasses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eye Glass Frames",
+            "key": "Eye Glass Frames",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Sunglasses",
+            "key": "Sunglasses",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Contact Lens Cases",
+            "key": "Contact Lens Cases",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Contact Lens Solutions",
+            "key": "Contact Lens Solutions",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Contact Lens Tweezers",
+            "key": "Contact Lens Tweezers",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eyeglasses Pouches & Cases",
+            "key": "Eyeglasses Pouches & Cases",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Microfiber Wipes",
+            "key": "Microfiber Wipes",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Eyewear Slings",
+            "key": "Eyewear Slings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bracelets",
+            "key": "Bracelets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Chains",
+            "key": "Chains",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Mangalsutra",
+            "key": "Mangalsutra",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Anklets",
+            "key": "Anklets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Bangles & Bracelets",
+            "key": "Bangles & Bracelets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Necklaces",
+            "key": "Necklaces",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Earrings",
+            "key": "Earrings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Jewellery Sets",
+            "key": "Jewellery Sets",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Nosepins & Noserings",
+            "key": "Nosepins & Noserings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Pendants",
+            "key": "Pendants",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Rings",
+            "key": "Rings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Toe Rings",
+            "key": "Toe Rings",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Gold Coins",
+            "key": "Gold Coins",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        },
+        {
+            "value": "Brooch",
+            "key": "Brooch",
+            "protocolKey": "@ondc/org/statutory_reqs_packaged_commodities"
+        }
     ],
     "Home & Decor": [
         {value: 'Home Decor', key: 'Home Decor', protocolKey: "@ondc/org/statutory_reqs_packaged_commodities"},
