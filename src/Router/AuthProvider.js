@@ -31,7 +31,8 @@ export const AuthProvider = ({ children }) => {
       else {
         if (u?.role?.name == "Organization Admin") {
           getOrgDetails(u?.organization).then((org) => {
-            if (isObjEmpty(org?.storeDetails)) navigate("/initial-steps");
+            let category = org?.storeDetails?.category;
+            if (!category) navigate(`/application/store-details/${u.organization}`);
           });
         }
       }

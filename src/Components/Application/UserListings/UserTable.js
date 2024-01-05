@@ -91,23 +91,13 @@ const ThreeDotsMenu = (props) => {
         }}
       >
         {isProvider && (
-          <MenuItem
-            onClick={() =>
-              navigate(
-                `/user-listings/provider-details/${row?.organization?._id}`
-              )
-            }
-          >
+          <MenuItem onClick={() => navigate(`/user-listings/provider-details/${row?.organization?._id}`)}>
             View
           </MenuItem>
         )}
         <MenuItem onClick={(e) => action(e, "enable")}>Mark as Active</MenuItem>
-        <MenuItem onClick={(e) => action(e, "disable")}>
-          Mark as Inactive
-        </MenuItem>
-        {row.bannedUser && (
-          <MenuItem onClick={(e) => action(e, "unlock")}>Unlock user</MenuItem>
-        )}
+        <MenuItem onClick={(e) => action(e, "disable")}>Mark as Inactive</MenuItem>
+        {row.bannedUser && <MenuItem onClick={(e) => action(e, "unlock")}>Unlock user</MenuItem>}
       </Menu>
     </div>
   );
@@ -204,16 +194,14 @@ const UserTable = (props) => {
                         <TableCell key={column.id} align={column.align}>
                           <Stack direction="row" spacing={2}>
                             <span>{value}</span>
-                            {row.bannedUser && (
-                              <LockOutlined sx={{ color: "red" }} />
-                            )}
+                            {row.bannedUser && <LockOutlined sx={{ color: "red" }} />}
                           </Stack>
                         </TableCell>
                       );
                     } else if (column.id == "providerName") {
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {row.organization.name}
+                          {row?.organization?.name}
                         </TableCell>
                       );
                     }

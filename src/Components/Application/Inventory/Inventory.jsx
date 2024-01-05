@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../../Shared/Navbar";
 import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -7,8 +6,40 @@ import { useNavigate } from "react-router-dom";
 import { getCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
-import { PRODUCT_CATEGORY } from '../../../utils/constants';
-import { useTheme } from '@mui/material/styles';
+import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { useTheme } from "@mui/material/styles";
+import FilterComponent from "../../Shared/FilterComponent";
+
+const filterFields = [
+  {
+    id: "name",
+    title: "",
+    placeholder: "Search by Product Name",
+    type: "input",
+    variant: "standard",
+  },
+  {
+    id: "category",
+    title: "",
+    placeholder: "Please Select Product Category",
+    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+      return { key: value, value: key };
+    }),
+    type: "select",
+    variant: "standard",
+    disableClearable: true,
+  },
+  {
+    id: "stock",
+    title: "Out of Stock",
+    placeholder: "Please Select Product Category",
+    type: "switch",
+    containerClasses: "flex items-center",
+    styles: {
+      marginLeft: 2,
+    },
+  },
+];
 
 const columns = [
   { id: "productName", label: "Product Name", minWidth: 100 },
@@ -57,6 +88,12 @@ export default function Inventory() {
   const { cancellablePromise } = useCancellablePromise();
   const [products, setProducts] = useState([]);
 
+  const [filters, setFilters] = useState({
+    name: "",
+    category: "",
+    stock: false,
+  });
+
   const getProducts = async () => {
     try {
       const res = await cancellablePromise(getCall(`/api/v1/products?limit=${rowsPerPage}&offset=${page}`));
@@ -102,11 +139,42 @@ export default function Inventory() {
     getProducts();
   };
 
+  const onReset = () => {
+    setFilters({ name: "", category: null, stock: false });
+    getProducts();
+  };
+
+  const onFilter = async () => {
+    const filterParams = [];
+    if (filters.name.trim() !== "") {
+      filterParams.push(`name=${encodeURIComponent(filters.name)}`);
+    }
+
+    if (filters.category != undefined && filters.category !== "") {
+      filterParams.push(`category=${encodeURIComponent(filters.category)}`);
+    }
+
+    if (!filters.stock) {
+      filterParams.push(`stock=inStock`);
+    } else {
+      filterParams.push(`stock=outOfStock`);
+    }
+
+    const queryString = filterParams.join("&");
+    const url = `/api/v1/products?${queryString}`;
+
+    const res = await cancellablePromise(getCall(url));
+    setProducts(res.data);
+    setTotalRecords(res.count);
+  };
+
   return (
     <>
       <div className="container mx-auto my-8">
         <div className="mb-4 flex flex-row justify-between items-center">
-          <label style={{color: theme.palette.primary.main}} className="font-semibold text-2xl">Inventory</label>
+          <label style={{ color: theme.palette.primary.main }} className="font-semibold text-2xl">
+            Inventory
+          </label>
           <div className="flex">
             <div style={{ marginRight: 15 }}>
               <Button
@@ -114,7 +182,7 @@ export default function Inventory() {
                 icon={<AddIcon />}
                 title="Bulk upload"
                 onClick={() => navigate("/application/bulk-upload")}
-                />
+              />
             </div>
             <Button
               variant="contained"
@@ -125,6 +193,13 @@ export default function Inventory() {
             />
           </div>
         </div>
+        <FilterComponent
+          fields={filterFields}
+          state={filters}
+          stateHandler={setFilters}
+          onReset={onReset}
+          onFilter={onFilter}
+        />
         <InventoryTable
           columns={columns}
           data={products}
