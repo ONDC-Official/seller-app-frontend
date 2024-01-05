@@ -18,11 +18,13 @@ import {
   Select,
   Box,
   Stack,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { postCall } from "../../../Api/axios.js";
 import cogoToast from "cogo-toast";
 import { EditOutlined } from "@mui/icons-material";
+import { RETURN_REJECT_REASONS } from "./return-reject-reasons.js";
 
 const RETURN_ORDER_STATUS = {
   Return_Initiated: "Return Initiated",
@@ -40,6 +42,12 @@ const StyledTableCell = styled(TableCell)({
 const ActionMenu = ({ row, handleRefresh }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [orderStatus, setOrderStatus] = useState(null);
+  const [reason, setReason] = useState(null);
+  // STATES
+  const [inlineError, setInlineError] = useState({
+    selected_status_error: "",
+    reason_error: "",
+  });
 
   const handleClick = (e) => {
     setOrderStatus(null);
@@ -51,12 +59,39 @@ const ActionMenu = ({ row, handleRefresh }) => {
     setAnchorEl(null);
   };
 
+  // use this function to check if any order is selected
+  function checkIsOrderStatus() {
+    if (!orderStatus) {
+      setInlineError((error) => ({
+        ...error,
+        selected_status_error: "Please select status",
+      }));
+      return false;
+    }
+    return true;
+  }
+
+  // use this function to check if any reason is selected
+  function checkReason() {
+    if (!reason) {
+      setInlineError((error) => ({
+        ...error,
+        reason_error: "Please select reason",
+      }));
+      return false;
+    }
+    return true;
+  }
+
   const updateReturnState = () => {
     const url = `/api/v1/orders/${row.orderId}/item/return`;
-    const data = {
+    let data = {
       id: row._id,
       state: orderStatus,
     };
+    if(orderStatus === RETURN_ORDER_STATUS.Reject){
+      data.reason = reason;
+    }else{}
     postCall(url, data)
       .then((resp) => {
         cogoToast.success("Status updated successfully");
@@ -72,7 +107,7 @@ const ActionMenu = ({ row, handleRefresh }) => {
   return (
     <>
       <Tooltip title="Update status">
-        <IconButton color="primary" disabled={row.state !== "Return_Initiated"}>
+        <IconButton color="primary" disabled={row.state == "Return_Initiated"}>
           <EditOutlined onClick={handleClick} />
         </IconButton>
       </Tooltip>
@@ -97,14 +132,52 @@ const ActionMenu = ({ row, handleRefresh }) => {
                 id="demo-simple-select"
                 value={orderStatus}
                 label="Select Status"
-                onChange={(e) => setOrderStatus(e.target.value)}
+                onChange={(e) => {
+                  setInlineError((error) => ({
+                    ...error,
+                    selected_status_error: "",
+                  }));
+                  setOrderStatus(e.target.value);
+                }}
               >
                 <MenuItem value={RETURN_ORDER_STATUS.Liquidated}>
                   Liquidate
                 </MenuItem>
                 <MenuItem value={RETURN_ORDER_STATUS.Reject}>Reject</MenuItem>
               </Select>
+              {inlineError.selected_status_error && <Typography color="error" variant="subtitle2" style={{marginLeft: '5px'}}>{inlineError.selected_status_error}</Typography>}
             </FormControl>
+            {
+              orderStatus === RETURN_ORDER_STATUS.Reject && (
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Select Reason
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={reason}
+                    label="Select Status"
+                    onChange={(e) => {
+                      setInlineError((error) => ({
+                        ...error,
+                        reason_error: "",
+                      }));
+                      setReason(e.target.value);
+                    }}
+                  >
+                    {
+                      RETURN_REJECT_REASONS.map((reason, reasonIndex) => (
+                        <MenuItem key={`reason-${reasonIndex}`} value={reason.key} style={{maxWidth: '500px'}}>
+                          {reason.value}
+                        </MenuItem>
+                      ))
+                    }
+                  </Select>
+                  {inlineError.reason_error && <Typography color="error" variant="subtitle2" style={{marginLeft: '5px'}}>{inlineError.reason_error}</Typography>}
+                </FormControl>
+              )
+            }
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <Button size="small" variant="outlined" onClick={handleClose}>
                 Cancel
@@ -112,7 +185,17 @@ const ActionMenu = ({ row, handleRefresh }) => {
               <Button
                 size="small"
                 variant="contained"
-                onClick={updateReturnState}
+                onClick={() => {
+                  let allCheckPassed = true;
+                  if(orderStatus === RETURN_ORDER_STATUS.Reject){
+                    allCheckPassed = [checkIsOrderStatus(), checkReason()].every(Boolean)
+                  }else{
+                    allCheckPassed = [checkIsOrderStatus()].every(Boolean);
+                  }
+                  if (!allCheckPassed) return;
+
+                  updateReturnState()
+                }}
               >
                 Update
               </Button>
