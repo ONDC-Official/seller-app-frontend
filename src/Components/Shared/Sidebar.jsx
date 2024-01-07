@@ -51,8 +51,8 @@ export default function Sidebar(props) {
     getUser(user_id).then((userData) => {
       getOrgDetails(userData.organization).then((org) => {
         setCategory(org?.storeDetails?.category);
-      })
-    })
+      });
+    });
   }, []);
 
   React.useEffect(() => {
@@ -111,12 +111,24 @@ export default function Sidebar(props) {
                     <ListItemText primary="Inventory" />
                   </ListItemButton>
                 </NavLink>
-                <NavLink  to={{
+                <NavLink
+                  to={{
                     pathname: `/application/menu-category/${category}`,
                   }}
-                   className="no-underline text-black">
+                  className="no-underline text-black"
+                >
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemText primary="Custom Menu" />
+                  </ListItemButton>
+                </NavLink>
+                <NavLink
+                  to={{
+                    pathname: `/application/customizations`,
+                  }}
+                  className="no-underline text-black"
+                >
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="Customizations" />
                   </ListItemButton>
                 </NavLink>
                 <NavLink
