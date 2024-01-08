@@ -1,121 +1,1822 @@
-const unitWeight = [ "LB", "KG", "GR", "Hundredths Pounds", "MG", "Tons", "OZ" ];
-const unitWattage = [
-    "Watt",
-    "Hours",
-    "Picowatts",
-    "Milliamp Hours",
-    "Milliwatts",
-    "Microwatts",
-    "Kilowatt Hours",
-    "Kilowatts",
-    "Nanowatts",
-    "Watts",
-];
-const unitMemory = [ "MB", "GB", "TB" ];
-const unitLength = [
-    "FT",
-    "CM",
-    "MM",
-    "DM",
-    "Picometre",
-    "µM",
-    true,
-    "Miles",
-    "Yards",
-    "Mils",
-    "IN",
-    "Nanometre",
-    "Hundredths-Inches",
-    "Kilometres",
-    "Angstrom",
-];
-const unitCapacity = [
-    "liters",
-    "Quarts",
-    "Fluid Ounces",
-    "ounces",
-    "milliliters",
-    "Cubic Feet",
-    "Microliters",
-    "Cubic Centimeters",
-    "Pints",
-    "Gallons",
-    "pounds",
-    "Tons",
-    "Cubic Inches",
-    "kilograms",
-];
-const unitOptical = [ "diopters" ];
-const unitLensPower = [
-    "milliwatts",
-    "microwatts",
-    "horsepower",
-    "nanowatts",
-    "picowatts",
-    "watts",
-];
-const unitGraduation = [
-    "Feet",
-    "centimeters",
-    "millimeters",
-    "Decimeters",
-    "Pints",
-    "Inches",
-    "gallons",
-    "Cubic Meters",
-    "nanometer",
-    "Hundredths-Inches",
-    "Ten Thousandths Inches",
-    "Cubic Centimeters",
-    "Quarts",
-    "picometer",
-    "milliliters",
-    "Kilometers",
-    "Fluid Ounces",
-    "Cubic Yards",
-    "Meters",
-    "micrometer",
-    "Cubic Inches",
-    "Imperial Gallons",
-    "Yards",
-    "Cubic Feet",
-    "Miles",
-    "Thousandths Inches",
-    "liters",
-    "Angstrom",
-];
-
-const fashionColors = [
-    "active black",
-    "beige",
-    "black",
-    "blue",
-    "brown",
-    "coral",
-    "fixed/alpha",
-    "gold",
-    "green",
-    "grey",
-    "multicoloured",
-    "off-white",
-    "orange",
-    "pink",
-    "purple",
-    "red",
-    "silver",
-    "transparent",
-    "turquoise",
-    "white",
-    "yellow",
-];
-
 const generateKeyValue = ( list ) => {
     return list.map( ( val ) => {
-        return { key: val, value: val };
+        return { key: val, value: val.toUpperCase() };
     } );
 };
 
-const propertyEnums = {};
+const colors =  [
+    {value:"abbey",  key: "#4C4F56" },
+    {value:"acadia",  key: "#1B1404" },
+    {value:"acapulco",  key: "#7CB0A1" },
+    {value:"aero blue",  key: "#C9FFE5" },
+    {value:"affair",  key: "#714693" },
+    {value:"akaroa",  key: "#D4C4A8" },
+    {value:"alabaster",  key: "#FAFAFA" },
+    {value:"albescent white",  key: "#F5E9D3" },
+    {value:"algae green",  key: "#93DFB8" },
+    {value:"alice blue",  key: "#F0F8FF" },
+    {value:"alizarin crimson",  key: "#E32636" },
+    {value:"allports",  key: "#0076A3" },
+    {value:"almond",  key: "#EED9C4" },
+    {value:"almond frost",  key: "#907B71" },
+    {value:"alpine",  key: "#AF8F2C" },
+    {value:"alto",  key: "#DBDBDB" },
+    {value:"aluminium",  key: "#A9ACB6" },
+    {value:"amaranth",  key: "#E52B50" },
+    {value:"amazon",  key: "#3B7A57" },
+    {value:"amber",  key: "#FFBF00" },
+    {value:"americano",  key: "#87756E" },
+    {value:"amethyst",  key: "#9966CC" },
+    {value:"amethyst smoke",  key: "#A397B4" },
+    {value:"amour",  key: "#F9EAF3" },
+    {value:"amulet",  key: "#7B9F80" },
+    {value:"anakiwa",  key: "#9DE5FF" },
+    {value:"antique brass",  key: "#C88A65" },
+    {value:"antique bronze",  key: "#704A07" },
+    {value:"anzac",  key: "#E0B646" },
+    {value:"apache",  key: "#DFBE6F" },
+    {value:"apple",  key: "#4FA83D" },
+    {value:"apple blossom",  key: "#AF4D43" },
+    {value:"apple green",  key: "#E2F3EC" },
+    {value:"apricot",  key: "#EB9373" },
+    {value:"apricot peach",  key: "#FBCEB1" },
+    {value:"apricot white",  key: "#FFFEEC" },
+    {value:"aqua deep",  key: "#014B43" },
+    {value:"aqua forest",  key: "#5FA777" },
+    {value:"aqua haze",  key: "#EDF5F5" },
+    {value:"aqua island",  key: "#A1DAD7" },
+    {value:"aqua spring",  key: "#EAF9F5" },
+    {value:"aqua squeeze",  key: "#E8F5F2" },
+    {value:"aquamarine",  key: "#7FFFD4" },
+    {value:"aquamarine blue",  key: "#71D9E2" },
+    {value:"arapawa",  key: "#110C6C" },
+    {value:"armadillo",  key: "#433E37" },
+    {value:"arrowtown",  key: "#948771" },
+    {value:"ash",  key: "#C6C3B5" },
+    {value:"asparagus",  key: "#7BA05B" },
+    {value:"asphalt",  key: "#130A06" },
+    {value:"astra",  key: "#FAEAB9" },
+    {value:"astral",  key: "#327DA0" },
+    {value:"astronaut",  key: "#283A77" },
+    {value:"astronaut blue",  key: "#013E62" },
+    {value:"athens gray",  key: "#EEF0F3" },
+    {value:"aths special",  key: "#ECEBCE" },
+    {value:"atlantis",  key: "#97CD2D" },
+    {value:"atoll",  key: "#0A6F75" },
+    {value:"atomic tangerine",  key: "#FF9966" },
+    {value:"au chico",  key: "#97605D" },
+    {value:"aubergine",  key: "#3B0910" },
+    {value:"australian mint",  key: "#F5FFBE" },
+    {value:"avocado",  key: "#888D65" },
+    {value:"axolotl",  key: "#4E6649" },
+    {value:"azalea",  key: "#F7C8DA" },
+    {value:"aztec",  key: "#0D1C19" },
+    {value:"azure",  key: "#315BA1" },
+    {value:"azure radiance",  key: "#007FFF" },
+    {value:"baby blue",  key: "#E0FFFF" },
+    {value:"bahama blue",  key: "#026395" },
+    {value:"bahia",  key: "#A5CB0C" },
+    {value:"baja white",  key: "#FFF8D1" },
+    {value:"bali hai",  key: "#859FAF" },
+    {value:"baltic sea",  key: "#2A2630" },
+    {value:"bamboo",  key: "#DA6304" },
+    {value:"banana mania",  key: "#FBE7B2" },
+    {value:"bandicoot",  key: "#858470" },
+    {value:"barberry",  key: "#DED717" },
+    {value:"barley corn",  key: "#A68B5B" },
+    {value:"barley white",  key: "#FFF4CE" },
+    {value:"barossa",  key: "#44012D" },
+    {value:"bastille",  key: "#292130" },
+    {value:"battleship gray",  key: "#828F72" },
+    {value:"bay leaf",  key: "#7DA98D" },
+    {value:"bay of many",  key: "#273A81" },
+    {value:"bazaar",  key: "#98777B" },
+    {value:"bean  ",  key: "#3D0C02" },
+    {value:"beauty bush",  key: "#EEC1BE" },
+    {value:"beaver",  key: "#926F5B" },
+    {value:"beeswax",  key: "#FEF2C7" },
+    {value:"beige",  key: "#F5F5DC" },
+    {value:"bermuda",  key: "#7DD8C6" },
+    {value:"bermuda gray",  key: "#6B8BA2" },
+    {value:"beryl green",  key: "#DEE5C0" },
+    {value:"bianca",  key: "#FCFBF3" },
+    {value:"big stone",  key: "#162A40" },
+    {value:"bilbao",  key: "#327C14" },
+    {value:"biloba flower",  key: "#B2A1EA" },
+    {value:"birch",  key: "#373021" },
+    {value:"bird flower",  key: "#D4CD16" },
+    {value:"biscay",  key: "#1B3162" },
+    {value:"bismark",  key: "#497183" },
+    {value:"bison hide",  key: "#C1B7A4" },
+    {value:"bistre",  key: "#3D2B1F" },
+    {value:"bitter",  key: "#868974" },
+    {value:"bitter lemon",  key: "#CAE00D" },
+    {value:"bittersweet",  key: "#FE6F5E" },
+    {value:"bizarre",  key: "#EEDEDA" },
+    {value:"black",  key: "#000000" },
+    {value:"black bean",  key: "#081910" },
+    {value:"black forest",  key: "#0B1304" },
+    {value:"black haze",  key: "#F6F7F7" },
+    {value:"black marlin",  key: "#3E2C1C" },
+    {value:"black olive",  key: "#242E16" },
+    {value:"black pearl",  key: "#041322" },
+    {value:"black rock",  key: "#0D0332" },
+    {value:"black rose",  key: "#67032D" },
+    {value:"black russian",  key: "#0A001C" },
+    {value:"black squeeze",  key: "#F2FAFA" },
+    {value:"black white",  key: "#FFFEF6" },
+    {value:"blackberry",  key: "#4D0135" },
+    {value:"blackcurrant",  key: "#32293A" },
+    {value:"blaze orange",  key: "#FF6600" },
+    {value:"bleach white",  key: "#FEF3D8" },
+    {value:"bleached cedar",  key: "#2C2133" },
+    {value:"blizzard blue",  key: "#A3E3ED" },
+    {value:"blossom",  key: "#DCB4BC" },
+    {value:"blue",  key: "#0000FF" },
+    {value:"blue bayoux",  key: "#496679" },
+    {value:"blue bell",  key: "#9999CC" },
+    {value:"blue chalk",  key: "#F1E9FF" },
+    {value:"blue charcoal",  key: "#010D1A" },
+    {value:"blue chill",  key: "#0C8990" },
+    {value:"blue diamond",  key: "#380474" },
+    {value:"blue dianne",  key: "#204852" },
+    {value:"blue gem",  key: "#2C0E8C" },
+    {value:"blue haze",  key: "#BFBED8" },
+    {value:"blue lagoon",  key: "#017987" },
+    {value:"blue marguerite",  key: "#7666C6" },
+    {value:"blue ribbon",  key: "#0066FF" },
+    {value:"blue romance",  key: "#D2F6DE" },
+    {value:"blue smoke",  key: "#748881" },
+    {value:"blue stone",  key: "#016162" },
+    {value:"blue violet",  key: "#6456B7" },
+    {value:"blue whale",  key: "#042E4C" },
+    {value:"blue zodiac",  key: "#13264D" },
+    {value:"blumine",  key: "#18587A" },
+    {value:"blush",  key: "#B44668" },
+    {value:"blush pink",  key: "#FF6FFF" },
+    {value:"bombay",  key: "#AFB1B8" },
+    {value:"bon jour",  key: "#E5E0E1" },
+    {value:"bondi blue",  key: "#0095B6" },
+    {value:"bone",  key: "#E4D1C0" },
+    {value:"bordeaux",  key: "#5C0120" },
+    {value:"bossanova",  key: "#4E2A5A" },
+    {value:"boston blue",  key: "#3B91B4" },
+    {value:"botticelli",  key: "#C7DDE5" },
+    {value:"bottle green",  key: "#093624" },
+    {value:"boulder",  key: "#7A7A7A" },
+    {value:"bouquet",  key: "#AE809E" },
+    {value:"bourbon",  key: "#BA6F1E" },
+    {value:"bracken",  key: "#4A2A04" },
+    {value:"brandy",  key: "#DEC196" },
+    {value:"brandy punch",  key: "#CD8429" },
+    {value:"brandy rose",  key: "#BB8983" },
+    {value:"breaker bay",  key: "#5DA19F" },
+    {value:"brick red",  key: "#C62D42" },
+    {value:"bridal heath",  key: "#FFFAF4" },
+    {value:"bridesmaid",  key: "#FEF0EC" },
+    {value:"bright gray",  key: "#3C4151" },
+    {value:"bright green",  key: "#66FF00" },
+    {value:"bright red",  key: "#B10000" },
+    {value:"bright sun",  key: "#FED33C" },
+    {value:"bright turquoise",  key: "#08E8DE" },
+    {value:"brilliant rose",  key: "#F653A6" },
+    {value:"brink pink",  key: "#FB607F" },
+    {value:"bronco",  key: "#ABA196" },
+    {value:"bronze",  key: "#3F2109" },
+    {value:"bronze olive",  key: "#4E420C" },
+    {value:"bronzetone",  key: "#4D400F" },
+    {value:"broom",  key: "#FFEC13" },
+    {value:"brown",  key: "#964B00" },
+    {value:"brown bramble",  key: "#592804" },
+    {value:"brown derby",  key: "#492615" },
+    {value:"brown pod",  key: "#401801" },
+    {value:"brown rust",  key: "#AF593E" },
+    {value:"brown tumbleweed",  key: "#37290E" },
+    {value:"bubbles",  key: "#E7FEFF" },
+    {value:"buccaneer",  key: "#622F30" },
+    {value:"bud",  key: "#A8AE9C" },
+    {value:"buddha gold",  key: "#C1A004" },
+    {value:"buff",  key: "#F0DC82" },
+    {value:"bulgarian rose",  key: "#480607" },
+    {value:"bull shot",  key: "#864D1E" },
+    {value:"bunker",  key: "#0D1117" },
+    {value:"bunting",  key: "#151F4C" },
+    {value:"burgundy",  key: "#900020" },
+    {value:"burnham",  key: "#002E20" },
+    {value:"burning orange",  key: "#FF7034" },
+    {value:"burning sand",  key: "#D99376" },
+    {value:"burnt maroon",  key: "#420303" },
+    {value:"burnt orange",  key: "#CC5500" },
+    {value:"burnt sienna",  key: "#E97451" },
+    {value:"burnt umber",  key: "#8A3324" },
+    {value:"bush",  key: "#0D2E1C" },
+    {value:"buttercup",  key: "#F3AD16" },
+    {value:"buttered rum",  key: "#A1750D" },
+    {value:"butterfly bush",  key: "#624E9A" },
+    {value:"buttermilk",  key: "#FFF1B5" },
+    {value:"buttery white",  key: "#FFFCEA" },
+    {value:"cab sav",  key: "#4D0A18" },
+    {value:"cabaret",  key: "#D94972" },
+    {value:"cabbage pont",  key: "#3F4C3A" },
+    {value:"cactus",  key: "#587156" },
+    {value:"cadet blue",  key: "#A9B2C3" },
+    {value:"cadillac",  key: "#B04C6A" },
+    {value:"cafe royale",  key: "#6F440C" },
+    {value:"calico",  key: "#E0C095" },
+    {value:"california",  key: "#FE9D04" },
+    {value:"calypso",  key: "#31728D" },
+    {value:"camarone",  key: "#00581A" },
+    {value:"camelot",  key: "#893456" },
+    {value:"cameo",  key: "#D9B99B" },
+    {value:"camouflage",  key: "#3C3910" },
+    {value:"camouflage green",  key: "#78866B" },
+    {value:"can can",  key: "#D591A4" },
+    {value:"canary",  key: "#F3FB62" },
+    {value:"candlelight",  key: "#FCD917" },
+    {value:"candy corn",  key: "#FBEC5D" },
+    {value:"cannon black",  key: "#251706" },
+    {value:"cannon pink",  key: "#894367" },
+    {value:"cape cod",  key: "#3C4443" },
+    {value:"cape honey",  key: "#FEE5AC" },
+    {value:"cape palliser",  key: "#A26645" },
+    {value:"caper",  key: "#DCEDB4" },
+    {value:"caramel",  key: "#FFDDAF" },
+    {value:"cararra",  key: "#EEEEE8" },
+    {value:"cardin green",  key: "#01361C" },
+    {value:"cardinal",  key: "#C41E3A" },
+    {value:"cardinal pink",  key: "#8C055E" },
+    {value:"careys pink",  key: "#D29EAA" },
+    {value:"caribbean green",  key: "#00CC99" },
+    {value:"carissma",  key: "#EA88A8" },
+    {value:"carla",  key: "#F3FFD8" },
+    {value:"carmine",  key: "#960018" },
+    {value:"carnaby tan",  key: "#5C2E01" },
+    {value:"carnation",  key: "#F95A61" },
+    {value:"carnation pink",  key: "#FFA6C9" },
+    {value:"carousel pink",  key: "#F9E0ED" },
+    {value:"carrot orange",  key: "#ED9121" },
+    {value:"casablanca",  key: "#F8B853" },
+    {value:"casal",  key: "#2F6168" },
+    {value:"cascade",  key: "#8BA9A5" },
+    {value:"cashmere",  key: "#E6BEA5" },
+    {value:"casper",  key: "#ADBED1" },
+    {value:"castro",  key: "#52001F" },
+    {value:"catalina blue",  key: "#062A78" },
+    {value:"catskill white",  key: "#EEF6F7" },
+    {value:"cavern pink",  key: "#E3BEBE" },
+    {value:"cedar",  key: "#3E1C14" },
+    {value:"cedar wood finish",  key: "#711A00" },
+    {value:"celadon",  key: "#ACE1AF" },
+    {value:"celery",  key: "#B8C25D" },
+    {value:"celeste",  key: "#D1D2CA" },
+    {value:"cello",  key: "#1E385B" },
+    {value:"celtic",  key: "#163222" },
+    {value:"cement",  key: "#8D7662" },
+    {value:"ceramic",  key: "#FCFFF9" },
+    {value:"cerise",  key: "#DA3287" },
+    {value:"cerise red",  key: "#DE3163" },
+    {value:"cerulean",  key: "#02A4D3" },
+    {value:"cerulean blue",  key: "#2A52BE" },
+    {value:"chablis",  key: "#FFF4F3" },
+    {value:"chalet green",  key: "#516E3D" },
+    {value:"chalky",  key: "#EED794" },
+    {value:"chambray",  key: "#354E8C" },
+    {value:"chamois",  key: "#EDDCB1" },
+    {value:"champagne",  key: "#FAECCC" },
+    {value:"chantilly",  key: "#F8C3DF" },
+    {value:"charade",  key: "#292937" },
+    {value:"chardon",  key: "#FFF3F1" },
+    {value:"chardonnay",  key: "#FFCD8C" },
+    {value:"charlotte",  key: "#BAEEF9" },
+    {value:"charm",  key: "#D47494" },
+    {value:"chartreuse",  key: "#7FFF00" },
+    {value:"chartreuse yellow",  key: "#DFFF00" },
+    {value:"chateau green",  key: "#40A860" },
+    {value:"chatelle",  key: "#BDB3C7" },
+    {value:"chathams blue",  key: "#175579" },
+    {value:"chelsea cucumber",  key: "#83AA5D" },
+    {value:"chelsea gem",  key: "#9E5302" },
+    {value:"chenin",  key: "#DFCD6F" },
+    {value:"cherokee",  key: "#FCDA98" },
+    {value:"cherry pie",  key: "#2A0359" },
+    {value:"cherrywood",  key: "#651A14" },
+    {value:"cherub",  key: "#F8D9E9" },
+    {value:"chestnut",  key: "#B94E48" },
+    {value:"chestnut rose",  key: "#CD5C5C" },
+    {value:"chetwode blue",  key: "#8581D9" },
+    {value:"chicago",  key: "#5D5C58" },
+    {value:"chiffon",  key: "#F1FFC8" },
+    {value:"chilean fire",  key: "#F77703" },
+    {value:"chilean heath",  key: "#FFFDE6" },
+    {value:"china ivory",  key: "#FCFFE7" },
+    {value:"chino",  key: "#CEC7A7" },
+    {value:"chinook",  key: "#A8E3BD" },
+    {value:"chocolate",  key: "#370202" },
+    {value:"christalle",  key: "#33036B" },
+    {value:"christi",  key: "#67A712" },
+    {value:"christine",  key: "#E7730A" },
+    {value:"chrome white",  key: "#E8F1D4" },
+    {value:"cinder",  key: "#0E0E18" },
+    {value:"cinderella",  key: "#FDE1DC" },
+    {value:"cinnabar",  key: "#E34234" },
+    {value:"cinnamon",  key: "#7B3F00" },
+    {value:"cioccolato",  key: "#55280C" },
+    {value:"citrine white",  key: "#FAF7D6" },
+    {value:"citron",  key: "#9EA91F" },
+    {value:"citrus",  key: "#A1C50A" },
+    {value:"clairvoyant",  key: "#480656" },
+    {value:"clam shell",  key: "#D4B6AF" },
+    {value:"claret",  key: "#7F1734" },
+    {value:"classic rose",  key: "#FBCCE7" },
+    {value:"clay ash",  key: "#BDC8B3" },
+    {value:"clay creek",  key: "#8A8360" },
+    {value:"clear day",  key: "#E9FFFD" },
+    {value:"clementine",  key: "#E96E00" },
+    {value:"clinker",  key: "#371D09" },
+    {value:"cloud",  key: "#C7C4BF" },
+    {value:"cloud burst",  key: "#202E54" },
+    {value:"cloudy",  key: "#ACA59F" },
+    {value:"clover",  key: "#384910" },
+    {value:"cobalt",  key: "#0047AB" },
+    {value:"cocoa bean",  key: "#481C1C" },
+    {value:"cocoa brown",  key: "#301F1E" },
+    {value:"coconut cream",  key: "#F8F7DC" },
+    {value:"cod gray",  key: "#0B0B0B" },
+    {value:"coffee",  key: "#706555" },
+    {value:"coffee bean",  key: "#2A140E" },
+    {value:"cognac",  key: "#9F381D" },
+    {value:"cola",  key: "#3F2500" },
+    {value:"cold purple",  key: "#ABA0D9" },
+    {value:"cold turkey",  key: "#CEBABA" },
+    {value:"colonial white",  key: "#FFEDBC" },
+    {value:"comet",  key: "#5C5D75" },
+    {value:"como",  key: "#517C66" },
+    {value:"conch",  key: "#C9D9D2" },
+    {value:"concord",  key: "#7C7B7A" },
+    {value:"concrete",  key: "#F2F2F2" },
+    {value:"confetti",  key: "#E9D75A" },
+    {value:"congo brown",  key: "#593737" },
+    {value:"congress blue",  key: "#02478E" },
+    {value:"conifer",  key: "#ACDD4D" },
+    {value:"contessa",  key: "#C6726B" },
+    {value:"copper",  key: "#B87333" },
+    {value:"copper canyon",  key: "#7E3A15" },
+    {value:"copper rose",  key: "#996666" },
+    {value:"copper rust",  key: "#944747" },
+    {value:"copperfield",  key: "#DA8A67" },
+    {value:"coral",  key: "#FF7F50" },
+    {value:"coral red",  key: "#FF4040" },
+    {value:"coral reef",  key: "#C7BCA2" },
+    {value:"coral tree",  key: "#A86B6B" },
+    {value:"corduroy",  key: "#606E68" },
+    {value:"coriander",  key: "#C4D0B0" },
+    {value:"cork",  key: "#40291D" },
+    {value:"corn",  key: "#E7BF05" },
+    {value:"corn field",  key: "#F8FACD" },
+    {value:"corn harvest",  key: "#8B6B0B" },
+    {value:"cornflower",  key: "#93CCEA" },
+    {value:"cornflower blue",  key: "#6495ED" },
+    {value:"cornflower lilac",  key: "#FFB0AC" },
+    {value:"corvette",  key: "#FAD3A2" },
+    {value:"cosmic",  key: "#76395D" },
+    {value:"cosmos",  key: "#FFD8D9" },
+    {value:"costa del sol",  key: "#615D30" },
+    {value:"cotton candy",  key: "#FFB7D5" },
+    {value:"cotton seed",  key: "#C2BDB6" },
+    {value:"county green",  key: "#01371A" },
+    {value:"cowboy",  key: "#4D282D" },
+    {value:"crail",  key: "#B95140" },
+    {value:"cranberry",  key: "#DB5079" },
+    {value:"crater brown",  key: "#462425" },
+    {value:"cream",  key: "#FFFDD0" },
+    {value:"cream brulee",  key: "#FFE5A0" },
+    {value:"cream can",  key: "#F5C85C" },
+    {value:"creole",  key: "#1E0F04" },
+    {value:"crete",  key: "#737829" },
+    {value:"crimson",  key: "#DC143C" },
+    {value:"crocodile",  key: "#736D58" },
+    {value:"crown of thorns",  key: "#771F1F" },
+    {value:"crowshead",  key: "#1C1208" },
+    {value:"cruise",  key: "#B5ECDF" },
+    {value:"crusoe",  key: "#004816" },
+    {value:"crusta",  key: "#FD7B33" },
+    {value:"cumin",  key: "#924321" },
+    {value:"cumulus",  key: "#FDFFD5" },
+    {value:"cupid",  key: "#FBBEDA" },
+    {value:"curious blue",  key: "#2596D1" },
+    {value:"cutty sark",  key: "#507672" },
+    {value:"cyan / aqua",  key: "#00FFFF" },
+    {value:"cyprus",  key: "#003E40" },
+    {value:"daintree",  key: "#012731" },
+    {value:"dairy cream",  key: "#F9E4BC" },
+    {value:"daisy bush",  key: "#4F2398" },
+    {value:"dallas",  key: "#6E4B26" },
+    {value:"dandelion",  key: "#FED85D" },
+    {value:"danube",  key: "#6093D1" },
+    {value:"dark blue",  key: "#0000C8" },
+    {value:"dark burgundy",  key: "#770F05" },
+    {value:"dark ebony",  key: "#3C2005" },
+    {value:"dark fern",  key: "#0A480D" },
+    {value:"dark tan",  key: "#661010" },
+    {value:"dawn",  key: "#A6A29A" },
+    {value:"dawn pink",  key: "#F3E9E5" },
+    {value:"de york",  key: "#7AC488" },
+    {value:"deco",  key: "#D2DA97" },
+    {value:"deep blue",  key: "#220878" },
+    {value:"deep blush",  key: "#E47698" },
+    {value:"deep bronze",  key: "#4A3004" },
+    {value:"deep cerulean",  key: "#007BA7" },
+    {value:"deep cove",  key: "#051040" },
+    {value:"deep fir",  key: "#002900" },
+    {value:"deep forest green",  key: "#182D09" },
+    {value:"deep koamaru",  key: "#1B127B" },
+    {value:"deep oak",  key: "#412010" },
+    {value:"deep sapphire",  key: "#082567" },
+    {value:"deep sea",  key: "#01826B" },
+    {value:"deep sea green",  key: "#095859" },
+    {value:"deep teal",  key: "#003532" },
+    {value:"del rio",  key: "#B09A95" },
+    {value:"dell",  key: "#396413" },
+    {value:"delta",  key: "#A4A49D" },
+    {value:"deluge",  key: "#7563A8" },
+    {value:"denim",  key: "#1560BD" },
+    {value:"derby",  key: "#FFEED8" },
+    {value:"desert",  key: "#AE6020" },
+    {value:"desert sand",  key: "#EDC9AF" },
+    {value:"desert storm",  key: "#F8F8F7" },
+    {value:"dew",  key: "#EAFFFE" },
+    {value:"di serria",  key: "#DB995E" },
+    {value:"diesel",  key: "#130000" },
+    {value:"dingley",  key: "#5D7747" },
+    {value:"disco",  key: "#871550" },
+    {value:"dixie",  key: "#E29418" },
+    {value:"dodger blue",  key: "#1E90FF" },
+    {value:"dolly",  key: "#F9FF8B" },
+    {value:"dolphin",  key: "#646077" },
+    {value:"domino",  key: "#8E775E" },
+    {value:"don juan",  key: "#5D4C51" },
+    {value:"donkey brown",  key: "#A69279" },
+    {value:"dorado",  key: "#6B5755" },
+    {value:"double colonial white",  key: "#EEE3AD" },
+    {value:"double pearl lusta",  key: "#FCF4D0" },
+    {value:"double spanish white",  key: "#E6D7B9" },
+    {value:"dove gray",  key: "#6D6C6C" },
+    {value:"downriver",  key: "#092256" },
+    {value:"downy",  key: "#6FD0C5" },
+    {value:"driftwood",  key: "#AF8751" },
+    {value:"drover",  key: "#FDF7AD" },
+    {value:"dull lavender",  key: "#A899E6" },
+    {value:"dune",  key: "#383533" },
+    {value:"dust storm",  key: "#E5CCC9" },
+    {value:"dusty gray",  key: "#A8989B" },
+    {value:"eagle",  key: "#B6BAA4" },
+    {value:"earls green",  key: "#C9B93B" },
+    {value:"early dawn",  key: "#FFF9E6" },
+    {value:"east bay",  key: "#414C7D" },
+    {value:"east side",  key: "#AC91CE" },
+    {value:"eastern blue",  key: "#1E9AB0" },
+    {value:"ebb",  key: "#E9E3E3" },
+    {value:"ebony",  key: "#0C0B1D" },
+    {value:"ebony clay",  key: "#26283B" },
+    {value:"eclipse",  key: "#311C17" },
+    {value:"ecru white",  key: "#F5F3E5" },
+    {value:"ecstasy",  key: "#FA7814" },
+    {value:"eden",  key: "#105852" },
+    {value:"edgewater",  key: "#C8E3D7" },
+    {value:"edward",  key: "#A2AEAB" },
+    {value:"egg sour",  key: "#FFF4DD" },
+    {value:"egg white",  key: "#FFEFC1" },
+    {value:"eggplant",  key: "#614051" },
+    {value:"el paso",  key: "#1E1708" },
+    {value:"el salva",  key: "#8F3E33" },
+    {value:"electric lime",  key: "#CCFF00" },
+    {value:"electric violet",  key: "#8B00FF" },
+    {value:"elephant",  key: "#123447" },
+    {value:"elf green",  key: "#088370" },
+    {value:"elm",  key: "#1C7C7D" },
+    {value:"emerald",  key: "#50C878" },
+    {value:"eminence",  key: "#6C3082" },
+    {value:"emperor",  key: "#514649" },
+    {value:"empress",  key: "#817377" },
+    {value:"endeavour",  key: "#0056A7" },
+    {value:"energy yellow",  key: "#F8DD5C" },
+    {value:"english holly",  key: "#022D15" },
+    {value:"english walnut",  key: "#3E2B23" },
+    {value:"envy",  key: "#8BA690" },
+    {value:"equator",  key: "#E1BC64" },
+    {value:"espresso",  key: "#612718" },
+    {value:"eternity",  key: "#211A0E" },
+    {value:"eucalyptus",  key: "#278A5B" },
+    {value:"eunry",  key: "#CFA39D" },
+    {value:"evening sea",  key: "#024E46" },
+    {value:"everglade",  key: "#1C402E" },
+    {value:"faded jade",  key: "#427977" },
+    {value:"fair pink",  key: "#FFEFEC" },
+    {value:"falcon",  key: "#7F626D" },
+    {value:"fall green",  key: "#ECEBBD" },
+    {value:"falu red",  key: "#801818" },
+    {value:"fantasy",  key: "#FAF3F0" },
+    {value:"fedora",  key: "#796A78" },
+    {value:"feijoa",  key: "#9FDD8C" },
+    {value:"fern",  key: "#63B76C" },
+    {value:"fern frond",  key: "#657220" },
+    {value:"fern green",  key: "#4F7942" },
+    {value:"ferra",  key: "#704F50" },
+    {value:"festival",  key: "#FBE96C" },
+    {value:"feta",  key: "#F0FCEA" },
+    {value:"fiery orange",  key: "#B35213" },
+    {value:"finch",  key: "#626649" },
+    {value:"finlandia",  key: "#556D56" },
+    {value:"finn",  key: "#692D54" },
+    {value:"fiord",  key: "#405169" },
+    {value:"fire",  key: "#AA4203" },
+    {value:"fire bush",  key: "#E89928" },
+    {value:"firefly",  key: "#0E2A30" },
+    {value:"flame pea",  key: "#DA5B38" },
+    {value:"flamenco",  key: "#FF7D07" },
+    {value:"flamingo",  key: "#F2552A" },
+    {value:"flax",  key: "#EEDC82" },
+    {value:"flax smoke",  key: "#7B8265" },
+    {value:"flesh",  key: "#FFCBA4" },
+    {value:"flint",  key: "#6F6A61" },
+    {value:"flirt",  key: "#A2006D" },
+    {value:"flush mahogany",  key: "#CA3435" },
+    {value:"flush orange",  key: "#FF7F00" },
+    {value:"foam",  key: "#D8FCFA" },
+    {value:"fog",  key: "#D7D0FF" },
+    {value:"foggy gray",  key: "#CBCAB6" },
+    {value:"forest green",  key: "#228B22" },
+    {value:"forget me not",  key: "#FFF1EE" },
+    {value:"fountain blue",  key: "#56B4BE" },
+    {value:"frangipani",  key: "#FFDEB3" },
+    {value:"french gray",  key: "#BDBDC6" },
+    {value:"french lilac",  key: "#ECC7EE" },
+    {value:"french pass",  key: "#BDEDFD" },
+    {value:"french rose",  key: "#F64A8A" },
+    {value:"fresh eggplant",  key: "#990066" },
+    {value:"friar gray",  key: "#807E79" },
+    {value:"fringy flower",  key: "#B1E2C1" },
+    {value:"froly",  key: "#F57584" },
+    {value:"frost",  key: "#EDF5DD" },
+    {value:"frosted mint",  key: "#DBFFF8" },
+    {value:"frostee",  key: "#E4F6E7" },
+    {value:"fruit salad",  key: "#4F9D5D" },
+    {value:"fuchsia blue",  key: "#7A58C1" },
+    {value:"fuchsia pink",  key: "#C154C1" },
+    {value:"fuego",  key: "#BEDE0D" },
+    {value:"fuel yellow",  key: "#ECA927" },
+    {value:"fun blue",  key: "#1959A8" },
+    {value:"fun green",  key: "#016D39" },
+    {value:"fuscous gray",  key: "#54534D" },
+    {value:"fuzzy wuzzy brown",  key: "#C45655" },
+    {value:"gable green",  key: "#163531" },
+    {value:"gallery",  key: "#EFEFEF" },
+    {value:"galliano",  key: "#DCB20C" },
+    {value:"gamboge",  key: "#E49B0F" },
+    {value:"geebung",  key: "#D18F1B" },
+    {value:"genoa",  key: "#15736B" },
+    {value:"geraldine",  key: "#FB8989" },
+    {value:"geyser",  key: "#D4DFE2" },
+    {value:"ghost",  key: "#C7C9D5" },
+    {value:"gigas",  key: "#523C94" },
+    {value:"gimblet",  key: "#B8B56A" },
+    {value:"gin",  key: "#E8F2EB" },
+    {value:"gin fizz",  key: "#FFF9E2" },
+    {value:"givry",  key: "#F8E4BF" },
+    {value:"glacier",  key: "#80B3C4" },
+    {value:"glade green",  key: "#61845F" },
+    {value:"go ben",  key: "#726D4E" },
+    {value:"goblin",  key: "#3D7D52" },
+    {value:"gold",  key: "#FFD700" },
+    {value:"gold drop",  key: "#F18200" },
+    {value:"gold sand",  key: "#E6BE8A" },
+    {value:"gold tips",  key: "#DEBA13" },
+    {value:"golden bell",  key: "#E28913" },
+    {value:"golden dream",  key: "#F0D52D" },
+    {value:"golden fizz",  key: "#F5FB3D" },
+    {value:"golden glow",  key: "#FDE295" },
+    {value:"golden grass",  key: "#DAA520" },
+    {value:"golden sand",  key: "#F0DB7D" },
+    {value:"golden tainoi",  key: "#FFCC5C" },
+    {value:"goldenrod",  key: "#FCD667" },
+    {value:"gondola",  key: "#261414" },
+    {value:"gordons green",  key: "#0B1107" },
+    {value:"gorse",  key: "#FFF14F" },
+    {value:"gossamer",  key: "#069B81" },
+    {value:"gossip",  key: "#D2F8B0" },
+    {value:"gothic",  key: "#6D92A1" },
+    {value:"governor bay",  key: "#2F3CB3" },
+    {value:"grain brown",  key: "#E4D5B7" },
+    {value:"grandis",  key: "#FFD38C" },
+    {value:"granite green",  key: "#8D8974" },
+    {value:"granny apple",  key: "#D5F6E3" },
+    {value:"granny smith",  key: "#84A0A0" },
+    {value:"granny smith apple",  key: "#9DE093" },
+    {value:"grape",  key: "#381A51" },
+    {value:"graphite",  key: "#251607" },
+    {value:"gravel",  key: "#4A444B" },
+    {value:"gray",  key: "#808080" },
+    {value:"gray asparagus",  key: "#465945" },
+    {value:"gray chateau",  key: "#A2AAB3" },
+    {value:"gray nickel",  key: "#C3C3BD" },
+    {value:"gray nurse",  key: "#E7ECE6" },
+    {value:"gray olive",  key: "#A9A491" },
+    {value:"gray suit",  key: "#C1BECD" },
+    {value:"green",  key: "#00FF00" },
+    {value:"green haze",  key: "#01A368" },
+    {value:"green house",  key: "#24500F" },
+    {value:"green kelp",  key: "#25311C" },
+    {value:"green leaf",  key: "#436A0D" },
+    {value:"green mist",  key: "#CBD3B0" },
+    {value:"green pea",  key: "#1D6142" },
+    {value:"green smoke",  key: "#A4AF6E" },
+    {value:"green spring",  key: "#B8C1B1" },
+    {value:"green vogue",  key: "#032B52" },
+    {value:"green waterloo",  key: "#101405" },
+    {value:"green white",  key: "#E8EBE0" },
+    {value:"green yellow",  key: "#ADFF2F" },
+    {value:"grenadier",  key: "#D54600" },
+    {value:"guardsman red",  key: "#BA0101" },
+    {value:"gulf blue",  key: "#051657" },
+    {value:"gulf stream",  key: "#80B3AE" },
+    {value:"gull gray",  key: "#9DACB7" },
+    {value:"gum leaf",  key: "#B6D3BF" },
+    {value:"gumbo",  key: "#7CA1A6" },
+    {value:"gun powder",  key: "#414257" },
+    {value:"gunsmoke",  key: "#828685" },
+    {value:"gurkha",  key: "#9A9577" },
+    {value:"hacienda",  key: "#98811B" },
+    {value:"hairy heath",  key: "#6B2A14" },
+    {value:"haiti",  key: "#1B1035" },
+    {value:"half and half",  key: "#FFFEE1" },
+    {value:"half baked",  key: "#85C4CC" },
+    {value:"half colonial white",  key: "#FDF6D3" },
+    {value:"half dutch white",  key: "#FEF7DE" },
+    {value:"half spanish white",  key: "#FEF4DB" },
+    {value:"hampton",  key: "#E5D8AF" },
+    {value:"harlequin",  key: "#3FFF00" },
+    {value:"harp",  key: "#E6F2EA" },
+    {value:"harvest gold",  key: "#E0B974" },
+    {value:"havelock blue",  key: "#5590D9" },
+    {value:"hawaiian tan",  key: "#9D5616" },
+    {value:"hawkes blue",  key: "#D4E2FC" },
+    {value:"heath",  key: "#541012" },
+    {value:"heather",  key: "#B7C3D0" },
+    {value:"heathered gray",  key: "#B6B095" },
+    {value:"heavy metal",  key: "#2B3228" },
+    {value:"heliotrope",  key: "#DF73FF" },
+    {value:"hemlock",  key: "#5E5D3B" },
+    {value:"hemp",  key: "#907874" },
+    {value:"hibiscus",  key: "#B6316C" },
+    {value:"highland",  key: "#6F8E63" },
+    {value:"hillary",  key: "#ACA586" },
+    {value:"himalaya",  key: "#6A5D1B" },
+    {value:"hint of green",  key: "#E6FFE9" },
+    {value:"hint of red",  key: "#FBF9F9" },
+    {value:"hint of yellow",  key: "#FAFDE4" },
+    {value:"hippie blue",  key: "#589AAF" },
+    {value:"hippie green",  key: "#53824B" },
+    {value:"hippie pink",  key: "#AE4560" },
+    {value:"hit gray",  key: "#A1ADB5" },
+    {value:"hit pink",  key: "#FFAB81" },
+    {value:"hokey pokey",  key: "#C8A528" },
+    {value:"hoki",  key: "#65869F" },
+    {value:"holly",  key: "#011D13" },
+    {value:"hollywood cerise",  key: "#F400A1" },
+    {value:"honey flower",  key: "#4F1C70" },
+    {value:"honeysuckle",  key: "#EDFC84" },
+    {value:"hopbush",  key: "#D06DA1" },
+    {value:"horizon",  key: "#5A87A0" },
+    {value:"horses neck",  key: "#604913" },
+    {value:"hot cinnamon",  key: "#D2691E" },
+    {value:"hot pink",  key: "#FF69B4" },
+    {value:"hot toddy",  key: "#B38007" },
+    {value:"humming bird",  key: "#CFF9F3" },
+    {value:"hunter green",  key: "#161D10" },
+    {value:"hurricane",  key: "#877C7B" },
+    {value:"husk",  key: "#B7A458" },
+    {value:"ice cold",  key: "#B1F4E7" },
+    {value:"iceberg",  key: "#DAF4F0" },
+    {value:"illusion",  key: "#F6A4C9" },
+    {value:"inch worm",  key: "#B0E313" },
+    {value:"indian khaki",  key: "#C3B091" },
+    {value:"indian tan",  key: "#4D1E01" },
+    {value:"indigo",  key: "#4F69C6" },
+    {value:"indochine",  key: "#C26B03" },
+    {value:"international klein blue",  key: "#002FA7" },
+    {value:"international orange",  key: "#FF4F00" },
+    {value:"irish coffee",  key: "#5F3D26" },
+    {value:"iroko",  key: "#433120" },
+    {value:"iron",  key: "#D4D7D9" },
+    {value:"ironside gray",  key: "#676662" },
+    {value:"ironstone",  key: "#86483C" },
+    {value:"island spice",  key: "#FFFCEE" },
+    {value:"ivory",  key: "#FFFFF0" },
+    {value:"jacaranda",  key: "#2E0329" },
+    {value:"jacarta",  key: "#3A2A6A" },
+    {value:"jacko bean",  key: "#2E1905" },
+    {value:"jacksons purple",  key: "#20208D" },
+    {value:"jade",  key: "#00A86B" },
+    {value:"jaffa",  key: "#EF863F" },
+    {value:"jagged ice",  key: "#C2E8E5" },
+    {value:"jagger",  key: "#350E57" },
+    {value:"jaguar",  key: "#080110" },
+    {value:"jambalaya",  key: "#5B3013" },
+    {value:"janna",  key: "#F4EBD3" },
+    {value:"japanese laurel",  key: "#0A6906" },
+    {value:"japanese maple",  key: "#780109" },
+    {value:"japonica",  key: "#D87C63" },
+    {value:"java",  key: "#1FC2C2" },
+    {value:"jazzberry jam",  key: "#A50B5E" },
+    {value:"jelly bean",  key: "#297B9A" },
+    {value:"jet stream",  key: "#B5D2CE" },
+    {value:"jewel",  key: "#126B40" },
+    {value:"jon",  key: "#3B1F1F" },
+    {value:"jonquil",  key: "#EEFF9A" },
+    {value:"jordy blue",  key: "#8AB9F1" },
+    {value:"judge gray",  key: "#544333" },
+    {value:"jumbo",  key: "#7C7B82" },
+    {value:"jungle green",  key: "#29AB87" },
+    {value:"jungle mist",  key: "#B4CFD3" },
+    {value:"juniper",  key: "#6D9292" },
+    {value:"just right",  key: "#ECCDB9" },
+    {value:"kabul",  key: "#5E483E" },
+    {value:"kaitoke green",  key: "#004620" },
+    {value:"kangaroo",  key: "#C6C8BD" },
+    {value:"karaka",  key: "#1E1609" },
+    {value:"karry",  key: "#FFEAD4" },
+    {value:"kashmir blue",  key: "#507096" },
+    {value:"kelp",  key: "#454936" },
+    {value:"kenyan copper",  key: "#7C1C05" },
+    {value:"keppel",  key: "#3AB09E" },
+    {value:"key lime pie",  key: "#BFC921" },
+    {value:"khaki",  key: "#F0E68C" },
+    {value:"kidnapper",  key: "#E1EAD4" },
+    {value:"kilamanjaro",  key: "#240C02" },
+    {value:"killarney",  key: "#3A6A47" },
+    {value:"kimberly",  key: "#736C9F" },
+    {value:"kingfisher daisy",  key: "#3E0480" },
+    {value:"kobi",  key: "#E79FC4" },
+    {value:"kokoda",  key: "#6E6D57" },
+    {value:"korma",  key: "#8F4B0E" },
+    {value:"koromiko",  key: "#FFBD5F" },
+    {value:"kournikova",  key: "#FFE772" },
+    {value:"kumera",  key: "#886221" },
+    {value:"la palma",  key: "#368716" },
+    {value:"la rioja",  key: "#B3C110" },
+    {value:"las palmas",  key: "#C6E610" },
+    {value:"laser",  key: "#C8B568" },
+    {value:"laser lemon",  key: "#FFFF66" },
+    {value:"laurel",  key: "#749378" },
+    {value:"lavender",  key: "#B57EDC" },
+    {value:"lavender blush",  key: "#FFF0F5" },
+    {value:"lavender gray",  key: "#BDBBD7" },
+    {value:"lavender magenta",  key: "#EE82EE" },
+    {value:"lavender pink",  key: "#FBAED2" },
+    {value:"lavender purple",  key: "#967BB6" },
+    {value:"lavender rose",  key: "#FBA0E3" },
+    {value:"leather",  key: "#967059" },
+    {value:"lemon",  key: "#FDE910" },
+    {value:"lemon chiffon",  key: "#FFFACD" },
+    {value:"lemon ginger",  key: "#AC9E22" },
+    {value:"lemon grass",  key: "#9B9E8F" },
+    {value:"light apricot",  key: "#FDD5B1" },
+    {value:"light orchid",  key: "#E29CD2" },
+    {value:"light wisteria",  key: "#C9A0DC" },
+    {value:"lightning yellow",  key: "#FCC01E" },
+    {value:"lilac",  key: "#C8A2C8" },
+    {value:"lilac bush",  key: "#9874D3" },
+    {value:"lily",  key: "#C8AABF" },
+    {value:"lily white",  key: "#E7F8FF" },
+    {value:"lima",  key: "#76BD17" },
+    {value:"lime",  key: "#BFFF00" },
+    {value:"limeade",  key: "#6F9D02" },
+    {value:"limed ash",  key: "#747D63" },
+    {value:"limed oak",  key: "#AC8A56" },
+    {value:"limed spruce",  key: "#394851" },
+    {value:"linen",  key: "#FAF0E6" },
+    {value:"link water",  key: "#D9E4F5" },
+    {value:"lipstick",  key: "#AB0563" },
+    {value:"lisbon brown",  key: "#423921" },
+    {value:"livid brown",  key: "#4D282E" },
+    {value:"loafer",  key: "#EEF4DE" },
+    {value:"loblolly",  key: "#BDC9CE" },
+    {value:"lochinvar",  key: "#2C8C84" },
+    {value:"lochmara",  key: "#007EC7" },
+    {value:"locust",  key: "#A8AF8E" },
+    {value:"log cabin",  key: "#242A1D" },
+    {value:"logan",  key: "#AAA9CD" },
+    {value:"lola",  key: "#DFCFDB" },
+    {value:"london hue",  key: "#BEA6C3" },
+    {value:"lonestar",  key: "#6D0101" },
+    {value:"lotus",  key: "#863C3C" },
+    {value:"loulou",  key: "#460B41" },
+    {value:"lucky",  key: "#AF9F1C" },
+    {value:"lucky point",  key: "#1A1A68" },
+    {value:"lunar green",  key: "#3C493A" },
+    {value:"luxor gold",  key: "#A7882C" },
+    {value:"lynch",  key: "#697E9A" },
+    {value:"mabel",  key: "#D9F7FF" },
+    {value:"macaroni and cheese",  key: "#FFB97B" },
+    {value:"madang",  key: "#B7F0BE" },
+    {value:"madison",  key: "#09255D" },
+    {value:"madras",  key: "#3F3002" },
+    {value:"magenta / fuchsia",  key: "#FF00FF" },
+    {value:"magic mint",  key: "#AAF0D1" },
+    {value:"magnolia",  key: "#F8F4FF" },
+    {value:"mahogany",  key: "#4E0606" },
+    {value:"mai tai",  key: "#B06608" },
+    {value:"maize",  key: "#F5D5A0" },
+    {value:"makara",  key: "#897D6D" },
+    {value:"mako",  key: "#444954" },
+    {value:"malachite",  key: "#0BDA51" },
+    {value:"malibu",  key: "#7DC8F7" },
+    {value:"mallard",  key: "#233418" },
+    {value:"malta",  key: "#BDB2A1" },
+    {value:"mamba",  key: "#8E8190" },
+    {value:"manatee",  key: "#8D90A1" },
+    {value:"mandalay",  key: "#AD781B" },
+    {value:"mandy",  key: "#E25465" },
+    {value:"mandys pink",  key: "#F2C3B2" },
+    {value:"mango tango",  key: "#E77200" },
+    {value:"manhattan",  key: "#F5C999" },
+    {value:"mantis",  key: "#74C365" },
+    {value:"mantle",  key: "#8B9C90" },
+    {value:"manz",  key: "#EEEF78" },
+    {value:"mardi gras",  key: "#350036" },
+    {value:"marigold",  key: "#B98D28" },
+    {value:"marigold yellow",  key: "#FBE870" },
+    {value:"mariner",  key: "#286ACD" },
+    {value:"maroon",  key: "#800000" },
+    {value:"maroon flush",  key: "#C32148" },
+    {value:"maroon oak",  key: "#520C17" },
+    {value:"marshland",  key: "#0B0F08" },
+    {value:"martini",  key: "#AFA09E" },
+    {value:"martinique",  key: "#363050" },
+    {value:"marzipan",  key: "#F8DB9D" },
+    {value:"masala",  key: "#403B38" },
+    {value:"matisse",  key: "#1B659D" },
+    {value:"matrix",  key: "#B05D54" },
+    {value:"matterhorn",  key: "#4E3B41" },
+    {value:"mauve",  key: "#E0B0FF" },
+    {value:"mauvelous",  key: "#F091A9" },
+    {value:"maverick",  key: "#D8C2D5" },
+    {value:"medium carmine",  key: "#AF4035" },
+    {value:"medium purple",  key: "#9370DB" },
+    {value:"medium red violet",  key: "#BB3385" },
+    {value:"melanie",  key: "#E4C2D5" },
+    {value:"melanzane",  key: "#300529" },
+    {value:"melon",  key: "#FEBAAD" },
+    {value:"melrose",  key: "#C7C1FF" },
+    {value:"mercury",  key: "#E5E5E5" },
+    {value:"merino",  key: "#F6F0E6" },
+    {value:"merlin",  key: "#413C37" },
+    {value:"merlot",  key: "#831923" },
+    {value:"metallic bronze",  key: "#49371B" },
+    {value:"metallic copper",  key: "#71291D" },
+    {value:"meteor",  key: "#D07D12" },
+    {value:"meteorite",  key: "#3C1F76" },
+    {value:"mexican red",  key: "#A72525" },
+    {value:"mid gray",  key: "#5F5F6E" },
+    {value:"midnight",  key: "#011635" },
+    {value:"midnight blue",  key: "#003366" },
+    {value:"midnight moss",  key: "#041004" },
+    {value:"mikado",  key: "#2D2510" },
+    {value:"milan",  key: "#FAFFA4" },
+    {value:"milano red",  key: "#B81104" },
+    {value:"milk punch",  key: "#FFF6D4" },
+    {value:"millbrook",  key: "#594433" },
+    {value:"mimosa",  key: "#F8FDD3" },
+    {value:"mindaro",  key: "#E3F988" },
+    {value:"mine shaft",  key: "#323232" },
+    {value:"mineral green",  key: "#3F5D53" },
+    {value:"ming",  key: "#36747D" },
+    {value:"minsk",  key: "#3F307F" },
+    {value:"mint green",  key: "#98FF98" },
+    {value:"mint julep",  key: "#F1EEC1" },
+    {value:"mint tulip",  key: "#C4F4EB" },
+    {value:"mirage",  key: "#161928" },
+    {value:"mischka",  key: "#D1D2DD" },
+    {value:"mist gray",  key: "#C4C4BC" },
+    {value:"mobster",  key: "#7F7589" },
+    {value:"moccaccino",  key: "#6E1D14" },
+    {value:"mocha",  key: "#782D19" },
+    {value:"mojo",  key: "#C04737" },
+    {value:"mona lisa",  key: "#FFA194" },
+    {value:"monarch",  key: "#8B0723" },
+    {value:"mondo",  key: "#4A3C30" },
+    {value:"mongoose",  key: "#B5A27F" },
+    {value:"monsoon",  key: "#8A8389" },
+    {value:"monte carlo",  key: "#83D0C6" },
+    {value:"monza",  key: "#C7031E" },
+    {value:"moody blue",  key: "#7F76D3" },
+    {value:"moon glow",  key: "#FCFEDA" },
+    {value:"moon mist",  key: "#DCDDCC" },
+    {value:"moon raker",  key: "#D6CEF6" },
+    {value:"morning glory",  key: "#9EDEE0" },
+    {value:"morocco brown",  key: "#441D00" },
+    {value:"mortar",  key: "#504351" },
+    {value:"mosque",  key: "#036A6E" },
+    {value:"moss green",  key: "#ADDFAD" },
+    {value:"mountain meadow",  key: "#1AB385" },
+    {value:"mountain mist",  key: "#959396" },
+    {value:"mountbatten pink",  key: "#997A8D" },
+    {value:"muddy waters",  key: "#B78E5C" },
+    {value:"muesli",  key: "#AA8B5B" },
+    {value:"mulberry",  key: "#C54B8C" },
+    {value:"mulberry wood",  key: "#5C0536" },
+    {value:"mule fawn",  key: "#8C472F" },
+    {value:"mulled wine",  key: "#4E4562" },
+    {value:"mustard",  key: "#FFDB58" },
+    {value:"my pink",  key: "#D69188" },
+    {value:"my sin",  key: "#FFB31F" },
+    {value:"mystic",  key: "#E2EBED" },
+    {value:"nandor",  key: "#4B5D52" },
+    {value:"napa",  key: "#ACA494" },
+    {value:"narvik",  key: "#EDF9F1" },
+    {value:"natural gray",  key: "#8B8680" },
+    {value:"navajo white",  key: "#FFDEAD" },
+    {value:"navy blue",  key: "#000080" },
+    {value:"nebula",  key: "#CBDBD6" },
+    {value:"negroni",  key: "#FFE2C5" },
+    {value:"neon carrot",  key: "#FF9933" },
+    {value:"nepal",  key: "#8EABC1" },
+    {value:"neptune",  key: "#7CB7BB" },
+    {value:"nero",  key: "#140600" },
+    {value:"nevada",  key: "#646E75" },
+    {value:"new orleans",  key: "#F3D69D" },
+    {value:"new york pink",  key: "#D7837F" },
+    {value:"niagara",  key: "#06A189" },
+    {value:"night rider",  key: "#1F120F" },
+    {value:"night shadz",  key: "#AA375A" },
+    {value:"nile blue",  key: "#193751" },
+    {value:"nobel",  key: "#B7B1B1" },
+    {value:"nomad",  key: "#BAB1A2" },
+    {value:"norway",  key: "#A8BD9F" },
+    {value:"nugget",  key: "#C59922" },
+    {value:"nutmeg",  key: "#81422C" },
+    {value:"nutmeg wood finish",  key: "#683600" },
+    {value:"oasis",  key: "#FEEFCE" },
+    {value:"observatory",  key: "#02866F" },
+    {value:"ocean green",  key: "#41AA78" },
+    {value:"ochre",  key: "#CC7722" },
+    {value:"off green",  key: "#E6F8F3" },
+    {value:"off yellow",  key: "#FEF9E3" },
+    {value:"oil",  key: "#281E15" },
+    {value:"old brick",  key: "#901E1E" },
+    {value:"old copper",  key: "#724A2F" },
+    {value:"old gold",  key: "#CFB53B" },
+    {value:"old lace",  key: "#FDF5E6" },
+    {value:"old lavender",  key: "#796878" },
+    {value:"old rose",  key: "#C08081" },
+    {value:"olive",  key: "#808000" },
+    {value:"olive drab",  key: "#6B8E23" },
+    {value:"olive green",  key: "#B5B35C" },
+    {value:"olive haze",  key: "#8B8470" },
+    {value:"olivetone",  key: "#716E10" },
+    {value:"olivine",  key: "#9AB973" },
+    {value:"onahau",  key: "#CDF4FF" },
+    {value:"onion",  key: "#2F270E" },
+    {value:"opal",  key: "#A9C6C2" },
+    {value:"opium",  key: "#8E6F70" },
+    {value:"oracle",  key: "#377475" },
+    {value:"orange",  key: "#FF681F" },
+    {value:"orange peel",  key: "#FFA000" },
+    {value:"orange roughy",  key: "#C45719" },
+    {value:"orange white",  key: "#FEFCED" },
+    {value:"orchid",  key: "#DA70D6" },
+    {value:"orchid white",  key: "#FFFDF3" },
+    {value:"oregon",  key: "#9B4703" },
+    {value:"orient",  key: "#015E85" },
+    {value:"oriental pink",  key: "#C69191" },
+    {value:"orinoco",  key: "#F3FBD4" },
+    {value:"oslo gray",  key: "#878D91" },
+    {value:"ottoman",  key: "#E9F8ED" },
+    {value:"outer space",  key: "#2D383A" },
+    {value:"outrageous orange",  key: "#FF6037" },
+    {value:"oxford blue",  key: "#384555" },
+    {value:"oxley",  key: "#779E86" },
+    {value:"oyster bay",  key: "#DAFAFF" },
+    {value:"oyster pink",  key: "#E9CECD" },
+    {value:"paarl",  key: "#A65529" },
+    {value:"pablo",  key: "#776F61" },
+    {value:"pacific blue",  key: "#009DC4" },
+    {value:"pacifika",  key: "#778120" },
+    {value:"paco",  key: "#411F10" },
+    {value:"padua",  key: "#ADE6C4" },
+    {value:"pale canary",  key: "#FFFF99" },
+    {value:"pale leaf",  key: "#C0D3B9" },
+    {value:"pale oyster",  key: "#988D77" },
+    {value:"pale prim",  key: "#FDFEB8" },
+    {value:"pale rose",  key: "#FFE1F2" },
+    {value:"pale sky",  key: "#6E7783" },
+    {value:"pale slate",  key: "#C3BFC1" },
+    {value:"palm green",  key: "#09230F" },
+    {value:"palm leaf",  key: "#19330E" },
+    {value:"pampas",  key: "#F4F2EE" },
+    {value:"panache",  key: "#EAF6EE" },
+    {value:"pancho",  key: "#EDCDAB" },
+    {value:"papaya whip",  key: "#FFEFD5" },
+    {value:"paprika",  key: "#8D0226" },
+    {value:"paradiso",  key: "#317D82" },
+    {value:"parchment",  key: "#F1E9D2" },
+    {value:"paris daisy",  key: "#FFF46E" },
+    {value:"paris m",  key: "#26056A" },
+    {value:"paris white",  key: "#CADCD4" },
+    {value:"parsley",  key: "#134F19" },
+    {value:"pastel green",  key: "#77DD77" },
+    {value:"pastel pink",  key: "#FFD1DC" },
+    {value:"patina",  key: "#639A8F" },
+    {value:"pattens blue",  key: "#DEF5FF" },
+    {value:"paua",  key: "#260368" },
+    {value:"pavlova",  key: "#D7C498" },
+    {value:"peach",  key: "#FFE5B4" },
+    {value:"peach cream",  key: "#FFF0DB" },
+    {value:"peach orange",  key: "#FFCC99" },
+    {value:"peach schnapps",  key: "#FFDCD6" },
+    {value:"peach yellow",  key: "#FADFAD" },
+    {value:"peanut",  key: "#782F16" },
+    {value:"pear",  key: "#D1E231" },
+    {value:"pearl bush",  key: "#E8E0D5" },
+    {value:"pearl lusta",  key: "#FCF4DC" },
+    {value:"peat",  key: "#716B56" },
+    {value:"pelorous",  key: "#3EABBF" },
+    {value:"peppermint",  key: "#E3F5E1" },
+    {value:"perano",  key: "#A9BEF2" },
+    {value:"perfume",  key: "#D0BEF8" },
+    {value:"periglacial blue",  key: "#E1E6D6" },
+    {value:"periwinkle",  key: "#CCCCFF" },
+    {value:"periwinkle gray",  key: "#C3CDE6" },
+    {value:"persian blue",  key: "#1C39BB" },
+    {value:"persian green",  key: "#00A693" },
+    {value:"persian indigo",  key: "#32127A" },
+    {value:"persian pink",  key: "#F77FBE" },
+    {value:"persian plum",  key: "#701C1C" },
+    {value:"persian red",  key: "#CC3333" },
+    {value:"persian rose",  key: "#FE28A2" },
+    {value:"persimmon",  key: "#FF6B53" },
+    {value:"peru tan",  key: "#7F3A02" },
+    {value:"pesto",  key: "#7C7631" },
+    {value:"petite orchid",  key: "#DB9690" },
+    {value:"pewter",  key: "#96A8A1" },
+    {value:"pharlap",  key: "#A3807B" },
+    {value:"picasso",  key: "#FFF39D" },
+    {value:"pickled bean",  key: "#6E4826" },
+    {value:"pickled bluewood",  key: "#314459" },
+    {value:"picton blue",  key: "#45B1E8" },
+    {value:"pig pink",  key: "#FDD7E4" },
+    {value:"pigeon post",  key: "#AFBDD9" },
+    {value:"pigment indigo",  key: "#4B0082" },
+    {value:"pine cone",  key: "#6D5E54" },
+    {value:"pine glade",  key: "#C7CD90" },
+    {value:"pine green",  key: "#01796F" },
+    {value:"pine tree",  key: "#171F04" },
+    {value:"pink",  key: "#FFC0CB" },
+    {value:"pink flamingo",  key: "#FF66FF" },
+    {value:"pink flare",  key: "#E1C0C8" },
+    {value:"pink lace",  key: "#FFDDF4" },
+    {value:"pink lady",  key: "#FFF1D8" },
+    {value:"pink salmon",  key: "#FF91A4" },
+    {value:"pink swan",  key: "#BEB5B7" },
+    {value:"piper",  key: "#C96323" },
+    {value:"pipi",  key: "#FEF4CC" },
+    {value:"pippin",  key: "#FFE1DF" },
+    {value:"pirate gold",  key: "#BA7F03" },
+    {value:"pistachio",  key: "#9DC209" },
+    {value:"pixie green",  key: "#C0D8B6" },
+    {value:"pizazz",  key: "#FF9000" },
+    {value:"pizza",  key: "#C99415" },
+    {value:"plantation",  key: "#27504B" },
+    {value:"plum",  key: "#843179" },
+    {value:"pohutukawa",  key: "#8F021C" },
+    {value:"polar",  key: "#E5F9F6" },
+    {value:"polo blue",  key: "#8DA8CC" },
+    {value:"pomegranate",  key: "#F34723" },
+    {value:"pompadour",  key: "#660045" },
+    {value:"porcelain",  key: "#EFF2F3" },
+    {value:"porsche",  key: "#EAAE69" },
+    {value:"port gore",  key: "#251F4F" },
+    {value:"portafino",  key: "#FFFFB4" },
+    {value:"portage",  key: "#8B9FEE" },
+    {value:"portica",  key: "#F9E663" },
+    {value:"pot pourri",  key: "#F5E7E2" },
+    {value:"potters clay",  key: "#8C5738" },
+    {value:"powder ash",  key: "#BCC9C2" },
+    {value:"powder blue",  key: "#B0E0E6" },
+    {value:"prairie sand",  key: "#9A3820" },
+    {value:"prelude",  key: "#D0C0E5" },
+    {value:"prim",  key: "#F0E2EC" },
+    {value:"primrose",  key: "#EDEA99" },
+    {value:"provincial pink",  key: "#FEF5F1" },
+    {value:"prussian blue",  key: "#003153" },
+    {value:"puce",  key: "#CC8899" },
+    {value:"pueblo",  key: "#7D2C14" },
+    {value:"puerto rico",  key: "#3FC1AA" },
+    {value:"pumice",  key: "#C2CAC4" },
+    {value:"pumpkin",  key: "#FF7518" },
+    {value:"pumpkin skin",  key: "#B1610B" },
+    {value:"punch",  key: "#DC4333" },
+    {value:"punga",  key: "#4D3D14" },
+    {value:"purple",  key: "#660099" },
+    {value:"purple heart",  key: "#652DC1" },
+    {value:"purple mountain majesty",  key: "#9678B6" },
+    {value:"purple pizzazz",  key: "#FF00CC" },
+    {value:"putty",  key: "#E7CD8C" },
+    {value:"quarter pearl lusta",  key: "#FFFDF4" },
+    {value:"quarter spanish white",  key: "#F7F2E1" },
+    {value:"quicksand",  key: "#BD978E" },
+    {value:"quill gray",  key: "#D6D6D1" },
+    {value:"quincy",  key: "#623F2D" },
+    {value:"racing green",  key: "#0C1911" },
+    {value:"radical red",  key: "#FF355E" },
+    {value:"raffia",  key: "#EADAB8" },
+    {value:"rainee",  key: "#B9C8AC" },
+    {value:"rajah",  key: "#F7B668" },
+    {value:"rangitoto",  key: "#2E3222" },
+    {value:"rangoon green",  key: "#1C1E13" },
+    {value:"raven",  key: "#727B89" },
+    {value:"raw sienna",  key: "#D27D46" },
+    {value:"raw umber",  key: "#734A12" },
+    {value:"razzle dazzle rose",  key: "#FF33CC" },
+    {value:"razzmatazz",  key: "#E30B5C" },
+    {value:"rebel",  key: "#3C1206" },
+    {value:"red",  key: "#FF0000" },
+    {value:"red beech",  key: "#7B3801" },
+    {value:"red berry",  key: "#8E0000" },
+    {value:"red damask",  key: "#DA6A41" },
+    {value:"red devil",  key: "#860111" },
+    {value:"red orange",  key: "#FF3F34" },
+    {value:"red oxide",  key: "#6E0902" },
+    {value:"red ribbon",  key: "#ED0A3F" },
+    {value:"red robin",  key: "#80341F" },
+    {value:"red stage",  key: "#D05F04" },
+    {value:"red violet",  key: "#C71585" },
+    {value:"redwood",  key: "#5D1E0F" },
+    {value:"reef",  key: "#C9FFA2" },
+    {value:"reef gold",  key: "#9F821C" },
+    {value:"regal blue",  key: "#013F6A" },
+    {value:"regent gray",  key: "#86949F" },
+    {value:"regent st blue",  key: "#AAD6E6" },
+    {value:"remy",  key: "#FEEBF3" },
+    {value:"reno sand",  key: "#A86515" },
+    {value:"resolution blue",  key: "#002387" },
+    {value:"revolver",  key: "#2C1632" },
+    {value:"rhino",  key: "#2E3F62" },
+    {value:"rice cake",  key: "#FFFEF0" },
+    {value:"rice flower",  key: "#EEFFE2" },
+    {value:"rich gold",  key: "#A85307" },
+    {value:"rio grande",  key: "#BBD009" },
+    {value:"ripe lemon",  key: "#F4D81C" },
+    {value:"ripe plum",  key: "#410056" },
+    {value:"riptide",  key: "#8BE6D8" },
+    {value:"river bed",  key: "#434C59" },
+    {value:"rob roy",  key: "#EAC674" },
+    {value:"robin egg blue",  key: "#00CCCC" },
+    {value:"rock",  key: "#4D3833" },
+    {value:"rock blue",  key: "#9EB1CD" },
+    {value:"rock spray",  key: "#BA450C" },
+    {value:"rodeo dust",  key: "#C9B29B" },
+    {value:"rolling stone",  key: "#747D83" },
+    {value:"roman",  key: "#DE6360" },
+    {value:"roman coffee",  key: "#795D4C" },
+    {value:"romance",  key: "#FFFEFD" },
+    {value:"romantic",  key: "#FFD2B7" },
+    {value:"ronchi",  key: "#ECC54E" },
+    {value:"roof terracotta",  key: "#A62F20" },
+    {value:"rope",  key: "#8E4D1E" },
+    {value:"rose",  key: "#FF007F" },
+    {value:"rose bud",  key: "#FBB2A3" },
+    {value:"rose bud cherry",  key: "#800B47" },
+    {value:"rose fog",  key: "#E7BCB4" },
+    {value:"rose of sharon",  key: "#BF5500" },
+    {value:"rose white",  key: "#FFF6F5" },
+    {value:"rosewood",  key: "#65000B" },
+    {value:"roti",  key: "#C6A84B" },
+    {value:"rouge",  key: "#A23B6C" },
+    {value:"royal blue",  key: "#4169E1" },
+    {value:"royal heath",  key: "#AB3472" },
+    {value:"royal purple",  key: "#6B3FA0" },
+    {value:"rum",  key: "#796989" },
+    {value:"rum swizzle",  key: "#F9F8E4" },
+    {value:"russet",  key: "#80461B" },
+    {value:"russett",  key: "#755A57" },
+    {value:"rust",  key: "#B7410E" },
+    {value:"rustic red",  key: "#480404" },
+    {value:"rusty nail",  key: "#86560A" },
+    {value:"saddle",  key: "#4C3024" },
+    {value:"saddle brown",  key: "#583401" },
+    {value:"saffron",  key: "#F4C430" },
+    {value:"saffron mango",  key: "#F9BF58" },
+    {value:"sage",  key: "#9EA587" },
+    {value:"sahara",  key: "#B7A214" },
+    {value:"sahara sand",  key: "#F1E788" },
+    {value:"sail",  key: "#B8E0F9" },
+    {value:"salem",  key: "#097F4B" },
+    {value:"salmon",  key: "#FF8C69" },
+    {value:"salomie",  key: "#FEDB8D" },
+    {value:"salt box",  key: "#685E6E" },
+    {value:"saltpan",  key: "#F1F7F2" },
+    {value:"sambuca",  key: "#3A2010" },
+    {value:"san felix",  key: "#0B6207" },
+    {value:"san juan",  key: "#304B6A" },
+    {value:"san marino",  key: "#456CAC" },
+    {value:"sand dune",  key: "#826F65" },
+    {value:"sandal",  key: "#AA8D6F" },
+    {value:"sandrift",  key: "#AB917A" },
+    {value:"sandstone",  key: "#796D62" },
+    {value:"sandwisp",  key: "#F5E7A2" },
+    {value:"sandy beach",  key: "#FFEAC8" },
+    {value:"sandy brown",  key: "#F4A460" },
+    {value:"sangria",  key: "#92000A" },
+    {value:"sanguine brown",  key: "#8D3D38" },
+    {value:"santa fe",  key: "#B16D52" },
+    {value:"santas gray",  key: "#9FA0B1" },
+    {value:"sapling",  key: "#DED4A4" },
+    {value:"sapphire",  key: "#2F519E" },
+    {value:"saratoga",  key: "#555B10" },
+    {value:"satin linen",  key: "#E6E4D4" },
+    {value:"sauvignon",  key: "#FFF5F3" },
+    {value:"sazerac",  key: "#FFF4E0" },
+    {value:"scampi",  key: "#675FA6" },
+    {value:"scandal",  key: "#CFFAF4" },
+    {value:"scarlet",  key: "#FF2400" },
+    {value:"scarlet gum",  key: "#431560" },
+    {value:"scarlett",  key: "#950015" },
+    {value:"scarpa flow",  key: "#585562" },
+    {value:"schist",  key: "#A9B497" },
+    {value:"school bus yellow",  key: "#FFD800" },
+    {value:"schooner",  key: "#8B847E" },
+    {value:"science blue",  key: "#0066CC" },
+    {value:"scooter",  key: "#2EBFD4" },
+    {value:"scorpion",  key: "#695F62" },
+    {value:"scotch mist",  key: "#FFFBDC" },
+    {value:"screamin green",  key: "#66FF66" },
+    {value:"sea buckthorn",  key: "#FBA129" },
+    {value:"sea green",  key: "#2E8B57" },
+    {value:"sea mist",  key: "#C5DBCA" },
+    {value:"sea nymph",  key: "#78A39C" },
+    {value:"sea pink",  key: "#ED989E" },
+    {value:"seagull",  key: "#80CCEA" },
+    {value:"seance",  key: "#731E8F" },
+    {value:"seashell",  key: "#F1F1F1" },
+    {value:"seashell peach",  key: "#FFF5EE" },
+    {value:"seaweed",  key: "#1B2F11" },
+    {value:"selago",  key: "#F0EEFD" },
+    {value:"selective yellow",  key: "#FFBA00" },
+    {value:"sepia",  key: "#704214" },
+    {value:"sepia black",  key: "#2B0202" },
+    {value:"sepia skin",  key: "#9E5B40" },
+    {value:"serenade",  key: "#FFF4E8" },
+    {value:"shadow",  key: "#837050" },
+    {value:"shadow green",  key: "#9AC2B8" },
+    {value:"shady lady",  key: "#AAA5A9" },
+    {value:"shakespeare",  key: "#4EABD1" },
+    {value:"shalimar",  key: "#FBFFBA" },
+    {value:"shamrock",  key: "#33CC99" },
+    {value:"shark",  key: "#25272C" },
+    {value:"sherpa blue",  key: "#004950" },
+    {value:"sherwood green",  key: "#02402C" },
+    {value:"shilo",  key: "#E8B9B3" },
+    {value:"shingle fawn",  key: "#6B4E31" },
+    {value:"ship cove",  key: "#788BBA" },
+    {value:"ship gray",  key: "#3E3A44" },
+    {value:"shiraz",  key: "#B20931" },
+    {value:"shocking",  key: "#E292C0" },
+    {value:"shocking pink",  key: "#FC0FC0" },
+    {value:"shuttle gray",  key: "#5F6672" },
+    {value:"siam",  key: "#646A54" },
+    {value:"sidecar",  key: "#F3E7BB" },
+    {value:"silk",  key: "#BDB1A8" },
+    {value:"silver",  key: "#C0C0C0" },
+    {value:"silver chalice",  key: "#ACACAC" },
+    {value:"silver rust",  key: "#C9C0BB" },
+    {value:"silver sand",  key: "#BFC1C2" },
+    {value:"silver tree",  key: "#66B58F" },
+    {value:"sinbad",  key: "#9FD7D3" },
+    {value:"siren",  key: "#7A013A" },
+    {value:"sirocco",  key: "#718080" },
+    {value:"sisal",  key: "#D3CBBA" },
+    {value:"skeptic",  key: "#CAE6DA" },
+    {value:"sky blue",  key: "#76D7EA" },
+    {value:"slate gray",  key: "#708090" },
+    {value:"smalt",  key: "#003399" },
+    {value:"smalt blue",  key: "#51808F" },
+    {value:"smoky",  key: "#605B73" },
+    {value:"snow drift",  key: "#F7FAF7" },
+    {value:"snow flurry",  key: "#E4FFD1" },
+    {value:"snowy mint",  key: "#D6FFDB" },
+    {value:"snuff",  key: "#E2D8ED" },
+    {value:"soapstone",  key: "#FFFBF9" },
+    {value:"soft amber",  key: "#D1C6B4" },
+    {value:"soft peach",  key: "#F5EDEF" },
+    {value:"solid pink",  key: "#893843" },
+    {value:"solitaire",  key: "#FEF8E2" },
+    {value:"solitude",  key: "#EAF6FF" },
+    {value:"sorbus",  key: "#FD7C07" },
+    {value:"sorrell brown",  key: "#CEB98F" },
+    {value:"soya bean",  key: "#6A6051" },
+    {value:"spanish green",  key: "#819885" },
+    {value:"spectra",  key: "#2F5A57" },
+    {value:"spice",  key: "#6A442E" },
+    {value:"spicy mix",  key: "#885342" },
+    {value:"spicy mustard",  key: "#74640D" },
+    {value:"spicy pink",  key: "#816E71" },
+    {value:"spindle",  key: "#B6D1EA" },
+    {value:"spray",  key: "#79DEEC" },
+    {value:"spring green",  key: "#00FF7F" },
+    {value:"spring leaves",  key: "#578363" },
+    {value:"spring rain",  key: "#ACCBB1" },
+    {value:"spring sun",  key: "#F6FFDC" },
+    {value:"spring wood",  key: "#F8F6F1" },
+    {value:"sprout",  key: "#C1D7B0" },
+    {value:"spun pearl",  key: "#AAABB7" },
+    {value:"squirrel",  key: "#8F8176" },
+    {value:"st tropaz",  key: "#2D569B" },
+    {value:"stack",  key: "#8A8F8A" },
+    {value:"star dust",  key: "#9F9F9C" },
+    {value:"stark white",  key: "#E5D7BD" },
+    {value:"starship",  key: "#ECF245" },
+    {value:"steel blue",  key: "#4682B4" },
+    {value:"steel gray",  key: "#262335" },
+    {value:"stiletto",  key: "#9C3336" },
+    {value:"stonewall",  key: "#928573" },
+    {value:"storm dust",  key: "#646463" },
+    {value:"storm gray",  key: "#717486" },
+    {value:"stratos",  key: "#000741" },
+    {value:"straw",  key: "#D4BF8D" },
+    {value:"strikemaster",  key: "#956387" },
+    {value:"stromboli",  key: "#325D52" },
+    {value:"studio",  key: "#714AB2" },
+    {value:"submarine",  key: "#BAC7C9" },
+    {value:"sugar cane",  key: "#F9FFF6" },
+    {value:"sulu",  key: "#C1F07C" },
+    {value:"summer green",  key: "#96BBAB" },
+    {value:"sun",  key: "#FBAC13" },
+    {value:"sundance",  key: "#C9B35B" },
+    {value:"sundown",  key: "#FFB1B3" },
+    {value:"sunflower",  key: "#E4D422" },
+    {value:"sunglo",  key: "#E16865" },
+    {value:"sunglow",  key: "#FFCC33" },
+    {value:"sunset orange",  key: "#FE4C40" },
+    {value:"sunshade",  key: "#FF9E2C" },
+    {value:"supernova",  key: "#FFC901" },
+    {value:"surf",  key: "#BBD7C1" },
+    {value:"surf crest",  key: "#CFE5D2" },
+    {value:"surfie green",  key: "#0C7A79" },
+    {value:"sushi",  key: "#87AB39" },
+    {value:"suva gray",  key: "#888387" },
+    {value:"swamp",  key: "#001B1C" },
+    {value:"swamp green",  key: "#ACB78E" },
+    {value:"swans down",  key: "#DCF0EA" },
+    {value:"sweet corn",  key: "#FBEA8C" },
+    {value:"sweet pink",  key: "#FD9FA2" },
+    {value:"swirl",  key: "#D3CDC5" },
+    {value:"swiss coffee",  key: "#DDD6D5" },
+    {value:"sycamore",  key: "#908D39" },
+    {value:"tabasco",  key: "#A02712" },
+    {value:"tacao",  key: "#EDB381" },
+    {value:"tacha",  key: "#D6C562" },
+    {value:"tahiti gold",  key: "#E97C07" },
+    {value:"tahuna sands",  key: "#EEF0C8" },
+    {value:"tall poppy",  key: "#B32D29" },
+    {value:"tallow",  key: "#A8A589" },
+    {value:"tamarillo",  key: "#991613" },
+    {value:"tamarind",  key: "#341515" },
+    {value:"tan",  key: "#D2B48C" },
+    {value:"tan hide",  key: "#FA9D5A" },
+    {value:"tana",  key: "#D9DCC1" },
+    {value:"tangaroa",  key: "#03163C" },
+    {value:"tangerine",  key: "#F28500" },
+    {value:"tango",  key: "#ED7A1C" },
+    {value:"tapa",  key: "#7B7874" },
+    {value:"tapestry",  key: "#B05E81" },
+    {value:"tara",  key: "#E1F6E8" },
+    {value:"tarawera",  key: "#073A50" },
+    {value:"tasman",  key: "#CFDCCF" },
+    {value:"taupe",  key: "#483C32" },
+    {value:"taupe gray",  key: "#B3AF95" },
+    {value:"tawny port",  key: "#692545" },
+    {value:"te papa green",  key: "#1E433C" },
+    {value:"tea",  key: "#C1BAB0" },
+    {value:"tea green",  key: "#D0F0C0" },
+    {value:"teak",  key: "#B19461" },
+    {value:"teal",  key: "#008080" },
+    {value:"teal blue",  key: "#044259" },
+    {value:"temptress",  key: "#3B000B" },
+    {value:"tenn",  key: "#CD5700" },
+    {value:"tequila",  key: "#FFE6C7" },
+    {value:"terracotta",  key: "#E2725B" },
+    {value:"texas",  key: "#F8F99C" },
+    {value:"texas rose",  key: "#FFB555" },
+    {value:"thatch",  key: "#B69D98" },
+    {value:"thatch green",  key: "#403D19" },
+    {value:"thistle",  key: "#D8BFD8" },
+    {value:"thistle green",  key: "#CCCAA8" },
+    {value:"thunder",  key: "#33292F" },
+    {value:"thunderbird",  key: "#C02B18" },
+    {value:"tia maria",  key: "#C1440E" },
+    {value:"tiara",  key: "#C3D1D1" },
+    {value:"tiber",  key: "#063537" },
+    {value:"tickle me pink",  key: "#FC80A5" },
+    {value:"tidal",  key: "#F1FFAD" },
+    {value:"tide",  key: "#BFB8B0" },
+    {value:"timber green",  key: "#16322C" },
+    {value:"timberwolf",  key: "#D9D6CF" },
+    {value:"titan white",  key: "#F0EEFF" },
+    {value:"toast",  key: "#9A6E61" },
+    {value:"tobacco brown",  key: "#715D47" },
+    {value:"toledo",  key: "#3A0020" },
+    {value:"tolopea",  key: "#1B0245" },
+    {value:"tom thumb",  key: "#3F583B" },
+    {value:"tonys pink",  key: "#E79F8C" },
+    {value:"topaz",  key: "#7C778A" },
+    {value:"torch red",  key: "#FD0E35" },
+    {value:"torea bay",  key: "#0F2D9E" },
+    {value:"tory blue",  key: "#1450AA" },
+    {value:"tosca",  key: "#8D3F3F" },
+    {value:"totem pole",  key: "#991B07" },
+    {value:"tower gray",  key: "#A9BDBF" },
+    {value:"tradewind",  key: "#5FB3AC" },
+    {value:"tranquil",  key: "#E6FFFF" },
+    {value:"travertine",  key: "#FFFDE8" },
+    {value:"tree poppy",  key: "#FC9C1D" },
+    {value:"treehouse",  key: "#3B2820" },
+    {value:"trendy green",  key: "#7C881A" },
+    {value:"trendy pink",  key: "#8C6495" },
+    {value:"trinidad",  key: "#E64E03" },
+    {value:"tropical blue",  key: "#C3DDF9" },
+    {value:"tropical rain forest",  key: "#00755E" },
+    {value:"trout",  key: "#4A4E5A" },
+    {value:"true v",  key: "#8A73D6" },
+    {value:"tuatara",  key: "#363534" },
+    {value:"tuft bush",  key: "#FFDDCD" },
+    {value:"tulip tree",  key: "#EAB33B" },
+    {value:"tumbleweed",  key: "#DEA681" },
+    {value:"tuna",  key: "#353542" },
+    {value:"tundora",  key: "#4A4244" },
+    {value:"turbo",  key: "#FAE600" },
+    {value:"turkish rose",  key: "#B57281" },
+    {value:"turmeric",  key: "#CABB48" },
+    {value:"turquoise",  key: "#30D5C8" },
+    {value:"turquoise blue",  key: "#6CDAE7" },
+    {value:"turtle green",  key: "#2A380B" },
+    {value:"tuscany",  key: "#BD5E2E" },
+    {value:"tusk",  key: "#EEF3C3" },
+    {value:"tussock",  key: "#C5994B" },
+    {value:"tutu",  key: "#FFF1F9" },
+    {value:"twilight",  key: "#E4CFDE" },
+    {value:"twilight blue",  key: "#EEFDFF" },
+    {value:"twine",  key: "#C2955D" },
+    {value:"tyrian purple",  key: "#66023C" },
+    {value:"ultramarine",  key: "#120A8F" },
+    {value:"valencia",  key: "#D84437" },
+    {value:"valentino",  key: "#350E42" },
+    {value:"valhalla",  key: "#2B194F" },
+    {value:"van cleef",  key: "#49170C" },
+    {value:"vanilla",  key: "#D1BEA8" },
+    {value:"vanilla ice",  key: "#F3D9DF" },
+    {value:"varden",  key: "#FFF6DF" },
+    {value:"venetian red",  key: "#72010F" },
+    {value:"venice blue",  key: "#055989" },
+    {value:"venus",  key: "#928590" },
+    {value:"verdigris",  key: "#5D5E37" },
+    {value:"verdun green",  key: "#495400" },
+    {value:"vermilion",  key: "#FF4D00" },
+    {value:"vesuvius",  key: "#B14A0B" },
+    {value:"victoria",  key: "#534491" },
+    {value:"vida loca",  key: "#549019" },
+    {value:"viking",  key: "#64CCDB" },
+    {value:"vin rouge",  key: "#983D61" },
+    {value:"viola",  key: "#CB8FA9" },
+    {value:"violent violet",  key: "#290C5E" },
+    {value:"violet",  key: "#240A40" },
+    {value:"violet eggplant",  key: "#991199" },
+    {value:"violet red",  key: "#F7468A" },
+    {value:"viridian",  key: "#40826D" },
+    {value:"viridian green",  key: "#678975" },
+    {value:"vis vis",  key: "#FFEFA1" },
+    {value:"vista blue",  key: "#8FD6B4" },
+    {value:"vista white",  key: "#FCF8F7" },
+    {value:"vivid tangerine",  key: "#FF9980" },
+    {value:"vivid violet",  key: "#803790" },
+    {value:"voodoo",  key: "#533455" },
+    {value:"vulcan",  key: "#10121D" },
+    {value:"wafer",  key: "#DECBC6" },
+    {value:"waikawa gray",  key: "#5A6E9C" },
+    {value:"waiouru",  key: "#363C0D" },
+    {value:"walnut",  key: "#773F1A" },
+    {value:"wasabi",  key: "#788A25" },
+    {value:"water leaf",  key: "#A1E9DE" },
+    {value:"watercourse",  key: "#056F57" },
+    {value:"waterloo ",  key: "#7B7C94" },
+    {value:"wattle",  key: "#DCD747" },
+    {value:"watusi",  key: "#FFDDCF" },
+    {value:"wax flower",  key: "#FFC0A8" },
+    {value:"we peep",  key: "#F7DBE6" },
+    {value:"web orange",  key: "#FFA500" },
+    {value:"wedgewood",  key: "#4E7F9E" },
+    {value:"well read",  key: "#B43332" },
+    {value:"west coast",  key: "#625119" },
+    {value:"west side",  key: "#FF910F" },
+    {value:"westar",  key: "#DCD9D2" },
+    {value:"wewak",  key: "#F19BAB" },
+    {value:"wheat",  key: "#F5DEB3" },
+    {value:"wheatfield",  key: "#F3EDCF" },
+    {value:"whiskey",  key: "#D59A6F" },
+    {value:"whisper",  key: "#F7F5FA" },
+    {value:"white",  key: "#FFFFFF" },
+    {value:"white ice",  key: "#DDF9F1" },
+    {value:"white lilac",  key: "#F8F7FC" },
+    {value:"white linen",  key: "#F8F0E8" },
+    {value:"white pointer",  key: "#FEF8FF" },
+    {value:"white rock",  key: "#EAE8D4" },
+    {value:"wild blue yonder",  key: "#7A89B8" },
+    {value:"wild rice",  key: "#ECE090" },
+    {value:"wild sand",  key: "#F4F4F4" },
+    {value:"wild strawberry",  key: "#FF3399" },
+    {value:"wild watermelon",  key: "#FD5B78" },
+    {value:"wild willow",  key: "#B9C46A" },
+    {value:"william",  key: "#3A686C" },
+    {value:"willow brook",  key: "#DFECDA" },
+    {value:"willow grove",  key: "#65745D" },
+    {value:"windsor",  key: "#3C0878" },
+    {value:"wine berry",  key: "#591D35" },
+    {value:"winter hazel",  key: "#D5D195" },
+    {value:"wisp pink",  key: "#FEF4F8" },
+    {value:"wisteria",  key: "#9771B5" },
+    {value:"wistful",  key: "#A4A6D3" },
+    {value:"witch haze",  key: "#FFFC99" },
+    {value:"wood bark",  key: "#261105" },
+    {value:"woodland",  key: "#4D5328" },
+    {value:"woodrush",  key: "#302A0F" },
+    {value:"woodsmoke",  key: "#0C0D0F" },
+    {value:"woody brown",  key: "#483131" },
+    {value:"xanadu",  key: "#738678" },
+    {value:"yellow",  key: "#FFFF00" },
+    {value:"yellow green",  key: "#C5E17A" },
+    {value:"yellow metal",  key: "#716338" },
+    {value:"yellow orange",  key: "#FFAE42" },
+    {value:"yellow sea",  key: "#FEA904" },
+    {value:"your pink",  key: "#FFC3C0" },
+    {value:"yukon gold",  key: "#7B6608" },
+    {value:"yuma",  key: "#CEC291" },
+    {value:"zambezi",  key: "#685558" },
+    {value:"zanah",  key: "#DAECD6" },
+    {value:"zest",  key: "#E5841B" },
+    {value:"zeus",  key: "#292319" },
+    {value:"ziggurat",  key: "#BFDBE2" },
+    {value:"zinnwaldite",  key: "#EBC2AF" },
+    {value:"zircon",  key: "#F4F8FF" },
+    {value:"zombie",  key: "#E4D69B" },
+    {value:"zorba",  key: "#A59B91" },
+    {value:"zuccini",  key: "#044022" },
+    {value:"zumthor",  key: "#EDF6FF"}
+]
+
+const sizes = {
+    "default": [],
+	"male": {
+		"Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"T Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Sweatshirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Kurtas & Kurta Sets": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Jackets & Coats": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Sweaters": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Blazers & Waistcoats": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Suits": generateKeyValue(["XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Sherwanis": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Track Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Briefs & Trunks": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Boxers": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Vests": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Robes": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Bath Robes": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Lounge T-Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+        "Jumpsuits": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+		"Night Suits": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Bottoms": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Sets": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Tops": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Swim Bottoms": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Swim Suits": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Track Suits": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Jeans": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Trousers": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Shorts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Joggers": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Shorts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Track Pants & Shorts": generateKeyValue(["26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Dhotis": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+		"Dhoti Pants": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+		"Lounge Pants": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Lounge Shorts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Pyjamas": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Belts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Formal Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Casual Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Sports Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Boots": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Outdoor Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Work & Safety Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Ethnic Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+        "Flipflops & Flats": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13"]),
+        "Sandals & Floaters": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13"]),
+        "Ethnic Shoes": generateKeyValue(["IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","IND-11","IND-12","IND-13"]),
+		"Watch": generateKeyValue(["18 mm","20 mm","22 mm","24 mm","30 mm","32 mm","34 mm","36 mm","40 mm","42 mm","44 mm","46 mm"]),
+        "Rings": generateKeyValue(["7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","Free Size"]),
+	},
+	"female": {
+		"Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"T Shirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Sweatshirts": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Kurtas & Kurta Sets": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Jackets & Coats": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Sweaters": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Blazers & Waistcoats": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","24","26","28","30","32","34","36","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Suits": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Semi Stitched","Unstitched","Free Size"]),
+        "Kurtis, Tunics": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+        "Palazzos": generateKeyValue(["24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size","XS","S","M","L","XL","XXL"]),
+        "Skirts": generateKeyValue(["24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size","XS","S","M","L","XL","XXL"]),
+        "Shrugs & Blouses": generateKeyValue(["26","26 Alterable","28","28 Alterable","30","30 Alterable","32","32 Alterable","34","34 Alterable","36","36 Alterable","38","38 Alterable","40","40 Alterable","42","42 Alterable","44","44 Alterable","46","46 Alterable","48","48 Alterable","50","50 Alterable","52","52 Alterable","54","54 Alterable","56","56 Alterable","58","58 Alterable","60","60 Alterable"]),
+		"Jeans": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+        "Tights, Leggings & Jeggings": generateKeyValue(["24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size","XS","S","M","L","XL","XXL"]),
+		"Capris": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Shorts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+        "Lehenga Cholis": generateKeyValue(["Semi Stitched","Unstitched","Free Size"]),
+        "Dupattas & Shawls": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+        "Bra": generateKeyValue(["28A","30A","32A","34A","36A","38A","40A","42A","44A","46A","48A","50A","52A","54A","28B","30B","32B","34B","36B","38B","40B","42B","44B","46B","48B","50B","52B","54B","28C","30C","32C","34C","36C","38C","40C","42C","44C","46C","48C","50C","52C","54C","28D","30D","32D","34D","36D","38D","40D","42D","44D","46D","48D","50D","52D","54D","28E","30E","32E","34E","36E","38E","40E","42E","44E","46E","48E","50E","52E","54E","30F","32F","34F","40F","42F","44F","46F","48F","50F","52F","54F","40G","42G","44G","46G","48G","50G","52G","54G","40H","42H","44H","46H","48H","50H","52H","54H","40I","42I","44I","46I","48I","50I","52I","54I","40J","42J","44J","46J","48J","50J","52J","54J","40K","42K","44K","46K","48K","50K","52K","54K","40AA","44AA","46AA","48AA","50AA","52AA","54AA","30DD","32DD","34DD","40DD","44DD","46DD","48DD","50DD","52DD","54DD","40EE","42EE","44EE","46EE","48EE","50EE","52EE","54EE","30FF","32FF","34FF","40FF","42FF","44FF","46FF","48FF","50FF","52FF","54FF","40GG","42GG","44GG","46GG","48GG","50GG","52GG","54GG","40DDD","44DDD","46DDD","48DDD","50DDD","52DDD","54DDD","XS","S","M","L","XL","XXL","XXXL","Free Size"]),
+        "Shapewear": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+        "Camisoles": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+        "Lingerie Sets & Accessories": generateKeyValue(["28A","30A","32A","34A","36A","38A","40A","42A","44A","46A","48A","50A","52A","54A","28B","30B","32B","34B","36B","38B","40B","42B","44B","46B","48B","50B","52B","54B","28C","30C","32C","34C","36C","38C","40C","42C","44C","46C","48C","50C","52C","54C","28D","30D","32D","34D","36D","38D","40D","42D","44D","46D","48D","50D","52D","54D","28E","30E","32E","34E","36E","38E","40E","42E","44E","46E","48E","50E","52E","54E","30F","32F","34F","40F","42F","44F","46F","48F","50F","52F","54F","40G","42G","44G","46G","48G","50G","52G","54G","40H","42H","44H","46H","48H","50H","52H","54H","40I","42I","44I","46I","48I","50I","52I","54I","40J","42J","44J","46J","48J","50J","52J","54J","40K","42K","44K","46K","48K","50K","52K","54K","40AA","44AA","46AA","48AA","50AA","52AA","54AA","30DD","32DD","34DD","40DD","44DD","46DD","48DD","50DD","52DD","54DD","40EE","42EE","44EE","46EE","48EE","50EE","52EE","54EE","30FF","32FF","34FF","40FF","42FF","44FF","46FF","48FF","50FF","52FF","54FF","40GG","42GG","44GG","46GG","48GG","50GG","52GG","54GG","40DDD","44DDD","46DDD","48DDD","50DDD","52DDD","54DDD","XS","S","M","L","XL","XXL","XXXL","Free Size"]),
+        "Tops": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+        "Jumpsuits": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","Free Size"]),
+		"Night Suits": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Bottoms": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Sets": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Thermal Tops": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Swim Bottoms": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Swim Suits": generateKeyValue(["XXS","XS","S","M","L","XL","2XL","3XL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","38","39","40","42","44","46","48","50","52","Free Size"]),
+		"Track Suits": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size"]),
+		"Joggers": generateKeyValue(["26","28","30","32","34","38","36","39","40","42","44","46","48","50"]),
+		"Track Pants & Shorts": generateKeyValue(["26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+        "Churidars": generateKeyValue(["24","26","28","30","32","34","36","38","40","42","44","46","48","50","52","Free Size","XS","S","M","L","XL","XXL"]),
+		"Salwars": generateKeyValue(["26","28","30","32","34","38","36","39","40","42","44","46","48","50","Free Size"]),
+		"Harem Pants": generateKeyValue(["26","28","30","32","34","38","36","39","40","42","44","46","48","50"]),
+		"Lounge Pants": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Lounge Shorts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+        "Pyjamas": generateKeyValue(["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL","6XL","7XL","8XL","9XL","10XL","26","28","30","32","34","38","36","39","40","42","44","46","48","50","Free Size"]),
+		"Belts": generateKeyValue(["XS","S","M","L","XL","XXL","24","26","28","30","32","34","38","36","39","40","42","44","46","48","50","52","Free Size"]),
+		"Formal Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Casual Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Sports Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Boots": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Outdoor Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Work & Safety Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+		"Ethnic Shoes": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10","UK1","UK1.5","UK2","UK2.5","UK3","UK3.5","UK4","UK4.5","UK5","UK5.5","UK6","UK6.5","UK7","UK7.5","UK8","UK8.5","UK9","UK9.5","UK10","UK10.5","UK11","UK11.5","UK12","UK12.5","UK13","UK13.5"]),
+        "Flipflops & Flats": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10"]),
+        "Sandals & Floaters": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10"]),
+        "Heels": generateKeyValue(["IND-2","IND-3","IND-4","IND-5","IND-6","IND-7","IND-8","IND-9","IND-10"]),
+		"Watch": generateKeyValue(["18 mm","20 mm","22 mm","24 mm","30 mm","32 mm","34 mm","36 mm","40 mm","42 mm","44 mm","46 mm"]),
+        "Rings": generateKeyValue(["7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","Free Size"])
+	},
+	"girl": {
+        "Shirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "T Shirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Sweatshirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Kurtas & Kurta Sets": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Jackets & Coats": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Sweaters": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Skirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Shrugs & Blouses": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Jeans": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Tights, Leggings & Jeggings": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Tops": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Jumpsuits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Night Suits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Dresses": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Thermal Bottoms": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Thermal Sets": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Thermal Tops": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Capris": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Shorts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Track Pants & Shorts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Pyjamas": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Swim Suits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Gloves": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Earmuffs": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+	},
+	"boy": {
+        "Shirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "T Shirts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Sweatshirts & Hoodies": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Kurta Sets": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+         "Jackets & Coats": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+         "Suits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+         "Sherwanis": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+         "Sweaters": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+         "Jeans": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Jumpsuits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Night Suits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Dresses": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Thermal Bottoms": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Thermal Sets": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Thermal Tops": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Shorts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Track Pants & Shorts": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Pyjamas": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+        "Swim Suits": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Gloves": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+		"Earmuffs": generateKeyValue(["0-3 Months","0-6 Months","3-6 Months","6-9 Months","6-12 Months","9-12 Months","12-18 Months","18-24 Months","0-1 Years","1-2 Years","2-3 Years","3-4 Years","4-5 Years","5-6 Years","6-7 Years","7-8 Years","8-9 Years","9-10 Years","10-11 Years","11-12 Years","12-13 Years","13-14 Years","14-15 Years","15-16 Years","Free Size"]),
+	}
+}
+
+const propertyEnums = {
+    "color": colors,
+    "gender": generateKeyValue(["male","female","boy","girl","infant","unisex"]),
+    "backpack_style": generateKeyValue(["buckle","button","drawstring","flap","hook & loop","magnetic","push lock","snap","twist lock","zipper"]),
+    "base_metal": generateKeyValue(["alpha","gold","silver","brass","alloy","ceramic","wood","metal","german silver","leather","plastic","PU"]),
+    "benefit": generateKeyValue(["age_defying","curling","HD_photogenic","lengthening","luminous","pore_minimising","thickening","volumizing","waterproof","long_lasting","plumping","transfer_proof","transfer_resistant","growth_boosting","cuticle_care","hydrating","strengthening","repairing"]),
+    "bottom_type": generateKeyValue(["capri","ethnic bottom","jeans","lounge pant","short","track pant","trouser"]),
+    "bristle_type": generateKeyValue(["natural","synthetic"]),
+    "brush_type": generateKeyValue(["foundation","stippling","concealer","powder","blush","contour","bronzer","highlight","eyeshadow","eyeshadow-crease","eyeshadow-blending","eye-liner","mascara","lip"]),
+    "buckle_material": generateKeyValue(["alpha","metal","leather"]),
+    "buckle_type": generateKeyValue(["alpha","cam","ratchet","roller","side release","slide","snap","tie"]),
+    "closure_type": generateKeyValue(["alpha","back","button","front","full-zip","half-zip","no-closure","quarter-zip","side","slip-on","tie-up"]),
+    "collar": generateKeyValue(["alpha","button down","mandarin","club","spread","slim","peter pan","hood","cutaway","cuban","wingtip","built-up"]),
+    "compatible_devices": generateKeyValue(["laptop","desktop","tablet"]),
+    "concern": generateKeyValue(["acne_blemish","anti_ageing","anti_pollution","bad_breath","blackhead_whitehead","brightening","cavity","chapped_lip","cleansing","colour_protection","cuticle_care","dandruff","dark_spot_pigmentation","dry_frizzy_hair","dryness","dullness","fine_lines_wrinkle","firming","hairfall_thinning","heat_protection","hydration","menstrual_cycle","odour","oil_control","plaque","pores","product_build_up","soap_free","split_end","stretch_mark","sun_protection","tan_removal","tangled_hair","under_eye","uneven_skin_tone","waterproof"]),
+    "connectivity": generateKeyValue(["bluetooth","LTE","wi-fi","wireless","USB"]),
+
+    "conscious": generateKeyValue(["cruelty_free","vegan","natural"]),
+    "coverage": generateKeyValue(["alpha","full","half","medium","low","sheer"]),
+    "dial_shape": generateKeyValue(["alpha","asymmetric","diamond","oval","rectangle","round","square","triangle","thread"]),
+    "dimension_unit": generateKeyValue(["centimeter","meter"]),
+    "display": generateKeyValue(["alpha","analog","digital"]),
+    "fabric": generateKeyValue(["alpha","acrylic","art silk","bamboo","chambray","chanderi cotton","chanderi silk","chiffon","cotton","cotton blend","cotton cambric","cotton linen","cotton silk","crepe","denim","dupion silk","elastane","georgette","jacquard","jute","jute cotton","jute silk","khadi cotton","kora muslin","lace","leather","linen","mulmul","modal","net","nylon","organza","paper silk","pashmina","poly chiffon","poly crepe","poly georgette","poly silk","polycotton","polyester","rayon","rayon slub","satin","shantoon","silk","silk blend","soft silk","super net","synthetic","taffeta silk","tissue","tussar silk","velvet","vichitra silk","viscose","viscose rayon","voile","wool"]),
+    "fabric_finish": generateKeyValue(["alpha","satin","crepe","merserised","printed","painted","embroidered","patchwork","woven","knitted"]),
+    "face_shape": generateKeyValue(["alpha","rectangular","oval","circular","square","triangular"]),
+    "fasten_type": generateKeyValue(["alpha","ankle loop","backstrap","buckle","closed back","lace-up","no back strap","open back","slip-on","velcro","zip"]),
+    "features": generateKeyValue(["alpha","basic","pullover","threebuttoned","flared"]),
+    "finish": generateKeyValue(["clear","creme","duochrome","gel","glitter","glossy","luminous","matte","metallic","natural","radiant","shimmer","satin","special_effects","tinted"]),
+    "fit": generateKeyValue(["alphanumeric","loose","regular","relax","skinny","slim","smart","ultra slim"]),
+    "flavour": generateKeyValue(["ajwain","amla","aniseed","apple","asafoetida","assorted","banana","basil","bay leaf","blueberry","butter","caramel","caraway","cardamom","chervil","chillies","chive","chocolate","cilantro","cinnamon","cloves","cola","coriander","corn","cranberry","cumin","curry leaves","dill","elaichi","fennel","fenugreek","fruits","galangal","garlic","ginger","guava","horseradish","imli","jeera","kaffir lime leaf","kasuri methi","kokum","lemon","lemon grass","mace","mango","marjoram","methi","mint","mixed fruit","mushroom","mustard","nutmeg","onion","orange","oregano","parsley","peach","pepper","peppercorn","peppermint","pineapple","pomegranate","raspberry","rosemary","saffron","sage","spearmint","star anise","strawberry","sweetmint","tamarind","tarragon","thyme","turmeric","vanilla","wasabi","watermelon"]),
+    "footwear_type": generateKeyValue(["boat shoes","brogues","clogs","comfort sandals","derbys","driving shoes","espadrilles","flat boots","flatforms","gladiators","kolhapuri","loafers","mojaris","monks","oxfords","skate shoes","sliders","slip-on sneakers","sneakers","thong flip-flops","trekking shoes"]),
+    "formulation": generateKeyValue(["cream","foam","gel","lotion","paste","powder","wax","liquid","bar","butter","spray","mist","roll_on","serum","solid","mousse","stick","tablet","capsule","mask"]),
+    "fragrance": generateKeyValue(["fresh","floral","earthy_woody","warm_spicy","fruity"]),
+    "frame_material": generateKeyValue(["acetate","acrylic","alloy","aluminium","carbon fiber","composite","fiber","fiber & plastic","metal","metal & plastic","plastic","polycarbonate","rubber","steel","TR-90","titanium"]),
+    "frame_shape": generateKeyValue(["alpha","aviator","butterfly","cat eye","clubmaster","contemporary","geometric","heart","hexagon","oval","oversized","rectangular","round","shield","sports","square","teardrop","wayfarer"]),
+    "frame_size": generateKeyValue(["alpha","extra narrow","narrow","medium","wide","extra wide"]),
+    "frame_style": generateKeyValue(["classic","trendy","designer","nerdy","retro","sporty"]),
+    "frame_type": generateKeyValue(["alpha","full rim","half rim","rimless"]),
+    "front_styling": generateKeyValue(["double-breasted","single-breasted","tuxedo"]),
+    "gem_type": generateKeyValue(["alpha","crystal","pearl","diamond","american diamond","aquamarine","quartz","zirconia","garnet","sapphire"]),
+    "gender": generateKeyValue(["male","female","boy","girl","infant","unisex"]),
+    "glass_material": generateKeyValue(["acetate","acrylic","mineral","plastic","sapphire crystal"]),
+    "grain_type": generateKeyValue(["broken","long","short","medium"]),
+    "hair_type": generateKeyValue(["dry","normal","curly","straight","dull","oily","fine","thick","thin","wavy"]),
+    "hemline": generateKeyValue(["asymmetric","curved","high-low","straight","vented"]),
+    "ingredient": generateKeyValue(["almond","aloe_vera","argan_oil","avocado","beeswax","beetroot","castor_oil","chamomile","charcoal","clay","coconut","eucalyptus","green_tea","honey","jojoba_oil","lemon_grass","moringa","neem","niacinamide","papaya","pomegranate","rose","salicylic_acid","sandalwood","shea_butter","squalene","sunflower","tea_tree","tulsi","turmeric","vitamin_A","vitamin_C","vitamin_E"]),
+    "insole": generateKeyValue(["alpha","arch support","athletic","comfort","orthopedic","rubber","fur","leather","memory foam","padded","support"]),
+    "jewellery_type": generateKeyValue(["statement","stone","pearl","kundan","oxidised","tasse","sterling_silver","meenakari"]),
+    "lens_material": generateKeyValue(["alpha","composite","glass","plastic","polycarbonate","trivex","high index"]),
+    "lock_type": generateKeyValue(["alpha","TSA","combination","numeric"]),
+    "material": generateKeyValue(["alpha","acetate","acrylic","acrylonitrile","aluminium","battery","brass","canvas","carbon","cellulose","cork","cotton","elastane","elastodiene","elastolefin","ethylene","EVA","expanded","faux leather","foamed","glass","grey","iron","jute","leather","linen","lycra","lyocell","mesh","modal","nubuck","nylon","polyamide","polycarbonate","polyester","polyethylene","polymethylpentene","polyoxymethylene","polypropylene","polyurethane","polyvinyl","PU","PVC","rayon","rice","rubber","sand","silicon","silk","stainless","steel","styrene","suede","synthetic","textile","thermo","thermoplastic","tritan","velvet","viscose","water","wood","wool","zinc"]),
+    "material_finish": generateKeyValue(["alpha","embossed","embroidered"]),
+    "midsole": generateKeyValue(["alpha","leather","PU","rubber"]),
+    "neck": generateKeyValue(["alpha","boat","choker","cowl","halter","hanley","high","keyhole","mandarin","notch","off-shoulder","one shoulder","peter pan","polo","round","scoop","shawl collar","shirt collar","shoulder strap","square","strapless","stylised","surplice","sweetheart","tie-up","turtle","v-neck"]),
+    "occasion": generateKeyValue(["alpha","casual","ethnic casual","ethnic party","festive","formal","others","party","semiformal","semicasual","sports","wedding"]),
+    "ornamentation": generateKeyValue(["alpha","aari work","sequinned","phulkari","zari","zardozi","beads & stones","threadwork","chikankari","gota patti","mukaish","patch","kantha","mirror"]),
+    "outsole": generateKeyValue(["alpha","marking","non-marking"]),
+    "padding": generateKeyValue(["alpha","lightly padded","heavily padded","non padded","removable padding"]),
+    "pattern": generateKeyValue(["alpha","abstract","animal","bandhni","camouflage","checked","chevron","colourblocked","dyed","embellished","embroidered","ethnic motif","faded","floral","geometric","graphic print","ikat","lehriya","mesh","microprint","ombre","painted","paisley","perforations","polka dots","printed","quirky","solid","striped","temple","textured","tie-dyed","tribal","typography","woven"]),
+    "plating": generateKeyValue(["alpha","brass","copper","gold","rose gold","rhodium","silver"]),
+    "power_type": generateKeyValue(["battery","solar"]),
+    "preference": generateKeyValue(["acetone_free","alcohol_free","allergy_free","ammonia_free","animal_hair","anti_inflammatory","anti_oxidants","clinically_proven","collagen","cruelty_free","dermatologically_tested","formaldehyde_free","fragrance_free","gluten_free","halal_certified","herbal","hyaluronic_acid","hypoallergenic","mineral_oil_free","natural","niacinamide","non_comedogenic","non_vegetarian","nut_free","oil_free","ophthalmologically_tested","organic","paba_free","paraben_free","paraffin_free","petrochemical_free","propleyne_free","pthalate_free","salicylic_acid","silicone_free","sls_free","soap_free","squalane","sulphate_free","sun_protection","synthetic","synthetic_color_free","vegan","vegetarian","vitamin_A","vitamin_C","vitamin_E","water_resistant","waterproof","waterless"]),
+    "preservative": generateKeyValue(["benzoic acid","carvacrol","citric Aaid","edta calcium disodium","ethylene absorber","hydro powder","MSG","oxygen absorber","potassium benzoate","propionic acid","propylene glycol ppg","sodium benzoate","sodium bisulphite","sodium lignosulfate","sodium metabisulfite","sodium propionate","sodium citrate","sorbic acid","tripotassium phosphate","trisodium citrate","vacuum salt"]),
+    "seam": generateKeyValue(["alpha","cut_sew","seamless"]),
+    "seam_type": generateKeyValue(["alpha","cut_sew","seamless"]),
+    "season": generateKeyValue(["alpha","rainy","winter","summer","autumn","fall_winter"]),
+    "skin_tone": generateKeyValue(["medium_wheatish","fair_light","dusky_dark"]),
+    "skin_type": generateKeyValue(["dry","oily","sensitive","normal","all","very_dry"]),
+    "sleeve_length": generateKeyValue(["full","half","long","short","sleeveless","three-quarter"]),
+    "socks_length": generateKeyValue(["ankle","knee","leg warmer","mid calf","no show","shoe liner","thigh high"]),
+    "sole_material": generateKeyValue(["croslite","eva","leather","neolite","phylon","polyurethane","PU","PVC","resin","rubber","synthetic","TPR","TPU","tunit"]),
+    "special_feature": generateKeyValue(["laser","GPS"]),
+    "sport_type": generateKeyValue(["alpha","running","walking","basketball","baseball","football","soccer","hockey","lacrosse","rugby","volleyball","training","golf","tennis","cycling","skateboarding"]),
+    "stone_type": generateKeyValue(["alpha","precious","semi-precious","artificial"]),
+    "storage_type": generateKeyValue(["SSD","HDD"]),
+    "strap_material": generateKeyValue(["alloy","beads","brass","canvas","ceramic","fabric","faux leather","kundan","leather","metal","pearl","plastic","PU","resin","rubber","silicon","stainless steel","synthetic","thread"]),
+    "strap": generateKeyValue(["alpha","belt","bracelet","chain","cross_body","ergonomic","halter","one shoulder","magnetic","multiway","regular","sternum","strapless","yoke_style"]),
+    "sweatshirt_type": generateKeyValue(["hooded","pullover"]),
+    "toe_shape": generateKeyValue(["alpha","pointed","round","square"]),
+    "top_type": generateKeyValue(["jacket","shirt","sweater","sweatshirt","t-shirt"]),
+    "trend": generateKeyValue(["alpha","abstract","geometric","nautica","animal","indigo","colour_block","monochrome","typography","tribal","floral"]),
+    "unit": generateKeyValue(["MB","GB","TB"]),
+    "uom": generateKeyValue(["unit","dozen","gram","kilogram","tonne","litre","millilitre"]),
+    "waist_band": generateKeyValue(["alpha","inner_elastic","outer_elastic"]),
+    "waist_rise": generateKeyValue(["alpha","low","high","med"]),
+    "wash_type": generateKeyValue(["clean","heavy","light"]),
+};
 
 export const allProperties = {
     Fashion: {
@@ -134,7 +1835,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -142,7 +1843,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -385,7 +2086,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -393,7 +2094,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -636,7 +2337,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -644,7 +2345,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -910,7 +2611,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -918,7 +2619,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -1182,7 +2883,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -1190,7 +2891,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -1469,7 +3170,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -1477,7 +3178,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -1720,7 +3421,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -1728,7 +3429,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -1979,7 +3680,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -1987,7 +3688,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -2229,7 +3930,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -2237,7 +3938,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -2473,7 +4174,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -2481,7 +4182,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -2717,7 +4418,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -2725,7 +4426,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -2936,7 +4637,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -2944,7 +4645,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -3201,7 +4902,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -3209,7 +4910,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -3481,7 +5182,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -3489,7 +5190,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -3741,7 +5442,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -3749,7 +5450,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -4001,7 +5702,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -4009,7 +5710,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -4245,7 +5946,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -4253,7 +5954,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -4489,7 +6190,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -4497,7 +6198,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -4733,7 +6434,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -4741,7 +6442,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -4977,7 +6678,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -4985,7 +6686,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -5228,7 +6929,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -5236,7 +6937,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -5472,7 +7173,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -5480,7 +7181,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -5716,7 +7417,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -5724,7 +7425,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -5968,7 +7669,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -5976,7 +7677,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -6188,7 +7889,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -6196,7 +7897,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -6400,7 +8101,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -6408,7 +8109,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -6612,7 +8313,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -6620,7 +8321,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -6845,7 +8546,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -6853,7 +8554,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -7086,7 +8787,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -7094,7 +8795,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -7322,7 +9023,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -7330,7 +9031,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -7582,7 +9283,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -7590,7 +9291,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -7818,7 +9519,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -7826,7 +9527,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -8007,7 +9708,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -8015,7 +9716,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -8166,7 +9867,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -8174,7 +9875,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -8446,7 +10147,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -8454,7 +10155,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -8711,7 +10412,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -8719,7 +10420,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -8983,7 +10684,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -8991,7 +10692,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -9256,7 +10957,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -9264,7 +10965,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -9521,7 +11222,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -9529,7 +11230,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -9794,7 +11495,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -9802,7 +11503,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -10059,7 +11760,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -10067,7 +11768,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -10324,7 +12025,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -10332,7 +12033,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -10589,7 +12290,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -10597,7 +12298,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -10854,7 +12555,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -10862,7 +12563,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -11059,7 +12760,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -11067,7 +12768,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -11264,7 +12965,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -11272,7 +12973,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -11469,7 +13170,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -11477,7 +13178,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -11681,7 +13382,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -11689,7 +13390,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -11900,7 +13601,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -11908,7 +13609,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -12112,7 +13813,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -12120,7 +13821,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -12317,7 +14018,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -12325,7 +14026,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -12522,7 +14223,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -12530,7 +14231,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -12750,7 +14451,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -12758,7 +14459,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -12978,7 +14679,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -12986,7 +14687,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -13190,7 +14891,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -13198,7 +14899,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -13402,7 +15103,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -13410,7 +15111,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -13630,7 +15331,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -13638,7 +15339,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -13842,7 +15543,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -13850,7 +15551,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -14016,7 +15717,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -14024,7 +15725,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -14235,7 +15936,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -14243,7 +15944,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -14479,7 +16180,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -14487,7 +16188,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -14763,7 +16464,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -14771,7 +16472,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -14999,7 +16700,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -15007,7 +16708,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -15276,7 +16977,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -15284,7 +16985,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -15442,7 +17143,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -15450,7 +17151,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -15639,7 +17340,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -15647,7 +17348,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -15821,7 +17522,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -15829,7 +17530,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16003,7 +17704,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16011,7 +17712,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16169,7 +17870,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16177,7 +17878,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16335,7 +18036,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16343,7 +18044,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16501,7 +18202,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16509,7 +18210,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16746,7 +18447,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16754,7 +18455,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -16991,7 +18692,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -16999,7 +18700,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -17240,7 +18941,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -17248,7 +18949,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -17486,7 +19187,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -17494,7 +19195,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -17727,7 +19428,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -17735,7 +19436,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -17972,7 +19673,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -17980,7 +19681,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -18217,7 +19918,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -18225,7 +19926,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -18470,7 +20171,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -18478,7 +20179,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -18699,7 +20400,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -18707,7 +20408,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -18928,7 +20629,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -18936,7 +20637,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -19173,7 +20874,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -19181,7 +20882,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -19402,7 +21103,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -19410,7 +21111,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -19647,7 +21348,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -19655,7 +21356,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -19829,7 +21530,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -19837,7 +21538,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -20059,7 +21760,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -20067,7 +21768,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -20289,7 +21990,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -20297,7 +21998,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -20519,7 +22220,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -20527,7 +22228,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -20677,7 +22378,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -20685,7 +22386,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -20835,7 +22536,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -20843,7 +22544,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21001,7 +22702,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21009,7 +22710,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21167,7 +22868,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21175,7 +22876,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21333,7 +23034,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21341,7 +23042,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21499,7 +23200,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21507,7 +23208,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21726,7 +23427,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21734,7 +23435,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -21953,7 +23654,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -21961,7 +23662,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -22180,7 +23881,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -22188,7 +23889,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -22407,7 +24108,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -22415,7 +24116,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -22634,7 +24335,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -22642,7 +24343,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -22861,7 +24562,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -22869,7 +24570,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -23088,7 +24789,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -23096,7 +24797,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -23315,7 +25016,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -23323,7 +25024,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -23542,7 +25243,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -23550,7 +25251,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -23769,7 +25470,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -23777,7 +25478,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -23996,7 +25697,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -24004,7 +25705,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -24223,7 +25924,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -24231,7 +25932,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -24450,7 +26151,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Size",
@@ -24458,7 +26159,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.size
+                "options": sizes.default
             },
             {
                 "name": "Brand",
@@ -24710,7 +26411,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Colour Name",
@@ -24899,7 +26600,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Colour Name",
@@ -25045,7 +26746,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Colour Name",
@@ -25533,7 +27234,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Colour Name",
@@ -25674,7 +27375,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.colour
+                "options": colors
             },
             {
                 "name": "Colour Name",
@@ -28222,7 +29923,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28302,7 +30003,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28382,7 +30083,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28462,7 +30163,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28542,7 +30243,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28622,7 +30323,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28702,7 +30403,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28782,7 +30483,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28862,7 +30563,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -28942,7 +30643,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29022,7 +30723,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29102,7 +30803,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29182,7 +30883,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29262,7 +30963,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29342,7 +31043,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29422,7 +31123,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29502,7 +31203,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29582,7 +31283,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29662,7 +31363,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29742,7 +31443,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29822,7 +31523,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29902,7 +31603,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -29982,7 +31683,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -30062,7 +31763,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
@@ -30142,7 +31843,7 @@ export const allProperties = {
                 example: "",
                 variationAllowed: false,
                 type: "select",
-                options: propertyEnums.colour,
+                options: colors,
             },
             {
                 name: "Colour Name",
