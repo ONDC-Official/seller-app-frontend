@@ -9,6 +9,7 @@ import { isObjEmpty } from "../../../utils/validations";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 import { useTheme } from "@mui/material/styles";
 import FilterComponent from "../../Shared/FilterComponent";
+import AddCustomization from "../Product/AddCustomization";
 
 const filterFields = [
   {
@@ -93,6 +94,39 @@ export default function Inventory() {
     category: "",
     stock: false,
   });
+
+  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
+  const [newCustomizationData, setNewCustomizationData] = useState({
+    name: "",
+    price: 0,
+    inStock: true,
+    parent: "",
+    UOM: "",
+    UOMValue: "",
+    available: "",
+    maximum: "",
+    vegNonVeg: "",
+    default: "No",
+  });
+
+  const handleAddCustomization = () => {
+    //  let id = `C${customizations.length + 1}`;
+    //  let newCustomization = {
+    //    ...newCustomizationData,
+    //    id: id,
+    //    inStock: true,
+    //  };
+    //  delete newCustomization.defaultCustomizationId;
+
+    //  if (newCustomization.default === "true") {
+    //    const groupIndex = customizationGroups.findIndex((cg) => cg.id === newCustomization.parent);
+    //    let groups = [...customizationGroups];
+    //    groups[groupIndex].defaultCustomizationId = id;
+    //  }
+
+    setNewCustomizationData({ price: 0 });
+    setShowCustomizationModal(false);
+  };
 
   const getProducts = async () => {
     try {
@@ -184,12 +218,20 @@ export default function Inventory() {
                 onClick={() => navigate("/application/bulk-upload")}
               />
             </div>
+            <div style={{ marginRight: 15 }}>
+              <Button
+                variant="contained"
+                icon={<AddIcon />}
+                className=""
+                title="ADD PRODUCT"
+                onClick={() => navigate("/application/add-products")}
+              />
+            </div>
             <Button
               variant="contained"
               icon={<AddIcon />}
-              className=""
-              title="ADD PRODUCT"
-              onClick={() => navigate("/application/add-products")}
+              title="Add Customization"
+              onClick={() => setShowCustomizationModal(true)}
             />
           </div>
         </div>
@@ -209,6 +251,14 @@ export default function Inventory() {
           rowsPerPage={rowsPerPage}
           handlePageChange={(val) => setPage(val)}
           handleRowsPerPageChange={(val) => setRowsPerPage(val)}
+        />
+
+        <AddCustomization
+          showModal={showCustomizationModal}
+          handleCloseModal={() => setShowCustomizationModal(false)}
+          newCustomizationData={newCustomizationData}
+          setNewCustomizationData={setNewCustomizationData}
+          handleAddCustomization={handleAddCustomization}
         />
       </div>
     </>

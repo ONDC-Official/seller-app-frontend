@@ -1,13 +1,30 @@
 import React, { useRef, useState } from "react";
 import Button from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Add, Delete, Save } from "@mui/icons-material";
+import { Add, Delete, Save, Search } from "@mui/icons-material";
+import { Checkbox, IconButton, InputAdornment, Modal, TextField } from "@mui/material";
 
 const CustomizationGroupItems = (props) => {
   const { allItems, addedItems, setAddedItems } = props;
 
   const [showModal, setShowModal] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
+  const [notAddedCustomizations, setNotAddedCustomizations] = useState([]);
+  const [selectedCustomizations, setSelectedCustomizations] = useState([]);
+
+  const handleProductSelect = (productId) => {
+    setSelectedCustomizations((prevSelected) => {
+      const isProductSelected = prevSelected.some((product) => product.id === productId);
+      if (isProductSelected) {
+        return prevSelected.filter((product) => product.id !== productId);
+      } else {
+        const productToAdd = allItems.find((product) => product.id === productId);
+        return [...prevSelected, productToAdd];
+      }
+    });
+  };
 
   const handleRemoveProduct = (item) => {
     const filteredProducts = addedItems.filter((p) => p.id !== item.id);
@@ -52,6 +69,25 @@ const CustomizationGroupItems = (props) => {
       reorderedItems.splice(newIndex, 0, movedItem);
       return reorderedItems;
     });
+  };
+
+  const renderCustomizationItems = () => {
+    const filteredProducts = notAddedCustomizations.filter((product) =>
+      product.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
+    //  return filteredProducts.map((product) => (
+    return allItems.map((product) => (
+      <div key={product.id}>
+        <div className="flex items-center justify-between w-[550px] py px-2 mb-2 border border-[#1876d1a1] rounded-xl cursor-pointer bg-white">
+          <p className="ml-2">{product.name}</p>
+          <Checkbox
+            checked={selectedCustomizations.some((selectedProduct) => selectedProduct.id === product.id)}
+            onChange={() => handleProductSelect(product.id)}
+          />
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -102,6 +138,42 @@ const CustomizationGroupItems = (props) => {
         allProducts={allProducts}
         setAddedProducts={setAddedProducts}
       /> */}
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#fff",
+            padding: "24px 40px",
+            borderRadius: 20,
+          }}
+        >
+          <p className="font-semibold text-xl mb-6" style={{ marginBottom: 20 }}>
+            Add customization items
+          </p>
+          <TextField
+            size="small"
+            variant="outlined"
+            placeholder="Search Customizations..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            style={{ marginBottom: 20, width: 550 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton sx={{ marginLeft: -1 }}>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <div className="min-h-[400px] max-h-[400px] overflow-y-auto pr-4">{renderCustomizationItems()}</div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export const Options = {
   "customization-groups": "Customization Groups",
-  "customization-items": "Customization Items",
+  //   "customization-items": "Customization Items",
 };
 
 const CustomizationsIndex = () => {
