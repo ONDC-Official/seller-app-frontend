@@ -27,6 +27,7 @@ import MenuDetails from "../Components/Application/CustomMenu/MenuDetails";
 import CustomizationsIndex from "../Components/Application/Customizations/CustomizationsIndex.js";
 import CustomizationGroups from "../Components/Application/Customizations/CustomizationGroups.js";
 import CustomizationItems from "../Components/Application/Customizations/CustomizationItems.js";
+import CustomizationGroupDetails from "../Components/Application/Customizations/CustomizationGroupDetails.js";
 
 export default function OndcRoutes() {
   return (
@@ -97,6 +98,14 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <CustomizationItems />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={"/application/customizations/customization-groups/:group/:groupId"}
+          element={
+            <PrivateRoute>
+              <CustomizationGroupDetails />
             </PrivateRoute>
           }
         />

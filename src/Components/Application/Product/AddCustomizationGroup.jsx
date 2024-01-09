@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Button,
-  FormControl,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Checkbox,
-} from "@mui/material";
+import { Button, FormControl, MenuItem, Modal, Select, TextField, Checkbox } from "@mui/material";
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -42,20 +34,17 @@ const AddCustomizationGroup = (props) => {
   const validate = () => {
     const formErrors = {};
     formErrors.name =
-      newCustomizationGroupData?.name == undefined ||
-      newCustomizationGroupData?.name?.trim() === ""
+      newCustomizationGroupData?.name == undefined || newCustomizationGroupData?.name?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
     formErrors.minQuantity =
-      newCustomizationGroupData?.minQuantity == undefined ||
-      newCustomizationGroupData?.minQuantity === ""
+      newCustomizationGroupData?.minQuantity == undefined || newCustomizationGroupData?.minQuantity === ""
         ? "Min Quantity is not allowed to be empty"
         : newCustomizationGroupData?.minQuantity < 0
         ? `Please enter a valid quantity`
         : "";
     formErrors.maxQuantity =
-      newCustomizationGroupData?.maxQuantity == undefined ||
-      newCustomizationGroupData?.maxQuantity === ""
+      newCustomizationGroupData?.maxQuantity == undefined || newCustomizationGroupData?.maxQuantity === ""
         ? "Max Quantity is not allowed to be empty"
         : newCustomizationGroupData?.maxQuantity <= 0
         ? `Please enter a valid quantity`
@@ -79,10 +68,7 @@ const AddCustomizationGroup = (props) => {
   };
 
   useEffect(() => {
-    if (
-      props.mode === "edit" &&
-      Object.keys(newCustomizationGroupData).length > 0
-    ) {
+    if (props.mode === "edit" && Object.keys(newCustomizationGroupData).length > 0) {
       setInputType(newCustomizationGroupData.inputType);
     } else {
       setInputType("select");
@@ -111,9 +97,7 @@ const AddCustomizationGroup = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            {props.mode === "edit"
-              ? "Edit Customization Group"
-              : "Add New Customization Group"}
+            {props.mode === "edit" ? "Edit Customization Group" : "Add New Customization Group"}
           </p>
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">

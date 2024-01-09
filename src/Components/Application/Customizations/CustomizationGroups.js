@@ -87,10 +87,10 @@ const CustomizationGroups = () => {
               variant="contained"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/application/menu-category/${params.category}/${data.name}/${data._id}`);
+                navigate(`/application/customizations/customization-groups/${data.name}/${data.id}`);
               }}
             >
-              Edit Menu
+              Edit group
             </Button>
             <Button
               disabled={reordering}
@@ -121,6 +121,11 @@ const CustomizationGroups = () => {
       </div>
     );
   });
+
+  //   TODO:
+  //   Edit page for customization groups
+  //   Listing page for customization items
+  //   Editing page for customization items
 
   return (
     <div className="container mx-auto my-8">
