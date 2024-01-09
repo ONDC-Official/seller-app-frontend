@@ -1856,7 +1856,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
