@@ -173,7 +173,7 @@ export default function AddProduct() {
       let properties = category_data?.hasOwnProperty(sub_category)
         ? category_data[sub_category]
         : category_data["default"] || [];
-      let variants = properties?.filter((property) => property.variationAllowed);
+      let variants = properties?.filter((property) => property.required);
       let variants_checkbox_map = variants?.reduce((acc, variant) => {
         acc[variant.name] = false;
         return acc;
