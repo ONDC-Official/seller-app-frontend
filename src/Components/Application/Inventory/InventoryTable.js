@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import Tooltip from "@material-ui/core/Tooltip";
+import { IconButton, InputAdornment, Modal, TextField } from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-root": {
@@ -26,6 +28,9 @@ const StyledTableCell = styled(TableCell)({
 
 export default function InventoryTable(props) {
   const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props;
+
+  const [showModal, setShowModal] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
@@ -70,12 +75,20 @@ export default function InventoryTable(props) {
           </Button>
         </Tooltip>
         <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <Link to="/application/add-products" state={{ productId: row._id, productCategory: row.productCategory, productSubCategory: row.productSubcategory1 }}>
+          <Link
+            to="/application/add-products"
+            state={{
+              productId: row._id,
+              productCategory: row.productCategory,
+              productSubCategory: row.productSubcategory1,
+            }}
+          >
             <MenuItem>Edit</MenuItem>
           </Link>
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
+          <MenuItem onClick={() => setShowModal(true)}>Choose Initial Group</MenuItem>
         </Menu>
       </Fragment>
     );
@@ -153,6 +166,45 @@ export default function InventoryTable(props) {
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#fff",
+            padding: "24px 40px",
+            borderRadius: 20,
+          }}
+        >
+          <p className="font-semibold text-xl mb-6" style={{ marginBottom: 20 }}>
+            Choose Initial Customization Group
+          </p>
+          <TextField
+            size="small"
+            variant="outlined"
+            placeholder="Search Customizations..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            style={{ marginBottom: 20, width: 550 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton sx={{ marginLeft: -1 }}>
+                    <Search />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <div className="min-h-[400px] max-h-[400px] overflow-y-auto pr-4">
+            {/* {renderCustomizationItems()} */}
+            <p></p>
+          </div>
+        </div>
+      </Modal>
     </Paper>
   );
 }
