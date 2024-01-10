@@ -2,7 +2,17 @@ import React, { useRef, useState } from "react";
 import Button from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Add, Delete, Save, Search } from "@mui/icons-material";
-import { Checkbox, IconButton, InputAdornment, Modal, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Modal,
+  Radio,
+  TextField,
+} from "@mui/material";
 
 const CustomizationGroupItems = (props) => {
   const { allItems, addedItems, setAddedItems } = props;
@@ -39,9 +49,48 @@ const CustomizationGroupItems = (props) => {
           className="flex items-center justify-between py-[4px] px-8 mb-2 border border-[#1876d1a1] rounded-xl bg-white"
           onClick={(e) => e.stopPropagation()}
         >
-          <p>{item.name}</p>
-          <div onClick={() => handleRemoveProduct(item)}>
-            <Button title="Remove" icon={<Delete />} disabled={reordering} />
+          <div className="flex items-center">
+            <div className="mr-8">
+              <FormControlLabel
+                value={false}
+                control={
+                  <Radio
+                    size="small"
+                    //   checked={false}
+                  />
+                }
+              />
+            </div>
+            <p>{item.name}</p>
+          </div>
+          <div className="flex items-center">
+            <div className="mr-4">
+              <p>Size, Topping</p>
+            </div>
+            <FormControl>
+              <Autocomplete
+                multiple
+                // filterSelectedOptions
+                size="small"
+                options={[]}
+                //  getOptionLabel={(option) => option.key}
+                value={""}
+                onChange={(event, newValue) => {}}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder={"Next group"}
+                    style={{ width: 140 }}
+                    variant={"outlined"}
+                    //   error={item.error || false}
+                    //   helperText={item.error && item.helperText}
+                  />
+                )}
+              />
+            </FormControl>
+            <div className="ml-4" onClick={() => handleRemoveProduct(item)}>
+              <Button title="Remove" icon={<Delete />} disabled={reordering} />
+            </div>
           </div>
         </div>
       </div>
@@ -119,8 +168,28 @@ const CustomizationGroupItems = (props) => {
         <ItemList items={addedItems} onSortEnd={onSortEnd} />
       ) : (
         <div>
-          {addedItems.length > 0 ? (
-            addedItems.map((item) => <Item item={item} />)
+          {allItems.length > 0 ? (
+            <>
+              <div>
+                <div
+                  style={{ borderStyle: reordering ? "dashed" : "solid" }}
+                  className="flex items-center justify-between  mb-2  bg-white"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center ml-3">
+                    <div className="mr-2 text-lg font-semibold">Default</div>
+                    <p className="ml-5 text-lg font-semibold">Customization Name</p>
+                  </div>
+                  <div className="flex items-center justify-between" style={{ width: 280 }}>
+                    <p className="text-lg font-semibold mr-4">Next group</p>
+                    <p className="text-lg font-semibold mr-12">Action</p>
+                  </div>
+                </div>
+              </div>
+              {allItems.map((item) => (
+                <Item item={item} />
+              ))}
+            </>
           ) : (
             <div>
               <div className="flex items-center justify-between py-3 px-4 mb-2 border border-[#1876d1a1] rounded-lg bg-white">

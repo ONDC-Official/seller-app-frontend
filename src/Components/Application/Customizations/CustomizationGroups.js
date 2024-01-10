@@ -102,7 +102,7 @@ const CustomizationGroups = () => {
                 setGroupToDelete(data._id);
               }}
             >
-              Delete Menu
+              Delete group
             </Button>
           </div>
         </div>

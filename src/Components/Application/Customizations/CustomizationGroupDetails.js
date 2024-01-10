@@ -40,22 +40,22 @@ const initialMenuDetails = {
 const products = [];
 
 const _allProducts = [
-  { id: "P1", name: "Product A" },
-  { id: "P2", name: "Product B" },
-  { id: "P3", name: "Product C" },
-  { id: "P4", name: "Product D" },
-  { id: "P5", name: "Product E" },
-  { id: "P6", name: "Product F" },
-  { id: "P7", name: "Product G" },
-  { id: "P8", name: "Product H" },
-  { id: "P9", name: "Product I" },
-  { id: "P10", name: "Product J" },
-  { id: "P11", name: "Product K" },
-  { id: "P12", name: "Product L" },
-  { id: "P13", name: "Product M" },
-  { id: "P14", name: "Product N" },
-  { id: "P15", name: "Product O" },
-  { id: "P16", name: "Product P" },
+  { id: "P1", name: "Customization Item - A" },
+  { id: "P2", name: "Customization Item - B" },
+  { id: "P3", name: "Customization Item - C" },
+  { id: "P4", name: "Customization Item - D" },
+  { id: "P5", name: "Customization Item - E" },
+  { id: "P6", name: "Customization Item - F" },
+  { id: "P7", name: "Customization Item - G" },
+  { id: "P8", name: "Customization Item - H" },
+  { id: "P9", name: "Customization Item - I" },
+  { id: "P10", name: "Customization Item - J" },
+  { id: "P11", name: "Customization Item - K" },
+  { id: "P12", name: "Customization Item - L" },
+  { id: "P13", name: "Customization Item - M" },
+  { id: "P14", name: "Customization Item - N" },
+  { id: "P15", name: "Customization Item - O" },
+  { id: "P16", name: "Customization Item - P" },
 ];
 
 const CustomizationGroupDetails = (props) => {
