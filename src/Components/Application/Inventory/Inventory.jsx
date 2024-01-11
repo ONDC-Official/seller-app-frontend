@@ -3,7 +3,7 @@ import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
-import { getCall } from "../../../Api/axios";
+import { getCall, postCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
@@ -97,35 +97,27 @@ export default function Inventory() {
 
   const [showCustomizationModal, setShowCustomizationModal] = useState(false);
   const [newCustomizationData, setNewCustomizationData] = useState({
-    name: "",
-    price: 0,
-    inStock: true,
-    parent: "",
+    productName: "Thin crust",
+    MRP: 100,
     UOM: "",
-    UOMValue: "",
-    available: "",
-    maximum: "",
-    vegNonVeg: "",
-    default: "No",
+    UOMValue: "1",
+    available: "1",
+    maximum: "1",
+    vegNonVeg: "veg",
+    //  default: "No",
+    //  parent: "",
+    //  inStock: true,
   });
 
-  const handleAddCustomization = () => {
-    //  let id = `C${customizations.length + 1}`;
-    //  let newCustomization = {
-    //    ...newCustomizationData,
-    //    id: id,
-    //    inStock: true,
-    //  };
-    //  delete newCustomization.defaultCustomizationId;
-
-    //  if (newCustomization.default === "true") {
-    //    const groupIndex = customizationGroups.findIndex((cg) => cg.id === newCustomization.parent);
-    //    let groups = [...customizationGroups];
-    //    groups[groupIndex].defaultCustomizationId = id;
-    //  }
-
-    setNewCustomizationData({ price: 0 });
-    setShowCustomizationModal(false);
+  const handleAddCustomization = async () => {
+    console.log({ newCustomizationData });
+    try {
+      const url = `/api/v1/product/customization`;
+      const res = await postCall(url, newCustomizationData);
+      console.log("handleAddCustomization: ", res);
+      setNewCustomizationData({ price: 0 });
+      setShowCustomizationModal(false);
+    } catch (error) {}
   };
 
   const getProducts = async () => {

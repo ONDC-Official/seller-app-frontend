@@ -3,14 +3,12 @@ import { Button, Modal } from "@mui/material";
 import RenderInput from "../../../utils/RenderInput";
 
 const containerClasses = "flex items-center";
-const inputClasses =
-  "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
-const labelClasses =
-  "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
+const inputClasses = "w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex";
+const labelClasses = "w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block";
 
 export const customizationFields = [
   {
-    id: "name",
+    id: "productName",
     title: "Name",
     placeholder: "Enter Customization Name",
     type: "input",
@@ -27,7 +25,7 @@ export const customizationFields = [
     required: true,
   },
   {
-    id: "price",
+    id: "MRP",
     title: "Price",
     placeholder: "Enter Customization Price",
     type: "number",
@@ -107,21 +105,19 @@ const AddCustomization = (props) => {
   useEffect(() => {
     if (newCustomizationData.default === "Yes") {
       setNewCustomizationData((prevState) => {
-        return { ...prevState, price: "0" };
+        return { ...prevState, MRP: "0" };
       });
     }
   }, [newCustomizationData.default]);
 
   const validate = () => {
     const formErrors = {};
-    formErrors.name =
-      newCustomizationData?.name?.trim() == undefined ||
-      newCustomizationData?.name?.trim() === ""
+    formErrors.productName =
+      newCustomizationData?.productName?.trim() == undefined || newCustomizationData?.productName?.trim() === ""
         ? "Name is not allowed to be empty"
         : "";
 
-    formErrors.price =
-      newCustomizationData?.price < 0 ? `Please enter a valid price` : "";
+    formErrors.MRP = newCustomizationData?.MRP < 0 ? `Please enter a valid price` : "";
 
     formErrors.UOM =
       newCustomizationData?.UOM == undefined || newCustomizationData?.UOM === ""
@@ -129,24 +125,21 @@ const AddCustomization = (props) => {
         : "";
 
     formErrors.UOMValue =
-      newCustomizationData?.UOMValue == undefined ||
-      newCustomizationData?.UOMValue === ""
+      newCustomizationData?.UOMValue == undefined || newCustomizationData?.UOMValue === ""
         ? "UOM Value is not allowed to be empty"
         : newCustomizationData.UOMValue <= 0
         ? "Please Enter a Valid Value"
         : "";
 
     formErrors.available =
-      newCustomizationData?.available == undefined ||
-      newCustomizationData?.available === ""
+      newCustomizationData?.available == undefined || newCustomizationData?.available === ""
         ? "Available Quantity is not allowed to be empty"
         : newCustomizationData.available <= 0
         ? "Please Enter a Valid Value"
         : "";
 
     formErrors.maximum =
-      newCustomizationData?.maximum == undefined ||
-      newCustomizationData?.maximum === ""
+      newCustomizationData?.maximum == undefined || newCustomizationData?.maximum === ""
         ? "Maximum Quantity is not allowed to be empty"
         : newCustomizationData.maximum <= 0
         ? "Please Enter a Valid Value"
@@ -171,7 +164,7 @@ const AddCustomization = (props) => {
         open={showModal}
         onClose={() => {
           setErrors({});
-          setNewCustomizationData({ price: 0 });
+          setNewCustomizationData({ MRP: 0 });
           handleCloseModal();
         }}
       >
@@ -187,9 +180,7 @@ const AddCustomization = (props) => {
           }}
         >
           <p className="font-semibold text-xl" style={{ marginBottom: 10 }}>
-            {props.mode === "edit"
-              ? "Edit Customization"
-              : "Add New Customization"}
+            {props.mode === "edit" ? "Edit Customization" : "Add New Customization"}
           </p>
 
           <div className="w-auto">
@@ -197,9 +188,11 @@ const AddCustomization = (props) => {
               let disable = false;
 
               const fieldsToRender = [
-                "name",
+                //  "name",
+                "productName",
                 "default",
-                "price",
+                //  "price",
+                "MRP",
                 "UOM",
                 "UOMValue",
                 "available",
@@ -213,23 +206,18 @@ const AddCustomization = (props) => {
 
               const shouldRenderField =
                 fieldsToRender.includes(field.id) &&
-                (!fieldCategoryMap[field.id] ||
-                  fieldCategoryMap[field.id].includes(category));
+                (!fieldCategoryMap[field.id] || fieldCategoryMap[field.id].includes(category));
 
               if (
                 field.id === "default" &&
                 newCustomizationData.defaultCustomizationId &&
-                newCustomizationData.defaultCustomizationId !==
-                  newCustomizationData.id
+                newCustomizationData.defaultCustomizationId !== newCustomizationData.id
               ) {
                 // disable default radio button if some other customization is already default
                 disable = true;
               }
 
-              if (
-                field.id === "price" &&
-                newCustomizationData.default === "Yes"
-              ) {
+              if (field.id === "MRP" && newCustomizationData.default === "Yes") {
                 // disable price if the customization is default
                 disable = true;
               }
@@ -267,7 +255,7 @@ const AddCustomization = (props) => {
               onClick={(e) => {
                 e.stopPropagation();
                 setErrors({});
-                setNewCustomizationData({ price: 0 });
+                setNewCustomizationData({ MRP: 0 });
                 handleCloseModal();
               }}
             >
