@@ -75,33 +75,40 @@ const CustomizationGroupDetails = (props) => {
   const [allItems, setAllItems] = useState([..._allProducts]);
   const [addedItems, setAddedItems] = useState(products);
 
-  const [menuDetailErrors, setMenuDetailErrors] = useState({});
-  const [menuData, setMenuData] = useState(initialMenuDetails);
+  const validateGroupDetailsForm = () => {
+    const formErrors = {};
+    formErrors.name =
+      customizationGroupData?.name == undefined || customizationGroupData?.name?.trim() === ""
+        ? "Name is not allowed to be empty"
+        : "";
+    formErrors.minQuantity =
+      customizationGroupData?.minQuantity == undefined || customizationGroupData?.minQuantity === ""
+        ? "Min Quantity is not allowed to be empty"
+        : customizationGroupData?.minQuantity < 0
+        ? `Please enter a valid quantity`
+        : "";
+    formErrors.maxQuantity =
+      customizationGroupData?.maxQuantity == undefined || customizationGroupData?.maxQuantity === ""
+        ? "Max Quantity is not allowed to be empty"
+        : customizationGroupData?.maxQuantity <= 0
+        ? `Please enter a valid quantity`
+        : "";
 
-  const validateMenuDetailsForm = () => {
-    let formErrors = {};
-    formErrors.name = menuData?.name.trim() === "" ? "Menu Name is required" : "";
-    formErrors.shortDescription = menuData?.shortDescription.trim() === "" ? "Short Description is required" : "";
-    formErrors.longDescription = menuData?.longDescription.trim() === "" ? "Long Description is required" : "";
-    formErrors.images = menuData?.images.length < 3 ? "Minimum 3 images are required" : "";
-    setMenuDetailErrors({
-      ...formErrors,
-    });
+    setErrors(formErrors);
 
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
-
     return valid_form;
   };
 
   const validate = () => {
-    let menuDetailsValidity = validateMenuDetailsForm();
+    let groupDetailsValidity = validateGroupDetailsForm();
 
     setTabErrors((prev_state) => {
-      prev_state[0] = !menuDetailsValidity;
+      prev_state[0] = !groupDetailsValidity;
       return [...prev_state];
     });
 
-    return menuDetailsValidity;
+    return groupDetailsValidity;
   };
 
   const handleSave = () => {
@@ -114,6 +121,11 @@ const CustomizationGroupDetails = (props) => {
 
   const getCustomizationGroupDetails = async () => {
     try {
+      const url = `/api/v1/customizationGroup/${params.groupId}`;
+      const res = await getCall(url);
+      setInputType(res.inputType);
+      setCustomizationGroupData(res);
+      console.log("setCustomizationGroupData", res);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -229,6 +241,7 @@ const CustomizationGroupDetails = (props) => {
               }
             />
           </div>
+
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
               Input Type:
@@ -286,7 +299,7 @@ const CustomizationGroupDetails = (props) => {
               <TabList centered onChange={handleTabChange} textColor={highlightedTabColor}>
                 <Tab
                   sx={{
-                    color: tabErrors[0] && Object.keys(menuDetailErrors).length > 0 ? "red" : "none",
+                    color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none",
                   }}
                   label="Details"
                   value="1"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import cogoToast from "cogo-toast";
 import { Button, Modal } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -38,16 +38,16 @@ const CustomizationGroups = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const [showModal, setShowModal] = useState(false);
   const [reordering, setReordering] = useState(false);
 
-  const [availableGroups, setAvailableGroups] = useState(_availableGroups);
+  const [availableGroups, setAvailableGroups] = useState([]);
   const [customizationGroupData, setCustomizationGroupData] = useState({});
 
   const [groupToDelete, setGroupToDelete] = useState(null);
   const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false);
-
-  const handleAdd = () => {};
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
     if (oldIndex === newIndex) return;
@@ -60,19 +60,7 @@ const CustomizationGroups = () => {
     });
   };
 
-  const handleIgnoreDeleteAction = () => {
-    setShowDeleteConfirmDialog(false);
-    setGroupToDelete(null);
-  };
-
-  const handleRemoveGroup = (id) => {
-    //  const url = `/api/v1/menu/${id}`;
-    //  deleteCall(url).then(() => getAllMenu());
-    handleIgnoreDeleteAction();
-  };
-
   const Group = ({ data }) => {
-    console.log("GROUP DATA: ", data);
     return (
       <div>
         <div
@@ -87,7 +75,7 @@ const CustomizationGroups = () => {
               variant="contained"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/application/customizations/customization-groups/${data.name}/${data.id}`);
+                navigate(`/application/customizations/customization-groups/${data.name}/${data._id}`);
               }}
             >
               Edit group
@@ -122,10 +110,47 @@ const CustomizationGroups = () => {
     );
   });
 
-  //   TODO:
-  //   Edit page for customization groups
-  //   Listing page for customization items
-  //   Editing page for customization items
+  const getCustomizationGroups = async () => {
+    const url = `/api/v1/customizationGroups?limit=10&offset=0`;
+    try {
+      const res = await getCall(url);
+      setAvailableGroups(res.data);
+    } catch (error) {
+      console.log("Error fetching customziation groups:", error);
+    }
+  };
+
+  const handleAddNewCustomizationGroup = async (payload, inputType) => {
+    const url = `/api/v1/customizationGroup`;
+    const data = { ...payload, inputType, customizations: [] };
+
+    try {
+      const res = await postCall(url, data);
+      getCustomizationGroups();
+      setShowModal(false);
+      setCustomizationGroupData({});
+    } catch (error) {
+      console.log("Error adding new customization group:", error);
+    }
+  };
+
+  const handleIgnoreDeleteAction = () => {
+    handleDeleteCustomizationGroup(groupToDelete);
+    setShowDeleteConfirmDialog(false);
+    setGroupToDelete(null);
+  };
+
+  const handleDeleteCustomizationGroup = async (id) => {
+    const url = `/api/v1/customizationGroup/${id}`;
+    deleteCall(url).then(() => {
+      getCustomizationGroups();
+      setShowDeleteConfirmDialog(false);
+    });
+  };
+
+  useEffect(() => {
+    getCustomizationGroups();
+  }, []);
 
   return (
     <div className="container mx-auto my-8">
@@ -159,7 +184,7 @@ const CustomizationGroups = () => {
           <GroupList items={availableGroups} onSortEnd={onSortEnd} />
         ) : (
           <div>
-            {availableGroups.length > 0 ? (
+            {availableGroups && availableGroups.length > 0 ? (
               availableGroups.sort((a, b) => a.seq - b.seq).map((item) => <Group data={item} key={item.id} />)
             ) : (
               <div>
@@ -181,15 +206,14 @@ const CustomizationGroups = () => {
         handleCloseModal={() => setShowModal(false)}
         newCustomizationGroupData={customizationGroupData}
         setNewCustomizationGroupData={setCustomizationGroupData}
-        customizationGroups={[]}
-        handleAddCustomizationGroup={() => {}}
+        handleAddCustomizationGroup={handleAddNewCustomizationGroup}
       />
 
       <CustomDialog
         showDialog={showDeleteConfirmDialog}
         onClose={handleIgnoreDeleteAction}
         onDiscard={handleIgnoreDeleteAction}
-        onOk={() => handleRemoveGroup(groupToDelete)}
+        onOk={() => handleDeleteCustomizationGroup(groupToDelete)}
         title="Delete Menu?"
         message="Once deleted, it will be permanently deleted"
         discardButtonText="Cancel"
