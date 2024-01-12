@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import Button from "../../Shared/Button";
+import React, { useEffect, useRef, useState } from "react";
+import MyButton from "../../Shared/Button";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Add, Delete, Save, Search } from "@mui/icons-material";
 import {
@@ -12,10 +12,11 @@ import {
   Modal,
   Radio,
   TextField,
+  Button,
 } from "@mui/material";
 
 const CustomizationGroupItems = (props) => {
-  const { allItems, addedItems, setAddedItems } = props;
+  const { allItems, addedItems, setAddedItems, defaultCustomization, setDefaultCustomization } = props;
 
   const [showModal, setShowModal] = useState(false);
   const [reordering, setReordering] = useState(false);
@@ -24,26 +25,31 @@ const CustomizationGroupItems = (props) => {
   const [notAddedCustomizations, setNotAddedCustomizations] = useState([]);
   const [selectedCustomizations, setSelectedCustomizations] = useState([]);
 
-  const handleProductSelect = (productId) => {
+  const handleCustomizationSelect = (customizationId) => {
     setSelectedCustomizations((prevSelected) => {
-      const isProductSelected = prevSelected.some((product) => product.id === productId);
-      if (isProductSelected) {
-        return prevSelected.filter((product) => product.id !== productId);
+      const isCustomizationSelected = prevSelected.some((customization) => customization._id === customizationId);
+      if (isCustomizationSelected) {
+        return prevSelected.filter((customization) => customization._id !== customizationId);
       } else {
-        const productToAdd = allItems.find((product) => product.id === productId);
+        const productToAdd = allItems.find((customization) => customization._id === customizationId);
         return [...prevSelected, productToAdd];
       }
     });
   };
 
-  const handleRemoveProduct = (item) => {
-    const filteredProducts = addedItems.filter((p) => p.id !== item.id);
+  const handleRemoveCustomizationItem = (item) => {
+    const filteredProducts = addedItems.filter((p) => p._id !== item._id);
     setAddedItems(filteredProducts);
+  };
+
+  const addCustomizationItemToGroup = async () => {
+    setAddedItems([...addedItems, ...selectedCustomizations]);
+    setShowModal(false);
   };
 
   const Item = ({ item }) => {
     return (
-      <div>
+      <div key={item._id}>
         <div
           style={{ borderStyle: reordering ? "dashed" : "solid" }}
           className="flex items-center justify-between py-[4px] px-8 mb-2 border border-[#1876d1a1] rounded-xl bg-white"
@@ -56,12 +62,13 @@ const CustomizationGroupItems = (props) => {
                 control={
                   <Radio
                     size="small"
-                    //   checked={false}
+                    checked={defaultCustomization === item._id}
+                    onClick={() => setDefaultCustomization(item._id)}
                   />
                 }
               />
             </div>
-            <p>{item.name}</p>
+            <p>{item.productName}</p>
           </div>
           <div className="flex items-center">
             <div className="mr-4">
@@ -88,8 +95,8 @@ const CustomizationGroupItems = (props) => {
                 )}
               />
             </FormControl>
-            <div className="ml-4" onClick={() => handleRemoveProduct(item)}>
-              <Button title="Remove" icon={<Delete />} disabled={reordering} />
+            <div className="ml-4" onClick={() => handleRemoveCustomizationItem(item)}>
+              <MyButton title="Remove" icon={<Delete />} disabled={reordering} />
             </div>
           </div>
         </div>
@@ -122,38 +129,47 @@ const CustomizationGroupItems = (props) => {
 
   const renderCustomizationItems = () => {
     const filteredProducts = notAddedCustomizations.filter((product) =>
-      product.name.toLowerCase().includes(searchInput.toLowerCase())
+      product.productName.toLowerCase().includes(searchInput.toLowerCase())
     );
 
-    //  return filteredProducts.map((product) => (
-    return allItems.map((product) => (
-      <div key={product.id}>
+    return filteredProducts.map((customizationItem) => (
+      <div key={customizationItem._id}>
         <div className="flex items-center justify-between w-[550px] py px-2 mb-2 border border-[#1876d1a1] rounded-xl cursor-pointer bg-white">
-          <p className="ml-2">{product.name}</p>
+          <p className="ml-2">{customizationItem.productName}</p>
           <Checkbox
-            checked={selectedCustomizations.some((selectedProduct) => selectedProduct.id === product.id)}
-            onChange={() => handleProductSelect(product.id)}
+            checked={selectedCustomizations.some((selectedProduct) => selectedProduct._id === customizationItem._id)}
+            onChange={() => handleCustomizationSelect(customizationItem._id)}
           />
         </div>
       </div>
     ));
   };
 
+  useEffect(() => {
+    if (addedItems.length === 0) {
+      setNotAddedCustomizations(allItems);
+    } else {
+      const notAddedCustomizations = allItems.filter((item) => !addedItems.some((p) => p._id === item._id));
+      setNotAddedCustomizations(notAddedCustomizations);
+    }
+    setSelectedCustomizations([]);
+  }, [showModal]);
+
   return (
     <div className="container mx-auto my-8">
       <div className="mb-4 flex flex-row justify-between items-center">
         <div className="flex justify-end w-full">
-          {/* <div className="mr-2">
-            <Button
+          <div className="mr-2">
+            {/* <MyButton
               sx={{ width: 200 }}
               title={!reordering ? "Change Sequence" : "Finish"}
               variant="contained"
               onClick={() => setReordering((prevState) => !prevState)}
               disabled={addedItems.length === 0}
-            />
-          </div> */}
+            /> */}
+          </div>
           <div className="mr-2">
-            <Button
+            <MyButton
               title="Add Customization Item"
               variant="contained"
               icon={<Add />}
@@ -168,7 +184,7 @@ const CustomizationGroupItems = (props) => {
         <ItemList items={addedItems} onSortEnd={onSortEnd} />
       ) : (
         <div>
-          {allItems.length > 0 ? (
+          {addedItems.length > 0 ? (
             <>
               <div>
                 <div
@@ -186,7 +202,7 @@ const CustomizationGroupItems = (props) => {
                   </div>
                 </div>
               </div>
-              {allItems.map((item) => (
+              {addedItems.map((item) => (
                 <Item item={item} />
               ))}
             </>
@@ -200,13 +216,6 @@ const CustomizationGroupItems = (props) => {
         </div>
       )}
 
-      {/* <AddMenuProduct
-        showModal={showModal}
-        handleCloseModal={() => setShowModal(false)}
-        addedProducts={addedProducts}
-        allProducts={allProducts}
-        setAddedProducts={setAddedProducts}
-      /> */}
       <Modal open={showModal} onClose={() => setShowModal(false)}>
         <div
           style={{
@@ -241,6 +250,18 @@ const CustomizationGroupItems = (props) => {
           />
 
           <div className="min-h-[400px] max-h-[400px] overflow-y-auto pr-4">{renderCustomizationItems()}</div>
+          <div className="flex mt-4 items-center justify-end mr-4">
+            <Button variant="contained" sx={{ marginRight: 2 }} onClick={addCustomizationItemToGroup}>
+              Add
+            </Button>
+            <Button
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

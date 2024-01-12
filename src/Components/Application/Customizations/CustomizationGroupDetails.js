@@ -72,8 +72,9 @@ const CustomizationGroupDetails = (props) => {
     setTabValue(newValue);
   };
 
-  const [allItems, setAllItems] = useState([..._allProducts]);
+  const [allItems, setAllItems] = useState([]);
   const [addedItems, setAddedItems] = useState(products);
+  const [defaultCustomization, setDefaultCustomization] = useState(null);
 
   const validateGroupDetailsForm = () => {
     const formErrors = {};
@@ -114,6 +115,8 @@ const CustomizationGroupDetails = (props) => {
   const handleSave = () => {
     if (validate()) {
       // updateMenuDetails();
+      console.log({ addedItems });
+      console.log({ customizationGroupData });
     }
   };
 
@@ -125,9 +128,18 @@ const CustomizationGroupDetails = (props) => {
       const res = await getCall(url);
       setInputType(res.inputType);
       setCustomizationGroupData(res);
-      console.log("setCustomizationGroupData", res);
     } catch (error) {
       cogoToast.error(error.response.data.error);
+    }
+  };
+
+  const getCustomizationItems = async () => {
+    try {
+      const url = `/api/v1/product/customizations`;
+      const res = await getCall(url);
+      setAllItems(res.data);
+    } catch (error) {
+      console.log("error fetching customization items: ", error);
     }
   };
 
@@ -272,11 +284,20 @@ const CustomizationGroupDetails = (props) => {
   };
 
   const renderCustomizationItems = () => {
-    return <CustomizationGroupItems allItems={allItems} addedItems={addedItems} setAddedItems={setAddedItems} />;
+    return (
+      <CustomizationGroupItems
+        allItems={allItems}
+        addedItems={addedItems}
+        setAddedItems={setAddedItems}
+        defaultCustomization={defaultCustomization}
+        setDefaultCustomization={setDefaultCustomization}
+      />
+    );
   };
 
   useEffect(() => {
     getCustomizationGroupDetails();
+    getCustomizationItems();
   }, []);
 
   let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
