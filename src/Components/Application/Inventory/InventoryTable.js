@@ -13,7 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -27,7 +27,18 @@ const StyledTableCell = styled(TableCell)({
 });
 
 export default function InventoryTable(props) {
-  const { page, rowsPerPage, totalRecords, handlePageChange, handleRowsPerPageChange, onRefresh } = props;
+  const {
+    page,
+    rowsPerPage,
+    totalRecords,
+    handlePageChange,
+    handleRowsPerPageChange,
+    onRefresh,
+    setShowCustomizationModal,
+    fetchCustomizationItem,
+  } = props;
+
+  const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -75,16 +86,33 @@ export default function InventoryTable(props) {
           </Button>
         </Tooltip>
         <Menu id="card-actions-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <Link
+          {/* <Link
             to="/application/add-products"
             state={{
               productId: row._id,
               productCategory: row.productCategory,
               productSubCategory: row.productSubcategory1,
             }}
+          > */}
+          <MenuItem
+            onClick={() => {
+              if (row.type == "customization") {
+                fetchCustomizationItem(row._id);
+                setShowCustomizationModal(true);
+              } else {
+                navigate("/application/add-products", {
+                  state: {
+                    productId: row._id,
+                    productCategory: row.productCategory,
+                    productSubCategory: row.productSubcategory1,
+                  },
+                });
+              }
+            }}
           >
-            <MenuItem>Edit</MenuItem>
-          </Link>
+            Edit
+          </MenuItem>
+          {/* </Link> */}
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>

@@ -13,17 +13,17 @@ export const customizationFields = [
     placeholder: "Enter Customization Name",
     type: "input",
   },
-  {
-    id: "default",
-    title: "Default?",
-    //    placeholder: "Enter Customization Name",
-    type: "radio",
-    options: [
-      { key: "Yes", value: "Yes" },
-      { key: "No", value: "No" },
-    ],
-    required: true,
-  },
+  //   {
+  //     id: "default",
+  //     title: "Default?",
+  //     //    placeholder: "Enter Customization Name",
+  //     type: "radio",
+  //     options: [
+  //       { key: "Yes", value: "Yes" },
+  //       { key: "No", value: "No" },
+  //     ],
+  //     required: true,
+  //   },
   {
     id: "MRP",
     title: "Price",
@@ -82,13 +82,13 @@ export const customizationFields = [
       width: 320,
     },
   },
-  {
-    id: "parent",
-    title: "Parent",
-    placeholder: "Enter Customization Name",
-    type: "input",
-    isDisabled: true,
-  },
+  //   {
+  //     id: "parent",
+  //     title: "Parent",
+  //     placeholder: "Enter Customization Name",
+  //     type: "input",
+  //     isDisabled: true,
+  //   },
 ];
 
 const AddCustomization = (props) => {

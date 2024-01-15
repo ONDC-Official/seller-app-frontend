@@ -3,7 +3,7 @@ import InventoryTable from "../Inventory/InventoryTable";
 import Button from "../../Shared/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
-import { getCall, postCall } from "../../../Api/axios";
+import { getCall, postCall, putCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
@@ -80,6 +80,19 @@ const columns = [
   },
 ];
 
+const fieldsToDelete = [
+  "_id",
+  "type",
+  "timing",
+  "organization",
+  "images",
+  "createdBy",
+  "published",
+  "createdAt",
+  "updatedAt",
+  "__v",
+];
+
 export default function Inventory() {
   const theme = useTheme();
   const [page, setPage] = useState(0);
@@ -96,29 +109,20 @@ export default function Inventory() {
   });
 
   const [showCustomizationModal, setShowCustomizationModal] = useState(false);
+
+  const [customizationId, setCustomizationId] = useState(null);
   const [newCustomizationData, setNewCustomizationData] = useState({
-    productName: "Thin crust",
-    MRP: 100,
+    productName: "",
+    MRP: 0,
     UOM: "",
-    UOMValue: "1",
-    available: "1",
-    maximum: "1",
+    UOMValue: "",
+    available: "",
+    maximum: "",
     vegNonVeg: "veg",
     //  default: "No",
     //  parent: "",
     //  inStock: true,
   });
-
-  const handleAddCustomization = async () => {
-    console.log({ newCustomizationData });
-    try {
-      const url = `/api/v1/product/customization`;
-      const res = await postCall(url, newCustomizationData);
-      console.log("handleAddCustomization: ", res);
-      setNewCustomizationData({ price: 0 });
-      setShowCustomizationModal(false);
-    } catch (error) {}
-  };
 
   const getProducts = async () => {
     try {
@@ -140,6 +144,44 @@ export default function Inventory() {
     const url = `/api/v1/users/${id}`;
     const res = await getCall(url);
     return res[0];
+  };
+
+  const fetchCustomizationItem = async (id) => {
+    setCustomizationId(id);
+    try {
+      const url = `/api/v1/product/customization/${id}`;
+      const res = await getCall(url);
+      setNewCustomizationData(res);
+    } catch (error) {
+      console.log("Error fetching customization item: ", error);
+    }
+  };
+
+  const handleAddCustomization = async () => {
+    try {
+      const url = `/api/v1/product/customization`;
+      const res = await postCall(url, newCustomizationData);
+      console.log("handleAddCustomization: ", res);
+      setNewCustomizationData({ price: 0 });
+      setShowCustomizationModal(false);
+      getProducts();
+    } catch (error) {}
+  };
+
+  const handleUpdateCustomization = async () => {
+    try {
+      const url = `/api/v1/product/customization/${customizationId}`;
+      fieldsToDelete.forEach((field) => {
+        if (newCustomizationData.hasOwnProperty(field)) {
+          delete newCustomizationData[field];
+        }
+      });
+      const res = await putCall(url, newCustomizationData);
+      setNewCustomizationData({ MRP: 0 });
+      setCustomizationId(null);
+      setShowCustomizationModal(false);
+      getProducts();
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -241,16 +283,25 @@ export default function Inventory() {
           totalRecords={totalRecords}
           page={page}
           rowsPerPage={rowsPerPage}
+          setShowCustomizationModal={setShowCustomizationModal}
+          fetchCustomizationItem={fetchCustomizationItem}
           handlePageChange={(val) => setPage(val)}
           handleRowsPerPageChange={(val) => setRowsPerPage(val)}
         />
 
         <AddCustomization
+          mode={newCustomizationData.productName == undefined ? "add" : "edit"}
           showModal={showCustomizationModal}
-          handleCloseModal={() => setShowCustomizationModal(false)}
+          handleCloseModal={() => {
+            setShowCustomizationModal(false);
+            setCustomizationId(null);
+          }}
           newCustomizationData={newCustomizationData}
           setNewCustomizationData={setNewCustomizationData}
-          handleAddCustomization={handleAddCustomization}
+          handleAddCustomization={() => {
+            if (customizationId) handleUpdateCustomization();
+            else handleAddCustomization();
+          }}
         />
       </div>
     </>

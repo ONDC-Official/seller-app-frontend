@@ -157,7 +157,7 @@ const CustomizationGroups = () => {
       <div className="mb-4">
         <BackNavigationButton
           onClick={() => {
-            navigate(`/application/customizations`);
+            navigate(`/application/inventory`);
           }}
         />
       </div>
