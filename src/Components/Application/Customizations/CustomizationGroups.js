@@ -171,7 +171,8 @@ const CustomizationGroups = () => {
             sx={{ marginRight: 1 }}
             variant="contained"
             onClick={() => {
-              setShowModal(true);
+              //   setShowModal(true);
+              navigate(`/application/customizations/add/customization-group/`);
             }}
           >
             Add Customization Group

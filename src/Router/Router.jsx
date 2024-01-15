@@ -93,11 +93,19 @@ export default function OndcRoutes() {
             </PrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path={"/application/customizations/customization-items"}
           element={
             <PrivateRoute>
               <CustomizationItems />
+            </PrivateRoute>
+          }
+        /> */}
+        <Route
+          path={"/application/customizations/add/customization-group/"}
+          element={
+            <PrivateRoute>
+              <CustomizationGroupDetails />
             </PrivateRoute>
           }
         />

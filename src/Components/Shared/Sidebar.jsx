@@ -123,7 +123,7 @@ export default function Sidebar(props) {
                 </NavLink>
                 <NavLink
                   to={{
-                    pathname: `/application/customizations`,
+                    pathname: `/application/customizations/customization-groups`,
                   }}
                   className="no-underline text-black"
                 >

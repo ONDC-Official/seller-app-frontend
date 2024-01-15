@@ -64,7 +64,7 @@ const CustomizationGroupDetails = (props) => {
 
   const [customizationGroupData, setCustomizationGroupData] = useState({});
   const [errors, setErrors] = useState({});
-  const [inputType, setInputType] = useState(null);
+  const [inputType, setInputType] = useState("input");
 
   const [tabErrors, setTabErrors] = useState([true, true]);
   const [tabValue, setTabValue] = useState("1");
@@ -112,6 +112,58 @@ const CustomizationGroupDetails = (props) => {
     return groupDetailsValidity;
   };
 
+  const handleChange = (e) => {
+    setInputType(e.target.value);
+  };
+
+  const getCustomizationItems = async () => {
+    try {
+      const url = `/api/v1/product/customizations`;
+      const res = await getCall(url);
+      setAllItems(res.data);
+    } catch (error) {
+      console.log("error fetching customization items: ", error);
+    }
+  };
+
+  const getCustomizationGroupDetails = async () => {
+    try {
+      const url = `/api/v1/customizationGroup/${params.groupId}`;
+      const res = await getCall(url);
+      setInputType(res.inputType);
+      setCustomizationGroupData(res);
+      setInputType(res.inputType);
+      setAddedItems(res.customizations);
+      console.log("getGroups: ", res.inputType);
+      console.log("getGroups: ", res.customizations);
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
+
+  const addCustomizationGroup = async (data) => {
+    try {
+      const url = `/api/v1/customizationGroup`;
+      const res = await postCall(url, data);
+      console.log({ res });
+      cogoToast.success("Group added successfully");
+      navigate("/application/customizations/customization-groups");
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
+
+  const updateCustomizationGroupDetails = async (data) => {
+    try {
+      const url = `/api/v1/customizationGroup/${params.groupId}`;
+      const res = await putCall(url, data);
+      console.log({ res });
+      cogoToast.success("Group details updated successfully");
+    } catch (error) {
+      cogoToast.error(error.response.data.error);
+    }
+  };
+
   const handleSave = () => {
     if (validate()) {
       const customizations = addedItems.map((item) => {
@@ -131,47 +183,13 @@ const CustomizationGroupDetails = (props) => {
         };
       });
 
-      const data = { ...customizationGroupData, customizations };
-      console.log("handleSave: ", data);
-      updateCustomizationGroupDetails(data);
-    }
-  };
+      const data = { ...customizationGroupData, customizations, inputType };
 
-  const handleChange = () => {};
-
-  const getCustomizationGroupDetails = async () => {
-    try {
-      const url = `/api/v1/customizationGroup/${params.groupId}`;
-      const res = await getCall(url);
-      setInputType(res.inputType);
-      setCustomizationGroupData(res);
-      setInputType(res.inputType);
-      setAddedItems(res.customizations);
-      console.log("getGroups: ", res.inputType);
-      console.log("getGroups: ", res.customizations);
-    } catch (error) {
-      cogoToast.error(error.response.data.error);
-    }
-  };
-
-  const getCustomizationItems = async () => {
-    try {
-      const url = `/api/v1/product/customizations`;
-      const res = await getCall(url);
-      setAllItems(res.data);
-    } catch (error) {
-      console.log("error fetching customization items: ", error);
-    }
-  };
-
-  const updateCustomizationGroupDetails = async (data) => {
-    try {
-      const url = `/api/v1/customizationGroup/${params.groupId}`;
-      const res = await putCall(url, data);
-      console.log({ res });
-      cogoToast.success("Group details updated successfully");
-    } catch (error) {
-      cogoToast.error(error.response.data.error);
+      if (params.groupId) {
+        updateCustomizationGroupDetails(data);
+      } else {
+        addCustomizationGroup(data);
+      }
     }
   };
 
@@ -320,7 +338,10 @@ const CustomizationGroupDetails = (props) => {
   };
 
   useEffect(() => {
-    getCustomizationGroupDetails();
+    if (params.groupId) {
+      getCustomizationGroupDetails();
+    }
+
     getCustomizationItems();
   }, []);
 
