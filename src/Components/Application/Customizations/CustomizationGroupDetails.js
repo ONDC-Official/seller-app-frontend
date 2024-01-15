@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { useNavigate, useParams } from "react-router-dom";
 import BackNavigationButton from "../../Shared/BackNavigationButton";
-import { getCall, putCall } from "../../../Api/axios";
+import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import { FormControl, MenuItem, Select, TextField, Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -114,9 +114,26 @@ const CustomizationGroupDetails = (props) => {
 
   const handleSave = () => {
     if (validate()) {
-      // updateMenuDetails();
-      console.log({ addedItems });
-      console.log({ customizationGroupData });
+      const customizations = addedItems.map((item) => {
+        let nextGroupIds = [];
+        if (item.nextGroupId) {
+          nextGroupIds = item.nextGroupId.map((group) => {
+            return {
+              groupId: group.value,
+            };
+          });
+        }
+
+        return {
+          customizationId: item._id,
+          nextGroupId: nextGroupIds,
+          default: defaultCustomization === item._id,
+        };
+      });
+
+      const data = { ...customizationGroupData, customizations };
+      console.log("handleSave: ", data);
+      updateCustomizationGroupDetails(data);
     }
   };
 
@@ -128,6 +145,10 @@ const CustomizationGroupDetails = (props) => {
       const res = await getCall(url);
       setInputType(res.inputType);
       setCustomizationGroupData(res);
+      setInputType(res.inputType);
+      setAddedItems(res.customizations);
+      console.log("getGroups: ", res.inputType);
+      console.log("getGroups: ", res.customizations);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -143,8 +164,11 @@ const CustomizationGroupDetails = (props) => {
     }
   };
 
-  const updateCustomizationGroupDetails = async () => {
+  const updateCustomizationGroupDetails = async (data) => {
     try {
+      const url = `/api/v1/customizationGroup/${params.groupId}`;
+      const res = await putCall(url, data);
+      console.log({ res });
       cogoToast.success("Group details updated successfully");
     } catch (error) {
       cogoToast.error(error.response.data.error);

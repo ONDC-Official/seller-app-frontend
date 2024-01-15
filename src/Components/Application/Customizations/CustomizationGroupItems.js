@@ -14,6 +14,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import { getCall } from "../../../Api/axios";
 
 const CustomizationGroupItems = (props) => {
   const { allItems, addedItems, setAddedItems, defaultCustomization, setDefaultCustomization } = props;
@@ -22,6 +23,7 @@ const CustomizationGroupItems = (props) => {
   const [reordering, setReordering] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
+  const [customizationGroups, setCustomizationGroups] = useState([]);
   const [notAddedCustomizations, setNotAddedCustomizations] = useState([]);
   const [selectedCustomizations, setSelectedCustomizations] = useState([]);
 
@@ -47,12 +49,45 @@ const CustomizationGroupItems = (props) => {
     setShowModal(false);
   };
 
+  const getCustomizationGroups = async () => {
+    const url = `/api/v1/customizationGroups?limit=10&offset=0`;
+    try {
+      const res = await getCall(url);
+      const groups = res.data.map((g) => {
+        return {
+          key: g.name,
+          value: g._id,
+        };
+      });
+
+      setCustomizationGroups(groups);
+    } catch (error) {
+      console.log("Error fetching customziation groups:", error);
+    }
+  };
+
+  const handleAutocompleteChange = (item, selectedOptions) => {
+    const currentItemId = item._id;
+
+    const updatedAddedItems = addedItems.map((addedItem) => {
+      if (addedItem._id === currentItemId) {
+        return {
+          ...addedItem,
+          nextGroupId: selectedOptions,
+        };
+      }
+      return addedItem;
+    });
+
+    setAddedItems(updatedAddedItems);
+  };
+
   const Item = ({ item }) => {
     return (
       <div key={item._id}>
         <div
           style={{ borderStyle: reordering ? "dashed" : "solid" }}
-          className="flex items-center justify-between py-[4px] px-8 mb-2 border border-[#1876d1a1] rounded-xl bg-white"
+          className="flex items-center justify-between py-[12px] px-8 mb-2 border border-[#1876d1a1] rounded-xl bg-white"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center">
@@ -71,27 +106,20 @@ const CustomizationGroupItems = (props) => {
             <p>{item.productName}</p>
           </div>
           <div className="flex items-center">
-            <div className="mr-4">
-              <p>Size, Topping</p>
-            </div>
+            <div className="mr-4"></div>
             <FormControl>
               <Autocomplete
                 multiple
-                // filterSelectedOptions
+                filterSelectedOptions
                 size="small"
-                options={[]}
-                //  getOptionLabel={(option) => option.key}
-                value={""}
-                onChange={(event, newValue) => {}}
+                options={customizationGroups}
+                getOptionLabel={(option) => option.key}
+                value={addedItems.find((ai) => ai._id === item._id)?.nextGroupId || []}
+                onChange={(event, newValue) => {
+                  handleAutocompleteChange(item, newValue);
+                }}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder={"Next group"}
-                    style={{ width: 140 }}
-                    variant={"outlined"}
-                    //   error={item.error || false}
-                    //   helperText={item.error && item.helperText}
-                  />
+                  <TextField {...params} placeholder={"Next group"} style={{ minWidth: 140 }} variant={"outlined"} />
                 )}
               />
             </FormControl>
@@ -144,6 +172,10 @@ const CustomizationGroupItems = (props) => {
       </div>
     ));
   };
+
+  useEffect(() => {
+    getCustomizationGroups();
+  }, []);
 
   useEffect(() => {
     if (addedItems.length === 0) {
@@ -202,8 +234,8 @@ const CustomizationGroupItems = (props) => {
                   </div>
                 </div>
               </div>
-              {addedItems.map((item) => (
-                <Item item={item} />
+              {addedItems.map((item, index) => (
+                <Item key={index} item={item} />
               ))}
             </>
           ) : (
