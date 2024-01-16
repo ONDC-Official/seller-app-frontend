@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import useCancellablePromise from "../../../Api/cancelRequest";
 import { isObjEmpty } from "../../../utils/validations";
-import { PRODUCT_CATEGORY } from "../../../utils/constants";
+import { FILTER_OPTIONS, PRODUCT_CATEGORY } from "../../../utils/constants";
 import { useTheme } from "@mui/material/styles";
 import FilterComponent from "../../Shared/FilterComponent";
 import AddCustomization from "../Product/AddCustomization";
@@ -23,7 +23,7 @@ const filterFields = [
     id: "category",
     title: "",
     placeholder: "Please Select Product Category",
-    options: Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
+    options: Object.entries(FILTER_OPTIONS).map(([key, value]) => {
       return { key: value, value: key };
     }),
     type: "select",

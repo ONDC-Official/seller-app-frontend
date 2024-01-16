@@ -116,7 +116,7 @@ export default function InventoryTable(props) {
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
-          <MenuItem onClick={() => setShowModal(true)}>Choose Initial Group</MenuItem>
+          {row.type === "customization" && <MenuItem onClick={() => setShowModal(true)}>Choose Initial Group</MenuItem>}
         </Menu>
       </Fragment>
     );
