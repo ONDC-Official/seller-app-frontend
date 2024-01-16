@@ -78,9 +78,9 @@ const CustomizationGroups = () => {
                 navigate(`/application/customizations/customization-groups/${data.name}/${data._id}`);
               }}
             >
-              Edit group
+              Edit
             </Button>
-            <Button
+            {/* <Button
               disabled={reordering}
               variant="contained"
               sx={{ marginLeft: 2 }}
@@ -91,7 +91,7 @@ const CustomizationGroups = () => {
               }}
             >
               Delete group
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

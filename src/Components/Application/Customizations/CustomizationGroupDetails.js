@@ -133,9 +133,17 @@ const CustomizationGroupDetails = (props) => {
       setInputType(res.inputType);
       setCustomizationGroupData(res);
       setInputType(res.inputType);
-      setAddedItems(res.customizations);
-      console.log("getGroups: ", res.inputType);
-      console.log("getGroups: ", res.customizations);
+
+      const customizations = res.customizations.map((item) => {
+        console.log(item);
+        return {
+          productName: item.customizationId.name,
+          customizationId: item.customizationId.id,
+          nextGroupId: item.nextGroupId,
+          default: item.default,
+        };
+      });
+      setAddedItems(customizations);
     } catch (error) {
       cogoToast.error(error.response.data.error);
     }
@@ -158,6 +166,7 @@ const CustomizationGroupDetails = (props) => {
       const url = `/api/v1/customizationGroup/${params.groupId}`;
       const res = await putCall(url, data);
       console.log({ res });
+      getCustomizationGroupDetails();
       cogoToast.success("Group details updated successfully");
     } catch (error) {
       cogoToast.error(error.response.data.error);
@@ -167,25 +176,32 @@ const CustomizationGroupDetails = (props) => {
   const handleSave = () => {
     if (validate()) {
       const customizations = addedItems.map((item) => {
-        let nextGroupIds = [];
-        if (item.nextGroupId) {
-          nextGroupIds = item.nextGroupId.map((group) => {
-            return {
-              groupId: group.value,
-            };
-          });
-        }
+        if (item._id) {
+          let nextGroupIds = [];
+          if (item.nextGroupId) {
+            nextGroupIds = item.nextGroupId.map((group) => {
+              return {
+                groupId: group.value,
+              };
+            });
+          }
 
-        return {
-          customizationId: item._id,
-          nextGroupId: nextGroupIds,
-          default: defaultCustomization === item._id,
-        };
+          return {
+            customizationId: item._id,
+            nextGroupId: nextGroupIds,
+            default: defaultCustomization === item._id,
+          };
+        } else {
+          delete item["productName"];
+          return item;
+        }
       });
 
+      console.log({ customizations });
       const data = { ...customizationGroupData, customizations, inputType };
 
       if (params.groupId) {
+        delete data["_id"];
         updateCustomizationGroupDetails(data);
       } else {
         addCustomizationGroup(data);

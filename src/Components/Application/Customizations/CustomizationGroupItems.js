@@ -40,7 +40,16 @@ const CustomizationGroupItems = (props) => {
   };
 
   const handleRemoveCustomizationItem = (item) => {
-    const filteredProducts = addedItems.filter((p) => p._id !== item._id);
+    const id = item.customizationId ? item.customizationId : item._id;
+    console.log(id);
+    const filteredProducts = addedItems.filter((p) => {
+      if (p.customizationId) {
+        return p.customizationId !== id;
+      } else {
+        return p._id !== id;
+      }
+    });
+
     setAddedItems(filteredProducts);
   };
 
@@ -98,7 +107,13 @@ const CustomizationGroupItems = (props) => {
                   <Radio
                     size="small"
                     checked={defaultCustomization === item._id}
-                    onClick={() => setDefaultCustomization(item._id)}
+                    onClick={() => {
+                      if (item.customizationId) {
+                        setDefaultCustomization(item.customizationId);
+                      } else {
+                        setDefaultCustomization(item._id);
+                      }
+                    }}
                   />
                 }
               />
@@ -181,7 +196,10 @@ const CustomizationGroupItems = (props) => {
     if (addedItems.length === 0) {
       setNotAddedCustomizations(allItems);
     } else {
-      const notAddedCustomizations = allItems.filter((item) => !addedItems.some((p) => p._id === item._id));
+      const notAddedCustomizations = allItems.filter(
+        (item) => !addedItems.some((p) => p.customizationId === item._id || p._id === item._id)
+      );
+      console.log(notAddedCustomizations);
       setNotAddedCustomizations(notAddedCustomizations);
     }
     setSelectedCustomizations([]);
@@ -234,6 +252,7 @@ const CustomizationGroupItems = (props) => {
                   </div>
                 </div>
               </div>
+
               {addedItems.map((item, index) => (
                 <Item key={index} item={item} />
               ))}
