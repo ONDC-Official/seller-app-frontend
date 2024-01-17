@@ -17,13 +17,21 @@ import {
 import { getCall } from "../../../Api/axios";
 
 const CustomizationGroupItems = (props) => {
-  const { allItems, addedItems, setAddedItems, defaultCustomization, setDefaultCustomization } = props;
+  const {
+    seq,
+    allItems,
+    addedItems,
+    setAddedItems,
+    defaultCustomization,
+    setDefaultCustomization,
+    customizationGroups,
+    setCustomizationGroups,
+  } = props;
 
   const [showModal, setShowModal] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
-  const [customizationGroups, setCustomizationGroups] = useState([]);
   const [notAddedCustomizations, setNotAddedCustomizations] = useState([]);
   const [selectedCustomizations, setSelectedCustomizations] = useState([]);
 
@@ -58,23 +66,6 @@ const CustomizationGroupItems = (props) => {
     setShowModal(false);
   };
 
-  const getCustomizationGroups = async () => {
-    const url = `/api/v1/customizationGroups?limit=10&offset=0`;
-    try {
-      const res = await getCall(url);
-      const groups = res.data.map((g) => {
-        return {
-          key: g.name,
-          value: g._id,
-        };
-      });
-
-      setCustomizationGroups(groups);
-    } catch (error) {
-      console.log("Error fetching customziation groups:", error);
-    }
-  };
-
   const handleAutocompleteChange = (item, selectedOptions) => {
     const currentItemId = item._id;
 
@@ -88,10 +79,15 @@ const CustomizationGroupItems = (props) => {
       return addedItem;
     });
 
+    console.log({ updatedAddedItems });
+
     setAddedItems(updatedAddedItems);
   };
 
   const Item = ({ item }) => {
+    const id = item.customizationId ? item.customizationId : item._id;
+    const value = addedItems.find((ai) => ai._id === id)?.nextGroupId || [];
+
     return (
       <div key={item._id}>
         <div
@@ -106,13 +102,9 @@ const CustomizationGroupItems = (props) => {
                 control={
                   <Radio
                     size="small"
-                    checked={defaultCustomization === item._id}
+                    checked={defaultCustomization === id}
                     onClick={() => {
-                      if (item.customizationId) {
-                        setDefaultCustomization(item.customizationId);
-                      } else {
-                        setDefaultCustomization(item._id);
-                      }
+                      setDefaultCustomization(id);
                     }}
                   />
                 }
@@ -128,13 +120,19 @@ const CustomizationGroupItems = (props) => {
                 filterSelectedOptions
                 size="small"
                 options={customizationGroups}
-                getOptionLabel={(option) => option.key}
-                value={addedItems.find((ai) => ai._id === item._id)?.nextGroupId || []}
+                getOptionLabel={(option) => {
+                  return `${option.key} - (${option.description})`;
+                }}
+                value={value}
+                filterOptions={(options, { inputValue }) => {
+                  const selectedValues = value.map((selectedOption) => selectedOption.key);
+                  return options.filter((option) => !selectedValues.includes(option.key));
+                }}
                 onChange={(event, newValue) => {
                   handleAutocompleteChange(item, newValue);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} placeholder={"Next group"} style={{ minWidth: 140 }} variant={"outlined"} />
+                  <TextField {...params} placeholder={"Next group"} style={{ minWidth: 300 }} variant={"outlined"} />
                 )}
               />
             </FormControl>
@@ -189,17 +187,12 @@ const CustomizationGroupItems = (props) => {
   };
 
   useEffect(() => {
-    getCustomizationGroups();
-  }, []);
-
-  useEffect(() => {
     if (addedItems.length === 0) {
       setNotAddedCustomizations(allItems);
     } else {
       const notAddedCustomizations = allItems.filter(
         (item) => !addedItems.some((p) => p.customizationId === item._id || p._id === item._id)
       );
-      console.log(notAddedCustomizations);
       setNotAddedCustomizations(notAddedCustomizations);
     }
     setSelectedCustomizations([]);
@@ -247,7 +240,9 @@ const CustomizationGroupItems = (props) => {
                     <p className="ml-5 text-lg font-semibold">Customization Name</p>
                   </div>
                   <div className="flex items-center justify-between" style={{ width: 280 }}>
-                    <p className="text-lg font-semibold mr-4">Next group</p>
+                    <p className="text-lg font-semibold" style={{ marginLeft: -160 }}>
+                      Next group
+                    </p>
                     <p className="text-lg font-semibold mr-12">Action</p>
                   </div>
                 </div>

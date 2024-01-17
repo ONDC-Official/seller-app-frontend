@@ -68,7 +68,11 @@ const CustomizationGroups = () => {
           className={`flex items-center justify-between py-2 px-8 mb-2 border-2 border-[#1876d1a1] rounded-xl bg-white `}
           onClick={(e) => e.stopPropagation()}
         >
-          <p>{data.name}</p>
+          <div>
+            <p>
+              {data.name} {data.description ? `- ( ${data?.description} )` : ""}
+            </p>
+          </div>
           <div>
             <Button
               disabled={reordering}

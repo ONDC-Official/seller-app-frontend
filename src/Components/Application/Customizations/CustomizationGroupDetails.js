@@ -68,12 +68,22 @@ const CustomizationGroupDetails = (props) => {
 
   const [tabErrors, setTabErrors] = useState([true, true]);
   const [tabValue, setTabValue] = useState("1");
+
   const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+    if (newValue != 1) {
+      if (!customizationGroupData.seq || customizationGroupData.seq <= 0) {
+        cogoToast.error("Please select a valid sequence first");
+      } else {
+        setTabValue(newValue);
+      }
+    } else {
+      setTabValue(newValue);
+    }
   };
 
   const [allItems, setAllItems] = useState([]);
   const [addedItems, setAddedItems] = useState(products);
+  const [customizationGroups, setCustomizationGroups] = useState([]);
   const [defaultCustomization, setDefaultCustomization] = useState(null);
 
   const validateGroupDetailsForm = () => {
@@ -94,7 +104,10 @@ const CustomizationGroupDetails = (props) => {
         : customizationGroupData?.maxQuantity <= 0
         ? `Please enter a valid quantity`
         : "";
-
+    formErrors.seq =
+      customizationGroupData?.seq == undefined || customizationGroupData?.seq === "" || customizationGroupData?.seq <= 0
+        ? "Please enter a valid sequence"
+        : "";
     setErrors(formErrors);
 
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
@@ -116,6 +129,26 @@ const CustomizationGroupDetails = (props) => {
     setInputType(e.target.value);
   };
 
+  const getCustomizationGroups = async () => {
+    const url = `/api/v1/customizationGroups?limit=10&offset=0&seq=${customizationGroupData.seq}`;
+
+    try {
+      const res = await getCall(url);
+      const groups = res.data.map((g) => {
+        return {
+          key: g.name,
+          value: g._id,
+          description: g.description ? g.description : "",
+        };
+      });
+
+      setCustomizationGroups(groups);
+      return groups;
+    } catch (error) {
+      console.log("Error fetching customziation groups:", error);
+    }
+  };
+
   const getCustomizationItems = async () => {
     try {
       const url = `/api/v1/product/customizations`;
@@ -135,16 +168,28 @@ const CustomizationGroupDetails = (props) => {
       setInputType(res.inputType);
 
       const customizations = res.customizations.map((item) => {
-        console.log(item);
+        if (item.default) {
+          setDefaultCustomization(item.customizationId.id);
+        }
+        let nextGroupId = item.nextGroupId.map((ng) => {
+          return {
+            key: ng.name,
+            value: ng.groupId,
+            description: ng.description,
+          };
+        });
+
         return {
           productName: item.customizationId.name,
           customizationId: item.customizationId.id,
-          nextGroupId: item.nextGroupId,
+          _id: item.customizationId.id,
+          nextGroupId: nextGroupId,
           default: item.default,
         };
       });
       setAddedItems(customizations);
     } catch (error) {
+      console.log(error);
       cogoToast.error(error.response.data.error);
     }
   };
@@ -163,10 +208,11 @@ const CustomizationGroupDetails = (props) => {
 
   const updateCustomizationGroupDetails = async (data) => {
     try {
+      console.log("update payload: ", data);
       const url = `/api/v1/customizationGroup/${params.groupId}`;
       const res = await putCall(url, data);
       console.log({ res });
-      getCustomizationGroupDetails();
+      navigate("/application/customizations/customization-groups");
       cogoToast.success("Group details updated successfully");
     } catch (error) {
       cogoToast.error(error.response.data.error);
@@ -197,7 +243,6 @@ const CustomizationGroupDetails = (props) => {
         }
       });
 
-      console.log({ customizations });
       const data = { ...customizationGroupData, customizations, inputType };
 
       if (params.groupId) {
@@ -232,6 +277,30 @@ const CustomizationGroupDetails = (props) => {
                 setCustomizationGroupData({
                   ...customizationGroupData,
                   name: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="flex items-center mb-4">
+            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block ">
+              Description:
+            </label>
+
+            <CssTextField
+              required
+              type={"input"}
+              className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex flex-1"
+              size="small"
+              autoComplete="off"
+              placeholder={"Enter Customisation Group Description"}
+              error={!!errors.description}
+              helperText={errors.description}
+              value={customizationGroupData.description}
+              onChange={(e) =>
+                setCustomizationGroupData({
+                  ...customizationGroupData,
+                  description: e.target.value,
                 })
               }
             />
@@ -288,6 +357,7 @@ const CustomizationGroupDetails = (props) => {
               }}
             />
           </div>
+
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block ">
               Max Quantity:
@@ -309,6 +379,38 @@ const CustomizationGroupDetails = (props) => {
                   maxQuantity: e.target.value,
                 })
               }
+            />
+          </div>
+
+          <div className="flex items-center">
+            <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block ">
+              Sequence:
+            </label>
+
+            <CssTextField
+              required
+              type="number"
+              className="w-80 h-full px-2.5 py-3.5 text-[#606161] bg-transparent !border-black flex-1"
+              size="small"
+              autoComplete="off"
+              placeholder={"Enter group sequence"}
+              error={!!errors.seq}
+              helperText={errors.seq}
+              value={customizationGroupData.seq}
+              onChange={(e) => {
+                setCustomizationGroupData({
+                  ...customizationGroupData,
+                  seq: e.target.value,
+                });
+
+                const updatedItems = addedItems.map((item) => {
+                  return {
+                    ...item,
+                    nextGroupId: [],
+                  };
+                });
+                setAddedItems(updatedItems);
+              }}
             />
           </div>
 
@@ -344,11 +446,14 @@ const CustomizationGroupDetails = (props) => {
   const renderCustomizationItems = () => {
     return (
       <CustomizationGroupItems
+        seq={customizationGroupData.seq}
         allItems={allItems}
         addedItems={addedItems}
         setAddedItems={setAddedItems}
         defaultCustomization={defaultCustomization}
         setDefaultCustomization={setDefaultCustomization}
+        customizationGroups={customizationGroups}
+        setCustomizationGroups={setCustomizationGroupData}
       />
     );
   };
@@ -360,6 +465,10 @@ const CustomizationGroupDetails = (props) => {
 
     getCustomizationItems();
   }, []);
+
+  useEffect(() => {
+    if (customizationGroupData.seq) getCustomizationGroups();
+  }, [customizationGroupData.seq]);
 
   let highlightedTabColor = tabErrors.includes(true) ? "error" : "primary";
   return (
