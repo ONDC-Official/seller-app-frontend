@@ -15,6 +15,8 @@ export const allProductFieldDetails = [
     placeholder: "Product Name",
     type: "input",
     required: true,
+    hasMicIcon: true,
+    class: 'md:col-span-2 col-span-6',
   },
   {
     id: "MRP",
@@ -178,12 +180,18 @@ export const allProductFieldDetails = [
     required: true,
   },
   {
+    id: "attributes",
+    class: "col-span-6",
+    type: "attributes",
+  },
+  {
     id: "length",
     title: "Length(cm)",
     placeholder: "Length",
     type: "input",
     maxLength: 6,
     required: true,
+    hasMicIcon: true,
   },
   {
     id: "breadth",
@@ -260,6 +268,7 @@ export const allProductFieldDetails = [
     type: "input",
     required: true,
     multiline: true,
+    hasMicIcon: true,
   },
   {
     id: "description",
@@ -268,6 +277,7 @@ export const allProductFieldDetails = [
     type: "input",
     required: true,
     multiline: true,
+    hasMicIcon: true,
   },
   {
     id: "vegNonVeg",
@@ -314,11 +324,13 @@ export const allProductFieldDetails = [
   },
   {
     id: "images",
-    title: "Images (Select minimum 3 files with maximum size of 2Mb for each file)",
+    title: "Images",
     type: "upload",
     multiple: true,
     file_type: "product_image",
     required: true,
+    hasMicIcon: true,
+    class: 'md:col-span-2 col-span-6',
   },
   {
     id: "fulfillmentOption",

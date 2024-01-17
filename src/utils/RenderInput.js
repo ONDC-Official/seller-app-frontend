@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Button,
@@ -17,12 +16,14 @@ import {
   TextField,
   Stack,
   Chip,
+  Modal,
   Switch,
 } from "@mui/material";
 import { DeleteOutlined } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextBodyModal from "../Components/Application/Product/TextBodyModal";
 import moment from "moment";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -36,6 +37,17 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 import DaysPicker from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import googleMicIcon from "../Assets/Images/googleMic.svg"
+import "../Components/Application/Product/product.css"
+import DeleteIcon from "../Assets/Images/deleteIcon.svg";
+import  editIcon from "../Assets/Images/editImage.svg"
+import WhiteMicIcon from "../Assets/Images/whiteMicIcon.svg"
+import CloseIcon from "../Assets/Images/closeIcon.svg"
+import voiceIcon from "../Assets/Images/voiceIcon.svg"
+import useCancellablePromise from "../Api/cancelRequest";
+import useDebounce from "../hooks/useDebounce";
+import { extractKeyValuePairs } from "./formatting/string";
+
 
 const CssTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
@@ -51,11 +63,80 @@ const CssTextField = styled(TextField)({
   },
 });
 
+const defaultLanguage = {
+  key: "Hindi",
+  value: "hi"
+}
+
+
 const RenderInput = (props) => {
   const { item, state, stateHandler, onChange, previewOnly, setFocusedField, handleChange = undefined, args } = props;
+
   const uploadFileRef = useRef(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [fetchedImageSize, setFetchedImageSize] = useState(0);
+
+
+  const [isImageEdit, setIsImageEdit] = useState(false)
+  const [editImageInputValue, setEditImageInputValue] = useState("")
+  const [languageList, setLanguageList] = useState([])
+  const [selectLanguage, setSelectLanguage] = useState(defaultLanguage)
+  const [aiInput, setAiInput] = useState({
+    id: "",
+    value: ""
+  })
+
+  const [aiInputResponse, setAiInputResponse] = useState("")
+  const [aiLoading, setAiLoading] = useState(false)
+  const [fileLoading, setFileLoading] = useState([])
+  const [listening, setListening] = useState(false)
+  const [open, setOpen] = useState(false)
+
+  const { cancellablePromise } = useCancellablePromise()
+  const [showPreview, setShowPreview] = useState(false)
+  const [markdownValue, setMarkdownValue] = useState("")
+
+  const [selectedFiles, setSelectedFiles] = useState([])
+
+  const handleFileChange = async (e, item) => {
+    const files = Array.from(e.target.files)
+    setFileLoading(files)
+    const formData = new FormData()
+    for (const file of files) {
+      formData.append("images", file)
+    }
+    try {
+      const url = `/api/v1/gcp-upload`
+      const res = await postCall(url, formData)
+      setSelectedFiles((prevSelectedFiles) => {
+        return [...prevSelectedFiles, ...res.urls] // Append the new URLs to the existing array
+      })
+
+      stateHandler((prevState) => {
+        const newState = {
+          ...prevState,
+          [item.id]: [...(prevState[item.id] || []), ...res.urls]
+        }
+        return newState
+      })
+      setFileLoading([])
+    } catch (error) {
+      setFileLoading([])
+      cogoToast.error("Please try again")
+    }
+  }
+
+  useEffect(() => {
+    getLanguageList()
+  }, [])
+
+  useEffect(() => {
+    if (state["images"]?.length > 0) {
+      setSelectedFiles(state["images"])
+    }
+  }, [state])
+
+
 
   const handleFocus = (fieldId) => {
     if (setFocusedField) {
@@ -101,9 +182,436 @@ const RenderInput = (props) => {
     }
   }, [isImageChanged, state[item.id]]);
 
+  const getLanguageList = async () => {
+    const url = process.env.REACT_APP_LANGUAGE_LIST
+    try {
+      const response = await cancellablePromise(getCall(url))
+      if (response?.results.length > 0) {
+        const result = response.results.map((lang) => {
+          return {
+            key: lang.displayName,
+            value: lang.languageCode
+          }
+        })
+        const uniqueArray = result.filter(
+          (value, index, self) =>
+            self.findIndex((item) => item.key === value.key) === index
+        )
+        setLanguageList(uniqueArray)
+      } else {
+        cogoToast.error("Network error")
+      }
+    } catch (error) {
+      cogoToast.error("Network error")
+    }
+  }
+
+  useEffect(() => {
+    if (item.type !== "upload") return
+    if (isImageChanged === false && state[item.id] !== "") {
+      getImageSizeFromUrl()
+    } else {
+      const sizeInBytes = getSizeWithUnit(uploadFileRef.current?.files[0]?.size)
+      setFetchedImageSize(sizeInBytes)
+    }
+  }, [isImageChanged, state[item.id]])
+
+  const handleStartListening = (item) => {
+    if (aiLoading) return
+    if (!isImageEdit) {
+      setAiInputResponse("")
+    }
+    setAiInput({
+      id: "",
+      value: ""
+    })
+    if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognition = new SpeechRecognition()
+
+      recognition.lang = selectLanguage.value
+
+      recognition.onstart = () => {
+        setListening(true)
+      }
+
+      recognition.onresult = (event) => {
+        const last = event.results.length - 1
+        const text = event.results[last][0].transcript
+        if (!isImageEdit) {
+          setAiInput((prevTranscript) => {
+            return {
+              id: item.id,
+              value: `${prevTranscript.value} ${text}`
+            }
+          })
+        } else {
+          setEditImageInputValue((prevTranscript) => {
+            return `${prevTranscript} ${text}`
+          })
+        }
+      }
+
+      recognition.onend = () => {
+        setListening(false)
+      }
+
+      // Start listening
+      recognition.start()
+    } else {
+      alert("Speech recognition is not supported in your browser.")
+    }
+  }
+
+  const closeModal = () => {
+    setOpen(false)
+    setSelectLanguage(defaultLanguage)
+    setAiInput({
+      id: "",
+      value: ""
+    })
+    setAiInputResponse("")
+    setAiLoading(false)
+    setIsImageEdit(false)
+    setEditImageInputValue("")
+    setMarkdownValue("")
+  }
+
+  const getInputTitle = async (item, language) => {
+    if (aiInputResponse.length === 0) return
+    stateHandler({
+      ...state,
+      [item.id]: item.isUperCase
+        ? aiInputResponse.toUpperCase()
+        : aiInputResponse
+    })
+    setOpen(false)
+    setAiLoading(false)
+    setAiInput({
+      id: "",
+      value: ""
+    })
+    setAiInputResponse("")
+    setMarkdownValue("")
+    setEditImageInputValue("")
+  }
+
+  const openModal = () => {
+    setOpen(!open)
+    setSelectLanguage(defaultLanguage)
+  }
+
+  useDebounce(() => getResponseFromAi(), 1000, [aiInput])
+  useDebounce(() => editImageAPI(), 1000, [editImageInputValue])
+
+  // const onChangeHandler = (value, item) => {
+  //   stateHandler({
+  //     ...state,
+  //     [item.id]: item.isUperCase ? value.toUpperCase() : value
+  //   })
+  // }
+
+  const getResponseFromAi = async () => {
+    // For Title
+    if (aiInput.id === "productName" && aiInput.value.length > 0) {
+      // const url = process.env.REACT_APP_LANGUAGE_DETECT
+      // const body = [aiInput.value]
+      try {
+        setAiLoading(true)
+        await getProductTitleAPI(aiInput.value, selectLanguage.value)
+      } catch (e) {
+        setAiLoading(false)
+        cogoToast.error("Please try again")
+      }
+    }
+
+    //For Description
+    if (
+      (aiInput.id === "longDescription" || aiInput.id === "description") &&
+      aiInput.value.length > 0
+    ) {
+      const url = process.env.REACT_APP_LANGUAGE_DETECT
+      const body = [aiInput.value]
+      try {
+        const langDetectResponse = await cancellablePromise(postCall(url, body))
+        const lang = langDetectResponse?.results[0]?.detections[0]?.languageCode
+        setAiLoading(true)
+        await getDescriptionAPI(aiInput.value, lang, aiInput.id)
+      } catch (e) {
+        setAiLoading(false)
+        cogoToast.error("Please try again")
+      }
+    }
+
+    //For Image upload
+    if (aiInput.id === "images" && aiInput.value.length > 0) {
+      // const url = process.env.REACT_APP_LANGUAGE_DETECT
+      // const body = [aiInput.value]
+      try {
+        setAiLoading(true)
+        await getImageAPI(aiInput.value, selectLanguage.value)
+      } catch (e) {
+        setAiLoading(false)
+        cogoToast.error("Please try again")
+      }
+    }
+      console.log(aiInput);
+    //For Product Attribute
+    const dimensions = ['length','breadth','weight',"height"]
+    if (dimensions.includes(aiInput.id) && aiInput.value.length > 0) {
+      setAiLoading(true)
+      await getProductInputAPI(aiInput.value)
+    }
+  }
+
+  const getProductTitleAPI = async (value, language) => {
+    const url = process.env.REACT_APP_PRODUCT_TITLE
+    const body = {
+      text: value,
+      language: selectLanguage.value,
+      prompt:
+        "Context: Create a nice Title for the following product including all keywords and help improve listing quality index",
+      desc: "Example: [Brand Name] - [Colour] coloured [Title] [All Keywords] with [USP]."
+    }
+    try {
+      const response = await cancellablePromise(postCall(url, body))
+      if (response?.results?.translatedContent) {
+        setAiInputResponse(response.results.translatedContent)
+        setAiLoading(false)
+      } else {
+        cogoToast.error("Please try again")
+        setAiLoading(false)
+      }
+    } catch (error) {
+      setAiLoading(false)
+      cogoToast.error("Please try again")
+    }
+  }
+
+  const getDescriptionAPI = async (value, language, desc) => {
+    const url = process.env.REACT_APP_PRODUCT_DESCRIPTION
+    const body = {
+      text: value,
+      language: selectLanguage.value,
+      prompt: `Context: Create a nice,${
+        desc !== "longDescription" ? " short 2-3 points" : ""
+      } detailed bulleted Description of the following product including all keywords and help improve listing quality index.`
+    }
+    try {
+      const response = await cancellablePromise(postCall(url, body))
+      if (response?.results?.translatedContent) {
+        setAiInputResponse(response.results.translatedContent)
+        setMarkdownValue(response.results.translatedContent)
+        setAiLoading(false)
+      } else {
+        cogoToast.error("Please try again")
+        setAiLoading(false)
+      }
+    } catch (error) {
+      setAiLoading(false)
+      cogoToast.error("Please try again")
+    }
+  }
+
+  const getImageAPI = async (value, language) => {
+    const body = JSON.stringify({
+      text: value,
+      language,
+      prompt: "Context: Generate images of the following Products",
+      gcsbucket: "gen-ai-399709-stg"
+    })
+    const config = {
+      method: "post",
+      url: process.env.REACT_APP_PRODUCT_IMAGE_GENERATE,
+      headers: {
+        samplecount: "1",
+        "Content-Type": "application/json"
+      },
+      data: body
+    }
+
+    try {
+      const response = await axios(config)
+      if (response?.data.results[0]?.signedUri) {
+        setAiInputResponse({
+          imageName: response?.data.results[0]?.fileName,
+          url: response?.data.results[0]?.signedUri
+        })
+        setAiLoading(false)
+      } else {
+        cogoToast.error("Please try again")
+        setAiLoading(false)
+      }
+    } catch (error) {
+      setAiLoading(false)
+      cogoToast.error("Please try again")
+    }
+  }
+
+  const getProductInputAPI = async (value) => {
+    const body = JSON.stringify({
+      attributes: value,
+      prompt:
+        "Context: Create a set of attributes from the following description for creating a Product catalogue",
+      desc: 'Example: {"Measurement Quantity": "Kilogram", "meter", "Length": "10", "20", , "Breadth": "10", "20", "Height": "10", "20", "Weight": "10", "20", "Vegetarian": "Yes", "No" "category": "Fabric", {"size": ["L"}}'
+    })
+    const config = {
+      method: "post",
+      url: process.env.REACT_APP_PRODUCT_ATTRIBS,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: body
+    }
+    try {
+      const response = await axios(config)
+      if (response?.data.results?.content) {
+        setAiInputResponse(response?.data.results?.content)
+        const contentString = response?.data.results?.content
+        if (contentString) {
+          const responseData = extractKeyValuePairs(contentString)
+          console.log({"responseData": responseData});
+          if (responseData) {
+            stateHandler({
+              ...state,
+              ["packQty"]: responseData["Measurement Quantity"],
+              ["length"]: responseData["Length"],
+              ["breadth"]: responseData["Breadth"],
+              ["height"]: responseData["Height"],
+              ["weight"]: responseData["Weight"]
+            })
+          } else {
+            cogoToast.error("Please try again")
+          }
+        } else {
+          cogoToast.error("Please try again")
+        }
+
+        setOpen(false)
+        setSelectLanguage(defaultLanguage)
+        setAiInput({
+          id: "",
+          value: ""
+        })
+        setAiInputResponse("")
+        setAiLoading(false)
+      } else {
+        cogoToast.error("Please try again")
+        setAiLoading(false)
+      }
+    } catch (error) {
+      setAiLoading(false)
+      cogoToast.error("Please try again")
+    }
+  }
+
+  const removeImage = () => {
+    setAiInputResponse("")
+    setAiInput({
+      ...aiInput,
+      value: ""
+    })
+  }
+
+  const editImage = () => {
+    setIsImageEdit(true)
+  }
+
+  const editImageAPI = async () => {
+    if (editImageInputValue.length === 0) return
+    // const url = process.env.REACT_APP_LANGUAGE_DETECT
+    // const body = [editImageInputValue]
+    try {
+      // const langDetectResponse = await cancellablePromise(postCall(url, body))
+      // const lang = langDetectResponse?.results[0]?.detections[0]?.languageCode
+      await getEditedImageAI(editImageInputValue, selectLanguage.value)
+    } catch (e) {
+      setAiLoading(false)
+      cogoToast.error("Please try again")
+    }
+  }
+
+  const getEditedImageAI = async (value, lang) => {
+    if (value.length > 0) {
+      setAiLoading(true)
+      const body = JSON.stringify({
+        text: value,
+        language: lang,
+        prompt: "Context: Edit the image as the following:",
+        gcsbucket: "gen-ai-399709-stg",
+        filename: aiInputResponse.imageName
+      })
+      const config = {
+        method: "post",
+        url: process.env.REACT_APP_PRODUCT_IMAGE_EDIT,
+        headers: {
+          samplecount: "1",
+          "Content-Type": "application/json"
+        },
+        data: body
+      }
+      try {
+        const response = await axios(config)
+        if (response?.data.results[0]?.signedUri) {
+          setAiInputResponse({
+            imageName: response?.data.results[0]?.fileName,
+            url: response?.data.results[0]?.signedUri
+          })
+          setAiLoading(false)
+        } else {
+          cogoToast.error("Please try again")
+          setAiLoading(false)
+        }
+      } catch (error) {
+        setAiLoading(false)
+        cogoToast.error("Please try again")
+      }
+    }
+  }
+
+  const removePreviewImage = (e, images, item) => {
+    const imagesData = selectedFiles.filter((file) => file.name !== images.name)
+    setSelectedFiles(imagesData)
+    stateHandler((prevState) => {
+      const newState = {
+        ...prevState,
+        [item.id]: imagesData
+      }
+      return newState
+    })
+  }
+
+  const fileUpload = (data, item) => {
+    if (aiLoading) return
+    setSelectedFiles((prevSelectedFiles) => {
+      return [...prevSelectedFiles, { url: data.url, name: data.imageName }] // Append the new URLs to the existing array
+    })
+
+    stateHandler((prevState) => {
+      const newState = {
+        ...prevState,
+        [item.id]: [
+          ...(prevState[item.id] || []),
+          { url: data.url, name: data.imageName }
+        ]
+      }
+      return newState
+    })
+    setOpen(false)
+    setAiLoading(false)
+    setAiInput({
+      id: "",
+      value: ""
+    })
+    setAiInputResponse("")
+    setIsImageEdit(false)
+    setEditImageInputValue(false)
+  }
+
   if (item.type == "input") {
     return (
-      <div className={props.containerClasses != undefined ? `${props.containerClasses}` : "py-1 flex flex-col"}>
+      <div className={props.containerClasses !== undefined ? `${props.containerClasses}` : `${item.class} relative` }>
         <label
           className={
             props.labelClasses
@@ -150,6 +658,94 @@ const RenderInput = (props) => {
           onFocus={() => handleFocus(item.id)}
           onBlur={handleBlur}
         />
+        {item.hasMicIcon && (
+          <>
+            <span className="mic-icon upload-image" onClick={openModal}>
+              <img src={googleMicIcon} alt="" />
+            </span>
+            <Modal
+              open={open}
+              // keepMounted
+              // onClose={() => setOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <div className="speech-modal">
+                <div className="modal-header">
+                  <span
+                    className="close-btn cursor-pointer"
+                    onClick={closeModal}
+                  >
+                    <img src={CloseIcon} alt="close-icon" />
+                  </span>
+                </div>
+                <div className="modal-body">
+                  <TextBodyModal
+                    listening={listening}
+                    aiInput={aiInput}
+                    item={item}
+                    aiInputResponse={aiInputResponse}
+                    setAiInput={setAiInput}
+                    aiLoading={aiLoading}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <div className="btn-group">
+                    <div className="lang-select">
+                      <Autocomplete
+                        size="small"
+                        options={languageList}
+                        getOptionLabel={(option) => option.key}
+                        value={selectLanguage}
+                        isOptionEqualToValue={(option, value) =>
+                          option.key === value.key
+                        }
+                        disableClearable={true}
+                        onChange={(event, newValue) => {
+                          setSelectLanguage(newValue)
+                        }}
+                        className="text-input"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder={"Select your language"}
+                            variant="outlined"
+                            error={item.error || false}
+                            helperText={item.error && item.helperText}
+                          />
+                        )}
+                      />
+                    </div>
+                    {!listening ? (
+                      <button
+                        className={`mic-button${
+                          aiLoading ? " opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        onClick={() => handleStartListening(item)}
+                      >
+                        <img src={WhiteMicIcon} alt="mic-icon" />
+                      </button>
+                    ) : (
+                      <span className="mic-button">
+                        <img src={voiceIcon} alt="voice-icon" />
+                      </span>
+                    )}
+                    <button
+                      className={`sbt-button${
+                        aiInputResponse.length === 0
+                          ? " opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() => getInputTitle(item)}
+                    >
+                      {!aiLoading ? "Submit" : "Loading..."}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+          </>
+        )}
       </div>
     );
   } else if (item.type == "number") {
@@ -756,109 +1352,250 @@ const RenderInput = (props) => {
       );
     };
     return (
-      <div className="py-1 flex flex-col">
-        <label
-          for="contained-button-file"
-          className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
-        >
-          {item.title}
-          {item.required && <span className="text-[#FF0000]"> *</span>}
-        </label>
-        {/* <Button sx={{ textTransform: 'none' }} variant="contained">
-          <label for="contained-button-file">
-            Choose file
-          </label>
-        </Button> */}
-        <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
+      // <div className="py-1 flex flex-col">
+      //   <label
+      //     for="contained-button-file"
+      //     className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+      //   >
+      //     {item.title}
+      //     {item.required && <span className="text-[#FF0000]"> *</span>}
+      //   </label>
+      //   <Button sx={{ textTransform: 'none' }} variant="contained">
+      //     <label for="contained-button-file">
+      //       Choose file
+      //     </label>
+      //   </Button>
+      //   <div style={{ display: "flex" }}>{renderUploadedUrls()}</div>
 
-        <FormControl error={item.error}>
-          {/* <label htmlFor="contained-button-file"> */}
-          <input
-            ref={uploadFileRef}
-            id="contained-button-file"
-            name="contained-button-file"
-            style={{
-              opacity: "none",
-              color: item.fontColor ? item.fontColor : "#f0f0f0",
-              marginBottom: 10,
-            }}
-            accept="image/*"
-            type="file"
-            multiple={item?.multiple || false}
-            key={item?.id}
-            onChange={(e) => {
-              const token = Cookies.get("token");
-              for (const file of e.target.files) {
-                if (!file.type.startsWith("image/")) {
-                  cogoToast.warn("Only image files are allowed");
-                  // reset file input
-                  uploadFileRef.current.value = null;
-                  return;
-                }
-                if (file.size > allowedMaxSize) {
-                  cogoToast.warn("File size should be less than 2 MB");
-                  // reset file input
-                  uploadFileRef.current.value = null;
-                  return;
-                }
-                const formData = new FormData();
-                formData.append("file", file);
-                getSignUrl(file).then((d) => {
-                  const url = d.urls;
-                  axios(url, {
-                    method: "PUT",
-                    data: file,
-                    headers: {
-                      ...(token && { "access-token": `Bearer ${token}` }),
-                      "Content-Type": "multipart/form-data",
-                    },
-                  })
-                    .then((response) => {
-                      setIsImageChanged(true);
-                      if (item.multiple) {
-                        stateHandler((prevState) => {
-                          const newState = {
-                            ...prevState,
-                            [item.id]: [...prevState[item.id], d.path],
-                            uploaded_urls: [],
-                          };
-                          return newState;
-                        });
-                      } else {
-                        let reader = new FileReader();
-                        let tempUrl = "";
-                        reader.onload = function (e) {
-                          tempUrl = e.target.result;
-                          stateHandler({
-                            ...state,
-                            [item.id]: d.path,
-                            tempURL: {
-                              ...state.tempURL,
-                              [item.id]: tempUrl,
-                            },
-                          });
-                        };
-                        reader.readAsDataURL(file);
+
+      // </div>
+      <div className={`${item.class} relative`}>
+      <label
+        htmlFor="contained-button-file"
+        className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
+      >
+        {item.title}
+        {item.required && <span className="text-[#FF0000]"> *</span>}
+      </label>
+      {item.hasMicIcon && (
+        <>
+          <span className="mic-icon upload-image" onClick={openModal}>
+            <img src={googleMicIcon} alt="" />
+          </span>
+          <Modal
+            open={open}
+            // keepMounted
+            onClose={() => setOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div className="speech-modal">
+              <div className="modal-header">
+                <span
+                  className="close-btn cursor-pointer"
+                  onClick={closeModal}
+                >
+                  <img src={CloseIcon} alt="close-icon"   onClose={() => setOpen(false)}/>
+                </span>
+              </div>
+              <div className="modal-body">
+                <TextBodyModal
+                  listening={listening}
+                  aiInput={aiInput}
+                  item={item}
+                  aiInputResponse={aiInputResponse}
+                  setAiInput={setAiInput}
+                  aiLoading={aiLoading}
+                />
+              </div>
+              <div className="modal-footer">
+                <div className="btn-group">
+                  <div className="lang-select">
+                    <Autocomplete
+                      size="small"
+                      options={languageList}
+                      getOptionLabel={(option) => option.key}
+                      value={selectLanguage}
+                      isOptionEqualToValue={(option, value) =>
+                        option.key === value.key
                       }
-                      response.json();
-                    })
-                    .then((json) => {});
-                });
-              }
-            }}
+                      disableClearable={true}
+                      onChange={(event, newValue) => {
+                        setSelectLanguage(newValue)
+                      }}
+                      className="text-input"
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder={"Select your language"}
+                          variant="outlined"
+                          error={item.error || false}
+                          helperText={item.error && item.helperText}
+                        />
+                      )}
+                    />
+                  </div>
+                  {!listening ? (
+                    <button
+                      className={`mic-button${
+                        aiLoading ? " opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      onClick={() => handleStartListening(item)}
+                    >
+                      <img src={WhiteMicIcon} alt="mic-icon" />
+                    </button>
+                  ) : (
+                    <span className="mic-button">
+                      <img src={voiceIcon} alt="voice-icon" />
+                    </span>
+                  )}
+                  <button
+                    className={`sbt-button${
+                      aiInputResponse.length === 0
+                        ? " opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                    onClick={() => getInputTitle(item)}
+                  >
+                    {!aiLoading ? "Submit" : "Loading..."}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Modal>
+        </>
+      )}
+      <div className="file-input-box">
+        <div className="upload-btn">
+          <input
+            type="file"
+            accept="image/*"
+            multiple={true}
+            key={item?.id}
+            onChange={(e) => handleFileChange(e, item)}
           />
-
-          {item.multiple ? (
-            state[item.id]?.map((name) => {
-              return <UploadedFile name={name} />;
-            })
-          ) : (
-            <UploadedFile name={state[item.id]} />
-          )}
-          {item.error && <FormHelperText>{item.helperText}</FormHelperText>}
-          {/* </label> */}
-        </FormControl>
+        </div>
       </div>
+      <p className="note">
+        Multiple file selection allowed, Maximum size of 2MB for each file{" "}
+        <span className="text-[#FF0000]"> *</span>
+      </p>
+      {item.error && (
+        <p
+          class="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeSmall MuiFormHelperText-contained Mui-required css-k4qjio-MuiFormHelperText-root"
+          id=":r29:-helper-text"
+        >
+          {item.helperText}
+        </p>
+      )}
+      <div className="preview-image">
+        {fileLoading.length > 0 && (
+          <>
+            {fileLoading.map((item, index) => (
+              <div className="image skeleton-box" key={index}></div>
+            ))}
+          </>
+        )}
+        {selectedFiles?.length > 0 &&
+          fileLoading.length === 0 &&
+          selectedFiles?.map((image, index) => {
+            return (
+              <div className="image" key={index}>
+                <span
+                  className="delete-icon"
+                  onClick={(e) => removePreviewImage(e, image, item)}
+                >
+                  <img src={CloseIcon} alt="close-icon" />
+                </span>
+                <img src={image.url} alt={image.name} className="img-show" />
+              </div>
+            )
+          })}
+      </div>
+      <Modal
+        open={open}
+        // keepMounted
+        onClose={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div className="speech-modal">
+          <div className="modal-header">
+            <span className="close-btn cursor-pointer" onClick={closeModal}>
+              <img src={CloseIcon} alt="close-icon"  onClose={() => setOpen(false)}/>
+            </span>
+          </div>
+          <div className="modal-body">
+            <TextBodyModal
+              listening={listening}
+              aiInput={aiInput}
+              item={item}
+              aiInputResponse={aiInputResponse}
+              setAiInput={setAiInput}
+              aiLoading={aiLoading}
+              removeImage={removeImage}
+              editImage={editImage}
+              isImageEdit={isImageEdit}
+              setEditImageInputValue={setEditImageInputValue}
+              editImageInputValue={editImageInputValue}
+            />
+          </div>
+          <div className="modal-footer">
+            <div className="btn-group">
+              <div className="lang-select">
+                <Autocomplete
+                  size="small"
+                  options={languageList}
+                  getOptionLabel={(option) => option.key}
+                  value={selectLanguage}
+                  isOptionEqualToValue={(option, value) =>
+                    option.key === value.key
+                  }
+                  disableClearable={true}
+                  onChange={(event, newValue) => {
+                    setSelectLanguage(newValue)
+                  }}
+                  className="text-input"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder={"Select your language"}
+                      variant="outlined"
+                      error={item.error || false}
+                      helperText={item.error && item.helperText}
+                    />
+                  )}
+                />
+              </div>
+              {!listening ? (
+                <button
+                  className={`mic-button${
+                    aiLoading ? " opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={() => handleStartListening(item)}
+                >
+                  <img src={WhiteMicIcon} alt="mic-icon" />
+                </button>
+              ) : (
+                <span className="mic-button">
+                  <img src={voiceIcon} alt="voice-icon" />
+                </span>
+              )}
+              <button
+                className={`sbt-button${
+                  aiInputResponse.length === 0 || aiLoading
+                    ? " opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                onClick={() => fileUpload(aiInputResponse, item)}
+              >
+                {!aiLoading ? "Upload" : "Loading..."}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    </div>
     );
   } else if (item.type == "switch") {
     return (
@@ -890,6 +1627,99 @@ const RenderInput = (props) => {
     );
   } else if (item.type == "label") {
     return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>;
+  } else if (item.type == "attributes") {
+    return (
+      <div className={`${item.class}`}>
+        <div className="attributes-heading">
+          {/* <div className="title">Attributes</div> */}
+          <div className="actions relative">
+            <span className="mic-icon" onClick={openModal}>
+              <img src={googleMicIcon} width={500} alt="" />
+            </span>
+            <Modal
+              open={open}
+              //   onClose={() => setOpen(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <div className="speech-modal">
+                <div className="modal-header">
+                  <span
+                    className="close-btn cursor-pointer"
+                    onClick={closeModal}
+                  >
+                    <img src={CloseIcon} alt="close-icon" />
+                  </span>
+                </div>
+                <div className="modal-body">
+                  <TextBodyModal
+                    listening={listening}
+                    aiInput={aiInput}
+                    item={item}
+                    aiInputResponse={aiInputResponse}
+                    setAiInput={setAiInput}
+                    aiLoading={aiLoading}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <div className="btn-group">
+                    <div className="lang-select">
+                      <Autocomplete
+                        size="small"
+                        options={languageList}
+                        getOptionLabel={(option) => option.key}
+                        value={selectLanguage}
+                        isOptionEqualToValue={(option, value) =>
+                          option.key === value.key
+                        }
+                        disableClearable={true}
+                        onChange={(event, newValue) => {
+                          setSelectLanguage(newValue)
+                        }}
+                        className="text-input"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder={"Select your language"}
+                            variant="outlined"
+                            error={item.error || false}
+                            helperText={item.error && item.helperText}
+                          />
+                        )}
+                      />
+                    </div>
+                    {!listening ? (
+                      <button
+                        className={`mic-button${
+                          aiLoading ? " opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        onClick={() => handleStartListening(item)}
+                      >
+                        <img src={WhiteMicIcon} alt="mic-icon" />
+                      </button>
+                    ) : (
+                      <span className="mic-button">
+                        <img src={voiceIcon} alt="voice-icon" />
+                      </span>
+                    )}
+                    <button
+                      className={`sbt-button${
+                        aiInputResponse.length === 0
+                          ? " opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() => getInputTitle(item)}
+                    >
+                      {!aiLoading ? "Submit" : "Loading..."}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        </div>
+      </div>
+    )
   }
 };
 
