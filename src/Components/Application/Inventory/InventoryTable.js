@@ -17,7 +17,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { getCall, postCall, putCall } from "../../../Api/axios";
 import cogoToast from "cogo-toast";
 import Tooltip from "@material-ui/core/Tooltip";
-import { IconButton, InputAdornment, Modal, TextField } from "@mui/material";
+import { FormControlLabel, IconButton, InputAdornment, Modal, Radio, TextField } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)({
@@ -35,13 +35,31 @@ export default function InventoryTable(props) {
     handleRowsPerPageChange,
     onRefresh,
     setShowCustomizationModal,
+    getProducts,
     fetchCustomizationItem,
+    customizationGroups = [],
   } = props;
 
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [initialGroup, setInitialGroup] = useState(null);
+
+  const updateInitialCustomizationGroup = async () => {
+    try {
+      const url = `/api/v1/products/${selectedRow._id}`;
+      const data = { commonDetails: { customizationGroupId: initialGroup } };
+      const res = await putCall(url, data);
+      setSelectedRow(null);
+      setInitialGroup(null);
+      setShowModal(false);
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onPageChange = (event, newPage) => {
     handlePageChange(newPage);
@@ -116,7 +134,16 @@ export default function InventoryTable(props) {
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
-          {row.type === "customization" && <MenuItem onClick={() => setShowModal(true)}>Choose Initial Group</MenuItem>}
+          {row.type === "customization" && (
+            <MenuItem
+              onClick={() => {
+                setSelectedRow(row);
+                setShowModal(true);
+              }}
+            >
+              Choose Initial Group
+            </MenuItem>
+          )}
         </Menu>
       </Fragment>
     );
@@ -132,6 +159,37 @@ export default function InventoryTable(props) {
     } else {
       return column.format ? column.format(value) : value;
     }
+  };
+
+  const renderCustomizationGroups = () => {
+    const filteredProducts = customizationGroups.filter((product) =>
+      product.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    return filteredProducts.map((customizationItem) => (
+      <div key={customizationItem._id}>
+        <div
+          className="flex items-center justify-between w-[550px] py px-2 mb-2 border border-[#1876d1a1] rounded-xl cursor-pointer bg-white"
+          onClick={() => setInitialGroup(customizationItem._id)}
+        >
+          <p className="ml-2">
+            {customizationItem.name} {customizationItem.description && ` - ( ${customizationItem.description} ) `}
+          </p>
+
+          <FormControlLabel
+            value={false}
+            control={
+              <Radio
+                size="small"
+                checked={initialGroup === customizationItem._id}
+                onClick={() => {
+                  setInitialGroup(customizationItem._id);
+                }}
+              />
+            }
+          />
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -227,9 +285,19 @@ export default function InventoryTable(props) {
             }}
           />
 
-          <div className="min-h-[400px] max-h-[400px] overflow-y-auto pr-4">
-            {/* {renderCustomizationItems()} */}
-            <p></p>
+          <div className="min-h-[250px] max-h-[400px] overflow-y-auto pr-4">{renderCustomizationGroups()}</div>
+          <div className="flex mt-4 items-center justify-end mr-4">
+            <Button
+              sx={{ marginRight: 2 }}
+              onClick={() => {
+                setShowModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={updateInitialCustomizationGroup}>
+              Save
+            </Button>
           </div>
         </div>
       </Modal>

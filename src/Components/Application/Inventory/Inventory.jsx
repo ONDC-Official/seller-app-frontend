@@ -11,75 +11,6 @@ import { useTheme } from "@mui/material/styles";
 import FilterComponent from "../../Shared/FilterComponent";
 import AddCustomization from "../Product/AddCustomization";
 
-const filterFields = [
-  {
-    id: "name",
-    title: "",
-    placeholder: "Search by Product Name",
-    type: "input",
-    variant: "standard",
-  },
-  {
-    id: "category",
-    title: "",
-    placeholder: "Please Select Product Category",
-    options: Object.entries(FILTER_OPTIONS).map(([key, value]) => {
-      return { key: value, value: key };
-    }),
-    type: "select",
-    variant: "standard",
-    disableClearable: true,
-  },
-  {
-    id: "stock",
-    title: "Out of Stock",
-    placeholder: "Please Select Product Category",
-    type: "switch",
-    containerClasses: "flex items-center",
-    styles: {
-      marginLeft: 2,
-    },
-  },
-];
-
-const columns = [
-  { id: "productName", label: "Product Name", minWidth: 100 },
-  {
-    id: "productCategory",
-    label: "Category",
-    minWidth: 120,
-    format: (value) => PRODUCT_CATEGORY[value] || value,
-  },
-  {
-    id: "quantity",
-    label: "Quantity",
-    minWidth: 100,
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "purchasePrice",
-    label: "Purchase Price",
-    minWidth: 100,
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "isCancellable",
-    label: "Cancellable",
-    boolean: true,
-    minWidth: 100,
-  },
-  {
-    id: "isReturnable",
-    label: "Returnable",
-    boolean: true,
-    minWidth: 100,
-  },
-  {
-    id: "published",
-    label: "Published",
-  },
-];
-
 const fieldsToDelete = [
   "_id",
   "type",
@@ -94,6 +25,86 @@ const fieldsToDelete = [
 ];
 
 export default function Inventory() {
+  const filterFields = [
+    {
+      id: "name",
+      title: "",
+      placeholder: "Search by Product Name",
+      type: "input",
+      variant: "standard",
+    },
+    {
+      id: "category",
+      title: "",
+      placeholder: "Please Select Product Category",
+      options: Object.entries(FILTER_OPTIONS).map(([key, value]) => {
+        return { key: value, value: key };
+      }),
+      type: "select",
+      variant: "standard",
+      disableClearable: true,
+    },
+    {
+      id: "stock",
+      title: "Out of Stock",
+      placeholder: "Please Select Product Category",
+      type: "switch",
+      containerClasses: "flex items-center",
+      styles: {
+        marginLeft: 2,
+      },
+    },
+  ];
+
+  const columns = [
+    { id: "productName", label: "Product Name", minWidth: 100 },
+    {
+      id: "type",
+      label: "Type",
+      minWidth: 120,
+      format: (value) => PRODUCT_CATEGORY[value] || value,
+    },
+    {
+      id: "quantity",
+      label: "Quantity",
+      minWidth: 100,
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "purchasePrice",
+      label: "Purchase Price",
+      minWidth: 100,
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "isCancellable",
+      label: "Cancellable",
+      boolean: true,
+      minWidth: 100,
+    },
+    {
+      id: "isReturnable",
+      label: "Returnable",
+      boolean: true,
+      minWidth: 100,
+    },
+    {
+      id: "customizationGroupId",
+      label: "Customization",
+      format: (value) => {
+        for (let i = 0; i < customizationGroups.length; i++) {
+          if (customizationGroups[i]._id === value) {
+            return customizationGroups[i].name;
+          }
+        }
+        return "-";
+      },
+    },
+    {
+      id: "published",
+      label: "Published",
+    },
+  ];
   const theme = useTheme();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -108,8 +119,9 @@ export default function Inventory() {
     stock: false,
   });
 
-  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
+  const [customizationGroups, setCustomizationGroups] = useState([]);
 
+  const [showCustomizationModal, setShowCustomizationModal] = useState(false);
   const [customizationId, setCustomizationId] = useState(null);
   const [newCustomizationData, setNewCustomizationData] = useState({
     productName: "",
@@ -144,6 +156,18 @@ export default function Inventory() {
     const url = `/api/v1/users/${id}`;
     const res = await getCall(url);
     return res[0];
+  };
+
+  const fetchCustomizationGroups = async () => {
+    const url = `/api/v1/customizationGroups?limit=10&offset=0`;
+
+    try {
+      const res = await getCall(url);
+      setCustomizationGroups(res.data);
+      return res.data;
+    } catch (error) {
+      console.log("Error fetching customziation groups:", error);
+    }
   };
 
   const fetchCustomizationItem = async (id) => {
@@ -197,6 +221,7 @@ export default function Inventory() {
         } else navigate("/application/user-listings");
       }
     });
+    fetchCustomizationGroups();
   }, []);
 
   useEffect(() => {
@@ -283,7 +308,9 @@ export default function Inventory() {
           totalRecords={totalRecords}
           page={page}
           rowsPerPage={rowsPerPage}
+          customizationGroups={customizationGroups}
           setShowCustomizationModal={setShowCustomizationModal}
+          getProducts={getProducts}
           fetchCustomizationItem={fetchCustomizationItem}
           handlePageChange={(val) => setPage(val)}
           handleRowsPerPageChange={(val) => setRowsPerPage(val)}
