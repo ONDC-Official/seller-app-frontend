@@ -101,10 +101,14 @@ const RenderInput = (props) => {
   const handleFileChange = async (e, item) => {
     const files = Array.from(e.target.files)
     setFileLoading(files)
-    const formData = new FormData()
-    for (const file of files) {
-      formData.append("images", file)
-    }
+    const formData = new FormData();
+    const updatedFiles = files.map(file => {
+      const url = URL.createObjectURL(file);
+      const name = file.name
+      formData.append("images", file);
+      return { ...file, url , name };
+    });
+    setSelectedFiles(updatedFiles)
     try {
       const url = `/api/v1/gcp-upload`
       const res = await postCall(url, formData)
@@ -356,7 +360,7 @@ const RenderInput = (props) => {
         cogoToast.error("Please try again")
       }
     }
-      console.log(aiInput);
+
     //For Product Attribute
     const dimensions = ['length','breadth','weight',"height"]
     if (dimensions.includes(aiInput.id) && aiInput.value.length > 0) {
@@ -471,7 +475,6 @@ const RenderInput = (props) => {
         const contentString = response?.data.results?.content
         if (contentString) {
           const responseData = extractKeyValuePairs(contentString)
-          console.log({"responseData": responseData});
           if (responseData) {
             stateHandler({
               ...state,
