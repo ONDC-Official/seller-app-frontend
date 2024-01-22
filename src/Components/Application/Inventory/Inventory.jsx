@@ -224,6 +224,7 @@ export default function Inventory() {
 
   useEffect(() => {
     getProducts();
+    console.log({ newCustomizationData });
   }, [page, rowsPerPage]);
 
   const handleRefresh = (data) => {
@@ -318,6 +319,14 @@ export default function Inventory() {
           mode={!customizationId ? "add" : "edit"}
           showModal={showCustomizationModal}
           handleCloseModal={() => {
+            setNewCustomizationData({
+              productName: "",
+              MRP: 0,
+              UOM: "",
+              UOMValue: "",
+              quantity: "",
+              maxAllowedQty: "",
+            });
             setShowCustomizationModal(false);
             setCustomizationId(null);
           }}
