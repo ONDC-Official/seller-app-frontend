@@ -84,7 +84,7 @@ const CustomizationGroups = () => {
             >
               Edit
             </Button>
-            {/* <Button
+            <Button
               disabled={reordering}
               variant="contained"
               sx={{ marginLeft: 2 }}
@@ -95,7 +95,7 @@ const CustomizationGroups = () => {
               }}
             >
               Delete group
-            </Button> */}
+            </Button>
           </div>
         </div>
       </div>
@@ -146,10 +146,15 @@ const CustomizationGroups = () => {
 
   const handleDeleteCustomizationGroup = async (id) => {
     const url = `/api/v1/customizationGroup/${id}`;
-    deleteCall(url).then(() => {
-      getCustomizationGroups();
-      setShowDeleteConfirmDialog(false);
-    });
+    deleteCall(url)
+      .then((res) => {
+        getCustomizationGroups();
+        setShowDeleteConfirmDialog(false);
+      })
+      .catch((err) => {
+        cogoToast.error(err.response.data.error);
+        setShowDeleteConfirmDialog(false);
+      });
   };
 
   useEffect(() => {
