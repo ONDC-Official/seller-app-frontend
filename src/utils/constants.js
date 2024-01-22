@@ -8,6 +8,11 @@ export const MAX_STRING_LENGTH_6 = 6;
 export const MAX_STRING_LENGTH_8 = 8;
 export const MAX_STRING_LENGTH_13 = 13;
 
+export const FILTER_OPTIONS = {
+  products: "Products",
+  customizations: "Customizations",
+};
+
 export const PRODUCT_CATEGORY = {
     "Grocery": "Grocery",
     "F&B": "F&B",
@@ -20,12 +25,12 @@ export const PRODUCT_CATEGORY = {
 }
 
 export const DELIVERY_TYPE_LIST = {
-    "Immediate Delivery": "Immediate Delivery",
-    "Express Delivery": "Express Delivery",
-    "Standard Delivery": "Standard Delivery",
-    "Same Day Delivery": "Same Day Delivery",
-    "Next Day Delivery": "Next Day Delivery",
-}
+  "Immediate Delivery": "Immediate Delivery",
+  "Express Delivery": "Express Delivery",
+  "Standard Delivery": "Standard Delivery",
+  "Same Day Delivery": "Same Day Delivery",
+  "Next Day Delivery": "Next Day Delivery",
+};
 
 export const PRODUCT_SUBCATEGORY = {
     "Grocery": [
@@ -1338,7 +1343,26 @@ export const PRODUCT_SUBCATEGORY = {
 };
 
 export const FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY = {
-    "@ondc/org/mandatory_reqs_veggies_fruits": ["manufacturerOrPackerName", "manufacturerOrPackerAddress", "commonOrGenericNameOfCommodity", "monthYearOfManufacturePackingImport", "nutritionalInfo", "additiveInfo", 'importerFSSAILicenseNo', "brandOwnerFSSAILicenseNo"],
-    "@ondc/org/statutory_reqs_packaged_commodities": ["nutritionalInfo", "additiveInfo", "importerFSSAILicenseNo", "brandOwnerFSSAILicenseNo"],
-    "@ondc/org/statutory_reqs_prepackaged_food": ["manufacturerOrPackerName", "manufacturerOrPackerAddress", "commonOrGenericNameOfCommodity", "monthYearOfManufacturePackingImport"],
+  "@ondc/org/mandatory_reqs_veggies_fruits": [
+    "manufacturerOrPackerName",
+    "manufacturerOrPackerAddress",
+    "commonOrGenericNameOfCommodity",
+    "monthYearOfManufacturePackingImport",
+    "nutritionalInfo",
+    "additiveInfo",
+    "importerFSSAILicenseNo",
+    "brandOwnerFSSAILicenseNo",
+  ],
+  "@ondc/org/statutory_reqs_packaged_commodities": [
+    "nutritionalInfo",
+    "additiveInfo",
+    "importerFSSAILicenseNo",
+    "brandOwnerFSSAILicenseNo",
+  ],
+  "@ondc/org/statutory_reqs_prepackaged_food": [
+    "manufacturerOrPackerName",
+    "manufacturerOrPackerAddress",
+    "commonOrGenericNameOfCommodity",
+    "monthYearOfManufacturePackingImport",
+  ],
 };
