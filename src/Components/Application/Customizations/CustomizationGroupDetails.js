@@ -306,7 +306,7 @@ const CustomizationGroupDetails = (props) => {
             />
           </div>
 
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
               Optional? :
             </label>
@@ -327,7 +327,7 @@ const CustomizationGroupDetails = (props) => {
                 });
               }}
             />
-          </div>
+          </div> */}
 
           <div className="flex items-center">
             <label className="w-40 my-4 text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
@@ -346,9 +346,9 @@ const CustomizationGroupDetails = (props) => {
               helperText={errors.minQuantity}
               value={customizationGroupData.minQuantity}
               onChange={(e) => {
-                let val = e.target.value;
-                if (!customizationGroupData.optional && val === "0") {
-                  val = "1";
+                let val = parseInt(e.target.value);
+                if (val < 0) {
+                  return;
                 }
                 setCustomizationGroupData({
                   ...customizationGroupData,
@@ -373,12 +373,16 @@ const CustomizationGroupDetails = (props) => {
               error={!!errors.maxQuantity}
               helperText={errors.maxQuantity}
               value={customizationGroupData.maxQuantity}
-              onChange={(e) =>
+              onChange={(e) => {
+                let val = parseInt(e.target.value);
+                if (val < 0) {
+                  return;
+                }
                 setCustomizationGroupData({
                   ...customizationGroupData,
                   maxQuantity: e.target.value,
-                })
-              }
+                });
+              }}
             />
           </div>
 

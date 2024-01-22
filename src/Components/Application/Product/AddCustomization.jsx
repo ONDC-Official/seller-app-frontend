@@ -56,13 +56,13 @@ export const customizationFields = [
     type: "input",
   },
   {
-    id: "available",
+    id: "quantity",
     title: "Available Quantity",
     placeholder: "Enter Available Quantity",
     type: "number",
   },
   {
-    id: "maximum",
+    id: "maxAllowedQty",
     title: "Maximum Quantity",
     placeholder: "Enter Maximum Quantity",
     type: "number",
@@ -131,17 +131,17 @@ const AddCustomization = (props) => {
         ? "Please Enter a Valid Value"
         : "";
 
-    formErrors.available =
-      newCustomizationData?.available == undefined || newCustomizationData?.available === ""
+    formErrors.quantity =
+      newCustomizationData?.quantity == undefined || newCustomizationData?.quantity === ""
         ? "Available Quantity is not allowed to be empty"
-        : newCustomizationData.available <= 0
+        : newCustomizationData.quantity <= 0
         ? "Please Enter a Valid Value"
         : "";
 
-    formErrors.maximum =
-      newCustomizationData?.maximum == undefined || newCustomizationData?.maximum === ""
+    formErrors.maxAllowedQty =
+      newCustomizationData?.maxAllowedQty == undefined || newCustomizationData?.maxAllowedQty === ""
         ? "Maximum Quantity is not allowed to be empty"
-        : newCustomizationData.maximum <= 0
+        : newCustomizationData.maxAllowedQty <= 0
         ? "Please Enter a Valid Value"
         : "";
 
@@ -195,8 +195,8 @@ const AddCustomization = (props) => {
                 "MRP",
                 "UOM",
                 "UOMValue",
-                "available",
-                "maximum",
+                "quantity",
+                "maxAllowedQty",
                 "vegNonVeg",
                 "parent",
               ];

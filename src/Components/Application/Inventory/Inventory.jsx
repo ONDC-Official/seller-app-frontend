@@ -71,7 +71,7 @@ export default function Inventory() {
       format: (value) => value.toLocaleString("en-US"),
     },
     {
-      id: "purchasePrice",
+      id: "MRP",
       label: "Purchase Price",
       minWidth: 100,
       format: (value) => value.toLocaleString("en-US"),
@@ -94,7 +94,12 @@ export default function Inventory() {
       format: (value) => {
         for (let i = 0; i < customizationGroups.length; i++) {
           if (customizationGroups[i]._id === value) {
-            return customizationGroups[i].name;
+            console.log("customizationGroupId", customizationGroups[i]);
+            if (customizationGroups[i].description) {
+              return `${customizationGroups[i].name} ( ${customizationGroups[i].description} )`;
+            } else {
+              return `${customizationGroups[i].name}`;
+            }
           }
         }
         return "-";
@@ -128,12 +133,9 @@ export default function Inventory() {
     MRP: 0,
     UOM: "",
     UOMValue: "",
-    available: "",
-    maximum: "",
+    quantity: "",
+    maxAllowedQty: "",
     vegNonVeg: "veg",
-    //  default: "No",
-    //  parent: "",
-    //  inStock: true,
   });
 
   const getProducts = async () => {
@@ -184,9 +186,10 @@ export default function Inventory() {
   const handleAddCustomization = async () => {
     try {
       const url = `/api/v1/product/customization`;
+
       const res = await postCall(url, newCustomizationData);
       console.log("handleAddCustomization: ", res);
-      setNewCustomizationData({ price: 0 });
+      setNewCustomizationData({ MRP: 0 });
       setShowCustomizationModal(false);
       getProducts();
     } catch (error) {}
@@ -226,6 +229,7 @@ export default function Inventory() {
 
   useEffect(() => {
     getProducts();
+    console.log({ newCustomizationData });
   }, [page, rowsPerPage]);
 
   const handleRefresh = (data) => {
@@ -244,7 +248,7 @@ export default function Inventory() {
     }
 
     if (filters.category != undefined && filters.category !== "") {
-      filterParams.push(`category=${encodeURIComponent(filters.category)}`);
+      filterParams.push(`type=${encodeURIComponent(filters.category)}`);
     }
 
     if (!filters.stock) {
@@ -317,9 +321,17 @@ export default function Inventory() {
         />
 
         <AddCustomization
-          mode={newCustomizationData.productName == undefined ? "add" : "edit"}
+          mode={!customizationId ? "add" : "edit"}
           showModal={showCustomizationModal}
           handleCloseModal={() => {
+            setNewCustomizationData({
+              productName: "",
+              MRP: 0,
+              UOM: "",
+              UOMValue: "",
+              quantity: "",
+              maxAllowedQty: "",
+            });
             setShowCustomizationModal(false);
             setCustomizationId(null);
           }}

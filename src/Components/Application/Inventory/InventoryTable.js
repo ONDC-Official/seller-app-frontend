@@ -134,7 +134,7 @@ export default function InventoryTable(props) {
           <MenuItem onClick={() => handlePublishState(row?._id, row?.published)}>
             {row?.published ? "Unpublish" : "Publish"}
           </MenuItem>
-          {row.type === "customization" && (
+          {row.type != "customization" && (
             <MenuItem
               onClick={() => {
                 setSelectedRow(row);
