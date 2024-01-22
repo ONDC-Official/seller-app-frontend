@@ -9,8 +9,8 @@ export const MAX_STRING_LENGTH_8 = 8;
 export const MAX_STRING_LENGTH_13 = 13;
 
 export const FILTER_OPTIONS = {
-  products: "Products",
-  customizations: "Customizations",
+  item: "Products",
+  customization: "Customization",
 };
 
 export const PRODUCT_CATEGORY = {
