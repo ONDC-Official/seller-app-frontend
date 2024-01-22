@@ -94,7 +94,12 @@ export default function Inventory() {
       format: (value) => {
         for (let i = 0; i < customizationGroups.length; i++) {
           if (customizationGroups[i]._id === value) {
-            return customizationGroups[i].name;
+            console.log("customizationGroupId", customizationGroups[i]);
+            if (customizationGroups[i].description) {
+              return `${customizationGroups[i].name} ( ${customizationGroups[i].description} )`;
+            } else {
+              return `${customizationGroups[i].name}`;
+            }
           }
         }
         return "-";
