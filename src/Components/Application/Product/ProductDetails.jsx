@@ -129,7 +129,7 @@ const AddGenericProduct = ({
         title: variant.name,
         placeholder: "Example, " + variant.example,
         type: variant.type || "input",
-        required: required,
+        required: required || variant.required,
         options: variant.type === "select" ? variant.options : null,
         file_type: variant.type === "upload" ? "product_image" : null,
       };
@@ -510,7 +510,7 @@ const AddGenericProduct = ({
     if (protocolKey && protocolKey !== "") {
       let fields_to_remove =
         FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
-      product_info_fields = product_info_fields.filter(
+      product_info_fields = product_info_fields?.filter(
         (field) => !fields_to_remove.includes(field)
       );
     }
