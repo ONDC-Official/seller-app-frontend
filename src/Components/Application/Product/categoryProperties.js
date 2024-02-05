@@ -26326,7 +26326,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26661,7 +26661,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26821,7 +26821,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26988,7 +26988,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",

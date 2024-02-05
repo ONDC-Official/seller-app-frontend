@@ -127,7 +127,7 @@ const AddGenericProduct = ({
       return {
         id: variant.name,
         title: variant.name,
-        placeholder: "Example, " + variant.example,
+        placeholder: variant.example,
         type: variant.type || "input",
         required: required || variant.required,
         options: variant.type === "select" ? variant.options : null,
