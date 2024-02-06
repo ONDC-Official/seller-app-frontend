@@ -26326,7 +26326,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26356,7 +26356,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.storage_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Screen Size",
@@ -26661,7 +26661,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26691,7 +26691,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.storage_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage Type",
@@ -26821,7 +26821,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -26851,7 +26851,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.storage_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage Type",
@@ -26988,7 +26988,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.ram_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "ROM",
@@ -27018,7 +27018,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.storage_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage Type",

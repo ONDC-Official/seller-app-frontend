@@ -127,7 +127,7 @@ const AddGenericProduct = ({
       return {
         id: variant.name,
         title: variant.name,
-        placeholder: "Example, " + variant.example,
+        placeholder: variant.example,
         type: variant.type || "input",
         required: required || variant.required,
         options: variant.type === "select" ? variant.options : null,
@@ -274,7 +274,7 @@ const AddGenericProduct = ({
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
         let customization_groups =
-          resp.customizationDetails.customizationGroups.map((group) => {
+          resp.customizationDetails?.customizationGroups?.map((group) => {
             let optional = group.minQuantity === 0 ? true : false;
             return { ...group, optional: optional};
           });
@@ -882,7 +882,7 @@ const AddGenericProduct = ({
     let product_info_form_validity = validateProductInfoForm();
     let vital_info_form_validity = validateVitalInfoForm();
     let variants_forms_validity = validateVariantsForms();
-    let customization_details_validity = validateCustomizationDetails();
+    let customization_details_validity = true;
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
@@ -895,8 +895,7 @@ const AddGenericProduct = ({
     let result =
       variants_forms_validity &&
       product_info_form_validity &&
-      vital_info_form_validity &&
-      customization_details_validity;
+      vital_info_form_validity
 
     return result;
   };
@@ -1057,7 +1056,7 @@ const AddGenericProduct = ({
                   value="3"
                 />
               )}
-              <Tab
+              {/* <Tab
                 sx={{
                   color:
                     tabErrors[3] && Object.keys(errors).length > 0
@@ -1066,7 +1065,7 @@ const AddGenericProduct = ({
                 }}
                 label="Customizations"
                 value="4"
-              />
+              /> */}
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -1076,7 +1075,7 @@ const AddGenericProduct = ({
             <div className="mt-2">{renderProductVitalFields()}</div>
           </TabPanel>
           <TabPanel value="3">{renderVariationsFields()}</TabPanel>
-          <TabPanel value="4">{renderCustomizations()}</TabPanel>
+          {/* <TabPanel value="4">{renderCustomizations()}</TabPanel> */}
         </TabContext>
       </Box>
 

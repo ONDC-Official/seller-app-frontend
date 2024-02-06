@@ -107,7 +107,7 @@ const ActionMenu = ({ row, handleRefresh }) => {
   return (
     <>
       <Tooltip title="Update status">
-        <IconButton color="primary" disabled={row.state == "Return_Initiated"}>
+        <IconButton color="primary" disabled={row.state !== "Return_Initiated"}>
           <EditOutlined onClick={handleClick} />
         </IconButton>
       </Tooltip>
