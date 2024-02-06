@@ -274,7 +274,7 @@ const AddGenericProduct = ({
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
         let customization_groups =
-          resp.customizationDetails.customizationGroups.map((group) => {
+          resp.customizationDetails?.customizationGroups?.map((group) => {
             let optional = group.minQuantity === 0 ? true : false;
             return { ...group, optional: optional};
           });
@@ -882,7 +882,7 @@ const AddGenericProduct = ({
     let product_info_form_validity = validateProductInfoForm();
     let vital_info_form_validity = validateVitalInfoForm();
     let variants_forms_validity = validateVariantsForms();
-    let customization_details_validity = validateCustomizationDetails();
+    let customization_details_validity = true;
 
     setTabErrors((prev_state) => {
       prev_state[0] = !product_info_form_validity;
@@ -895,8 +895,7 @@ const AddGenericProduct = ({
     let result =
       variants_forms_validity &&
       product_info_form_validity &&
-      vital_info_form_validity &&
-      customization_details_validity;
+      vital_info_form_validity
 
     return result;
   };
