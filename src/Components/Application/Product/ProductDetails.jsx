@@ -1057,7 +1057,7 @@ const AddGenericProduct = ({
                   value="3"
                 />
               )}
-              <Tab
+              {/* <Tab
                 sx={{
                   color:
                     tabErrors[3] && Object.keys(errors).length > 0
@@ -1066,7 +1066,7 @@ const AddGenericProduct = ({
                 }}
                 label="Customizations"
                 value="4"
-              />
+              /> */}
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -1076,7 +1076,7 @@ const AddGenericProduct = ({
             <div className="mt-2">{renderProductVitalFields()}</div>
           </TabPanel>
           <TabPanel value="3">{renderVariationsFields()}</TabPanel>
-          <TabPanel value="4">{renderCustomizations()}</TabPanel>
+          {/* <TabPanel value="4">{renderCustomizations()}</TabPanel> */}
         </TabContext>
       </Box>
 
