@@ -26341,7 +26341,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.rom_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage",
@@ -26676,7 +26676,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.rom_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage",
@@ -26836,7 +26836,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.rom_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage",
@@ -27003,7 +27003,7 @@ export const allProperties = {
                 "example": "",
                 "variationAllowed": false,
                 "type": "select",
-                "options": propertyEnums.rom_unit
+                "options": propertyEnums.unit
             },
             {
                 "name": "Storage",
