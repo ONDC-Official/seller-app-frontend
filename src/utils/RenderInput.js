@@ -677,9 +677,9 @@ const RenderInput = (props) => {
               className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block"
               style={{ width: 200 }}
             >
-              {item.title}
+              {item?.title}
             </label>
-            <img className="ml-1 h-full w-full" src={state[item.id]} />
+            <img className="ml-1 h-full w-full" src={state[item?.id]} />
           </div>
         );
       } else {
@@ -815,6 +815,7 @@ const RenderInput = (props) => {
                   })
                     .then((response) => {
                       setIsImageChanged(true);
+
                       if (item.multiple) {
                         stateHandler((prevState) => {
                           const newState = {
@@ -825,6 +826,7 @@ const RenderInput = (props) => {
                           return newState;
                         });
                       } else {
+                        console.log("[item.id]", item.id, d.path);
                         let reader = new FileReader();
                         let tempUrl = "";
                         reader.onload = function (e) {
@@ -888,6 +890,8 @@ const RenderInput = (props) => {
         />
       </div>
     );
+  } else if (item.type == "custom-component") {
+    return item.component;
   } else if (item.type == "label") {
     return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>;
   }

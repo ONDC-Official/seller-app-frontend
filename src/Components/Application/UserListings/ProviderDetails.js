@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Button, FormControl, FormControlLabel, Radio, RadioGroup, Modal } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import RenderInput from "../../../utils/RenderInput";
 import { areObjectsEqual, isEmailValid, isNumberOnly, isPhoneNoValid } from "../../../utils/validations";
@@ -11,6 +11,7 @@ import moment from "moment";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
 import Fulfillments from "./Fulfillments";
 import { PRODUCT_CATEGORY, DELIVERY_TYPE_LIST } from "../../../utils/constants";
+import PolygonMap from "../../PolygonMap/PolygonMap";
 
 const providerFields = [
   {
@@ -160,12 +161,12 @@ const bankFields = [
 ];
 
 const categoriesList = Object.entries(PRODUCT_CATEGORY).map(([key, value]) => {
-    return { key: value, value: key };
-})
+  return { key: value, value: key };
+});
 
 const deliveryTypeList = Object.entries(DELIVERY_TYPE_LIST).map(([key, value]) => {
   return { key: value, value: key };
-})
+});
 
 let storeFields = [
   // {
@@ -213,6 +214,7 @@ let storeFields = [
     options: [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
+      { key: "Custom area", value: "custom_area" },
     ],
     type: "radio",
     required: true,
@@ -358,6 +360,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   });
 
   const [errors, setErrors] = useState(null);
+  const [openPolygonMap, setOpenPolygonMap] = useState(false);
+  const [polygonPoints, setPolygonPoints] = useState([]);
 
   const [defaultStoreDetails, setDefaultStoreDetails] = useState({
     location: {},
@@ -382,6 +386,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     radius: "",
     logisticsBppId: "",
     logisticsDeliveryType: "",
+    custom_area: [],
   });
 
   const getAvailableFulfillments = (fulfillments) => {
@@ -477,17 +482,17 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      console.log("res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>", res?.providerDetail?.storeDetails?.logisticsDeliveryType);
+      console.log(
+        "res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>",
+        res?.providerDetail?.storeDetails?.logisticsDeliveryType
+      );
+
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
         category: res?.providerDetail?.storeDetails?.category || "",
         location: res?.providerDetail?.storeDetails?.location || "",
-        location_availability: res.providerDetail.storeDetails
-          ? res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
-            ? "pan_india"
-            : "city"
-          : "",
+        location_availability: res.providerDetail.storeDetails.location_availability,
         cities: res?.providerDetail?.storeDetails?.city || [],
         default_cancellable: "false",
         default_returnable: "false",
@@ -498,7 +503,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         building: res.providerDetail?.storeDetails?.address?.building || "",
         area_code: res.providerDetail?.storeDetails?.address?.area_code || "",
         locality: res.providerDetail?.storeDetails?.address?.locality || "",
-        logo: res?.providerDetail?.storeDetails?.logo?.url   || "",
+        logo: res?.providerDetail?.storeDetails?.logo?.url || "",
         logo_path: res?.providerDetail?.storeDetails?.logo?.path || "",
 
         holidays: res?.providerDetail?.storeDetails?.storeTiming?.holidays || [],
@@ -506,6 +511,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
         logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
       };
+
+      const polygonPoints = res?.providerDetail?.storeDetails?.custom_area
+        ? res?.providerDetail?.storeDetails?.custom_area
+        : [];
+      setPolygonPoints(polygonPoints);
 
       const fulfillments = res.providerDetail.storeDetails.fulfillments;
       const { supportedFulfillments, fulfillmentDetails } = getAvailableFulfillments(fulfillments);
@@ -541,6 +551,27 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     let provider_id = params?.id;
     getOrgDetails(provider_id);
   }, [params.id]);
+
+  useEffect(() => {
+    if (openPolygonMap) {
+      setStoreDetailFields((prevFields) => prevFields.filter((field) => field.id !== "location"));
+    } else {
+      setStoreDetailFields((prevFields) => {
+        const locationFieldIndex = prevFields.findIndex((field) => field.id === "location");
+        if (locationFieldIndex === -1) {
+          return addAfter(prevFields, 3, {
+            id: "location",
+            title: "Store Location",
+            placeholder: "Store Location",
+            type: "location-picker",
+            required: true,
+          });
+        } else {
+          return prevFields;
+        }
+      });
+    }
+  }, [openPolygonMap]);
 
   function addAfter(array, index, newItem) {
     return [...array.slice(0, index), newItem, ...array.slice(index)];
@@ -590,7 +621,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     if (!isFromUserListing) {
       if (storeStatus === "enabled") {
         const length = storeDetails.holidays?.length;
-        formErrors.holidays = length === 0  || !length ? "Holidays are required" : "";
+        formErrors.holidays = length === 0 || !length ? "Holidays are required" : "";
         formErrors.storeTimes = getStoreTimesErrors();
       } else {
         formErrors.holidays = "";
@@ -705,7 +736,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
-      console.log(formErrors)
+      console.log(formErrors);
       cogoToast.error("Please fill in all required data!");
     }
     return !Object.values(formErrors).some((val) => val !== "");
@@ -776,7 +807,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return storeTiming;
   };
 
-  const startWithHttpRegex = new RegExp('^http');
+  const startWithHttpRegex = new RegExp("^http");
 
   const onUpdate = () => {
     if (anyChangeInData() && validate()) {
@@ -827,6 +858,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       let payload = {
         category: category,
         locationAvailabilityPANIndia: locationAvailability,
+        location_availability: storeDetails.location_availability,
         defaultCancellable: eval(default_cancellable),
         defaultReturnable: eval(default_returnable),
         address: addressDetails,
@@ -852,12 +884,17 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
-
-      if(!startWithHttpRegex.test(storeDetails.logo)){
-        payload.logo = logo
-      } else {
-        payload.logo = logo_path
+      if (polygonPoints.length > 0 && location_availability == "custom_area") {
+        payload["custom_area"] = polygonPoints;
       }
+
+      if (!startWithHttpRegex.test(storeDetails.logo)) {
+        payload.logo = logo;
+      } else {
+        payload.logo = logo_path;
+      }
+
+      console.log({ payload });
 
       postCall(url, payload)
         .then((resp) => {
@@ -872,9 +909,33 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     }
   };
 
+  const CustomComponent = () => {
+    return (
+      <div>
+        <p
+          style={{
+            fontSize: 16,
+            color: "blue",
+            textDecoration: "underline",
+            cursor: "pointer",
+            marginLeft: 12,
+            marginBottom: 12,
+          }}
+          onClick={() => {
+            console.log("clicked", openPolygonMap);
+            setOpenPolygonMap(true);
+          }}
+        >
+          View Map
+        </p>
+      </div>
+    );
+  };
+
   useEffect(() => {
-    if (storeDetails.location_availability == "city") {
-      let fieldsWithCityInput = addAfter(storeDetailFields, 5, {
+    if (storeDetails.location_availability === "city") {
+      let fieldsWithoutCustomMap = storeDetailFields.filter((field) => field.type !== "custom-component");
+      let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
         id: "cities",
         title: "Select Cities",
         placeholder: "Please Select Cities",
@@ -889,6 +950,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         required: true,
       });
       setStoreDetailFields(fieldsWithCityInput);
+    } else if (storeDetails.location_availability === "custom_area") {
+      let fieldsWithoutCityInput = storeDetailFields.filter((field) => field.id !== "cities");
+      let fieldsWithCustomMapInput = addAfter(fieldsWithoutCityInput, 5, {
+        type: "custom-component",
+        component: <CustomComponent />,
+      });
+      setStoreDetailFields(fieldsWithCustomMapInput);
     } else {
       setStoreDetailFields(storeFields);
     }
@@ -925,6 +993,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                 <RenderInput previewOnly={true} item={item} state={bankDetails} statehandler={setBankDetails} />
               ))}
               <p className="text-2xl font-semibold mb-4 mt-14">Store Details</p>
+
               {storeDetailFields.map((item) => (
                 <RenderInput
                   // previewOnly={true}
@@ -1061,6 +1130,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                 </>
               )}
 
+              {/* <PolygonMap /> */}
+
               {/* {
                 !areObjectsEqual(storeDetails, defaultStoreDetails) && ( */}
               <div className="flex mt16">
@@ -1079,6 +1150,33 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           </div>
         </div>
       </div>
+      <Modal open={openPolygonMap} onClose={() => setOpenPolygonMap(false)}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#fff",
+            padding: "16px 20px",
+            borderRadius: 4,
+          }}
+        >
+          <div style={{ width: "70vw" }}>
+            <div className="flex justify-between mb-4">
+              <h1 style={{ fontSize: 16, marginBottom: 10, fontWeight: 600 }}>
+                Mark Your Locations and Define a Custom Area
+              </h1>
+            </div>
+            <PolygonMap
+              openPolygonMap={openPolygonMap}
+              setOpenPolygonMap={setOpenPolygonMap}
+              polygonPoints={polygonPoints}
+              setPolygonPoints={setPolygonPoints}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
