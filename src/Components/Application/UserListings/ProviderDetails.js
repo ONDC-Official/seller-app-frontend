@@ -492,11 +492,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
         category: res?.providerDetail?.storeDetails?.category || "",
         location: res?.providerDetail?.storeDetails?.location || "",
-        location_availability: res.providerDetail.storeDetails
-          ? res.providerDetail.storeDetails.locationAvailabilityPANIndia == true
-            ? "pan_india"
-            : "city"
-          : "",
+        location_availability: res.providerDetail.storeDetails.location_availability,
         cities: res?.providerDetail?.storeDetails?.city || [],
         default_cancellable: "false",
         default_returnable: "false",

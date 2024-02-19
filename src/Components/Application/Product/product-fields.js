@@ -321,6 +321,14 @@ export const allProductFieldDetails = [
     required: true,
   },
   {
+    id: "backImage",
+    title: "Image of back of the product",
+    type: "upload",
+    //  multiple: false,
+    file_type: "product_image",
+    required: true,
+  },
+  {
     id: "fulfillmentOption",
     title: "Fulfilment Option",
     placeholder: "Available Fulfillment Options",
@@ -374,6 +382,6 @@ export const productDetailsFields = [
   "UOM",
 ];
 
-export const variationCommonFields = ["MRP", "purchasePrice", "quantity", "barcode", "images"];
+export const variationCommonFields = ["MRP", "purchasePrice", "quantity", "barcode", "images", "backImage"];
 
 export const UOMVariationFields = ["UOMValue"];
