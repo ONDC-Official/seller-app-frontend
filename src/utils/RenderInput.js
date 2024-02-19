@@ -888,6 +888,8 @@ const RenderInput = (props) => {
         />
       </div>
     );
+  } else if (item.type == "custom-component") {
+    return item.component;
   } else if (item.type == "label") {
     return <p className="text-2xl font-semibold mb-4 mt-14">{item.title}</p>;
   }
