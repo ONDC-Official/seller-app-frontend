@@ -677,6 +677,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           : ""
         : "";
 
+    formErrors.customArea =
+      storeDetails?.location_availability === "custom_area" && polygonPoints.length == 0
+        ? "Please mark the polygon"
+        : "";
+
     if (supportedFulfillments.deliveryAndSelfPickup) {
       formErrors.deliveryAndSelfPickupDetails = {};
 
@@ -884,9 +889,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
-      if (polygonPoints.length > 0 && location_availability == "custom_area") {
-        payload["custom_area"] = polygonPoints;
-      }
+      payload["custom_area"] = polygonPoints;
+      // if (polygonPoints.length > 0 && location_availability == "custom_area") {
+      // }
 
       if (!startWithHttpRegex.test(storeDetails.logo)) {
         payload.logo = logo;
@@ -922,45 +927,67 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
             marginBottom: 12,
           }}
           onClick={() => {
-            console.log("clicked", openPolygonMap);
             setOpenPolygonMap(true);
           }}
         >
-          View Map
+          Set Polygon Serviceability
         </p>
+
+        <p style={{ marginLeft: 12, fontSize: 12, color: "red" }}>{errors?.customArea}</p>
       </div>
     );
   };
 
   useEffect(() => {
     if (storeDetails.location_availability === "city") {
-      let fieldsWithoutCustomMap = storeDetailFields.filter((field) => field.type !== "custom-component");
-      let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
-        id: "cities",
-        title: "Select Cities",
-        placeholder: "Please Select Cities",
-        options: [
-          { key: "Delhi", value: "delhi" },
-          { key: "Pune", value: "pune" },
-          { key: "Bengaluru", value: "bengaluru" },
-          { key: "Kolkata", value: "kolkata" },
-          { key: "Noida", value: "noida" },
-        ],
-        type: "multi-select",
-        required: true,
-      });
-      setStoreDetailFields(fieldsWithCityInput);
+      const citiesFieldExists = storeDetailFields.some((field) => field.id === "cities");
+
+      if (!citiesFieldExists) {
+        let fieldsWithoutCustomMap = storeDetailFields.filter((field) => field.type !== "custom-component");
+        let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
+          id: "cities",
+          title: "Select Cities",
+          placeholder: "Please Select Cities",
+          options: [
+            { key: "Delhi", value: "delhi" },
+            { key: "Pune", value: "pune" },
+            { key: "Bengaluru", value: "bengaluru" },
+            { key: "Kolkata", value: "kolkata" },
+            { key: "Noida", value: "noida" },
+          ],
+          type: "multi-select",
+          required: true,
+        });
+        setStoreDetailFields(fieldsWithCityInput);
+      }
     } else if (storeDetails.location_availability === "custom_area") {
-      let fieldsWithoutCityInput = storeDetailFields.filter((field) => field.id !== "cities");
-      let fieldsWithCustomMapInput = addAfter(fieldsWithoutCityInput, 5, {
-        type: "custom-component",
-        component: <CustomComponent />,
-      });
-      setStoreDetailFields(fieldsWithCustomMapInput);
+      const existingCustomComponentIndex = storeDetailFields.findIndex((field) => field.type === "custom-component");
+
+      if (existingCustomComponentIndex !== -1) {
+        // Remove existing custom component
+        let fieldsWithoutExistingCustomComponent = [...storeDetailFields];
+        fieldsWithoutExistingCustomComponent.splice(existingCustomComponentIndex, 1);
+        setStoreDetailFields(fieldsWithoutExistingCustomComponent);
+
+        // Add new custom component
+        let fieldsWithCustomMapInput = addAfter(fieldsWithoutExistingCustomComponent, 5, {
+          type: "custom-component",
+          component: <CustomComponent />,
+        });
+        setStoreDetailFields(fieldsWithCustomMapInput);
+      } else {
+        // If there is no existing custom component, simply add the new one
+        let fieldsWithCustomMapInput = addAfter(storeDetailFields, 5, {
+          type: "custom-component",
+          component: <CustomComponent />,
+        });
+        setStoreDetailFields(fieldsWithCustomMapInput);
+      }
     } else {
+      // Assuming storeFields is the default set of fields
       setStoreDetailFields(storeFields);
     }
-  }, [storeDetails.location_availability]);
+  }, [storeDetails.location_availability, errors?.customArea]);
 
   let userRole = JSON.parse(localStorage.getItem("user"))?.role?.name;
 
