@@ -215,6 +215,7 @@ let storeFields = [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
       { key: "Custom area", value: "custom_area" },
+      { key: "Radius", value: "radius" },
     ],
     type: "radio",
     required: true,
@@ -482,11 +483,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      console.log(
-        "res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>",
-        res?.providerDetail?.storeDetails?.logisticsDeliveryType
-      );
-
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
@@ -536,13 +532,12 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
       setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
-      console.log("storeData=====>", storeData);
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log("storeDetails=====>", storeDetails);
+  //   console.log("storeDetails=====>", storeDetails);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -630,12 +625,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     } else {
     }
 
-    formErrors.radius =
-      storeDetails.radius?.trim() === ""
-        ? "Serviceable Radius/Circle is required"
-        : !isNumberOnly(storeDetails?.radius)
-        ? "Please enter only digit"
-        : "";
     //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
     //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
     formErrors.logisticsBppId = "";
@@ -677,10 +666,21 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           : ""
         : "";
 
-    formErrors.customArea =
-      storeDetails?.location_availability === "custom_area" && polygonPoints.length == 0
-        ? "Please mark the polygon"
-        : "";
+    if (storeDetails.location_availability === "custom_area") {
+      formErrors.customArea =
+        storeDetails?.location_availability === "custom_area" && polygonPoints.length == 0
+          ? "Please mark the polygon"
+          : "";
+      formErrors.radius = "";
+    } else if (storeDetails.location_availability === "radius") {
+      formErrors.radius =
+        storeDetails.radius?.trim() === ""
+          ? "Serviceable Radius/Circle is required"
+          : !isNumberOnly(storeDetails?.radius)
+          ? "Please enter only digit"
+          : "";
+      formErrors.customArea = "";
+    }
 
     if (supportedFulfillments.deliveryAndSelfPickup) {
       formErrors.deliveryAndSelfPickupDetails = {};
@@ -741,8 +741,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
-      console.log(formErrors);
-      cogoToast.error("Please fill in all required data!");
+      if (formErrors.customArea && formErrors.customArea != "") {
+        cogoToast.error(formErrors.customArea);
+      } else {
+        cogoToast.error("Please fill in all required data!");
+      }
     }
     return !Object.values(formErrors).some((val) => val !== "");
   };
@@ -890,8 +893,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
       }
       payload["custom_area"] = polygonPoints;
-      // if (polygonPoints.length > 0 && location_availability == "custom_area") {
-      // }
 
       if (!startWithHttpRegex.test(storeDetails.logo)) {
         payload.logo = logo;
@@ -899,7 +900,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload.logo = logo_path;
       }
 
-      console.log({ payload });
+      console.log("PAYLOAD: ", payload);
 
       postCall(url, payload)
         .then((resp) => {
@@ -940,54 +941,93 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
   useEffect(() => {
     if (storeDetails.location_availability === "city") {
-      const citiesFieldExists = storeDetailFields.some((field) => field.id === "cities");
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter(
+          (field) => field.id !== "cities" && field.id !== "radius" && field.type !== "custom-area"
+        );
 
-      if (!citiesFieldExists) {
-        let fieldsWithoutCustomMap = storeDetailFields.filter((field) => field.type !== "custom-component");
-        let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
-          id: "cities",
-          title: "Select Cities",
-          placeholder: "Please Select Cities",
-          options: [
-            { key: "Delhi", value: "delhi" },
-            { key: "Pune", value: "pune" },
-            { key: "Bengaluru", value: "bengaluru" },
-            { key: "Kolkata", value: "kolkata" },
-            { key: "Noida", value: "noida" },
-          ],
-          type: "multi-select",
-          required: true,
-        });
-        setStoreDetailFields(fieldsWithCityInput);
-      }
+        const citiesFieldExists = updatedFields.some((field) => field.id === "cities");
+
+        if (!citiesFieldExists) {
+          let fieldsWithoutCustomMap = updatedFields.filter((field) => field.type !== "custom-component");
+          let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
+            id: "cities",
+            title: "Select Cities",
+            placeholder: "Please Select Cities",
+            options: [
+              { key: "Delhi", value: "delhi" },
+              { key: "Pune", value: "pune" },
+              { key: "Bengaluru", value: "bengaluru" },
+              { key: "Kolkata", value: "kolkata" },
+              { key: "Noida", value: "noida" },
+            ],
+            type: "multi-select",
+            required: true,
+          });
+
+          return fieldsWithCityInput;
+        }
+
+        return updatedFields;
+      });
     } else if (storeDetails.location_availability === "custom_area") {
-      const existingCustomComponentIndex = storeDetailFields.findIndex((field) => field.type === "custom-component");
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter(
+          (field) => field.id !== "cities" && field.id !== "radius" && field.type !== "custom-area"
+        );
 
-      if (existingCustomComponentIndex !== -1) {
-        // Remove existing custom component
-        let fieldsWithoutExistingCustomComponent = [...storeDetailFields];
-        fieldsWithoutExistingCustomComponent.splice(existingCustomComponentIndex, 1);
-        setStoreDetailFields(fieldsWithoutExistingCustomComponent);
+        const existingCustomComponentIndex = updatedFields.findIndex((field) => field.type === "custom-component");
 
-        // Add new custom component
-        let fieldsWithCustomMapInput = addAfter(fieldsWithoutExistingCustomComponent, 5, {
-          type: "custom-component",
-          component: <CustomComponent />,
+        if (existingCustomComponentIndex !== -1) {
+          // Remove existing custom component
+          let fieldsWithoutExistingCustomComponent = [...updatedFields];
+          fieldsWithoutExistingCustomComponent.splice(existingCustomComponentIndex, 1);
+
+          // Add new custom component
+          let fieldsWithCustomMapInput = addAfter(fieldsWithoutExistingCustomComponent, 5, {
+            id: "custom-component",
+            type: "custom-component",
+            component: <CustomComponent />,
+          });
+
+          return fieldsWithCustomMapInput;
+        } else {
+          // If there is no existing custom component, simply add the new one
+          let fieldsWithCustomMapInput = addAfter(updatedFields, 5, {
+            id: "custom-component",
+            type: "custom-component",
+            component: <CustomComponent />,
+          });
+
+          return fieldsWithCustomMapInput;
+        }
+      });
+    } else if (storeDetails.location_availability === "radius") {
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter((field) => {
+          if (field.id !== "cities" && field.id !== "custom-component") {
+            return field;
+          }
         });
-        setStoreDetailFields(fieldsWithCustomMapInput);
-      } else {
-        // If there is no existing custom component, simply add the new one
-        let fieldsWithCustomMapInput = addAfter(storeDetailFields, 5, {
-          type: "custom-component",
-          component: <CustomComponent />,
-        });
-        setStoreDetailFields(fieldsWithCustomMapInput);
-      }
+
+        const radiusFieldExists = prevFields.some((field) => field.id === "radius");
+        if (!radiusFieldExists) {
+          let fieldsWithRadiusInput = addAfter(updatedFields, 5, {
+            id: "radius",
+            title: "Serviceable Radius/Circle (in Kilometer)",
+            placeholder: "Serviceable Radius/Circle (in Kilometer)",
+            type: "input",
+            error: errors?.["radius"] ? true : false,
+            helperText: errors?.["radius"] || "",
+            required: true,
+          });
+          return fieldsWithRadiusInput;
+        }
+      });
     } else {
-      // Assuming storeFields is the default set of fields
       setStoreDetailFields(storeFields);
     }
-  }, [storeDetails.location_availability, errors?.customArea]);
+  }, [storeDetails.location_availability]);
 
   let userRole = JSON.parse(localStorage.getItem("user"))?.role?.name;
 
@@ -1073,7 +1113,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   />
 
                   <p className="text-2xl font-semibold mb-2 mt-14">Store Timing</p>
-                  <RenderInput
+                  {/* <RenderInput
                     item={{
                       id: "radius",
                       title: "Serviceable Radius/Circle (in Kilometer)",
@@ -1085,7 +1125,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
-                  />
+                  /> */}
                   <div className="py-1 flex flex-col">
                     <FormControl component="fieldset">
                       <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
