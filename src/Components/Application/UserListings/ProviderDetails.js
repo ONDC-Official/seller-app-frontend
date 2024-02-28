@@ -313,16 +313,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     deliveryDetails: {
       deliveryEmail: "",
       deliveryMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
     selfPickupDetails: {
       selfPickupEmail: "",
       selfPickupMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
     deliveryAndSelfPickupDetails: {
       deliveryEmail: "",
       deliveryMobile: "",
       selfPickupEmail: "",
       selfPickupMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
   });
 
@@ -403,17 +406,23 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     let email_self = "";
     let mobile_self = "";
 
+    let deliveryStoreTimings = [...defaultStoreTimings];
+    let selfPickupStoreTimings = [...defaultStoreTimings];
+    let deliveryAndSelfPickupStoreTimings = [...defaultStoreTimings];
+
     fulfillments?.forEach((fulfillment) => {
       if (fulfillment.id === "f1") {
         hasF1 = true;
         deliveryEmail = fulfillment.contact.email;
         deliveryMobile = fulfillment.contact.phone;
+        deliveryStoreTimings = fulfillment.storeTimings;
       }
 
       if (fulfillment.id === "f2") {
         hasF2 = true;
         selfPickupEmail = fulfillment.contact.email;
         selfPickupMobile = fulfillment.contact.phone;
+        selfPickupStoreTimings = fulfillment.storeTimings;
       }
 
       if (fulfillment.id === "f3") {
@@ -422,6 +431,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         mobile_delivery = fulfillment.contact.delivery.phone;
         email_self = fulfillment.contact.pickup.email;
         mobile_self = fulfillment.contact.pickup.phone;
+        deliveryAndSelfPickupStoreTimings = fulfillment.storeTimings;
       }
     });
 
@@ -435,16 +445,22 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         deliveryDetails: {
           deliveryEmail,
           deliveryMobile,
+          storeTimings: deliveryStoreTimings,
         },
         selfPickupDetails: {
           selfPickupEmail,
           selfPickupMobile,
+          storeTimings: selfPickupStoreTimings,
         },
         deliveryAndSelfPickupDetails: {
           deliveryEmail: email_delivery,
           deliveryMobile: mobile_delivery,
           selfPickupEmail: email_self,
           selfPickupMobile: mobile_self,
+          storeTimings:
+            deliveryAndSelfPickupStoreTimings && deliveryAndSelfPickupStoreTimings.length > 0
+              ? deliveryAndSelfPickupStoreTimings
+              : [...defaultStoreTimings],
         },
       },
     };
@@ -585,6 +601,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
   };
 
+  const getTimingErrors = (storeTimings) => {
+    let values = storeTimings.reduce((acc, storeTiming) => {
+      acc.push(storeTiming.daysRange.from);
+      acc.push(storeTiming.daysRange.to);
+      storeTiming.timings.forEach((element) => {
+        acc.push(element.from);
+        acc.push(element.to);
+      });
+      return acc;
+    }, []);
+    return values.some((value) => value === "" || value === "Invalid date") ? "Please fix all details of timings!" : "";
+  };
+
   const validate = () => {
     const formErrors = {};
     formErrors.email =
@@ -666,6 +695,17 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           : ""
         : "";
 
+    const deliveryStoreTimings = fulfillmentDetails.deliveryDetails.storeTimings;
+    const selfDeliveryStoreTimings = fulfillmentDetails.selfPickupDetails.storeTimings;
+
+    if (supportedFulfillments.delivery !== false) {
+      formErrors.deliveryStoreTimings = getTimingErrors(deliveryStoreTimings);
+    }
+
+    if (supportedFulfillments.selfPickup !== false) {
+      formErrors.selfPickupStoreTimings = getTimingErrors(selfDeliveryStoreTimings);
+    }
+
     if (storeDetails.location_availability === "custom_area") {
       formErrors.customArea =
         storeDetails?.location_availability === "custom_area" && polygonPoints.length == 0
@@ -690,6 +730,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const deliveryMobile = deliveryAndSelfPickupDetails.deliveryMobile?.trim();
       const selfPickupEmail = deliveryAndSelfPickupDetails.selfPickupEmail?.trim();
       const selfPickupMobile = deliveryAndSelfPickupDetails.selfPickupMobile?.trim();
+      const timings = deliveryAndSelfPickupDetails.storeTimings;
+
+      formErrors.deliveryAndSelfPickupDetails.storeTimings = getTimingErrors(timings);
 
       formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
         ? "Delivery Email is required"
@@ -768,6 +811,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email: fulfillmentDetails.deliveryDetails.deliveryEmail,
           phone: fulfillmentDetails.deliveryDetails.deliveryMobile,
         },
+        storeTimings: fulfillmentDetails.deliveryDetails.storeTimings,
       };
       fulfillments.push(deliveryDetails);
     }
@@ -780,6 +824,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email: fulfillmentDetails.selfPickupDetails.selfPickupEmail,
           phone: fulfillmentDetails.selfPickupDetails.selfPickupMobile,
         },
+        storeTimings: fulfillmentDetails.selfPickupDetails.storeTimings,
       };
       fulfillments.push(selfPickupDetails);
     }
@@ -798,7 +843,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
             phone: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile,
           },
         },
+        storeTimings: fulfillmentDetails.deliveryAndSelfPickupDetails.storeTimings,
       };
+      console.log("FULFILLMENT FOR D AND S", deliveryAndSelfPickupDetails);
       fulfillments.push(deliveryAndSelfPickupDetails);
     }
 
@@ -899,8 +946,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
         payload.logo = logo_path;
       }
-
-      console.log("PAYLOAD: ", payload);
 
       postCall(url, payload)
         .then((resp) => {
