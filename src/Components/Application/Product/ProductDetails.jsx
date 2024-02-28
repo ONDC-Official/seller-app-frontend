@@ -154,6 +154,7 @@ const AddGenericProduct = ({
       }
       delete variantData["formKey"];
       delete variantData["uploaded_urls"];
+      delete variantData["tempURL"];
 
       return variantData;
     });
