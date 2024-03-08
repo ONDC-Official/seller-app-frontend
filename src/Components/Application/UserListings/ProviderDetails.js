@@ -290,7 +290,7 @@ let storeFields = [
     type: "upload",
     required: true,
     fontColor: "#ffffff",
-  },
+  }
 ];
 
 const defaultStoreTimings = [
@@ -359,8 +359,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     logo_path: "",
     holidays: [],
     radius: "",
+    onNetworkLogistics: "false",
     logisticsBppId: "",
     logisticsDeliveryType: "",
+    deliveryTime: ""
   });
 
   const [errors, setErrors] = useState(null);
@@ -390,6 +392,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     radius: "",
     logisticsBppId: "",
     logisticsDeliveryType: "",
+    onNetworkLogistics: "false",
+    deliveryTime: "",
     custom_area: [],
   });
 
@@ -470,7 +474,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     try {
       const url = `/api/v1/organizations/${id}`;
       const res = await getCall(url);
+      if (res?.providerDetail?.storeDetails?.deliveryTime) {
+        // Get the number of hours from the duration object
+        const duration = moment.duration(res.providerDetail.storeDetails.deliveryTime);
+        const hours = duration.asHours();
+        res.providerDetail.storeDetails.deliveryTime = String(hours);
 
+      }
       setProviderDetails({
         email: res.user.email,
         mobile: res.user.mobile,
@@ -522,6 +532,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
         logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
+        deliveryTime: res?.providerDetail?.storeDetails?.deliveryTime || "",
+        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "false",
       };
 
       const polygonPoints = res?.providerDetail?.storeDetails?.custom_area
@@ -589,7 +601,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   }
 
   const getStoreTimesErrors = () => {
-    let values = storeTimings.reduce((acc, storeTiming) => {
+    let values = storeTimings?.reduce((acc, storeTiming) => {
       acc.push(storeTiming.daysRange.from);
       acc.push(storeTiming.daysRange.to);
       storeTiming.timings.forEach((element) => {
@@ -598,11 +610,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       });
       return acc;
     }, []);
-    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
+    return values?.some((value) => value === "") ? "Please fix all details of timings!" : "";
   };
 
   const getTimingErrors = (storeTimings) => {
-    let values = storeTimings.reduce((acc, storeTiming) => {
+    let values = storeTimings?.reduce((acc, storeTiming) => {
       acc.push(storeTiming.daysRange.from);
       acc.push(storeTiming.daysRange.to);
       storeTiming.timings.forEach((element) => {
@@ -611,7 +623,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       });
       return acc;
     }, []);
-    return values.some((value) => value === "" || value === "Invalid date") ? "Please fix all details of timings!" : "";
+    return values?.some((value) => value === "" || value === "Invalid date") ? "Please fix all details of timings!" : "";
   };
 
   const validate = () => {
@@ -620,14 +632,14 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       storeDetails.email?.trim() === ""
         ? "Support Email is required"
         : !isEmailValid(storeDetails.email)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
     formErrors.mobile =
       storeDetails.mobile?.trim() === ""
         ? "Support Mobile Number is required"
         : !isPhoneNoValid(storeDetails.mobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
     formErrors.category = storeDetails.category?.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
@@ -664,8 +676,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.deliveryDetails?.deliveryEmail?.trim() === ""
           ? "Delivery Email is required"
           : !isEmailValid(fulfillmentDetails.deliveryDetails?.deliveryEmail)
-          ? "Please enter a valid email address"
-          : ""
+            ? "Please enter a valid email address"
+            : ""
         : "";
 
     formErrors.deliveryMobile =
@@ -673,8 +685,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.deliveryDetails?.deliveryMobile?.trim() === ""
           ? "Mobile Number is required"
           : !isPhoneNoValid(fulfillmentDetails.deliveryDetails?.deliveryMobile)
-          ? "Please enter a valid mobile number"
-          : ""
+            ? "Please enter a valid mobile number"
+            : ""
         : "";
 
     formErrors.selfPickupEmail =
@@ -682,8 +694,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.selfPickupDetails?.selfPickupEmail?.trim() === ""
           ? "Delivery Email is required"
           : !isEmailValid(fulfillmentDetails.selfPickupDetails?.selfPickupEmail)
-          ? "Please enter a valid email address"
-          : ""
+            ? "Please enter a valid email address"
+            : ""
         : "";
 
     formErrors.selfPickupMobile =
@@ -691,8 +703,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.selfPickupDetails?.selfPickupMobile?.trim() === ""
           ? "Mobile Number is required"
           : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails?.selfPickupMobile)
-          ? "Please enter a valid mobile number"
-          : ""
+            ? "Please enter a valid mobile number"
+            : ""
         : "";
 
     const deliveryStoreTimings = fulfillmentDetails.deliveryDetails.storeTimings;
@@ -717,8 +729,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         storeDetails.radius?.trim() === ""
           ? "Serviceable Radius/Circle is required"
           : !isNumberOnly(storeDetails?.radius)
-          ? "Please enter only digit"
-          : "";
+            ? "Please enter only digit"
+            : "";
       formErrors.customArea = "";
     }
 
@@ -737,26 +749,26 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
         ? "Delivery Email is required"
         : !isEmailValid(deliveryEmail)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.deliveryMobile = !deliveryMobile
         ? "Mobile Number is required"
         : !isPhoneNoValid(deliveryMobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.selfPickupEmail = !selfPickupEmail
         ? "Delivery Email is required"
         : !isEmailValid(selfPickupEmail)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.selfPickupMobile = !selfPickupMobile
         ? "Mobile Number is required"
         : !isPhoneNoValid(selfPickupMobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
       // Check if all nested properties are empty, then delete the entire object from formErrors
       if (
@@ -878,7 +890,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         mobile,
         email,
         cities,
-
         building,
         state,
         address_city,
@@ -907,6 +918,14 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
       }
 
+      if (storeDetails.deliveryTime) {
+        const deliveryDuration = moment.duration(parseInt(storeDetails.deliveryTime), "hours");
+
+        // Format the duration in ISO 8601 format
+        const iso8601Delivery = deliveryDuration.toISOString();
+        storeDetails.deliveryTime = iso8601Delivery;
+      }
+
       let fulfillments = getFulfillmentsPayloadFormat();
       let storeTiming = getStoreTimingsPayloadFormat();
 
@@ -927,8 +946,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           unit: "km",
           value: storeDetails.radius || "",
         },
-        logisticsBppId: storeDetails.logisticsBppId,
-        logisticsDeliveryType: storeDetails.logisticsDeliveryType,
+        onNetworkLogistics: storeDetails.onNetworkLogistics,
+        logisticsBppId: storeDetails.onNetworkLogistics === 'true' ? storeDetails.logisticsBppId : '',
+        logisticsDeliveryType: storeDetails.onNetworkLogistics === 'false' ? storeDetails.logisticsDeliveryType : '',
+        deliveryTime: storeDetails.onNetworkLogistics === 'false' ? storeDetails.deliveryTime : '',
       };
       if (location) {
         payload.location = location;
@@ -1122,33 +1143,65 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
               {!isFromUserListing && (
                 <>
+                  <p className="text-2xl font-semibold mb-4 mt-14">Logistics Details</p>
                   <RenderInput
                     item={{
-                      id: "logisticsBppId",
-                      title: "Logistics Bpp Id",
-                      placeholder: "Logistics Bpp Id",
-                      type: "input",
-                      error: errors?.["logisticsBppId"] ? true : false,
-                      helperText: errors?.["logisticsBppId"] || "",
+                      id: "onNetworkLogistics",
+                      title: "Network Logistics",
+                      options: [
+                        { key: "On", value: "true" },
+                        { key: "off", value: "false" },
+                      ],
+                      type: "radio",
+                      required: true,
+                      error: errors?.["onNetworkLogistics"] ? true : false,
+                      helperText: errors?.["onNetworkLogistics"] || "",
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-
-                  <RenderInput
-                    item={{
-                      id: "logisticsDeliveryType",
-                      title: "Logistics Delivery Type",
-                      placeholder: "Logistics Delivery Type",
-                      error: errors?.["logisticsDeliveryType"] ? true : false,
-                      helperText: errors?.["logisticsDeliveryType"] || "",
-                      options: deliveryTypeList,
-                      type: "select",
-                    }}
-                    state={storeDetails}
-                    stateHandler={setStoreDetails}
-                  />
-
+                  {storeDetails.onNetworkLogistics === 'true' ? (
+                    <RenderInput
+                      item={{
+                        id: "logisticsBppId",
+                        title: "Logistics Bpp Id",
+                        placeholder: "Logistics Bpp Id",
+                        type: "input",
+                        error: errors?.["logisticsBppId"] ? true : false,
+                        helperText: errors?.["logisticsBppId"] || "",
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                  ) : (
+                    <>
+                      <RenderInput
+                        item={{
+                          id: "logisticsDeliveryType",
+                          title: "Logistics Delivery Type",
+                          placeholder: "Logistics Delivery Type",
+                          error: errors?.["logisticsDeliveryType"] ? true : false,
+                          helperText: errors?.["logisticsDeliveryType"] || "",
+                          options: deliveryTypeList,
+                          type: "select",
+                        }}
+                        state={storeDetails}
+                        stateHandler={setStoreDetails}
+                      />
+                      <RenderInput
+                        item={{
+                          id: "deliveryTime",
+                          title: "Delivery Time (in hours)",
+                          placeholder: "Delivery Time (in hours)",
+                          type: "number",
+                          error: errors?.["deliveryTime"] ? true : false,
+                          helperText: errors?.["deliveryTime"] || "",
+                        }}
+                        state={storeDetails}
+                        stateHandler={setStoreDetails}
+                      />
+                    </>
+                  )}
                   <Fulfillments
                     errors={errors}
                     supportedFulfillments={supportedFulfillments}
