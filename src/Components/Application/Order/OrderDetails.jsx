@@ -33,27 +33,49 @@ import BackNavigationButton from "../../Shared/BackNavigationButton";
 import { Tooltip } from "@material-ui/core";
 import useStyles from "./style";
 import CancelOrderModal from "./cancelOrderModal.jsx";
+import UpdateOrderStatus from "./UpdateOrderStatusModal.js";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState();
   const [user, setUser] = React.useState();
+  const [organizationId, setOrganizationId] = React.useState();
+  const [orgOnNetwork, setOrgOnNetwork] = React.useState(true);
+  const [fulfillmentData, setFulfillmentData] = React.useState();
+  const [isUpdateOrderModalOpen, setIsUpdateOrderModalOpen] = React.useState();
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
   const navigate = useNavigate();
   const [loading, setloading] = useState({
     accept_order_loading: false,
     cancel_order_loading: false,
+    update_order_loading: false
   });
 
   const getOrder = async () => {
     const url = `/api/v1/orders/${params?.id}`;
     getCall(url).then((resp) => {
       setOrder(resp);
+      setOrganizationId(resp.organization)
     });
   };
 
+  const getOrgDetails = async () => {
+    const orgUrl = `/api/v1/organizations/${order.organization}`;
+    const res = await getCall(orgUrl);
+    const onLogistic = res.providerDetail.storeDetails?.onNetworkLogistics ?? true;
+    setOrgOnNetwork(onLogistic);
+  };
+
   useEffect(() => {
-    if (params.id) getOrder();
+    if (organizationId) {
+      getOrgDetails();
+    }
+  }, [organizationId]);
+
+  useEffect(() => {
+    if (params.id) {
+      getOrder();
+    }
   }, [params]);
 
   const getUser = async (id) => {
@@ -99,6 +121,12 @@ const OrderDetails = () => {
     delivery_info = getFulfillmentData(fulfillments, "Delivery");
   }
 
+  const handleCloseStatusModal = () => {
+    setIsUpdateOrderModalOpen(false)
+    setloading({ ...loading, update_order_loading: false });
+
+  }
+
   const handleCompleteOrderCancel = (order_uuid) => {
     setloading({ ...loading, cancel_order_loading: true });
     postCall(`/api/v1/orders/${order_uuid}/cancel`, {
@@ -121,6 +149,17 @@ const OrderDetails = () => {
           setloading({ ...loading, cancel_order_loading: false });
         }, 3000);
       });
+  };
+
+  const handleCompleteOrderUpdate = (order_details) => {
+    setloading({ ...loading, update_order_loading: true });
+    const fulfillments = order_details?.fulfillments;
+    let delivery_info = {};
+    if (fulfillments) {
+      delivery_info = getFulfillmentData(fulfillments, "Delivery");
+    }
+    setFulfillmentData(delivery_info); // Set fulfillment data
+    setIsUpdateOrderModalOpen(true);
   };
 
   const handleCompleteOrderAccept = (order_uuid) => {
@@ -149,36 +188,63 @@ const OrderDetails = () => {
       });
   };
 
+
   const renderOrderStatus = (order_details) => {
     if (
-      order_details?.state == "Created" &&
+      order_details?.state === "Created" &&
       user?.role?.name !== "Super Admin"
     ) {
       return (
         <div style={{ display: "flex", direction: "row", gap: "8px" }}>
-          <Button
-            className="!capitalize"
-            variant="contained"
-            onClick={() => handleCompleteOrderAccept(order_details?._id)}
-            disabled={
-              loading.accept_order_loading || loading.cancel_order_loading
-            }
-          >
-            {loading.accept_order_loading ? (
-              <>
-                Accept Order&nbsp;&nbsp;
-                <CircularProgress size={18} sx={{ color: "white" }} />
-              </>
-            ) : (
-              <span>Accept Order</span>
-            )}
-          </Button>
+          {orgOnNetwork ? (
+            <Button
+              className="!capitalize"
+              variant="contained"
+              onClick={() => handleCompleteOrderAccept(order_details?._id)}
+              disabled={
+                loading.accept_order_loading ||
+                loading.cancel_order_loading ||
+                loading.update_order_loading
+              }
+            >
+              {loading.accept_order_loading ? (
+                <>
+                  Accept Order&nbsp;&nbsp;
+                  <CircularProgress size={18} sx={{ color: "white" }} />
+                </>
+              ) : (
+                <span>Accept Order</span>
+              )}
+            </Button>
+          ) : (
+            <Button
+              className="!capitalize"
+              variant="contained"
+              onClick={() => handleCompleteOrderUpdate(order_details)}
+              disabled={
+                loading.accept_order_loading ||
+                loading.cancel_order_loading ||
+                loading.update_order_loading
+              }
+            >
+              {loading.update_order_loading ? (
+                <>
+                  Update Status&nbsp;&nbsp;
+                  <CircularProgress size={18} sx={{ color: "white" }} />
+                </>
+              ) : (
+                <span>Update Status</span>
+              )}
+            </Button>
+          )}
           <Button
             variant="contained"
             className="!capitalize"
             onClick={() => handleCompleteOrderCancel(order_details?._id)}
             disabled={
-              loading.cancel_order_loading || loading.accept_order_loading
+              loading.cancel_order_loading ||
+              loading.accept_order_loading ||
+              loading.update_order_loading
             }
           >
             {loading.cancel_order_loading ? (
@@ -190,15 +256,58 @@ const OrderDetails = () => {
               <span>Cancel Order</span>
             )}
           </Button>
+          <UpdateOrderStatus
+            showModal={isUpdateOrderModalOpen}
+            handleCloseModal={() => handleCloseStatusModal()}
+            data={fulfillmentData}
+            setloading={setloading}
+            loading={loading}
+            setOrder={setOrder}
+            order={order}
+          />
         </div>
       );
     } else {
       return (
-        <span className="bg-slate-100 p-2 rounded-lg">
-          <p className="text-sm font-normal text-amber-400">
-            {order_details?.state}
-          </p>
-        </span>
+        <div style={{ display: "flex", direction: "row", gap: "8px" }}>
+          <span className="bg-slate-100 p-2 rounded-lg">
+            <p className="text-sm font-normal text-amber-400">
+              {order_details?.state}
+            </p>
+          </span>
+          {!orgOnNetwork && (
+            <div>
+              <Button
+                className="!capitalize"
+                variant="contained"
+                onClick={() => handleCompleteOrderUpdate(order_details)}
+                disabled={
+                  loading.accept_order_loading ||
+                  loading.cancel_order_loading ||
+                  loading.update_order_loading
+                }
+              >
+                {loading.update_order_loading ? (
+                  <>
+                    Update Status&nbsp;&nbsp;
+                    <CircularProgress size={18} sx={{ color: "white" }} />
+                  </>
+                ) : (
+                  <span>Update Status</span>
+                )}
+              </Button>
+              <UpdateOrderStatus
+                showModal={isUpdateOrderModalOpen}
+                handleCloseModal={() => handleCloseStatusModal()}
+                data={fulfillmentData}
+                setloading={setloading}
+                loading={loading}
+                setOrder={setOrder}
+                order={order}
+              />
+            </div>
+          )}
+        </div>
       );
     }
   };
@@ -628,7 +737,7 @@ const OrderItemsSummaryCard = (props) => {
             style={{ padding: 6 }}
             onClick={() => {
               handlePartialOrderCancel({order_id: props.order_id, item: props.row})
-              }
+             }
             }
           >
             Cancel Order
@@ -869,7 +978,7 @@ const OrderItemsSummaryCard = (props) => {
                     key={item.order_id}
                     expandComponent={
                       <TableCell colSpan="4">
-                                            {renderItemAllDetails(item)}
+                        {renderItemAllDetails(item)}
                       </TableCell>
 
                     }
@@ -926,7 +1035,7 @@ const OrderItemsSummaryCard = (props) => {
         showModal={itemToCancel ? true : false}
         setOrder={setOrder}
         handleCloseModal={() => setItemToCancel(null)}
-        data={itemToCancel}/>
+        data={itemToCancel} />
     </div>
   );
 };
