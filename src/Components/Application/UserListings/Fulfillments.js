@@ -4,7 +4,6 @@ import RenderInput from "../../../utils/RenderInput";
 import {
   deliveryFulfillmentFields,
   selfPickupFulfillmentFields,
-  deliveryAndSelfPickupFulfillmentFields,
 } from "./fields";
 import StoreTimings from "./StoreTimings";
 import StoreTimingsRenderer from "./StoreTimingsRenderer";
@@ -123,45 +122,6 @@ const Fulfillments = (props) => {
     );
   };
 
-  const renderDeliveryAndSelfPickupFulfillmentFields = () => {
-    return (
-      <>
-        {deliveryAndSelfPickupFulfillmentFields.map((field) => {
-          return (
-            <RenderInput
-              item={{
-                ...field,
-                error: errors?.["deliveryAndSelfPickupDetails"]?.[field?.id] ? true : false,
-                helperText: errors?.["deliveryAndSelfPickupDetails"]?.[field.id] || "",
-                args: { name: "deliveryAndSelfPickupDetails" },
-              }}
-              state={fulfillmentDetails["deliveryAndSelfPickupDetails"]}
-              stateHandler={setFulfillmentDetails}
-              key={field?.id}
-              handleChange={handleChange}
-            />
-          );
-        })}
-        <StoreTimingsRenderer
-          errors={errors}
-          storeStatus={"enabled"}
-          storeTimings={fulfillmentDetails["deliveryAndSelfPickupDetails"]["storeTimings"]}
-          setStoreTimings={(newTimings) => {
-            setFulfillmentDetails((prevDetails) => ({
-              ...prevDetails,
-              deliveryAndSelfPickupDetails: {
-                ...prevDetails.deliveryAndSelfPickupDetails,
-                storeTimings: newTimings,
-              },
-            }));
-          }}
-        />
-        <p style={{ marginTop: -5, marginLeft: 2, color: "rgb(211, 47, 47)", fontSize: "14px" }}>
-          {errors?.deliveryAndSelfPickupDetails?.storeTimings}
-        </p>
-      </>
-    );
-  };
 
   return (
     <>
@@ -181,17 +141,6 @@ const Fulfillments = (props) => {
           label="Self Pickup"
         />
         {supportedFulfillments.selfPickup && renderSelfPickupForm()}
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={supportedFulfillments.deliveryAndSelfPickup}
-              onChange={handleCheckboxChange}
-              value="deliveryAndSelfPickup"
-            />
-          }
-          label="Delivery and Self Pickup"
-        />
-        {supportedFulfillments.deliveryAndSelfPickup && renderDeliveryAndSelfPickupFulfillmentFields()}
       </div>
     </>
   );
