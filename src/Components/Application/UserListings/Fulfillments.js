@@ -4,8 +4,9 @@ import RenderInput from "../../../utils/RenderInput";
 import {
   deliveryFulfillmentFields,
   selfPickupFulfillmentFields,
-  deliveryAndSelfPickupFulfillmentFields,
 } from "./fields";
+import StoreTimings from "./StoreTimings";
+import StoreTimingsRenderer from "./StoreTimingsRenderer";
 
 const Fulfillments = (props) => {
   const { supportedFulfillments, setSupportedFulfillments, fulfillmentDetails, setFulfillmentDetails, errors } = props;
@@ -40,61 +41,87 @@ const Fulfillments = (props) => {
   };
 
   const renderDeliveryForm = () => {
-    return deliveryFulfillmentFields.map((field) => {
-      return (
-        <RenderInput
-          item={{
-            ...field,
-            error: errors?.[field?.id] ? true : false,
-            helperText: errors?.[field.id] || "",
-            args: { name: "deliveryDetails" },
+    return (
+      <>
+        {deliveryFulfillmentFields.map((field) => {
+          return (
+            <>
+              <RenderInput
+                item={{
+                  ...field,
+                  error: errors?.[field?.id] ? true : false,
+                  helperText: errors?.[field.id] || "",
+                  args: { name: "deliveryDetails" },
+                }}
+                state={fulfillmentDetails["deliveryDetails"]}
+                stateHandler={setFulfillmentDetails}
+                key={field?.id}
+                handleChange={handleChange}
+              />
+            </>
+          );
+        })}
+        <StoreTimingsRenderer
+          errors={errors}
+          storeStatus={"enabled"}
+          storeTimings={fulfillmentDetails["deliveryDetails"]["storeTimings"]}
+          setStoreTimings={(newTimings) => {
+            setFulfillmentDetails((prevDetails) => ({
+              ...prevDetails,
+              deliveryDetails: {
+                ...prevDetails.deliveryDetails,
+                storeTimings: newTimings,
+              },
+            }));
           }}
-          state={fulfillmentDetails["deliveryDetails"]}
-          stateHandler={setFulfillmentDetails}
-          key={field?.id}
-          handleChange={handleChange}
         />
-      );
-    });
+        <p style={{ marginTop: -5, marginLeft: 2, color: "rgb(211, 47, 47)", fontSize: "14px" }}>
+          {errors?.deliveryStoreTimings}
+        </p>
+      </>
+    );
   };
 
   const renderSelfPickupForm = () => {
-    return selfPickupFulfillmentFields.map((field) => {
-      return (
-        <RenderInput
-          item={{
-            ...field,
-            error: errors?.[field?.id] ? true : false,
-            helperText: errors?.[field.id] || "",
-            args: { name: "selfPickupDetails" },
+    return (
+      <>
+        {selfPickupFulfillmentFields.map((field) => {
+          return (
+            <RenderInput
+              item={{
+                ...field,
+                error: errors?.[field?.id] ? true : false,
+                helperText: errors?.[field.id] || "",
+                args: { name: "selfPickupDetails" },
+              }}
+              state={fulfillmentDetails["selfPickupDetails"]}
+              stateHandler={setFulfillmentDetails}
+              key={field?.id}
+              handleChange={handleChange}
+            />
+          );
+        })}
+        <StoreTimingsRenderer
+          errors={errors}
+          storeStatus={"enabled"}
+          storeTimings={fulfillmentDetails["selfPickupDetails"]["storeTimings"]}
+          setStoreTimings={(newTimings) => {
+            setFulfillmentDetails((prevDetails) => ({
+              ...prevDetails,
+              selfPickupDetails: {
+                ...prevDetails.selfPickupDetails,
+                storeTimings: newTimings,
+              },
+            }));
           }}
-          state={fulfillmentDetails["selfPickupDetails"]}
-          stateHandler={setFulfillmentDetails}
-          key={field?.id}
-          handleChange={handleChange}
         />
-      );
-    });
+        <p style={{ marginTop: -5, marginLeft: 2, color: "rgb(211, 47, 47)", fontSize: "14px" }}>
+          {errors?.selfPickupStoreTimings}
+        </p>
+      </>
+    );
   };
 
-  const renderDeliveryAndSelfPickupFulfillmentFields = () => {
-    return deliveryAndSelfPickupFulfillmentFields.map((field) => {
-      return (
-        <RenderInput
-          item={{
-            ...field,
-            error: errors?.["deliveryAndSelfPickupDetails"]?.[field?.id] ? true : false,
-            helperText: errors?.["deliveryAndSelfPickupDetails"]?.[field.id] || "",
-            args: { name: "deliveryAndSelfPickupDetails" },
-          }}
-          state={fulfillmentDetails["deliveryAndSelfPickupDetails"]}
-          stateHandler={setFulfillmentDetails}
-          key={field?.id}
-          handleChange={handleChange}
-        />
-      );
-    });
-  };
 
   return (
     <>
@@ -114,17 +141,6 @@ const Fulfillments = (props) => {
           label="Self Pickup"
         />
         {supportedFulfillments.selfPickup && renderSelfPickupForm()}
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={supportedFulfillments.deliveryAndSelfPickup}
-              onChange={handleCheckboxChange}
-              value="deliveryAndSelfPickup"
-            />
-          }
-          label="Delivery and Self Pickup"
-        />
-        {supportedFulfillments.deliveryAndSelfPickup && renderDeliveryAndSelfPickupFulfillmentFields()}
       </div>
     </>
   );
