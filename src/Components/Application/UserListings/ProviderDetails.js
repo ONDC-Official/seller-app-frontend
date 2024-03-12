@@ -359,7 +359,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     logo_path: "",
     holidays: [],
     radius: "",
-    onNetworkLogistics: "false",
+    onNetworkLogistics: "true",
     logisticsBppId: "",
     logisticsDeliveryType: "",
     deliveryTime: ""
@@ -392,7 +392,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     radius: "",
     logisticsBppId: "",
     logisticsDeliveryType: "",
-    onNetworkLogistics: "false",
+    onNetworkLogistics: "true",
     deliveryTime: "",
     custom_area: [],
   });
@@ -533,7 +533,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
         logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
         deliveryTime: res?.providerDetail?.storeDetails?.deliveryTime || "",
-        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "false",
+        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "true",
       };
 
       const polygonPoints = res?.providerDetail?.storeDetails?.custom_area
@@ -665,11 +665,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       }
     } else {
     }
-
-    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
-    //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
-    formErrors.logisticsBppId = "";
-    formErrors.logisticsDeliveryType = "";
+     formErrors.logisticsBppId = storeDetails.onNetworkLogistics === "true" ? storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "" : "";
+     formErrors.logisticsDeliveryType = storeDetails.onNetworkLogistics === "false" ? storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Delivery Type is required" : "" : "";
+     formErrors.deliveryTime = storeDetails.onNetworkLogistics === "false" ? storeDetails.deliveryTime === "" ? "Delivery Time is required" : "" : "";
+    // formErrors.logisticsBppId = "";
+    // formErrors.logisticsDeliveryType = "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
