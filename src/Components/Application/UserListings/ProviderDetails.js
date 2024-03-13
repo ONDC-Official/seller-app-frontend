@@ -359,7 +359,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     logo_path: "",
     holidays: [],
     radius: "",
-    onNetworkLogistics: "false",
+    onNetworkLogistics: "true",
     logisticsBppId: "",
     logisticsDeliveryType: "",
     deliveryTime: ""
@@ -392,7 +392,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     radius: "",
     logisticsBppId: "",
     logisticsDeliveryType: "",
-    onNetworkLogistics: "false",
+    onNetworkLogistics: "true",
     deliveryTime: "",
     custom_area: [],
   });
@@ -533,7 +533,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
         logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
         deliveryTime: res?.providerDetail?.storeDetails?.deliveryTime || "",
-        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "false",
+        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "true",
       };
 
       const polygonPoints = res?.providerDetail?.storeDetails?.custom_area
@@ -666,10 +666,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     } else {
     }
 
-    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
-    //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
-    formErrors.logisticsBppId = "";
-    formErrors.logisticsDeliveryType = "";
+    formErrors.logisticsBppId = storeDetails.onNetworkLogistics === "true" ? storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "" : "";
+    formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Delivery Type is required" : "";
+    formErrors.deliveryTime = storeDetails.onNetworkLogistics === "false" ? storeDetails.deliveryTime === "" ? "Delivery Time is required" : "" : "";
+    // formErrors.logisticsBppId = "";
+    // formErrors.logisticsDeliveryType = "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
@@ -948,7 +949,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         },
         onNetworkLogistics: storeDetails.onNetworkLogistics,
         logisticsBppId: storeDetails.onNetworkLogistics === 'true' ? storeDetails.logisticsBppId : '',
-        logisticsDeliveryType: storeDetails.onNetworkLogistics === 'false' ? storeDetails.logisticsDeliveryType : '',
+        logisticsDeliveryType: storeDetails.logisticsDeliveryType,
         deliveryTime: storeDetails.onNetworkLogistics === 'false' ? storeDetails.deliveryTime : '',
       };
       if (location) {
@@ -1160,6 +1161,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
+                  <RenderInput
+                    item={{
+                      id: "logisticsDeliveryType",
+                      title: "Logistics Delivery Type",
+                      placeholder: "Logistics Delivery Type",
+                      error: errors?.["logisticsDeliveryType"] ? true : false,
+                      helperText: errors?.["logisticsDeliveryType"] || "",
+                      options: deliveryTypeList,
+                      type: "select",
+                    }}
+                    state={storeDetails}
+                    stateHandler={setStoreDetails}
+                  />
                   {storeDetails.onNetworkLogistics === 'true' ? (
                     <RenderInput
                       item={{
@@ -1174,33 +1188,18 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                       stateHandler={setStoreDetails}
                     />
                   ) : (
-                    <>
-                      <RenderInput
-                        item={{
-                          id: "logisticsDeliveryType",
-                          title: "Logistics Delivery Type",
-                          placeholder: "Logistics Delivery Type",
-                          error: errors?.["logisticsDeliveryType"] ? true : false,
-                          helperText: errors?.["logisticsDeliveryType"] || "",
-                          options: deliveryTypeList,
-                          type: "select",
-                        }}
-                        state={storeDetails}
-                        stateHandler={setStoreDetails}
-                      />
-                      <RenderInput
-                        item={{
-                          id: "deliveryTime",
-                          title: "Delivery Time (in hours)",
-                          placeholder: "Delivery Time (in hours)",
-                          type: "number",
-                          error: errors?.["deliveryTime"] ? true : false,
-                          helperText: errors?.["deliveryTime"] || "",
-                        }}
-                        state={storeDetails}
-                        stateHandler={setStoreDetails}
-                      />
-                    </>
+                    <RenderInput
+                      item={{
+                        id: "deliveryTime",
+                        title: "Delivery Time (in hours)",
+                        placeholder: "Delivery Time (in hours)",
+                        type: "number",
+                        error: errors?.["deliveryTime"] ? true : false,
+                        helperText: errors?.["deliveryTime"] || "",
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
                   )}
                   <Fulfillments
                     errors={errors}
