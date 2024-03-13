@@ -366,19 +366,6 @@ export default function AddProduct() {
     );
   };
 
-  const fetchData = async () => {
-    let url = `https://api.catalogus.in/api/hub/search?barcode=${barCodeForm.formValues.barCodeValue}&barcode_type=${barCodeForm.formValues.barCodeType}&domain=grocery`;
-    try {
-      const response = await axios.get(url, {
-        headers: { "access-token": `Bearer cS8H6LiIhFMA+feDgIgkmwwkEJGwl+2d1Usb/MnE1tM=` },
-      });
-      return response.data;
-    } catch (err) {
-      const { status } = err.response;
-      if (status === 401) return "Unauthorised"
-    }
-  }
-
   const renderFields = () => {
     if (renderCategories && !state?.productId) {
       return (
