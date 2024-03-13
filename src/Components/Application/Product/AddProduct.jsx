@@ -20,6 +20,7 @@ import { Input } from "@material-ui/core";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import { getCall } from "../../../Api/axios";
+import axios from "axios";
 
 
 const customization_groups = [
@@ -112,6 +113,40 @@ const Customizations = [
   },
 ];
 
+const BarcodeFields = [
+  {
+    id: "barCodeType",
+    title: "Barcode Type",
+    placeholder: "Please Select Barcode type",
+    options: ["UPC", "GTIN", "HSN", "EAN", "MPN", "ISBN", "BARCODE"].map(
+      (v) => {
+        return { key: v, value: v };
+      }
+    ),
+    type: "select",
+    disableClearable: true,
+    required: false,
+  },
+  {
+    id: "barCodeValue",
+    title: "Barcode value",
+    placeholder: "Please enter Barcode value",
+    type: "input",
+    required: false,
+  },
+];
+
+const DataEntryRadioItem = {
+  id: "dataEntryMode",
+  title: "Data Entry Mode",
+  type: "radio",
+  options: [
+    { value: "manual", key: "Manual" },
+    { value: "catalogue", key: "Auto fill from Catalogue" },
+  ],
+  required: true,
+};
+
 export default function AddProduct() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -128,14 +163,24 @@ export default function AddProduct() {
     productSubcategory1: "",
   };
 
+  const barCodeInitialValues = {
+    barCodeType: "",
+    barCodeValue: "",
+  };
+
+  const dataEntryFormInitialValues = {
+    dataEntryMode: "manual",
+  };
+
   const categoryForm = useForm(categoryInitialValues);
+  const barCodeForm = useForm(barCodeInitialValues);
+  const dataEntryForm = useForm(dataEntryFormInitialValues);
   const category = categoryForm.formValues["productCategory"];
   const subCategory = categoryForm.formValues["productSubcategory1"];
 
   const getProductFieldDetails = (category_id) => {
     return allProductFieldDetails.find((field) => field.id === category_id);
   };
-
 
   const getOrgDetails = async (org_id) => {
     const url = `/api/v1/organizations/${org_id}/storeDetails`;
@@ -155,15 +200,18 @@ export default function AddProduct() {
       getOrgDetails(u.organization).then((org) => {
         let category = org?.storeDetails?.category;
         if (!category) navigate(`/application/store-details/${u.organization}`);
-        categoryForm.setFormValues(prev => { return {...prev, productCategory: category}})
+        categoryForm.setFormValues((prev) => {
+          return { ...prev, productCategory: category };
+        });
         let data = [...fields]; // Create a copy of the fields array
-        const subCategoryIndex = data.findIndex((item) => item.id === "productSubcategory1");
+        const subCategoryIndex = data.findIndex(
+          (item) => item.id === "productSubcategory1"
+        );
         data[subCategoryIndex].options = PRODUCT_SUBCATEGORY[category];
-        console.log( data[subCategoryIndex].options);
         setFields(data);
       });
     });
-  }, [])
+  }, []);
 
   useEffect(() => {
     let category = categoryForm.formValues["productCategory"];
@@ -222,7 +270,11 @@ export default function AddProduct() {
           Select Variants
         </label>
         <Box sx={{ display: "flex" }}>
-          <FormControl sx={{ ml: 3, display: "flex" }} component="fieldset" variant="standard">
+          <FormControl
+            sx={{ ml: 3, display: "flex" }}
+            component="fieldset"
+            variant="standard"
+          >
             <FormGroup sx={{ display: "flex" }}>
               {variants?.map(({ name }) => (
                 <FormControlLabel
@@ -246,18 +298,24 @@ export default function AddProduct() {
 
   const getSelectedVariantNames = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.filter((variant_name) => variantsCheckboxState[variant_name]);
+    return variant_names.filter(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
   };
 
   const anyVariantSelected = () => {
     let variant_names = Object.keys(variantsCheckboxState);
-    return variant_names.some((variant_name) => variantsCheckboxState[variant_name]);
+    return variant_names.some(
+      (variant_name) => variantsCheckboxState[variant_name]
+    );
   };
 
   const renderVariants = () => {
     return (
       <FormControl>
-        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">Variation On</div>
+        <div className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block mt-2">
+          Variation On
+        </div>
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
@@ -266,36 +324,86 @@ export default function AddProduct() {
           sx={{ paddingLeft: "22px" }}
         >
           <FormControlLabel value="none" control={<Radio />} label="None" />
-          <FormControlLabel value="attributes" control={<Radio />} label="Attribute" />
+          <FormControlLabel
+            value="attributes"
+            control={<Radio />}
+            label="Attribute"
+          />
           <FormControlLabel value="uom" control={<Radio />} label="UOM" />
         </RadioGroup>
       </FormControl>
     );
   };
 
+  const renderBarcodeFields = () => {
+    return BarcodeFields.map((item) => {
+      return (
+        item && (
+          <RenderInput
+            key={item.id}
+            item={{
+              ...item,
+            }}
+            state={barCodeForm.formValues}
+            stateHandler={barCodeForm.setFormValues}
+          />
+        )
+      );
+    });
+  };
+
+  const renderDataOptions = () => {
+    let item = DataEntryRadioItem;
+    return (
+      <RenderInput
+        key={item.id}
+        item={{
+          ...item,
+        }}
+        state={dataEntryForm.formValues}
+        stateHandler={dataEntryForm.setFormValues}
+      />
+    );
+  };
+
+  const fetchData = async () => {
+    let url = `https://api.catalogus.in/api/hub/search?barcode=${barCodeForm.formValues.barCodeValue}&barcode_type=${barCodeForm.formValues.barCodeType}&domain=grocery`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "access-token": `Bearer cS8H6LiIhFMA+feDgIgkmwwkEJGwl+2d1Usb/MnE1tM=` },
+      });
+      return response.data;
+    } catch (err) {
+      const { status } = err.response;
+      if (status === 401) return "Unauthorised"
+    }
+  }
+
   const renderFields = () => {
     if (renderCategories && !state?.productId) {
       return (
         <div>
           {renderCategoryFields()}
-          {/* {category && subCategory && category !== "F&B" && renderVariants()} */}
-          {renderVariants()}
-          {variationOn === "attributes" && renderVariantsList()}
+          {renderDataOptions()}
+          {dataEntryForm.formValues.dataEntryMode === "manual"
+            ? renderVariants()
+            : renderBarcodeFields()}
+          {dataEntryForm.formValues.dataEntryMode === "manual" && variationOn === "attributes" && renderVariantsList()}
         </div>
       );
     } else {
       let selectedCategory = categoryForm.formValues?.productCategory;
       if (!selectedCategory) selectedCategory = state?.productCategory;
-
       return (
         <ProductDetails
           state={state}
+          barCodeForm={barCodeForm}
           categoryForm={categoryForm}
           category={selectedCategory}
           subCategory={categoryForm.formValues?.productSubcategory1}
           attributes={attributes}
           variants={variants}
-          variationOn={variationOn}
+          variationOn={dataEntryForm.formValues.dataEntryMode === "manual" ? variationOn : "none"}
           selectedVariantNames={getSelectedVariantNames()}
         />
       );
@@ -309,7 +417,9 @@ export default function AddProduct() {
           className="w-full bg-white px-4 py-4 rounded-md h-full scrollbar-hidden"
           style={{ minHeight: "95%", maxHeight: "100%", overflow: "auto" }}
         >
-          <BackNavigationButton onClick={() => navigate("/application/inventory")} />
+          <BackNavigationButton
+            onClick={() => navigate("/application/inventory")}
+          />
           <div className="w-full !h-full">
             <label className="ml-2 md:mb-4 md:mt-3 mt-2 font-semibold text-xl">
               {state?.productId == undefined ? "Add Product" : "Update Product"}
@@ -334,7 +444,12 @@ export default function AddProduct() {
                     !(
                       categoryForm.formValues["productCategory"] &&
                       categoryForm.formValues["productSubcategory1"] &&
-                      (variationOn === "none" || variationOn === "uom" || anyVariantSelected())
+                      (dataEntryForm.formValues.dataEntryMode === "manual"
+                        ? variationOn === "none" ||
+                          variationOn === "uom" ||
+                          anyVariantSelected()
+                        : barCodeForm.formValues.barCodeType &&
+                          barCodeForm.formValues.barCodeValue)
                     )
                   }
                   onClick={() => setRenderCategories(false)}
