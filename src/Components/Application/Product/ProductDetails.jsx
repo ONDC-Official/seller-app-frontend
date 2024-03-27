@@ -656,12 +656,6 @@ const AddGenericProduct = ({
         : formValues?.productName?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.HSNCode =
-      formValues?.HSNCode?.trim() === ""
-        ? "HSN code is not allowed to be empty"
-        : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
-        ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
-        : "";
     formErrors.countryOfOrigin =
       formValues?.countryOfOrigin?.trim() === ""
         ? "Country of origin is not allowed to be empty"
@@ -875,6 +869,8 @@ const AddGenericProduct = ({
       ...formErrors,
     });
 
+    console.log("Product Info errors", formErrors);
+
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
 
     return valid_form;
@@ -999,7 +995,8 @@ const AddGenericProduct = ({
 
   const handleSubmit = () => {
     if (validate()) {
-      state?.productId ? updateProduct() : addProduct();
+      console.log("All good...")
+      // state?.productId ? updateProduct() : addProduct();
     }
   };
 
