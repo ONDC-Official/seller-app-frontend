@@ -995,8 +995,7 @@ const AddGenericProduct = ({
 
   const handleSubmit = () => {
     if (validate()) {
-      console.log("All good...")
-      // state?.productId ? updateProduct() : addProduct();
+      state?.productId ? updateProduct() : addProduct();
     }
   };
 
