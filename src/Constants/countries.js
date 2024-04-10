@@ -249,3 +249,7 @@ export const countries = [
   { value: "ZMB", key: "Zambia" },
   { value: "ZWE", key: "Zimbabwe" },
 ];
+
+export const countryNameToID =  countries.reduce((acc, data) => {
+  acc[data.key] = data.value; return acc;
+}, {});

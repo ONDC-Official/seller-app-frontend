@@ -39,9 +39,11 @@ import { getFormErrors } from "./utils";
 import VitalForm from "./VitalForm";
 import { v4 as uuidv4 } from "uuid";
 import CustomizationRenderer from "./CustomizationRenderer";
+import { countryNameToID } from "../../../Constants/countries";
 
 const AddGenericProduct = ({
   state,
+  barCodeForm,
   category,
   subCategory,
   categoryForm,
@@ -154,6 +156,7 @@ const AddGenericProduct = ({
       }
       delete variantData["formKey"];
       delete variantData["uploaded_urls"];
+      delete variantData["tempURL"];
 
       return variantData;
     });
@@ -164,14 +167,22 @@ const AddGenericProduct = ({
       let product_data = Object.assign({}, formValues, categoryForm.formValues);
       let vital_data = Object.assign({}, vitalForm);
       let variant_data = formattedVariantDataForAddProduct();
-      let api_url = variationOn === "none" ? "/api/v1/products" : "/api/v1/productWithVariant";
+      let api_url =
+        variationOn === "none"
+          ? "/api/v1/products"
+          : "/api/v1/productWithVariant";
 
-      const subCatList = PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
+      const subCatList =
+        PRODUCT_SUBCATEGORY[categoryForm.formValues?.productCategory];
       const selectedSubCatObject = subCatList.find(
-        (subitem) => subitem.value === categoryForm.formValues?.productSubcategory1
+        (subitem) =>
+          subitem.value === categoryForm.formValues?.productSubcategory1
       );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        const hiddenFields =
+          FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
+            selectedSubCatObject.protocolKey
+          ];
         hiddenFields.forEach((field) => {
           delete product_data[field];
         });
@@ -185,15 +196,21 @@ const AddGenericProduct = ({
       }
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
       product_data.returnWindow = iso8601;
-      product_data.isCancellable = product_data.isCancellable === "true" ? true : false;
-      product_data.isReturnable = product_data.isReturnable === "true" ? true : false;
+      product_data.isCancellable =
+        product_data.isCancellable === "true" ? true : false;
+      product_data.isReturnable =
+        product_data.isReturnable === "true" ? true : false;
       // product_data.isVegetarian = product_data.isVegetarian === "true" ? true : false;
-      product_data.availableOnCod = product_data.availableOnCod === "true" ? true : false;
+      product_data.availableOnCod =
+        product_data.availableOnCod === "true" ? true : false;
 
       delete product_data["uploaded_urls"];
       delete vital_data["tempURL"];
@@ -215,8 +232,6 @@ const AddGenericProduct = ({
         data["variationOn"] = variationOn?.toUpperCase();
       }
 
-      console.log({ data });
-
       await cancellablePromise(postCall(api_url, data));
       cogoToast.success("Product added successfully!");
       navigate("/application/inventory");
@@ -226,16 +241,101 @@ const AddGenericProduct = ({
     }
   };
 
+  const getSignedUrlsForPublicUrls = async (urls) => {
+    if (urls.length === 0) return [];
+    return postCall(`/api/v1/product/upload/publicUrl`, {urls: urls})
+      .then((resp) => {
+        return resp;
+      })
+      .catch((error) => {
+        cogoToast.error("Something went wrong!");
+        console.log(error);
+        return [];
+      });
+  };
+
+  const catalogueUOMToOndcUOM = {
+    "L": "litre",
+  }
+
+  const fetchProductFromCatalogue = async () => {
+    getCall(
+      `/api/v1/product/caas/search?barcode=${barCodeForm.formValues.barCodeValue}&barcode_type=${barCodeForm.formValues.barCodeType}&domain=${categoryForm.formValues?.productCategory}`
+    )
+      .then(async (resp) => {
+        let resp_data = resp.data.data[0];
+        let variant_data = resp.data.data[0].variants[0];
+        let images_data = await getSignedUrlsForPublicUrls(variant_data.ondc_info.Images)
+
+        let data = {
+          productCode: variant_data.barcode,
+          productName: variant_data.title,
+          MRP: variant_data.ondc_info.MRP.value,
+          quantity: variant_data.ondc_info["Net Quantity"],
+          UOM: catalogueUOMToOndcUOM[variant_data.ondc_info["UOM"]],
+          UOMValue: variant_data.ondc_info["Net Quantity"],
+          longDescription: variant_data.ondc_info["Product Description"],
+          manufacturerOrPackerName: variant_data.ondc_info["Manufacturer"],
+          countryOfOrigin:
+            countryNameToID[variant_data.ondc_info["Country Of Origin"]],
+          purchasePrice: "",
+          GST_Percentage: "",
+          barcode: "",
+          maxAllowedQty: "",
+          length: "",
+          breadth: "",
+          height: "",
+          weight: "",
+          returnWindow: "",
+          manufacturerName: "",
+          manufacturedDate: "",
+          nutritionalInfo: "",
+          additiveInfo: "",
+          instructions: "",
+          description: "",
+          vegNonVeg: "",
+          isReturnable: "false",
+          isCancellable: "false",
+          availableOnCod: "false",
+          images: images_data.map((i) => i?.path),
+          uploaded_urls: images_data.map((i) => i?.url),
+          manufacturerOrPackerAddress: "",
+          commonOrGenericNameOfCommodity: "",
+          monthYearOfManufacturePackingImport: "",
+          importerFSSAILicenseNo: "",
+          brandOwnerFSSAILicenseNo: "",
+          fulfillmentOption: "",
+          backImage: "",
+        };
+
+        setFormValues({ ...data });
+      })
+      .catch((error) => {
+        cogoToast.error("Something went wrong!");
+        console.log(error);
+      });
+  };
+
   const getProduct = () => {
     getCall(`/api/v1/products/${state.productId}`)
       .then((resp) => {
-        resp.commonDetails["uploaded_urls"] = resp?.commonDetails.images?.map((i) => i?.url) || [];
-        resp.commonDetails["images"] = resp?.commonDetails.images?.map((i) => i?.path) || [];
+        resp.commonDetails["uploaded_urls"] =
+          resp?.commonDetails.images?.map((i) => i?.url) || [];
+        resp.commonDetails["images"] =
+          resp?.commonDetails.images?.map((i) => i?.path) || [];
 
-        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable ? "true" : "false";
-        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable ? "true" : "false";
-        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian ? "true" : "false";
-        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod ? "true" : "false";
+        resp.commonDetails.isCancellable = resp.commonDetails.isCancellable
+          ? "true"
+          : "false";
+        resp.commonDetails.isReturnable = resp.commonDetails.isReturnable
+          ? "true"
+          : "false";
+        resp.commonDetails.isVegetarian = resp.commonDetails.isVegetarian
+          ? "true"
+          : "false";
+        resp.commonDetails.availableOnCod = resp.commonDetails.availableOnCod
+          ? "true"
+          : "false";
         setBackImagePath(resp.commonDetails.backImage.path);
         resp.commonDetails.backImage = resp.commonDetails.backImage.url;
 
@@ -249,21 +349,25 @@ const AddGenericProduct = ({
         const hours = duration.asHours();
         resp.commonDetails.returnWindow = String(hours);
         if (resp.commonAttributesValues["size_chart"]) {
-          resp.commonAttributesValues["size_chart"] = resp.commonAttributesValues["size_chart"].url;
+          resp.commonAttributesValues["size_chart"] =
+            resp.commonAttributesValues["size_chart"].url;
         }
         setFormValues({ ...resp.commonDetails });
         setVitalForm({ ...resp.commonAttributesValues });
 
         let category = resp.commonDetails["productCategory"];
         let sub_category = resp.commonDetails["productSubcategory1"];
-        let customization_groups = resp.customizationDetails?.customizationGroups?.map((group) => {
-          let optional = group.minQuantity === 0 ? true : false;
-          return { ...group, optional: optional };
-        });
-        setCustomizationGroups(customization_groups);
-        setCustomizations(resp.customizationDetails.customizations);
+        let customization_groups =
+          resp.customizationDetails?.customizationGroups?.map((group) => {
+            let optional = group.minQuantity === 0 ? true : false;
+            return { ...group, optional: optional };
+          });
+        // setCustomizationGroups(customization_groups);
+        // setCustomizations(resp.customizationDetails.customizations);
 
-        let attributes = allProperties[category][sub_category] || allProperties[category]["default"];
+        let attributes =
+          allProperties[category][sub_category] ||
+          allProperties[category]["default"];
         setVitalFields(formatAttributesToFieldsDataFormat(attributes));
       })
       .catch((error) => {
@@ -278,9 +382,14 @@ const AddGenericProduct = ({
       let product_data = Object.assign({}, formValues);
       let vital_data = Object.assign({}, vitalForm);
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-      const selectedSubCatObject = subCatList.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      const selectedSubCatObject = subCatList.find(
+        (subitem) => subitem.value === formValues?.productSubcategory1
+      );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        const hiddenFields =
+          FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
+            selectedSubCatObject.protocolKey
+          ];
         hiddenFields.forEach((field) => {
           delete product_data[field];
         });
@@ -288,7 +397,10 @@ const AddGenericProduct = ({
       }
 
       // Create a duration object with the hours you want to convert
-      const duration = moment.duration(parseInt(product_data.returnWindow), "hours");
+      const duration = moment.duration(
+        parseInt(product_data.returnWindow),
+        "hours"
+      );
 
       // Format the duration in ISO 8601 format
       const iso8601 = duration.toISOString();
@@ -324,8 +436,6 @@ const AddGenericProduct = ({
           customizations,
         },
       };
-
-      console.log({ data });
 
       await putCall(`/api/v1/products/${state.productId}`, data);
       cogoToast.success("Product updated successfully!");
@@ -368,7 +478,9 @@ const AddGenericProduct = ({
     });
 
     let updatedFields = [...allFields];
-    const fulfillmentOptionIndex = allFields.findIndex((field) => field.id === "fulfillmentOption");
+    const fulfillmentOptionIndex = allFields.findIndex(
+      (field) => field.id === "fulfillmentOption"
+    );
     if (fulfillmentOptionIndex !== -1) {
       updatedFields[fulfillmentOptionIndex].options = availableOptions;
       setAllFields(updatedFields);
@@ -379,6 +491,9 @@ const AddGenericProduct = ({
     window.scrollTo(0, 0);
     if (state?.productId) {
       getProduct();
+    }
+    if (barCodeForm.formValues.barCodeType) {
+      fetchProductFromCatalogue();
     }
     const user = JSON.parse(localStorage.getItem("user"));
     getOrgDetails(user.organization);
@@ -413,7 +528,9 @@ const AddGenericProduct = ({
     setProductInfoFields(getProductInfoFields());
 
     // Set vital form data
-    let vital_fields = attributes.filter((variant) => !selectedVariantNames.includes(variant.name));
+    let vital_fields = attributes.filter(
+      (variant) => !selectedVariantNames.includes(variant.name)
+    );
     vital_fields = formatAttributesToFieldsDataFormat(vital_fields);
     //vital_fields.map((field) => {
     //   return {
@@ -432,7 +549,9 @@ const AddGenericProduct = ({
     setVitalForm(initial_values);
 
     // Set variant form data
-    let default_variant_fields = variationCommonFields.map((field_id) => getProductFieldDetails(field_id));
+    let default_variant_fields = variationCommonFields.map((field_id) =>
+      getProductFieldDetails(field_id)
+    );
 
     if (variationOn !== "none") {
       let variants_fields = getVariantsFields();
@@ -472,22 +591,33 @@ const AddGenericProduct = ({
   const getProductInfoFields = () => {
     let product_info_fields = [...productDetailsFields];
     let p_category = state?.productId ? state?.productCategory : category;
-    let p_sub_category = state?.productId ? state?.productSubCategory : subCategory;
+    let p_sub_category = state?.productId
+      ? state?.productSubCategory
+      : subCategory;
     let protocolKey = PRODUCT_SUBCATEGORY[p_category]?.filter(
       (sub_category) => sub_category.value === p_sub_category
     )[0].protocolKey;
 
     if (protocolKey && protocolKey !== "") {
-      let fields_to_remove = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
-      product_info_fields = product_info_fields?.filter((field) => !fields_to_remove.includes(field));
+      let fields_to_remove =
+        FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[protocolKey];
+      product_info_fields = product_info_fields?.filter(
+        (field) => !fields_to_remove.includes(field)
+      );
     }
 
     if (category !== "Grocery" && category !== "F&B") {
-      product_info_fields = product_info_fields.filter((field) => field !== "vegNonVeg");
+      product_info_fields = product_info_fields.filter(
+        (field) => field !== "vegNonVeg"
+      );
     }
 
     if (!variationOn || variationOn === "none") {
-      return [...product_info_fields, ...UOMVariationFields, ...variationCommonFields];
+      return [
+        ...product_info_fields,
+        ...UOMVariationFields,
+        ...variationCommonFields,
+      ];
     } else if (variationOn === "attributes") {
       return [...product_info_fields, ...UOMVariationFields];
     } else {
@@ -499,10 +629,14 @@ const AddGenericProduct = ({
     if (!variationOn || variationOn === "none") {
       return [];
     } else if (variationOn === "attributes") {
-      let selected_variants = variants.filter((variant) => selectedVariantNames.includes(variant.name));
+      let selected_variants = variants.filter((variant) =>
+        selectedVariantNames.includes(variant.name)
+      );
       return formatAttributesToFieldsDataFormat(selected_variants, true);
     } else if (variationOn === "uom") {
-      return UOMVariationFields.map((field_id) => getProductFieldDetails(field_id));
+      return UOMVariationFields.map((field_id) =>
+        getProductFieldDetails(field_id)
+      );
     }
   };
 
@@ -522,15 +656,12 @@ const AddGenericProduct = ({
         : formValues?.productName?.length > MAX_STRING_LENGTH
         ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
         : "";
-    formErrors.HSNCode =
-      formValues?.HSNCode?.trim() === ""
-        ? "HSN code is not allowed to be empty"
-        : formValues?.HSNCode?.length > MAX_STRING_LENGTH_8
-        ? `Cannot be more than ${MAX_STRING_LENGTH_8} characters`
-        : "";
     formErrors.countryOfOrigin =
-      formValues?.countryOfOrigin?.trim() === "" ? "Country of origin is not allowed to be empty" : "";
-    formErrors.GST_Percentage = formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
+      formValues?.countryOfOrigin?.trim() === ""
+        ? "Country of origin is not allowed to be empty"
+        : "";
+    formErrors.GST_Percentage =
+      formValues?.GST_Percentage === "" ? "GST percentage is required" : "";
     formErrors.maxAllowedQty = !formValues?.maxAllowedQty
       ? "Please enter a valid Max. Allowed Quantity"
       : formValues?.maxAllowedQty?.length > MAX_STRING_LENGTH_10
@@ -540,7 +671,8 @@ const AddGenericProduct = ({
       : "";
     formErrors.UOM = formValues?.UOM === "" ? "UOM unit is required" : "";
     formErrors.fulfillmentOption =
-      formValues?.fulfillmentOption === undefined || formValues?.fulfillmentOption === ""
+      formValues?.fulfillmentOption === undefined ||
+      formValues?.fulfillmentOption === ""
         ? "Fulfillment Option is required"
         : "";
     // formErrors.UOM =
@@ -587,7 +719,10 @@ const AddGenericProduct = ({
         : formValues?.manufacturerName?.length > MAX_STRING_LENGTH_50
         ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
         : "";
-    formErrors.manufacturedDate = formValues?.manufacturedDate?.trim() === "" ? "Manufactured date is required" : "";
+    formErrors.manufacturedDate =
+      formValues?.manufacturedDate?.trim() === ""
+        ? "Manufactured date is required"
+        : "";
     if (productInfoFields.includes("nutritionalInfo")) {
       formErrors.nutritionalInfo =
         formValues?.nutritionalInfo?.trim() === ""
@@ -634,7 +769,8 @@ const AddGenericProduct = ({
       formErrors.manufacturerOrPackerAddress =
         formValues?.manufacturerOrPackerAddress?.trim() === ""
           ? "Manufacturer or packer address is required"
-          : formValues?.manufacturerOrPackerAddress?.length > MAX_STRING_LENGTH_50
+          : formValues?.manufacturerOrPackerAddress?.length >
+            MAX_STRING_LENGTH_50
           ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
           : "";
     }
@@ -642,7 +778,8 @@ const AddGenericProduct = ({
       formErrors.commonOrGenericNameOfCommodity =
         formValues?.commonOrGenericNameOfCommodity?.trim() === ""
           ? "Common or generic name of commodity is required"
-          : formValues?.commonOrGenericNameOfCommodity?.length > MAX_STRING_LENGTH_50
+          : formValues?.commonOrGenericNameOfCommodity?.length >
+            MAX_STRING_LENGTH_50
           ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
           : "";
     }
@@ -650,7 +787,8 @@ const AddGenericProduct = ({
       formErrors.monthYearOfManufacturePackingImport =
         formValues?.monthYearOfManufacturePackingImport?.trim() === ""
           ? "Month year of manufacture packing import is required"
-          : formValues?.monthYearOfManufacturePackingImport?.length > MAX_STRING_LENGTH
+          : formValues?.monthYearOfManufacturePackingImport?.length >
+            MAX_STRING_LENGTH
           ? `Cannot be more than ${MAX_STRING_LENGTH} characters`
           : "";
     }
@@ -698,19 +836,27 @@ const AddGenericProduct = ({
         ? `Cannot be more than ${MAX_STRING_LENGTH_12} characters`
         : "";
       formErrors.images =
-        formValues?.productCategory !== "f_and_b" && formValues?.images.length < 3
+        formValues?.productCategory !== "f_and_b" &&
+        formValues?.images.length < 3
           ? "Minimum 3 images are required"
           : "";
 
       formErrors.backImage =
-        formValues?.backImage?.trim() === "" ? "Please upload an image of the back of the product." : "";
+        formValues?.backImage?.trim() === ""
+          ? "Please upload an image of the back of the product."
+          : "";
     }
 
     if (formValues?.productCategory) {
       const subCatList = PRODUCT_SUBCATEGORY[formValues?.productCategory];
-      const selectedSubCatObject = subCatList?.find((subitem) => subitem.value === formValues?.productSubcategory1);
+      const selectedSubCatObject = subCatList?.find(
+        (subitem) => subitem.value === formValues?.productSubcategory1
+      );
       if (selectedSubCatObject && selectedSubCatObject.protocolKey) {
-        const hiddenFields = FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[selectedSubCatObject.protocolKey];
+        const hiddenFields =
+          FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY[
+            selectedSubCatObject.protocolKey
+          ];
         hiddenFields?.forEach((field) => {
           formErrors[field] = "";
         });
@@ -723,6 +869,8 @@ const AddGenericProduct = ({
       ...formErrors,
     });
 
+    console.log("Product Info errors", formErrors);
+
     let valid_form = !Object.values(formErrors).some((val) => val !== "");
 
     return valid_form;
@@ -733,7 +881,9 @@ const AddGenericProduct = ({
       return true;
     } else {
       let form_errors = getFormErrors(vitalFields, vitalForm);
-      let is_valid_form = form_errors ? !Object.values(form_errors).some((val) => val !== "") : true;
+      let is_valid_form = form_errors
+        ? !Object.values(form_errors).some((val) => val !== "")
+        : true;
       setVitalFormErrors(form_errors);
       return is_valid_form;
     }
@@ -743,8 +893,12 @@ const AddGenericProduct = ({
     if (variationOn === "none") {
       return true;
     } else {
-      let forms_errors = variantForms.map((variant_form) => getFormErrors(variantFields, variant_form));
-      let has_forms_errors = forms_errors.map((form_errors) => Object.values(form_errors).some((val) => val !== ""));
+      let forms_errors = variantForms.map((variant_form) =>
+        getFormErrors(variantFields, variant_form)
+      );
+      let has_forms_errors = forms_errors.map((form_errors) =>
+        Object.values(form_errors).some((val) => val !== "")
+      );
       let are_valid_forms = !has_forms_errors.some((val) => val === true);
       setVariantFormsErrors(forms_errors);
       return are_valid_forms;
@@ -758,21 +912,35 @@ const AddGenericProduct = ({
     };
 
     const getCustomizationName = (customizationId) => {
-      const customization = customizations.find((customization) => customization.id === customizationId);
+      const customization = customizations.find(
+        (customization) => customization.id === customizationId
+      );
       return customization ? customization.name : "";
     };
 
-    const selectedCustomizations = customizations.filter((customization) => customization.parent);
+    const selectedCustomizations = customizations.filter(
+      (customization) => customization.parent
+    );
 
     if (customizationGroups.length > 0) {
       // Validation check: If customization groups are present, check that all groups have at least one customization.
-      const groupIdsWithCustomizations = new Set(selectedCustomizations.map((customization) => customization.parent));
+      const groupIdsWithCustomizations = new Set(
+        selectedCustomizations.map((customization) => customization.parent)
+      );
       const groupIds = new Set(customizationGroups.map((group) => group.id));
 
       if (groupIdsWithCustomizations.size < groupIds.size) {
-        const missingGroups = [...groupIds].filter((groupId) => !groupIdsWithCustomizations.has(groupId));
-        const missingGroupNames = missingGroups.map((groupId) => getCustomizationGroupName(groupId));
-        cogoToast.error(`Please add at least one customization for groups: ${missingGroupNames.join(", ")}.`);
+        const missingGroups = [...groupIds].filter(
+          (groupId) => !groupIdsWithCustomizations.has(groupId)
+        );
+        const missingGroupNames = missingGroups.map((groupId) =>
+          getCustomizationGroupName(groupId)
+        );
+        cogoToast.error(
+          `Please add at least one customization for groups: ${missingGroupNames.join(
+            ", "
+          )}.`
+        );
         return false;
       }
     }
@@ -781,7 +949,8 @@ const AddGenericProduct = ({
     const invalidCustomizations = selectedCustomizations.filter(
       (customization) =>
         !customization.child &&
-        (!customization.price || (customization.price <= 0 && customization.default === "false"))
+        (!customization.price ||
+          (customization.price <= 0 && customization.default === "false"))
     );
 
     if (invalidCustomizations.length > 0) {
@@ -792,7 +961,9 @@ const AddGenericProduct = ({
       });
 
       cogoToast.error(
-        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(", ")}.`
+        `Customizations with the following details must have a price greater than 0: ${errorMessages.join(
+          ", "
+        )}.`
       );
       return false;
     }
@@ -814,7 +985,10 @@ const AddGenericProduct = ({
       return [...prev_state];
     });
 
-    let result = variants_forms_validity && product_info_form_validity && vital_info_form_validity;
+    let result =
+      variants_forms_validity &&
+      product_info_form_validity &&
+      vital_info_form_validity;
 
     return result;
   };
@@ -878,25 +1052,36 @@ const AddGenericProduct = ({
     if (!formValidate) {
       let formErrors = {};
       let focusFieldValue = formValues[focusedField]?.toString().trim();
-      if (focusFieldValue !== "" && focusedField === "manufacturerOrPackerName") {
+      if (
+        focusFieldValue !== "" &&
+        focusedField === "manufacturerOrPackerName"
+      ) {
         formErrors.manufacturerOrPackerName =
           formValues?.manufacturerOrPackerName?.trim() === ""
             ? "Manufacturer or packer name is required"
             : formValues?.manufacturerOrPackerName.length > MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
-      } else if (focusFieldValue !== "" && focusedField === "manufacturerOrPackerAddress") {
+      } else if (
+        focusFieldValue !== "" &&
+        focusedField === "manufacturerOrPackerAddress"
+      ) {
         formErrors.manufacturerOrPackerAddress =
           formValues?.manufacturerOrPackerAddress?.trim() === ""
             ? "Manufacturer or packer address is required"
-            : formValues?.manufacturerOrPackerAddress.length > MAX_STRING_LENGTH_50
+            : formValues?.manufacturerOrPackerAddress.length >
+              MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
-      } else if (focusFieldValue !== "" && focusedField === "commonOrGenericNameOfCommodity") {
+      } else if (
+        focusFieldValue !== "" &&
+        focusedField === "commonOrGenericNameOfCommodity"
+      ) {
         formErrors.description =
           formValues?.description?.trim() === ""
             ? "Short description cannot be empty"
-            : formValues?.commonOrGenericNameOfCommodity.length > MAX_STRING_LENGTH_50
+            : formValues?.commonOrGenericNameOfCommodity.length >
+              MAX_STRING_LENGTH_50
             ? `Cannot be more than ${MAX_STRING_LENGTH_50} characters`
             : "";
       } else if (focusFieldValue !== "" && focusedField === "description") {
@@ -923,10 +1108,17 @@ const AddGenericProduct = ({
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleTabChange} textColor={highlightedTabColor} centered>
+            <TabList
+              onChange={handleTabChange}
+              textColor={highlightedTabColor}
+              centered
+            >
               <Tab
                 sx={{
-                  color: tabErrors[0] && Object.keys(errors).length > 0 ? "red" : "none",
+                  color:
+                    tabErrors[0] && Object.keys(errors).length > 0
+                      ? "red"
+                      : "none",
                 }}
                 label="Product Info"
                 value="1"
@@ -936,7 +1128,10 @@ const AddGenericProduct = ({
               {Object.keys(vitalFields).length > 0 && (
                 <Tab
                   sx={{
-                    color: tabErrors[1] && Object.keys(errors).length > 0 ? "red" : "none",
+                    color:
+                      tabErrors[1] && Object.keys(errors).length > 0
+                        ? "red"
+                        : "none",
                   }}
                   label="Vital Info"
                   value="2"
@@ -945,7 +1140,10 @@ const AddGenericProduct = ({
               {variationOn !== "none" && (
                 <Tab
                   sx={{
-                    color: tabErrors[2] && Object.keys(errors).length > 0 ? "red" : "none",
+                    color:
+                      tabErrors[2] && Object.keys(errors).length > 0
+                        ? "red"
+                        : "none",
                   }}
                   label="Variations"
                   value="3"

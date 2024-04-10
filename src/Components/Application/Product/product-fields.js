@@ -4,10 +4,10 @@ import { PRODUCT_CATEGORY } from "../../../utils/constants";
 export const allProductFieldDetails = [
   {
     id: "productCode",
-    title: "Product Code",
+    title: "Product Code (EAN / ISBN / GTIN / HSN / Others)",
     placeholder: "Product Code",
     type: "input",
-    required: true,
+    required: false,
   },
   {
     id: "productName",
@@ -355,7 +355,6 @@ export const productDetailsFields = [
   "description",
   "longDescription",
   "countryOfOrigin",
-  "HSNCode",
   "GST_Percentage",
   "maxAllowedQty",
   "length",

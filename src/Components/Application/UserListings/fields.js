@@ -31,34 +31,3 @@ export const selfPickupFulfillmentFields = [
     required: true,
   },
 ];
-
-export const deliveryAndSelfPickupFulfillmentFields = [
-  {
-    id: "deliveryEmail",
-    title: "Delivery Email",
-    placeholder: "Enter Delivery Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "deliveryMobile",
-    title: "Delivery Contact Number",
-    placeholder: "Enter Delivery Contact Number",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "selfPickupEmail",
-    title: "SelfPickup Email",
-    placeholder: "Enter SelfPickup Email",
-    type: "input",
-    required: true,
-  },
-  {
-    id: "selfPickupMobile",
-    title: "SelfPickup Contact Number",
-    placeholder: "Enter SelfPickup Contact Number",
-    type: "input",
-    required: true,
-  },
-];

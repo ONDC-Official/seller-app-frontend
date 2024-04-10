@@ -215,6 +215,7 @@ let storeFields = [
       { key: "PAN India", value: "pan_india" },
       { key: "City", value: "city" },
       { key: "Custom area", value: "custom_area" },
+      { key: "Radius", value: "radius" },
     ],
     type: "radio",
     required: true,
@@ -289,7 +290,7 @@ let storeFields = [
     type: "upload",
     required: true,
     fontColor: "#ffffff",
-  },
+  }
 ];
 
 const defaultStoreTimings = [
@@ -312,16 +313,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     deliveryDetails: {
       deliveryEmail: "",
       deliveryMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
     selfPickupDetails: {
       selfPickupEmail: "",
       selfPickupMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
     deliveryAndSelfPickupDetails: {
       deliveryEmail: "",
       deliveryMobile: "",
       selfPickupEmail: "",
       selfPickupMobile: "",
+      storeTimings: [...defaultStoreTimings],
     },
   });
 
@@ -355,8 +359,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     logo_path: "",
     holidays: [],
     radius: "",
+    onNetworkLogistics: "true",
     logisticsBppId: "",
     logisticsDeliveryType: "",
+    deliveryTime: ""
   });
 
   const [errors, setErrors] = useState(null);
@@ -386,6 +392,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     radius: "",
     logisticsBppId: "",
     logisticsDeliveryType: "",
+    onNetworkLogistics: "true",
+    deliveryTime: "",
     custom_area: [],
   });
 
@@ -402,17 +410,23 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     let email_self = "";
     let mobile_self = "";
 
+    let deliveryStoreTimings = [...defaultStoreTimings];
+    let selfPickupStoreTimings = [...defaultStoreTimings];
+    let deliveryAndSelfPickupStoreTimings = [...defaultStoreTimings];
+
     fulfillments?.forEach((fulfillment) => {
       if (fulfillment.id === "f1") {
         hasF1 = true;
         deliveryEmail = fulfillment.contact.email;
         deliveryMobile = fulfillment.contact.phone;
+        deliveryStoreTimings = fulfillment.storeTimings;
       }
 
       if (fulfillment.id === "f2") {
         hasF2 = true;
         selfPickupEmail = fulfillment.contact.email;
         selfPickupMobile = fulfillment.contact.phone;
+        selfPickupStoreTimings = fulfillment.storeTimings;
       }
 
       if (fulfillment.id === "f3") {
@@ -421,6 +435,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         mobile_delivery = fulfillment.contact.delivery.phone;
         email_self = fulfillment.contact.pickup.email;
         mobile_self = fulfillment.contact.pickup.phone;
+        deliveryAndSelfPickupStoreTimings = fulfillment.storeTimings;
       }
     });
 
@@ -434,16 +449,22 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         deliveryDetails: {
           deliveryEmail,
           deliveryMobile,
+          storeTimings: deliveryStoreTimings,
         },
         selfPickupDetails: {
           selfPickupEmail,
           selfPickupMobile,
+          storeTimings: selfPickupStoreTimings,
         },
         deliveryAndSelfPickupDetails: {
           deliveryEmail: email_delivery,
           deliveryMobile: mobile_delivery,
           selfPickupEmail: email_self,
           selfPickupMobile: mobile_self,
+          storeTimings:
+            deliveryAndSelfPickupStoreTimings && deliveryAndSelfPickupStoreTimings.length > 0
+              ? deliveryAndSelfPickupStoreTimings
+              : [...defaultStoreTimings],
         },
       },
     };
@@ -453,7 +474,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     try {
       const url = `/api/v1/organizations/${id}`;
       const res = await getCall(url);
+      if (res?.providerDetail?.storeDetails?.deliveryTime) {
+        // Get the number of hours from the duration object
+        const duration = moment.duration(res.providerDetail.storeDetails.deliveryTime);
+        const hours = duration.asHours();
+        res.providerDetail.storeDetails.deliveryTime = String(hours);
 
+      }
       setProviderDetails({
         email: res.user.email,
         mobile: res.user.mobile,
@@ -482,11 +509,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         cancelledCheque: res?.providerDetail?.bankDetails?.cancelledCheque?.url,
       });
 
-      console.log(
-        "res?.providerDetail?.storeDetails?.logisticsDeliveryType=====>",
-        res?.providerDetail?.storeDetails?.logisticsDeliveryType
-      );
-
       let storeData = {
         email: res.providerDetail.storeDetails?.supportDetails.email || "",
         mobile: res.providerDetail.storeDetails?.supportDetails.mobile || "",
@@ -510,6 +532,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         radius: res?.providerDetail?.storeDetails?.radius?.value || "",
         logisticsBppId: res?.providerDetail?.storeDetails?.logisticsBppId || "",
         logisticsDeliveryType: res?.providerDetail?.storeDetails?.logisticsDeliveryType || "",
+        deliveryTime: res?.providerDetail?.storeDetails?.deliveryTime || "",
+        onNetworkLogistics: JSON.stringify(res?.providerDetail?.storeDetails?.onNetworkLogistics) || "true",
       };
 
       const polygonPoints = res?.providerDetail?.storeDetails?.custom_area
@@ -536,13 +560,12 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       setDefaultStoreDetails(Object.assign({}, JSON.parse(JSON.stringify(storeData))));
       setStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
       setOriginalStoreTimings(res?.providerDetail?.storeDetails?.storeTiming?.enabled || defaultStoreTimings);
-      console.log("storeData=====>", storeData);
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log("storeDetails=====>", storeDetails);
+  //   console.log("storeDetails=====>", storeDetails);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -578,7 +601,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
   }
 
   const getStoreTimesErrors = () => {
-    let values = storeTimings.reduce((acc, storeTiming) => {
+    let values = storeTimings?.reduce((acc, storeTiming) => {
       acc.push(storeTiming.daysRange.from);
       acc.push(storeTiming.daysRange.to);
       storeTiming.timings.forEach((element) => {
@@ -587,7 +610,20 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       });
       return acc;
     }, []);
-    return values.some((value) => value === "") ? "Please fix all details of timings!" : "";
+    return values?.some((value) => value === "") ? "Please fix all details of timings!" : "";
+  };
+
+  const getTimingErrors = (storeTimings) => {
+    let values = storeTimings?.reduce((acc, storeTiming) => {
+      acc.push(storeTiming.daysRange.from);
+      acc.push(storeTiming.daysRange.to);
+      storeTiming.timings.forEach((element) => {
+        acc.push(element.from);
+        acc.push(element.to);
+      });
+      return acc;
+    }, []);
+    return values?.some((value) => value === "" || value === "Invalid date") ? "Please fix all details of timings!" : "";
   };
 
   const validate = () => {
@@ -596,14 +632,14 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       storeDetails.email?.trim() === ""
         ? "Support Email is required"
         : !isEmailValid(storeDetails.email)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
     formErrors.mobile =
       storeDetails.mobile?.trim() === ""
         ? "Support Mobile Number is required"
         : !isPhoneNoValid(storeDetails.mobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
     formErrors.category = storeDetails.category?.trim() === "" ? "Supported Product Category is required" : "";
     // formErrors.location = storeDetails.location.trim() === '' ? 'Location is required' : ''
@@ -630,24 +666,19 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
     } else {
     }
 
-    formErrors.radius =
-      storeDetails.radius?.trim() === ""
-        ? "Serviceable Radius/Circle is required"
-        : !isNumberOnly(storeDetails?.radius)
-        ? "Please enter only digit"
-        : "";
-    //  formErrors.logisticsBppId = storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "";
-    //  formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Bpp Id is required" : "";
-    formErrors.logisticsBppId = "";
-    formErrors.logisticsDeliveryType = "";
+    formErrors.logisticsBppId = storeDetails.onNetworkLogistics === "true" ? storeDetails.logisticsBppId.trim() === "" ? "Logistics Bpp Id is required" : "" : "";
+    formErrors.logisticsDeliveryType = storeDetails.logisticsDeliveryType.trim() === "" ? "Logistics Delivery Type is required" : "";
+    formErrors.deliveryTime = storeDetails.onNetworkLogistics === "false" ? storeDetails.deliveryTime === "" ? "Delivery Time is required" : "" : "";
+    // formErrors.logisticsBppId = "";
+    // formErrors.logisticsDeliveryType = "";
 
     formErrors.deliveryEmail =
       supportedFulfillments.delivery !== false
         ? fulfillmentDetails.deliveryDetails?.deliveryEmail?.trim() === ""
           ? "Delivery Email is required"
           : !isEmailValid(fulfillmentDetails.deliveryDetails?.deliveryEmail)
-          ? "Please enter a valid email address"
-          : ""
+            ? "Please enter a valid email address"
+            : ""
         : "";
 
     formErrors.deliveryMobile =
@@ -655,8 +686,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.deliveryDetails?.deliveryMobile?.trim() === ""
           ? "Mobile Number is required"
           : !isPhoneNoValid(fulfillmentDetails.deliveryDetails?.deliveryMobile)
-          ? "Please enter a valid mobile number"
-          : ""
+            ? "Please enter a valid mobile number"
+            : ""
         : "";
 
     formErrors.selfPickupEmail =
@@ -664,8 +695,8 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.selfPickupDetails?.selfPickupEmail?.trim() === ""
           ? "Delivery Email is required"
           : !isEmailValid(fulfillmentDetails.selfPickupDetails?.selfPickupEmail)
-          ? "Please enter a valid email address"
-          : ""
+            ? "Please enter a valid email address"
+            : ""
         : "";
 
     formErrors.selfPickupMobile =
@@ -673,9 +704,36 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         ? fulfillmentDetails.selfPickupDetails?.selfPickupMobile?.trim() === ""
           ? "Mobile Number is required"
           : !isPhoneNoValid(fulfillmentDetails.selfPickupDetails?.selfPickupMobile)
-          ? "Please enter a valid mobile number"
-          : ""
+            ? "Please enter a valid mobile number"
+            : ""
         : "";
+
+    const deliveryStoreTimings = fulfillmentDetails.deliveryDetails.storeTimings;
+    const selfDeliveryStoreTimings = fulfillmentDetails.selfPickupDetails.storeTimings;
+
+    if (supportedFulfillments.delivery !== false) {
+      formErrors.deliveryStoreTimings = getTimingErrors(deliveryStoreTimings);
+    }
+
+    if (supportedFulfillments.selfPickup !== false) {
+      formErrors.selfPickupStoreTimings = getTimingErrors(selfDeliveryStoreTimings);
+    }
+
+    if (storeDetails.location_availability === "custom_area") {
+      formErrors.customArea =
+        storeDetails?.location_availability === "custom_area" && polygonPoints.length == 0
+          ? "Please mark the polygon"
+          : "";
+      formErrors.radius = "";
+    } else if (storeDetails.location_availability === "radius") {
+      formErrors.radius =
+        storeDetails.radius?.trim() === ""
+          ? "Serviceable Radius/Circle is required"
+          : !isNumberOnly(storeDetails?.radius)
+            ? "Please enter only digit"
+            : "";
+      formErrors.customArea = "";
+    }
 
     if (supportedFulfillments.deliveryAndSelfPickup) {
       formErrors.deliveryAndSelfPickupDetails = {};
@@ -685,30 +743,33 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       const deliveryMobile = deliveryAndSelfPickupDetails.deliveryMobile?.trim();
       const selfPickupEmail = deliveryAndSelfPickupDetails.selfPickupEmail?.trim();
       const selfPickupMobile = deliveryAndSelfPickupDetails.selfPickupMobile?.trim();
+      const timings = deliveryAndSelfPickupDetails.storeTimings;
+
+      formErrors.deliveryAndSelfPickupDetails.storeTimings = getTimingErrors(timings);
 
       formErrors.deliveryAndSelfPickupDetails.deliveryEmail = !deliveryEmail
         ? "Delivery Email is required"
         : !isEmailValid(deliveryEmail)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.deliveryMobile = !deliveryMobile
         ? "Mobile Number is required"
         : !isPhoneNoValid(deliveryMobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.selfPickupEmail = !selfPickupEmail
         ? "Delivery Email is required"
         : !isEmailValid(selfPickupEmail)
-        ? "Please enter a valid email address"
-        : "";
+          ? "Please enter a valid email address"
+          : "";
 
       formErrors.deliveryAndSelfPickupDetails.selfPickupMobile = !selfPickupMobile
         ? "Mobile Number is required"
         : !isPhoneNoValid(selfPickupMobile)
-        ? "Please enter a valid mobile number"
-        : "";
+          ? "Please enter a valid mobile number"
+          : "";
 
       // Check if all nested properties are empty, then delete the entire object from formErrors
       if (
@@ -736,8 +797,11 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
     setErrors(formErrors);
     if (Object.values(formErrors).some((val) => val !== "")) {
-      console.log(formErrors);
-      cogoToast.error("Please fill in all required data!");
+      if (formErrors.customArea && formErrors.customArea != "") {
+        cogoToast.error(formErrors.customArea);
+      } else {
+        cogoToast.error("Please fill in all required data!");
+      }
     }
     return !Object.values(formErrors).some((val) => val !== "");
   };
@@ -760,6 +824,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email: fulfillmentDetails.deliveryDetails.deliveryEmail,
           phone: fulfillmentDetails.deliveryDetails.deliveryMobile,
         },
+        storeTimings: fulfillmentDetails.deliveryDetails.storeTimings,
       };
       fulfillments.push(deliveryDetails);
     }
@@ -772,6 +837,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           email: fulfillmentDetails.selfPickupDetails.selfPickupEmail,
           phone: fulfillmentDetails.selfPickupDetails.selfPickupMobile,
         },
+        storeTimings: fulfillmentDetails.selfPickupDetails.storeTimings,
       };
       fulfillments.push(selfPickupDetails);
     }
@@ -790,7 +856,9 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
             phone: fulfillmentDetails.deliveryAndSelfPickupDetails.selfPickupMobile,
           },
         },
+        storeTimings: fulfillmentDetails.deliveryAndSelfPickupDetails.storeTimings,
       };
+      console.log("FULFILLMENT FOR D AND S", deliveryAndSelfPickupDetails);
       fulfillments.push(deliveryAndSelfPickupDetails);
     }
 
@@ -823,7 +891,6 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         mobile,
         email,
         cities,
-
         building,
         state,
         address_city,
@@ -852,6 +919,14 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
       } else {
       }
 
+      if (storeDetails.deliveryTime) {
+        const deliveryDuration = moment.duration(parseInt(storeDetails.deliveryTime), "hours");
+
+        // Format the duration in ISO 8601 format
+        const iso8601Delivery = deliveryDuration.toISOString();
+        storeDetails.deliveryTime = iso8601Delivery;
+      }
+
       let fulfillments = getFulfillmentsPayloadFormat();
       let storeTiming = getStoreTimingsPayloadFormat();
 
@@ -872,8 +947,10 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
           unit: "km",
           value: storeDetails.radius || "",
         },
-        logisticsBppId: storeDetails.logisticsBppId,
+        onNetworkLogistics: storeDetails.onNetworkLogistics,
+        logisticsBppId: storeDetails.onNetworkLogistics === 'true' ? storeDetails.logisticsBppId : '',
         logisticsDeliveryType: storeDetails.logisticsDeliveryType,
+        deliveryTime: storeDetails.onNetworkLogistics === 'false' ? storeDetails.deliveryTime : '',
       };
       if (location) {
         payload.location = location;
@@ -884,17 +961,13 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
         payload["city"] = cities;
       } else {
       }
-      if (polygonPoints.length > 0 && location_availability == "custom_area") {
-        payload["custom_area"] = polygonPoints;
-      }
+      payload["custom_area"] = polygonPoints;
 
       if (!startWithHttpRegex.test(storeDetails.logo)) {
         payload.logo = logo;
       } else {
         payload.logo = logo_path;
       }
-
-      console.log({ payload });
 
       postCall(url, payload)
         .then((resp) => {
@@ -922,41 +995,102 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
             marginBottom: 12,
           }}
           onClick={() => {
-            console.log("clicked", openPolygonMap);
             setOpenPolygonMap(true);
           }}
         >
-          View Map
+          Set Polygon Serviceability
         </p>
+
+        <p style={{ marginLeft: 12, fontSize: 12, color: "red" }}>{errors?.customArea}</p>
       </div>
     );
   };
 
   useEffect(() => {
     if (storeDetails.location_availability === "city") {
-      let fieldsWithoutCustomMap = storeDetailFields.filter((field) => field.type !== "custom-component");
-      let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
-        id: "cities",
-        title: "Select Cities",
-        placeholder: "Please Select Cities",
-        options: [
-          { key: "Delhi", value: "delhi" },
-          { key: "Pune", value: "pune" },
-          { key: "Bengaluru", value: "bengaluru" },
-          { key: "Kolkata", value: "kolkata" },
-          { key: "Noida", value: "noida" },
-        ],
-        type: "multi-select",
-        required: true,
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter(
+          (field) => field.id !== "cities" && field.id !== "radius" && field.type !== "custom-area"
+        );
+
+        const citiesFieldExists = updatedFields.some((field) => field.id === "cities");
+
+        if (!citiesFieldExists) {
+          let fieldsWithoutCustomMap = updatedFields.filter((field) => field.type !== "custom-component");
+          let fieldsWithCityInput = addAfter(fieldsWithoutCustomMap, 5, {
+            id: "cities",
+            title: "Select Cities",
+            placeholder: "Please Select Cities",
+            options: [
+              { key: "Delhi", value: "delhi" },
+              { key: "Pune", value: "pune" },
+              { key: "Bengaluru", value: "bengaluru" },
+              { key: "Kolkata", value: "kolkata" },
+              { key: "Noida", value: "noida" },
+            ],
+            type: "multi-select",
+            required: true,
+          });
+
+          return fieldsWithCityInput;
+        }
+
+        return updatedFields;
       });
-      setStoreDetailFields(fieldsWithCityInput);
     } else if (storeDetails.location_availability === "custom_area") {
-      let fieldsWithoutCityInput = storeDetailFields.filter((field) => field.id !== "cities");
-      let fieldsWithCustomMapInput = addAfter(fieldsWithoutCityInput, 5, {
-        type: "custom-component",
-        component: <CustomComponent />,
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter(
+          (field) => field.id !== "cities" && field.id !== "radius" && field.type !== "custom-area"
+        );
+
+        const existingCustomComponentIndex = updatedFields.findIndex((field) => field.type === "custom-component");
+
+        if (existingCustomComponentIndex !== -1) {
+          // Remove existing custom component
+          let fieldsWithoutExistingCustomComponent = [...updatedFields];
+          fieldsWithoutExistingCustomComponent.splice(existingCustomComponentIndex, 1);
+
+          // Add new custom component
+          let fieldsWithCustomMapInput = addAfter(fieldsWithoutExistingCustomComponent, 5, {
+            id: "custom-component",
+            type: "custom-component",
+            component: <CustomComponent />,
+          });
+
+          return fieldsWithCustomMapInput;
+        } else {
+          // If there is no existing custom component, simply add the new one
+          let fieldsWithCustomMapInput = addAfter(updatedFields, 5, {
+            id: "custom-component",
+            type: "custom-component",
+            component: <CustomComponent />,
+          });
+
+          return fieldsWithCustomMapInput;
+        }
       });
-      setStoreDetailFields(fieldsWithCustomMapInput);
+    } else if (storeDetails.location_availability === "radius") {
+      setStoreDetailFields((prevFields) => {
+        const updatedFields = prevFields.filter((field) => {
+          if (field.id !== "cities" && field.id !== "custom-component") {
+            return field;
+          }
+        });
+
+        const radiusFieldExists = prevFields.some((field) => field.id === "radius");
+        if (!radiusFieldExists) {
+          let fieldsWithRadiusInput = addAfter(updatedFields, 5, {
+            id: "radius",
+            title: "Serviceable Radius/Circle (in Kilometer)",
+            placeholder: "Serviceable Radius/Circle (in Kilometer)",
+            type: "input",
+            error: errors?.["radius"] ? true : false,
+            helperText: errors?.["radius"] || "",
+            required: true,
+          });
+          return fieldsWithRadiusInput;
+        }
+      });
     } else {
       setStoreDetailFields(storeFields);
     }
@@ -1010,19 +1144,23 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
 
               {!isFromUserListing && (
                 <>
+                  <p className="text-2xl font-semibold mb-4 mt-14">Logistics Details</p>
                   <RenderInput
                     item={{
-                      id: "logisticsBppId",
-                      title: "Logistics Bpp Id",
-                      placeholder: "Logistics Bpp Id",
-                      type: "input",
-                      error: errors?.["logisticsBppId"] ? true : false,
-                      helperText: errors?.["logisticsBppId"] || "",
+                      id: "onNetworkLogistics",
+                      title: "Network Logistics",
+                      options: [
+                        { key: "On", value: "true" },
+                        { key: "off", value: "false" },
+                      ],
+                      type: "radio",
+                      required: true,
+                      error: errors?.["onNetworkLogistics"] ? true : false,
+                      helperText: errors?.["onNetworkLogistics"] || "",
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-
                   <RenderInput
                     item={{
                       id: "logisticsDeliveryType",
@@ -1036,7 +1174,33 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     state={storeDetails}
                     stateHandler={setStoreDetails}
                   />
-
+                  {storeDetails.onNetworkLogistics === 'true' ? (
+                    <RenderInput
+                      item={{
+                        id: "logisticsBppId",
+                        title: "Logistics Bpp Id",
+                        placeholder: "Logistics Bpp Id",
+                        type: "input",
+                        error: errors?.["logisticsBppId"] ? true : false,
+                        helperText: errors?.["logisticsBppId"] || "",
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                  ) : (
+                    <RenderInput
+                      item={{
+                        id: "deliveryTime",
+                        title: "Delivery Time (in hours)",
+                        placeholder: "Delivery Time (in hours)",
+                        type: "number",
+                        error: errors?.["deliveryTime"] ? true : false,
+                        helperText: errors?.["deliveryTime"] || "",
+                      }}
+                      state={storeDetails}
+                      stateHandler={setStoreDetails}
+                    />
+                  )}
                   <Fulfillments
                     errors={errors}
                     supportedFulfillments={supportedFulfillments}
@@ -1046,7 +1210,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                   />
 
                   <p className="text-2xl font-semibold mb-2 mt-14">Store Timing</p>
-                  <RenderInput
+                  {/* <RenderInput
                     item={{
                       id: "radius",
                       title: "Serviceable Radius/Circle (in Kilometer)",
@@ -1058,7 +1222,7 @@ const ProviderDetails = ({ isFromUserListing = false }) => {
                     }}
                     state={storeDetails}
                     stateHandler={setStoreDetails}
-                  />
+                  /> */}
                   <div className="py-1 flex flex-col">
                     <FormControl component="fieldset">
                       <label className="text-sm py-2 ml-1 font-medium text-left text-[#606161] inline-block">
