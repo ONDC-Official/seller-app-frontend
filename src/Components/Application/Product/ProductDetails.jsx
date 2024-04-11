@@ -255,60 +255,82 @@ const AddGenericProduct = ({
   };
 
   const catalogueUOMToOndcUOM = {
-    "L": "litre",
-  }
+    g: "gram",
+    kg: "kilogram",
+    l: "litre",
+    ml: "millilitre",
+    mtr: "meter",
+    pack: "unit",
+    pc: "unit",
+    pull: "unit",
+    roll: "unit",
+    set: "unit",
+    stick: "unit",
+    wipe: "unit",
+    page: "unit",
+    sheet: "unit",
+    tab: "unit",
+    box: "unit",
+    cup: "unit",
+  };
 
   const fetchProductFromCatalogue = async () => {
     getCall(
       `/api/v1/product/caas/search?barcode=${barCodeForm.formValues.barCodeValue}&barcode_type=${barCodeForm.formValues.barCodeType}&domain=${categoryForm.formValues?.productCategory}`
     )
       .then(async (resp) => {
-        let resp_data = resp.data.data[0];
-        let variant_data = resp.data.data[0].variants[0];
-        let images_data = await getSignedUrlsForPublicUrls(variant_data.ondc_info.Images)
+        if (resp.data.total === 0) {
+          cogoToast.error("Product details unavailable!");
+        } else {
+          // let resp_data = resp.data.data[0];
+          let variant_data = resp.data.data[0]?.variants[0];
+          let images_data = await getSignedUrlsForPublicUrls(
+            variant_data.ondc_info.Images
+          );
 
-        let data = {
-          productCode: variant_data.barcode,
-          productName: variant_data.title,
-          MRP: variant_data.ondc_info.MRP.value,
-          quantity: variant_data.ondc_info["Net Quantity"],
-          UOM: catalogueUOMToOndcUOM[variant_data.ondc_info["UOM"]],
-          UOMValue: variant_data.ondc_info["Net Quantity"],
-          longDescription: variant_data.ondc_info["Product Description"],
-          manufacturerOrPackerName: variant_data.ondc_info["Manufacturer"],
-          countryOfOrigin:
-            countryNameToID[variant_data.ondc_info["Country Of Origin"]],
-          purchasePrice: "",
-          GST_Percentage: "",
-          barcode: "",
-          maxAllowedQty: "",
-          length: "",
-          breadth: "",
-          height: "",
-          weight: "",
-          returnWindow: "",
-          manufacturerName: "",
-          manufacturedDate: "",
-          nutritionalInfo: "",
-          additiveInfo: "",
-          instructions: "",
-          description: "",
-          vegNonVeg: "",
-          isReturnable: "false",
-          isCancellable: "false",
-          availableOnCod: "false",
-          images: images_data.map((i) => i?.path),
-          uploaded_urls: images_data.map((i) => i?.url),
-          manufacturerOrPackerAddress: "",
-          commonOrGenericNameOfCommodity: "",
-          monthYearOfManufacturePackingImport: "",
-          importerFSSAILicenseNo: "",
-          brandOwnerFSSAILicenseNo: "",
-          fulfillmentOption: "",
-          backImage: "",
-        };
+          let data = {
+            productCode: variant_data.barcode,
+            productName: variant_data.title,
+            MRP: variant_data.ondc_info.MRP.value,
+            quantity: variant_data.ondc_info["Net Quantity"],
+            UOM: catalogueUOMToOndcUOM[variant_data.variant_info.data.unit],
+            UOMValue: variant_data.ondc_info["Net Quantity"],
+            longDescription: variant_data.ondc_info["Product Description"],
+            manufacturerOrPackerName: variant_data.ondc_info["Manufacturer"],
+            countryOfOrigin:
+              countryNameToID[variant_data.ondc_info["Country Of Origin"]],
+            purchasePrice: "",
+            GST_Percentage: "",
+            barcode: "",
+            maxAllowedQty: "",
+            length: "",
+            breadth: "",
+            height: "",
+            weight: "",
+            returnWindow: "",
+            manufacturerName: "",
+            manufacturedDate: "",
+            nutritionalInfo: "",
+            additiveInfo: "",
+            instructions: "",
+            description: "",
+            vegNonVeg: "",
+            isReturnable: "false",
+            isCancellable: "false",
+            availableOnCod: "false",
+            images: images_data.map((i) => i?.path),
+            uploaded_urls: images_data.map((i) => i?.url),
+            manufacturerOrPackerAddress: "",
+            commonOrGenericNameOfCommodity: "",
+            monthYearOfManufacturePackingImport: "",
+            importerFSSAILicenseNo: "",
+            brandOwnerFSSAILicenseNo: "",
+            fulfillmentOption: "",
+            backImage: "",
+          };
 
-        setFormValues({ ...data });
+          setFormValues({ ...data });
+        }
       })
       .catch((error) => {
         cogoToast.error("Something went wrong!");
