@@ -130,7 +130,7 @@ const AddGenericProduct = ({
   const formatAttributesToFieldsDataFormat = (variants, required = false) => {
     return variants.map((variant) => {
       return {
-        id: variant.name,
+        id: variant.name.replace(/ /g,"_").toLowerCase(),
         title: variant.name,
         placeholder: variant.example,
         type: variant.type || "input",
