@@ -2106,7 +2106,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -2356,7 +2356,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -2629,7 +2629,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -2900,7 +2900,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -3186,7 +3186,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -3436,7 +3436,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -3694,7 +3694,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -3943,7 +3943,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -4186,7 +4186,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -4647,7 +4647,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -4911,7 +4911,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -5190,7 +5190,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -5449,7 +5449,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -5708,7 +5708,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -5951,7 +5951,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -6194,7 +6194,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -6437,7 +6437,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -6680,7 +6680,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -6930,7 +6930,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -7173,7 +7173,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -7416,7 +7416,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -7667,7 +7667,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -7886,7 +7886,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -8097,7 +8097,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -8308,7 +8308,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -8540,7 +8540,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -8780,7 +8780,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -9015,7 +9015,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -9274,7 +9274,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -9509,7 +9509,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Colour Name",
@@ -9855,7 +9855,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -10134,7 +10134,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -10398,7 +10398,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -10669,7 +10669,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -10941,7 +10941,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -11205,7 +11205,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -11477,7 +11477,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -11741,7 +11741,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -12005,7 +12005,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -12269,7 +12269,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -12533,7 +12533,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -12737,7 +12737,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -12941,7 +12941,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -13145,7 +13145,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -13356,7 +13356,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -13574,7 +13574,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -13785,7 +13785,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -13989,7 +13989,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -14193,7 +14193,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -14420,7 +14420,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -14647,7 +14647,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -14858,7 +14858,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -15069,7 +15069,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -15296,7 +15296,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -15680,7 +15680,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -15898,7 +15898,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -16141,7 +16141,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -16424,7 +16424,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -17100,7 +17100,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -18153,7 +18153,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -18397,7 +18397,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -19374,7 +19374,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -19618,7 +19618,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -19862,7 +19862,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -20114,7 +20114,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Colour Name",
@@ -20342,7 +20342,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Colour Name",
@@ -20570,7 +20570,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
@@ -20814,7 +20814,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Colour Name",
@@ -21042,7 +21042,7 @@ export const allProperties = {
                 "required": true,
                 "example": "",
                 "variationAllowed": false,
-                "type": "input"
+                "type": "upload"
             },
             {
                 "name": "Fabric",
