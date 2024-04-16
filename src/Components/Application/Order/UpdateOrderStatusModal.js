@@ -43,7 +43,7 @@ const UpdateOrderStatus = (props) => {
   useEffect(() => {
     if (data) {
       const currentSeq = FULFILLMENT_STATUS.find(
-        (status) => status.fulfillmentStatus === data.state.descriptor.code
+        (status) => status.fulfillmentStatus === data?.state?.descriptor.code
       )?.seq;
 
       if (currentSeq) {
@@ -90,7 +90,7 @@ const UpdateOrderStatus = (props) => {
               </div>
               <div style={{ width: 300 }}>
                 <div className="mt-3 mb-3 font-semibold ">Current Status:</div>
-                {data?.state.descriptor.code}
+                {data?.state?.descriptor.code}
               </div>
               <div style={{ width: 300 }}>
                 <div className="mt-3 mb-3 font-semibold ">Status:</div>

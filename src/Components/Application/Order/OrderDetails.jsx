@@ -123,6 +123,7 @@ const OrderDetails = () => {
 
   const handleCloseStatusModal = () => {
     setIsUpdateOrderModalOpen(false)
+    getOrder();
     setloading({ ...loading, update_order_loading: false });
 
   }
