@@ -35,4 +35,9 @@ export const RETURN_REJECT_REASONS = [
     value: "Final sale",
     isApplicableForCancellation: false,
   },
+  {
+    key: "08",
+    value: "Duplicate return request",
+    isApplicableForCancellation: false,
+  },
 ];

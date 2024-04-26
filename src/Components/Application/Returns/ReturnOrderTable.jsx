@@ -25,6 +25,7 @@ import { postCall } from "../../../Api/axios.js";
 import cogoToast from "cogo-toast";
 import { EditOutlined } from "@mui/icons-material";
 import { RETURN_REJECT_REASONS } from "./return-reject-reasons.js";
+import { PICKUP_REJECT_REASONS } from "./pickup-failed-reason.js";
 
 const RETURN_ORDER_STATUS = {
   Return_Initiated: "Return Initiated",
@@ -94,9 +95,9 @@ const ActionMenu = ({ row, handleRefresh }) => {
       id: row._id,
       state: orderStatus,
     };
-    if(orderStatus === RETURN_ORDER_STATUS.Reject){
+    if (orderStatus === RETURN_ORDER_STATUS.Reject || orderStatus === RETURN_ORDER_STATUS.Return_Pick_Failed || orderStatus === RETURN_ORDER_STATUS.Return_Failed) {
       data.reason = reason;
-    }else{}
+    } else { }
     postCall(url, data)
       .then((resp) => {
         cogoToast.success("Status updated successfully");
@@ -158,7 +159,7 @@ const ActionMenu = ({ row, handleRefresh }) => {
                     </MenuItem>
                   ])
                 }
-                {(row.state === "Return_Approved" || row.state === "Return_Pick_Failed") &&  (
+                {(row.state === "Return_Approved" || row.state === "Return_Pick_Failed") && (
                   [
                     <MenuItem key={RETURN_ORDER_STATUS.Return_Picked} value={RETURN_ORDER_STATUS.Return_Picked}>
                       Picked
@@ -177,10 +178,10 @@ const ActionMenu = ({ row, handleRefresh }) => {
                   </MenuItem>
                 )}
               </Select>
-              {inlineError.selected_status_error && <Typography color="error" variant="subtitle2" style={{marginLeft: '5px'}}>{inlineError.selected_status_error}</Typography>}
+              {inlineError.selected_status_error && <Typography color="error" variant="subtitle2" style={{ marginLeft: '5px' }}>{inlineError.selected_status_error}</Typography>}
             </FormControl>
             {
-              orderStatus === RETURN_ORDER_STATUS.Reject && (
+              (orderStatus === RETURN_ORDER_STATUS.Reject || orderStatus === RETURN_ORDER_STATUS.Return_Pick_Failed || orderStatus === RETURN_ORDER_STATUS.Return_Failed) && (
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
                     Select Reason
@@ -198,15 +199,22 @@ const ActionMenu = ({ row, handleRefresh }) => {
                       setReason(e.target.value);
                     }}
                   >
-                    {
+                    {orderStatus === RETURN_ORDER_STATUS.Return_Pick_Failed ?
+                      PICKUP_REJECT_REASONS.map((reason, reasonIndex) => (
+                        <MenuItem key={`reason-${reasonIndex}`} value={reason.key} style={{ maxWidth: '500px' }}>
+                          {reason.value}
+                        </MenuItem>
+                      ))
+                      :
                       RETURN_REJECT_REASONS.map((reason, reasonIndex) => (
-                        <MenuItem key={`reason-${reasonIndex}`} value={reason.key} style={{maxWidth: '500px'}}>
+                        <MenuItem key={`reason-${reasonIndex}`} value={reason.key} style={{ maxWidth: '500px' }}>
                           {reason.value}
                         </MenuItem>
                       ))
                     }
+
                   </Select>
-                  {inlineError.reason_error && <Typography color="error" variant="subtitle2" style={{marginLeft: '5px'}}>{inlineError.reason_error}</Typography>}
+                  {inlineError.reason_error && <Typography color="error" variant="subtitle2" style={{ marginLeft: '5px' }}>{inlineError.reason_error}</Typography>}
                 </FormControl>
               )
             }
@@ -219,9 +227,9 @@ const ActionMenu = ({ row, handleRefresh }) => {
                 variant="contained"
                 onClick={() => {
                   let allCheckPassed = true;
-                  if(orderStatus === RETURN_ORDER_STATUS.Reject){
+                  if (orderStatus === RETURN_ORDER_STATUS.Reject || orderStatus === RETURN_ORDER_STATUS.Return_Pick_Failed || orderStatus === RETURN_ORDER_STATUS.Return_Failed) {
                     allCheckPassed = [checkIsOrderStatus(), checkReason()].every(Boolean)
-                  }else{
+                  } else {
                     allCheckPassed = [checkIsOrderStatus()].every(Boolean);
                   }
                   if (!allCheckPassed) return;
