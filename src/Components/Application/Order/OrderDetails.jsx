@@ -40,7 +40,8 @@ const OrderDetails = () => {
   const [user, setUser] = React.useState();
   const [organizationId, setOrganizationId] = React.useState();
   const [orgOnNetwork, setOrgOnNetwork] = React.useState(true);
-  const [fulfillmentData, setFulfillmentData] = React.useState();
+  const [deliveryFulfillmentData, setDeliveryFulfillmentData] = React.useState();
+  const [rtoFulfillmentData, setRtoFulfillmentData] = React.useState();
   const [isUpdateOrderModalOpen, setIsUpdateOrderModalOpen] = React.useState();
   const { cancellablePromise } = useCancellablePromise();
   const params = useParams();
@@ -156,10 +157,13 @@ const OrderDetails = () => {
     setloading({ ...loading, update_order_loading: true });
     const fulfillments = order_details?.fulfillments;
     let delivery_info = {};
+    let rto_info = {};
     if (fulfillments) {
       delivery_info = getFulfillmentData(fulfillments, "Delivery");
+      rto_info = getFulfillmentData(fulfillments, "RTO");
     }
-    setFulfillmentData(delivery_info); // Set fulfillment data
+    setDeliveryFulfillmentData(delivery_info);
+    setRtoFulfillmentData(rto_info)
     setIsUpdateOrderModalOpen(true);
   };
 
@@ -260,7 +264,8 @@ const OrderDetails = () => {
           <UpdateOrderStatus
             showModal={isUpdateOrderModalOpen}
             handleCloseModal={() => handleCloseStatusModal()}
-            data={fulfillmentData}
+            deliveryData={deliveryFulfillmentData}
+            rtoData={rtoFulfillmentData}
             setloading={setloading}
             loading={loading}
             setOrder={setOrder}
@@ -300,7 +305,8 @@ const OrderDetails = () => {
               <UpdateOrderStatus
                 showModal={isUpdateOrderModalOpen}
                 handleCloseModal={() => handleCloseStatusModal()}
-                data={fulfillmentData}
+                deliveryData={deliveryFulfillmentData}
+                rtoData={rtoFulfillmentData}
                 setloading={setloading}
                 loading={loading}
                 setOrder={setOrder}
