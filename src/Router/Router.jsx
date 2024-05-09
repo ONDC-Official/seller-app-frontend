@@ -28,6 +28,8 @@ import CustomizationsIndex from "../Components/Application/Customizations/Custom
 import CustomizationGroups from "../Components/Application/Customizations/CustomizationGroups.js";
 import CustomizationItems from "../Components/Application/Customizations/CustomizationItems.js";
 import CustomizationGroupDetails from "../Components/Application/Customizations/CustomizationGroupDetails.js";
+import Offer from "../Components/Application/Offer/Offer";
+import AddOffer from "../Components/Application/Offer/AddOffer";
 
 export default function OndcRoutes() {
   return (
@@ -220,6 +222,31 @@ export default function OndcRoutes() {
           element={
             <PrivateRoute>
               <ComplaintDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          exact
+          path="/application/offers"
+          element={
+            <PrivateRoute>
+              <Offer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/add/offer"
+          element={
+            <PrivateRoute>
+              <AddOffer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/application/edit/offer/:id"
+          element={
+            <PrivateRoute>
+              <AddOffer />
             </PrivateRoute>
           }
         />

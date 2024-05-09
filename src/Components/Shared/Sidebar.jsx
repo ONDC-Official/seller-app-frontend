@@ -133,6 +133,16 @@ export default function Sidebar(props) {
                 </NavLink>
                 <NavLink
                   to={{
+                    pathname: `/application/offers`,
+                  }}
+                  className="no-underline text-black"
+                >
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemText primary="Offers" />
+                  </ListItemButton>
+                </NavLink>
+                <NavLink
+                  to={{
                     pathname: `/application/store-details/${user?.organization}`,
                   }}
                   className="no-underline text-black"
